@@ -28,7 +28,23 @@ class UserCreateRequest(AccountCreateRequestBase):
     caregiver_id: int
 
 
-class AdminIn(UserCreateRequest):
+class AdminIn(AdminCreateRequest):
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    class Config:
+        use_enum_values = True
+        from_attributes = True
+
+
+class CaregiverIn(CaregiverCreateRequest):
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    class Config:
+        use_enum_values = True
+        from_attributes = True
+
+
+class UserIn(UserCreateRequest):
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Config:
