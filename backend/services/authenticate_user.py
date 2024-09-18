@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDUser
 from exceptions import DBGetUserException, InvalidUsernameOrPasswordException
-from models import User
 from schemas import LogInRequest, Token
 from utils.hashing import verify_password
 from utils.token import create_access_token

@@ -60,5 +60,6 @@ class Mood(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("user.id"))
     mood = Column(Enum(SelectedMood))
+    created_at = Column(TIMESTAMP, nullable=False)
 
     user = relationship("User", back_populates="moods")  # Each Mood belongs to one User

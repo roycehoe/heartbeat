@@ -12,7 +12,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES: int = 3600
 
 def create_access_token(data: dict) -> str:
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    encoded_jwt=jwt.encode({**data, "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode({**data, "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
 
@@ -32,7 +32,7 @@ def authenticate_token(token: str) -> None:
         )
 
 
-def get_user_id(token: str) -> str:
+def get_user_id(token: str) -> int:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("user_id")

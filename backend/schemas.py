@@ -3,6 +3,21 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+from enums import SelectedMood
+
+
+class MoodRequest(BaseModel):
+    mood: SelectedMood
+
+
+class MoodIn(MoodRequest):
+    user_id: int
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    class Config:
+        use_enum_values = True
+        from_attributes = True
+
 
 class LogInRequest(BaseModel):
     email: str  # Doubles as username

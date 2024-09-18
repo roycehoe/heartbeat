@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, Request, UploadFile, status
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, UploadFile, status
 from sqlalchemy.orm import Session
 
 from database import Base, engine, get_db
@@ -6,6 +6,7 @@ from schemas import (
     AdminCreateRequest,
     CaregiverCreateRequest,
     LogInRequest,
+    MoodRequest,
     Token,
     UserCreateRequest,
 )
@@ -15,6 +16,7 @@ from services.create_user import (
     get_create_caregiver_response,
     get_create_user_response,
 )
+from services.create_user_mood import get_create_user_mood_response
 
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
@@ -54,11 +56,13 @@ def log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_user(user_log_in_request, db)
 
 
-@app.get("/user", status_code=status.HTTP_200_OK, response_model=Token)
-def dashboard(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
-    return authenticate_user(user_log_in_request, db)
+@app.get("/user", status_code=status.HTTP_200_OK)
+def dashboard(token: str = Header(None), db: Session = Depends(get_db)):
+    return token
 
 
-@app.post("/user", status_code=status.HTTP_200_OK, response_model=Token)
-def send_mood(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
-    return authenticate_user(user_log_in_request, db)
+@app.post("/user", status_code=status.HTTP_201_CREATED)
+def send_mood(
+    request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
+):
+    return get_create_user_mood_response(request, token, db)
