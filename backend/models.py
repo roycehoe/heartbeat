@@ -13,8 +13,10 @@ class Caregiver(Base):
         String, nullable=False, comment="User's email; doubles as username"
     )
     password = Column(String, nullable=False)
+    admin_id = Column(Integer, ForeignKey("admin.id"))
     created_at = Column(TIMESTAMP, nullable=False)
 
+    admin = relationship("Admin", back_populates="caregiver")
     users = relationship("User", back_populates="caregiver")
 
 
@@ -42,8 +44,10 @@ class User(Base):
 
     created_at = Column(TIMESTAMP, nullable=False)
     admin_id = Column(Integer, ForeignKey("admin.id"))
+    caregiver_id = Column(Integer, ForeignKey("caregiver.id"))
 
     admin = relationship("Admin", back_populates="users")
+    caregiver = relationship("Caregiver", back_populates="users")
     moods = relationship("Mood", back_populates="user")
 
 
