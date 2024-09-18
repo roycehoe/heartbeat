@@ -5,17 +5,26 @@ from exceptions import (
     DBCreateUserException,
     DBCreateUserWithEmailAlreadyExistsException,
 )
-from models import Admin
-from schemas import AdminCreateRequest, AdminIn
+from models import Admin, Caregiver, User
+from schemas import (
+    AdminCreateRequest,
+    AdminIn,
+    CaregiverCreateRequest,
+    CaregiverIn,
+    UserCreateRequest,
+    UserIn,
+)
 from utils.hashing import hash_password
 
 
-def is_valid_password(password: str, confirm_password: str) -> bool:
+def _is_valid_password(password: str, confirm_password: str) -> bool:
     return password == confirm_password
 
 
-def create_admin(request: AdminCreateRequest, db: Session) -> Admin:
+def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
     try:
+        if not _is_valid_password(request.password, request.confirm_password):
+            raise DBCreateUserException
         admin_in_model = AdminIn(**request.model_dump())
         db_admin_model = Admin(
             email=admin_in_model.email,
@@ -23,7 +32,50 @@ def create_admin(request: AdminCreateRequest, db: Session) -> Admin:
             created_at=admin_in_model.created_at,
         )
         if new_admin := CRUDUser(db).create(db_admin_model):
-            return new_admin
+            return None
+        raise DBCreateUserException
+    except DBCreateUserException:
         raise DBCreateUserException
     except DBCreateUserWithEmailAlreadyExistsException:
+        raise DBCreateUserException
+
+
+def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) -> None:
+    try:
+        if not _is_valid_password(request.password, request.confirm_password):
+            raise DBCreateUserException
+        caregiver_in_model = CaregiverIn(**request.model_dump())
+        db_caregiver_model = Caregiver(
+            email=caregiver_in_model.email,
+            password=hash_password(caregiver_in_model.password),
+            admin_id=caregiver_in_model.admin_id,
+            created_at=caregiver_in_model.created_at,
+        )
+        if new_caregiver := CRUDUser(db).create(db_caregiver_model):
+            return None
+        raise DBCreateUserException
+    except DBCreateUserException:
+        raise DBCreateUserException
+    except DBCreateUserWithEmailAlreadyExistsException:
+        raise DBCreateUserException
+
+
+def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
+    try:
+        if not _is_valid_password(request.password, request.confirm_password):
+            raise DBCreateUserException
+        user_in_model = UserIn(**request.model_dump())
+        db_user_model = User(
+            email=user_in_model.email,
+            password=hash_password(user_in_model.password),
+            admin_id=user_in_model.admin_id,
+            caregiver_id=user_in_model.caregiver_id,
+            created_at=user_in_model.created_at,
+        )
+        if new_user := CRUDUser(db).create(db_user_model):
+            return None
+        raise DBCreateUserException
+    except DBCreateUserWithEmailAlreadyExistsException:
+        raise DBCreateUserException
+    except DBCreateUserException:
         raise DBCreateUserException
