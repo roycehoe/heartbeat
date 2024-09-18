@@ -5,6 +5,19 @@ from database import Base
 from enums import SelectedMood
 
 
+class Caregiver(Base):
+    __tablename__ = "caregiver"
+
+    id = Column(Integer, primary_key=True, comment="Primary key")
+    username = Column(
+        String, nullable=False, comment="User's email; doubles as username"
+    )
+    password = Column(String, nullable=False)
+    created_at = Column(TIMESTAMP, nullable=False)
+
+    users = relationship("User", back_populates="caregiver")
+
+
 class Admin(Base):
     __tablename__ = "admin"
 
