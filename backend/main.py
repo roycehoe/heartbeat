@@ -52,3 +52,13 @@ def sign_up_user(request: UserCreateRequest, db: Session = Depends(get_db)):
 @app.post("/user/log-in", status_code=status.HTTP_200_OK, response_model=Token)
 def log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_user(user_log_in_request, db)
+
+
+@app.get("/user", status_code=status.HTTP_200_OK, response_model=Token)
+def dashboard(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
+    return authenticate_user(user_log_in_request, db)
+
+
+@app.post("/user", status_code=status.HTTP_200_OK, response_model=Token)
+def send_mood(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
+    return authenticate_user(user_log_in_request, db)

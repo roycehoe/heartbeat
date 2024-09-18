@@ -1,27 +1,32 @@
 from typing import Any
 
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
-from exceptions import (DBCreateUserException,
-                        DBCreateUserWithEmailAlreadyExistsException,
-                        DBGetUserException, NoUserException)
+from exceptions import (
+    DBCreateUserException,
+    DBCreateUserWithEmailAlreadyExistsException,
+    DBGetUserException,
+    NoUserException,
+)
 from models import User
 
 
-class CRUDUser:
+class CRUDUser:  # TODO: Methods for all account tables
     def __init__(self, session: Session):
         self.session = session
 
     def create(self, user: User) -> User:
         try:
-            if self.session.query(User).filter_by(email=user.email).first():
+            if self.session.query(User).filter_by(email=user.email).first() is None:
                 raise DBCreateUserWithEmailAlreadyExistsException
             self.session.add(user)
             self.session.commit()
+        except IntegrityError:
+            self.session.rollback()
         except Exception:
             raise DBCreateUserException
         return user
-
 
     def update(self, id: int, field: str, value: Any) -> User:
         try:
