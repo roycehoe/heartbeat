@@ -1,19 +1,29 @@
 from sqlalchemy.orm import Session
 
 from crud import CRUDUser
-from exceptions import (DBCreateUserException,
-                        DBCreateUserWithEmailAlreadyExistsException)
-from models import User
-from schemas import UserCreateRequest, UserIn
+from exceptions import (
+    DBCreateUserException,
+    DBCreateUserWithEmailAlreadyExistsException,
+)
+from models import Admin
+from schemas import AdminCreateRequest, AdminIn
 from utils.hashing import hash_password
 
 
-def create_user(request: UserCreateRequest, db: Session) -> User:
+def is_valid_password(password: str, confirm_password: str) -> bool:
+    return password == confirm_password
+
+
+def create_admin(request: AdminCreateRequest, db: Session) -> Admin:
     try:
-        user_in_model = UserIn(**{**request.model_dump(), "password":hash_password(request.password)})
-        db_user_model = User(**user_in_model.model_dump())
-        if new_user := CRUDUser(db).create(db_user_model):
-            return new_user
+        admin_in_model = AdminIn(**request.model_dump())
+        db_admin_model = Admin(
+            email=admin_in_model.email,
+            password=hash_password(admin_in_model.password),
+            created_at=admin_in_model.created_at,
+        )
+        if new_admin := CRUDUser(db).create(db_admin_model):
+            return new_admin
         raise DBCreateUserException
     except DBCreateUserWithEmailAlreadyExistsException:
         raise DBCreateUserException
