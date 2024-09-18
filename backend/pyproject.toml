@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "test-ics"
+version = "0.1.0"
+description = ""
+authors = ["roycehoe <royceinbox@hotmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.9"
+ics = "^0.7.2"
+fastapi = {extras = ["standard"], version = "^0.112.2"}
+pytesseract = "^0.3.13"
+opencv-contrib-python = "^4.10.0.84"
+sqlmodel = "^0.0.22"
+qrcode = {extras = ["pil"], version = "^7.4.2"}
+pyjwt = "^2.9.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
