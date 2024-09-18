@@ -17,6 +17,7 @@ from services.create_user import (
     get_create_user_response,
 )
 from services.create_user_mood import get_create_user_mood_response
+from services.get_user_mood import get_get_user_mood_response
 
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
@@ -58,7 +59,7 @@ def log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
 
 @app.get("/user", status_code=status.HTTP_200_OK)
 def dashboard(token: str = Header(None), db: Session = Depends(get_db)):
-    return token
+    return get_get_user_mood_response(token, db)
 
 
 @app.post("/user", status_code=status.HTTP_201_CREATED)

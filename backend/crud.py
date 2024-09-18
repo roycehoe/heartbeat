@@ -85,9 +85,9 @@ class CRUDMood:
         except Exception:
             raise DBGetUserException
 
-    def get_by(self, field: dict[Any, Any]) -> Mood:
+    def get_by(self, field: dict[Any, Any]) -> list[Mood]:
         try:
-            if user := self.session.query(Mood).filter_by(**field).first():
+            if user := self.session.query(Mood).filter_by(**field).all():
                 return user
             raise NoUserException
         except Exception:
