@@ -1,18 +1,8 @@
-from sqlalchemy import (
-    TIMESTAMP,
-    Boolean,
-    Column,
-    Enum,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-)
-from sqlalchemy.dialects.sqlite import JSON
+from sqlalchemy import TIMESTAMP, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database import Base
-from enums import MatchmakingFieldGroup
+from enums import SelectedMood
 
 
 class Admin(Base):
@@ -49,5 +39,6 @@ class Mood(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("user.id"))
+    mood = Column(Enum(SelectedMood))
 
     user = relationship("User", back_populates="moods")
