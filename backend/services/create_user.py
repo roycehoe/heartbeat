@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from crud import CRUDUser
+from crud import CRUDAdmin, CRUDCaregiver, CRUDUser
 from exceptions import (
     DBCreateAccountException,
     DBCreateAccountWithEmailAlreadyExistsException,
@@ -31,7 +31,7 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
             password=hash_password(admin_in_model.password),
             created_at=admin_in_model.created_at,
         )
-        if new_admin := CRUDUser(db).create(db_admin_model):
+        if new_admin := CRUDAdmin(db).create(db_admin_model):
             return None
         raise DBCreateAccountException
     except DBCreateAccountException:
@@ -51,7 +51,7 @@ def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) 
             admin_id=caregiver_in_model.admin_id,
             created_at=caregiver_in_model.created_at,
         )
-        if new_caregiver := CRUDUser(db).create(db_caregiver_model):
+        if new_caregiver := CRUDCaregiver(db).create(db_caregiver_model):
             return None
         raise DBCreateAccountException
     except DBCreateAccountException:

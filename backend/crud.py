@@ -85,6 +85,16 @@ class CRUDUser(CRUDAccount):
         super().__init__(session, User)
 
 
+class CRUDCaregiver(CRUDAccount):
+    def __init__(self, session: Session):
+        super().__init__(session, Caregiver)
+
+
+class CRUDAdmin(CRUDAccount):
+    def __init__(self, session: Session):
+        super().__init__(session, Admin)
+
+
 class CRUDMood:
     def __init__(self, session: Session):
         self.session = session
