@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDUser
 from database import Base, engine, get_db
+from models import Mood
 from schemas import (
     AdminCreateRequest,
     CaregiverCreateRequest,
@@ -61,6 +62,11 @@ def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_admin(request, db)
 
 
+@app.get("/admin/dashboard", status_code=status.HTTP_200_OK, response_model=list[Mood])
+def admin_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
+    return "admin dashboard"
+
+
 ###################################
 # CAREGIVER
 ###################################
@@ -70,13 +76,20 @@ def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     "/caregiver/sign-up",
     status_code=status.HTTP_201_CREATED,
 )
-def sign_up_caregiver(request: CaregiverCreateRequest, db: Session = Depends(get_db)):
+def caregiver_sign_up(request: CaregiverCreateRequest, db: Session = Depends(get_db)):
     return get_create_caregiver_response(request, db)
 
 
 @app.post("/caregiver/log-in", status_code=status.HTTP_200_OK, response_model=Token)
 def caregiver_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_caregiver(request, db)
+
+
+@app.get(
+    "/caregiver/dashboard", status_code=status.HTTP_200_OK, response_model=list[Mood]
+)
+def caregiver_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
+    return "caregiver dashboard"
 
 
 ###################################
@@ -88,7 +101,7 @@ def caregiver_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     "/user/sign-up",
     status_code=status.HTTP_201_CREATED,
 )
-def sign_up_user(request: UserCreateRequest, db: Session = Depends(get_db)):
+def user_sign_up(request: UserCreateRequest, db: Session = Depends(get_db)):
     return get_create_user_response(request, db)
 
 
@@ -97,8 +110,8 @@ def user_log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)
     return authenticate_user(user_log_in_request, db)
 
 
-@app.get("/user/dashboard", status_code=status.HTTP_200_OK)
-def dashboard(token: str = Header(None), db: Session = Depends(get_db)):
+@app.get("/user/dashboard", status_code=status.HTTP_200_OK, response_model=list[Mood])
+def user_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
     return get_user_dashboard_response(token, db)
 
 
