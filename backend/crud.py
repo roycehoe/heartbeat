@@ -84,6 +84,15 @@ class CRUDUser(CRUDAccount):
     def __init__(self, session: Session):
         super().__init__(session, User)
 
+    def reset_all_moods(self) -> None:
+        # TODO: Think of a better way to
+        # use this. Here might not be the best place
+
+        for row in self.session.query(User):
+            row.update({"can_record_mood": True})
+        self.session.commit()
+        return
+
 
 class CRUDCaregiver(CRUDAccount):
     def __init__(self, session: Session):

@@ -16,6 +16,8 @@ sqlmodel = "^0.0.22"
 qrcode = {extras = ["pil"], version = "^7.4.2"}
 pyjwt = "^2.9.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+apscheduler = "^3.10.4"
+pytz = "^2024.2"
 
 
 [build-system]

@@ -1,6 +1,20 @@
-from fastapi import Depends, FastAPI, Header, HTTPException, Request, UploadFile, status
+from contextlib import contextmanager
+
+import pytz
+from apscheduler.schedulers.background import BackgroundScheduler
+from fastapi import (
+    BackgroundTasks,
+    Depends,
+    FastAPI,
+    Header,
+    HTTPException,
+    Request,
+    UploadFile,
+    status,
+)
 from sqlalchemy.orm import Session
 
+from crud import CRUDUser
 from database import Base, engine, get_db
 from schemas import (
     AdminCreateRequest,
@@ -19,8 +33,20 @@ from services.create_user import (
 from services.create_user_mood import get_create_user_mood_response
 from services.get_user_mood import get_get_user_mood_response
 
-app = FastAPI()
 Base.metadata.create_all(bind=engine)
+app = FastAPI()
+
+
+def get_scheduler(db: Session = Depends(get_db)):
+    scheduler = BackgroundScheduler(timezone=pytz.timezone("Asia/Singapore"))
+    scheduler.add_job(CRUDUser(db).reset_all_moods(), "cron", hour=0, minute=0)
+    return scheduler
+
+
+@app.on_event("startup")
+def startup_event():
+    scheduler = get_scheduler()
+    scheduler.start()
 
 
 @app.get("/", response_model={})
