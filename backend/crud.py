@@ -84,7 +84,7 @@ class CRUDUser(CRUDAccount):
     def __init__(self, session: Session):
         super().__init__(session, User)
 
-    def reset_all_moods(self) -> None:
+    def reset_all_can_record_mood(self) -> None:
         # TODO: Think of a better way to
         # use this. Here might not be the best place
 
