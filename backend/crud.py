@@ -125,6 +125,20 @@ class CRUDMood:
         except Exception:
             raise DBGetAccountException
 
+    def get_latest(self, user_id: int, limit: int) -> list[Mood]:
+        try:
+            if (
+                user := self.session.query(Mood)
+                .filter_by(id=user_id)
+                .order_by(Mood.created_at.desc())
+                .limit(limit)
+                .all()
+            ):
+                return user
+            raise NoAccountFoundException
+        except Exception:
+            raise DBGetAccountException
+
     def get_all(self) -> list[Mood]:
         try:
             if user := self.session.query(Mood).all():
