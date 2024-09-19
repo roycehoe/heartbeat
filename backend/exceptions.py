@@ -9,7 +9,7 @@ class CalendarCreateException(Exception):
 class DBCreateAccountException(Exception):
     pass
 
-class DBCreateUserWithEmailAlreadyExistsException(Exception):
+class DBCreateAccountWithEmailAlreadyExistsException(Exception):
     pass
 
 class DBGetAccountException(Exception):

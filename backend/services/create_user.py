@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from crud import CRUDUser
 from exceptions import (
     DBCreateAccountException,
-    DBCreateUserWithEmailAlreadyExistsException,
+    DBCreateAccountWithEmailAlreadyExistsException,
 )
 from models import Admin, Caregiver, User
 from schemas import (
@@ -36,7 +36,7 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         raise DBCreateAccountException
     except DBCreateAccountException:
         raise DBCreateAccountException
-    except DBCreateUserWithEmailAlreadyExistsException:
+    except DBCreateAccountWithEmailAlreadyExistsException:
         raise DBCreateAccountException
 
 
@@ -56,7 +56,7 @@ def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) 
         raise DBCreateAccountException
     except DBCreateAccountException:
         raise DBCreateAccountException
-    except DBCreateUserWithEmailAlreadyExistsException:
+    except DBCreateAccountWithEmailAlreadyExistsException:
         raise DBCreateAccountException
 
 
@@ -75,7 +75,7 @@ def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
         if new_user := CRUDUser(db).create(db_user_model):
             return None
         raise DBCreateAccountException
-    except DBCreateUserWithEmailAlreadyExistsException:
+    except DBCreateAccountWithEmailAlreadyExistsException:
         raise DBCreateAccountException
     except DBCreateAccountException:
         raise DBCreateAccountException

@@ -1,64 +1,88 @@
-from typing import Any
+from typing import Any, Generic, Type, TypeVar
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from exceptions import (
     DBCreateAccountException,
-    DBCreateUserWithEmailAlreadyExistsException,
+    DBCreateAccountWithEmailAlreadyExistsException,
     DBGetAccountException,
     NoAccountFoundException,
 )
-from models import Mood, User
+from models import Admin, Caregiver, Mood, User
+
+T = TypeVar("T", User, Caregiver, Admin)
 
 
-class CRUDUser:  # TODO: Methods for all account tables
-    def __init__(self, session: Session):
+class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
+    def __init__(self, session: Session, account_model: Type[T]):
         self.session = session
+        self.account_model = account_model
 
-    def create(self, user: User) -> User:
+    def create(self, account: T) -> T:
         try:
-            if self.session.query(User).filter_by(email=user.email).first():
-                raise DBCreateUserWithEmailAlreadyExistsException
-            self.session.add(user)
+            if (
+                self.session.query(self.account_model)
+                .filter_by(email=account.email)
+                .first()
+            ):
+                raise DBCreateAccountWithEmailAlreadyExistsException
+            self.session.add(account)
             self.session.commit()
         except Exception:
             raise DBCreateAccountException
-        return user
+        return account
 
-    def update(self, id: int, field: str, value: Any) -> User:
+    def update(self, id: int, field: str, value: Any) -> T:
         try:
-            if user := self.session.query(User).filter_by(id=id).first():
-                user.update({field: value})
+            if (
+                account := self.session.query(self.account_model)
+                .filter_by(id=id)
+                .first()
+            ):
+                account.update({field: value})
                 self.session.commit()
-                return user
+                return account
             raise NoAccountFoundException
         except Exception:
             raise DBGetAccountException
 
-    def get(self, id: int) -> User:
+    def get(self, id: int) -> T:
         try:
-            if user := self.session.query(User).filter_by(id=id).first():
-                return user
+            if (
+                account := self.session.query(self.account_model)
+                .filter_by(id=id)
+                .first()
+            ):
+                return account
             raise NoAccountFoundException
         except Exception:
             raise DBGetAccountException
 
-    def get_by(self, field: dict[Any, Any]) -> User:
+    def get_by(self, field: dict[Any, Any]) -> T:
         try:
-            if user := self.session.query(User).filter_by(**field).first():
-                return user
+            if (
+                account := self.session.query(self.account_model)
+                .filter_by(**field)
+                .first()
+            ):
+                return account
             raise NoAccountFoundException
         except Exception:
             raise DBGetAccountException
 
-    def get_all(self) -> list[User]:
+    def get_all(self) -> list[T]:
         try:
-            if user := self.session.query(User).all():
-                return user
+            if account := self.session.query(self.account_model).all():
+                return account
             raise NoAccountFoundException
         except Exception:
             raise DBGetAccountException
+
+
+class CRUDUser(CRUDAccount):
+    def __init__(self, session: Session):
+        super().__init__(session, User)
 
 
 class CRUDMood:
