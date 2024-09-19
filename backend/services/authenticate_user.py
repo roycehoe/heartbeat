@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from crud import CRUDUser
-from exceptions import DBGetUserException, InvalidUsernameOrPasswordException
+from exceptions import DBGetAccountException, InvalidUsernameOrPasswordException
 from schemas import LogInRequest, Token
 from utils.hashing import verify_password
 from utils.token import create_access_token
@@ -15,5 +15,5 @@ def authenticate_user(request: LogInRequest, db: Session) -> Token:
                 return Token(access_token=access_token, token_type="bearer")
             raise InvalidUsernameOrPasswordException
         raise InvalidUsernameOrPasswordException
-    except DBGetUserException:
-        raise DBGetUserException
+    except DBGetAccountException:
+        raise DBGetAccountException

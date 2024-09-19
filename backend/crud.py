@@ -4,10 +4,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from exceptions import (
-    DBCreateUserException,
+    DBCreateAccountException,
     DBCreateUserWithEmailAlreadyExistsException,
-    DBGetUserException,
-    NoUserException,
+    DBGetAccountException,
+    NoAccountFoundException,
 )
 from models import Mood, User
 
@@ -22,10 +22,8 @@ class CRUDUser:  # TODO: Methods for all account tables
                 raise DBCreateUserWithEmailAlreadyExistsException
             self.session.add(user)
             self.session.commit()
-        except IntegrityError:
-            self.session.rollback()
         except Exception:
-            raise DBCreateUserException
+            raise DBCreateAccountException
         return user
 
     def update(self, id: int, field: str, value: Any) -> User:
@@ -34,33 +32,33 @@ class CRUDUser:  # TODO: Methods for all account tables
                 user.update({field: value})
                 self.session.commit()
                 return user
-            raise NoUserException
+            raise NoAccountFoundException
         except Exception:
-            raise DBGetUserException
+            raise DBGetAccountException
 
     def get(self, id: int) -> User:
         try:
             if user := self.session.query(User).filter_by(id=id).first():
                 return user
-            raise NoUserException
+            raise NoAccountFoundException
         except Exception:
-            raise DBGetUserException
+            raise DBGetAccountException
 
     def get_by(self, field: dict[Any, Any]) -> User:
         try:
             if user := self.session.query(User).filter_by(**field).first():
                 return user
-            raise NoUserException
+            raise NoAccountFoundException
         except Exception:
-            raise DBGetUserException
+            raise DBGetAccountException
 
     def get_all(self) -> list[User]:
         try:
             if user := self.session.query(User).all():
                 return user
-            raise NoUserException
+            raise NoAccountFoundException
         except Exception:
-            raise DBGetUserException
+            raise DBGetAccountException
 
 
 class CRUDMood:
@@ -74,29 +72,29 @@ class CRUDMood:
         except IntegrityError:
             self.session.rollback()
         except Exception:
-            raise DBCreateUserException
+            raise DBCreateAccountException
         return mood
 
     def get(self, id: int) -> Mood:
         try:
             if user := self.session.query(Mood).filter_by(id=id).first():
                 return user
-            raise NoUserException
+            raise NoAccountFoundException
         except Exception:
-            raise DBGetUserException
+            raise DBGetAccountException
 
     def get_by(self, field: dict[Any, Any]) -> list[Mood]:
         try:
             if user := self.session.query(Mood).filter_by(**field).all():
                 return user
-            raise NoUserException
+            raise NoAccountFoundException
         except Exception:
-            raise DBGetUserException
+            raise DBGetAccountException
 
     def get_all(self) -> list[Mood]:
         try:
             if user := self.session.query(Mood).all():
                 return user
-            raise NoUserException
+            raise NoAccountFoundException
         except Exception:
-            raise DBGetUserException
+            raise DBGetAccountException

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDMood
 from exceptions import (
-    DBCreateUserException,
+    DBCreateAccountException,
     DBCreateUserWithEmailAlreadyExistsException,
 )
 from models import Mood
@@ -14,9 +14,9 @@ def get_get_user_mood_response(token: str, db: Session) -> list[Mood]:
     try:
         user_id = get_user_id(token)
         return CRUDMood(db).get_by({"user_id": user_id})
-    except DBCreateUserException:
-        raise DBCreateUserException
+    except DBCreateAccountException:
+        raise DBCreateAccountException
     except DBCreateUserWithEmailAlreadyExistsException:
-        raise DBCreateUserException
+        raise DBCreateAccountException
     except Exception:
-        raise DBCreateUserException
+        raise DBCreateAccountException

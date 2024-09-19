@@ -6,17 +6,17 @@ class CalendarCreateException(Exception):
     pass
 
 
-class DBCreateUserException(Exception):
+class DBCreateAccountException(Exception):
     pass
 
 class DBCreateUserWithEmailAlreadyExistsException(Exception):
     pass
 
-class DBGetUserException(Exception):
+class DBGetAccountException(Exception):
     pass
 
 
-class NoUserException(Exception):
+class NoAccountFoundException(Exception):
     pass
 
 class InvalidUsernameOrPasswordException(Exception):

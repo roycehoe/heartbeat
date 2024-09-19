@@ -7,9 +7,9 @@ import qrcode
 from sqlalchemy.orm import Session
 
 from crud import CRUDCalendar
-from exceptions import (CalendarCreateException, DBCreateUserException,
-                        DBGetUserException, MedicineLabelReadException,
-                        NoUserException)
+from exceptions import (CalendarCreateException, DBCreateAccountException,
+                        DBGetAccountException, MedicineLabelReadException,
+                        NoAccountFoundException)
 from models import Calendar
 from schemas import GetCalendarHashResponse, MedicineLabel
 from utils.label_reader import get_medicine_label
@@ -51,8 +51,8 @@ def get_calendar_qr_code_response(
             )
         )
         # return GetCalendarHashResponse(path=calendar_hash)
-    except DBCreateUserException:
-        raise DBCreateUserException
+    except DBCreateAccountException:
+        raise DBCreateAccountException
 
     calendar = CRUDCalendar(db).get(hash=calendar_hash)
     qrcode_file = qrcode.make(f"{base_url}{calendar.hash}")
@@ -66,10 +66,10 @@ def get_calendar_qr_code_response(
 def get_calendar_file_response(hash: str, db: Session) -> io.StringIO:
     try:
         calendar = CRUDCalendar(db).get(hash=hash)
-    except DBGetUserException:
-        raise DBGetUserException
-    except NoUserException:
-        raise NoUserException
+    except DBGetAccountException:
+        raise DBGetAccountException
+    except NoAccountFoundException:
+        raise NoAccountFoundException
 
     ical_file = io.StringIO(str(calendar.calendar))
     return ical_file

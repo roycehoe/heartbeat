@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDUser
 from exceptions import (
-    DBCreateUserException,
+    DBCreateAccountException,
     DBCreateUserWithEmailAlreadyExistsException,
 )
 from models import Admin, Caregiver, User
@@ -24,7 +24,7 @@ def _is_valid_password(password: str, confirm_password: str) -> bool:
 def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
     try:
         if not _is_valid_password(request.password, request.confirm_password):
-            raise DBCreateUserException
+            raise DBCreateAccountException
         admin_in_model = AdminIn(**request.model_dump())
         db_admin_model = Admin(
             email=admin_in_model.email,
@@ -33,17 +33,17 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         )
         if new_admin := CRUDUser(db).create(db_admin_model):
             return None
-        raise DBCreateUserException
-    except DBCreateUserException:
-        raise DBCreateUserException
+        raise DBCreateAccountException
+    except DBCreateAccountException:
+        raise DBCreateAccountException
     except DBCreateUserWithEmailAlreadyExistsException:
-        raise DBCreateUserException
+        raise DBCreateAccountException
 
 
 def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) -> None:
     try:
         if not _is_valid_password(request.password, request.confirm_password):
-            raise DBCreateUserException
+            raise DBCreateAccountException
         caregiver_in_model = CaregiverIn(**request.model_dump())
         db_caregiver_model = Caregiver(
             email=caregiver_in_model.email,
@@ -53,17 +53,17 @@ def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) 
         )
         if new_caregiver := CRUDUser(db).create(db_caregiver_model):
             return None
-        raise DBCreateUserException
-    except DBCreateUserException:
-        raise DBCreateUserException
+        raise DBCreateAccountException
+    except DBCreateAccountException:
+        raise DBCreateAccountException
     except DBCreateUserWithEmailAlreadyExistsException:
-        raise DBCreateUserException
+        raise DBCreateAccountException
 
 
 def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
     try:
         if not _is_valid_password(request.password, request.confirm_password):
-            raise DBCreateUserException
+            raise DBCreateAccountException
         user_in_model = UserIn(**request.model_dump())
         db_user_model = User(
             email=user_in_model.email,
@@ -74,8 +74,8 @@ def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
         )
         if new_user := CRUDUser(db).create(db_user_model):
             return None
-        raise DBCreateUserException
+        raise DBCreateAccountException
     except DBCreateUserWithEmailAlreadyExistsException:
-        raise DBCreateUserException
-    except DBCreateUserException:
-        raise DBCreateUserException
+        raise DBCreateAccountException
+    except DBCreateAccountException:
+        raise DBCreateAccountException
