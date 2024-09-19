@@ -8,7 +8,7 @@ from exceptions import (
 )
 from models import Mood
 from schemas import MoodIn, MoodRequest
-from utils.token import get_user_id
+from utils.token import get_token_data
 
 SHOULD_ALERT_CAREGIVER_CRITERION = 5
 
@@ -50,7 +50,7 @@ def get_create_user_mood_response(
     request: MoodRequest, token: str, db: Session
 ) -> None:
     try:
-        user_id = get_user_id(token)
+        user_id = get_token_data(token, "user_id")
         if not _can_record_mood(user_id, db):
             raise DBCreateAccountException
 

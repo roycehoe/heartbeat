@@ -19,6 +19,12 @@ class MoodIn(MoodRequest):
         from_attributes = True
 
 
+class DashboardOut(BaseModel):
+    user_id: int
+    moods: list[MoodIn]
+    can_record_mood: bool
+
+
 class LogInRequest(BaseModel):
     email: str  # Doubles as username
     password: str

@@ -17,30 +17,14 @@ def create_access_token(data: dict) -> str:
     return encoded_jwt
 
 
-def authenticate_token(token: str) -> None:
+def get_token_data(token: str, param: str) -> int:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("username")
-        if username is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-            )
-
-    except jwt.DecodeError:
+        if data := payload.get(param):
+            return data
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
-
-
-def get_user_id(token: str) -> int:
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("user_id")
-        if username is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-            )
-        return username
 
     except jwt.DecodeError:
         raise HTTPException(

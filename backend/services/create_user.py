@@ -71,6 +71,7 @@ def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
             admin_id=user_in_model.admin_id,
             caregiver_id=user_in_model.caregiver_id,
             created_at=user_in_model.created_at,
+            can_record_mood=True,
         )
         if new_user := CRUDUser(db).create(db_user_model):
             return None

@@ -5,10 +5,10 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDUser
 from database import Base, engine, get_db
-from models import Mood
 from schemas import (
     AdminCreateRequest,
     CaregiverCreateRequest,
+    DashboardOut,
     LogInRequest,
     MoodRequest,
     Token,
@@ -25,7 +25,11 @@ from services.create_user import (
     get_create_user_response,
 )
 from services.create_user_mood import get_create_user_mood_response
-from services.get_user_mood import get_user_dashboard_response
+from services.get_user_mood import (
+    get_admin_dashboard_response,
+    get_caregiver_dashboard_response,
+    get_user_dashboard_response,
+)
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -62,9 +66,13 @@ def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_admin(request, db)
 
 
-@app.get("/admin/dashboard", status_code=status.HTTP_200_OK, response_model=list[Mood])
+@app.get(
+    "/admin/dashboard",
+    status_code=status.HTTP_200_OK,
+    response_model=list[DashboardOut],
+)
 def admin_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
-    return "admin dashboard"
+    return get_admin_dashboard_response(token, db)
 
 
 ###################################
@@ -86,10 +94,12 @@ def caregiver_log_in(request: LogInRequest, db: Session = Depends(get_db)):
 
 
 @app.get(
-    "/caregiver/dashboard", status_code=status.HTTP_200_OK, response_model=list[Mood]
+    "/caregiver/dashboard",
+    status_code=status.HTTP_200_OK,
+    response_model=DashboardOut,
 )
 def caregiver_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
-    return "caregiver dashboard"
+    return get_caregiver_dashboard_response(token, db)
 
 
 ###################################
@@ -110,7 +120,7 @@ def user_log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)
     return authenticate_user(user_log_in_request, db)
 
 
-@app.get("/user/dashboard", status_code=status.HTTP_200_OK, response_model=list[Mood])
+@app.get("/user/dashboard", status_code=status.HTTP_200_OK, response_model=DashboardOut)
 def user_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
     return get_user_dashboard_response(token, db)
 
