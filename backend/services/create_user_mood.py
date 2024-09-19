@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from crud import CRUDMood
+from crud import CRUDMood, CRUDUser
 from enums import SelectedMood
 from exceptions import (
     DBCreateAccountException,
@@ -47,7 +47,7 @@ def get_create_user_mood_response(
             created_at=mood_in_model.created_at,
         )
         CRUDMood(db).create(db_mood_model)
-
+        CRUDUser(db).update(user_id, "can_record_mood", False)
         if _should_alert_caregiver(user_id, mood_in_model.mood, db):
             print("ALERT CAREGIVER!!!!!")  # TODO: Implement caregiver alert here
     except DBCreateAccountException:

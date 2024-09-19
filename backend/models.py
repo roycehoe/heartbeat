@@ -1,4 +1,4 @@
-from sqlalchemy import TIMESTAMP, Column, Enum, ForeignKey, Integer, String
+from sqlalchemy import TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -41,9 +41,8 @@ class User(Base):
 
     created_at = Column(TIMESTAMP, nullable=False)
     admin_id = Column(Integer, ForeignKey("admin.id"))
-    caregiver_id = Column(
-        Integer, ForeignKey("caregiver.id"), nullable=True
-    )  # Optional
+    caregiver_id = Column(Integer, ForeignKey("caregiver.id"), nullable=True)
+    can_record_mood = Column(Boolean, nullable=True)
 
     admin = relationship(
         "Admin", back_populates="users"

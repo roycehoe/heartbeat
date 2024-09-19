@@ -61,6 +61,7 @@ class CaregiverIn(CaregiverCreateRequest):
 
 class UserIn(UserCreateRequest):
     created_at: datetime = Field(default_factory=datetime.now)
+    can_record_mood: bool = True
 
     class Config:
         use_enum_values = True
