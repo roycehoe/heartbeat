@@ -1,5 +1,3 @@
-from contextlib import contextmanager
-
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import Depends, FastAPI, Header, status
@@ -34,9 +32,7 @@ app = FastAPI()
 
 def get_scheduler(db: Session):
     scheduler = BackgroundScheduler(timezone=pytz.timezone("Asia/Singapore"))
-    scheduler.add_job(
-        CRUDUser(db).reset_all_can_record_mood(), "cron", hour=0, minute=0
-    )
+    scheduler.add_job(CRUDUser(db).reset_all_can_record_mood, "cron", hour=0, minute=0)
     return scheduler
 
 
