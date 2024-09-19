@@ -10,7 +10,7 @@ from schemas import MoodIn, MoodRequest
 from utils.token import get_user_id
 
 
-def get_get_user_mood_response(token: str, db: Session) -> list[Mood]:
+def get_user_dashboard_response(token: str, db: Session) -> list[Mood]:
     try:
         user_id = get_user_id(token)
         return CRUDMood(db).get_by({"user_id": user_id})

@@ -2,16 +2,7 @@ from contextlib import contextmanager
 
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
-from fastapi import (
-    BackgroundTasks,
-    Depends,
-    FastAPI,
-    Header,
-    HTTPException,
-    Request,
-    UploadFile,
-    status,
-)
+from fastapi import Depends, FastAPI, Header, status
 from sqlalchemy.orm import Session
 
 from crud import CRUDUser
@@ -24,14 +15,18 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from services.authenticate_user import authenticate_user
+from services.authenticate_user import (
+    authenticate_admin,
+    authenticate_caregiver,
+    authenticate_user,
+)
 from services.create_user import (
     get_create_admin_response,
     get_create_caregiver_response,
     get_create_user_response,
 )
 from services.create_user_mood import get_create_user_mood_response
-from services.get_user_mood import get_get_user_mood_response
+from services.get_user_mood import get_user_dashboard_response
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -52,29 +47,49 @@ def startup_event():
     scheduler.start()
 
 
-@app.get("/", response_model={})
-def home():
-    return "home page"
+###################################
+# ADMIN
+###################################
 
 
 @app.post(
-    "/sign-up/admin",
+    "/admin/sign-up",
     status_code=status.HTTP_201_CREATED,
 )
 def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
     return get_create_admin_response(request, db)
 
 
+@app.post("/admin/log-in", status_code=status.HTTP_200_OK, response_model=Token)
+def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
+    return authenticate_admin(request, db)
+
+
+###################################
+# CAREGIVER
+###################################
+
+
 @app.post(
-    "/sign-up/caregiver",
+    "/caregiver/sign-up",
     status_code=status.HTTP_201_CREATED,
 )
 def sign_up_caregiver(request: CaregiverCreateRequest, db: Session = Depends(get_db)):
     return get_create_caregiver_response(request, db)
 
 
+@app.post("/caregiver/log-in", status_code=status.HTTP_200_OK, response_model=Token)
+def caregiver_log_in(request: LogInRequest, db: Session = Depends(get_db)):
+    return authenticate_caregiver(request, db)
+
+
+###################################
+# USER
+###################################
+
+
 @app.post(
-    "/sign-up/user",
+    "/user/sign-up",
     status_code=status.HTTP_201_CREATED,
 )
 def sign_up_user(request: UserCreateRequest, db: Session = Depends(get_db)):
@@ -82,13 +97,13 @@ def sign_up_user(request: UserCreateRequest, db: Session = Depends(get_db)):
 
 
 @app.post("/user/log-in", status_code=status.HTTP_200_OK, response_model=Token)
-def log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
+def user_log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_user(user_log_in_request, db)
 
 
-@app.get("/user", status_code=status.HTTP_200_OK)
+@app.get("/user/dashboard", status_code=status.HTTP_200_OK)
 def dashboard(token: str = Header(None), db: Session = Depends(get_db)):
-    return get_get_user_mood_response(token, db)
+    return get_user_dashboard_response(token, db)
 
 
 @app.post("/user", status_code=status.HTTP_201_CREATED)
