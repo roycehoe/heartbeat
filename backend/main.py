@@ -37,7 +37,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-def get_scheduler(db: Session = Depends(get_db)):
+def get_scheduler(db: Session):
     scheduler = BackgroundScheduler(timezone=pytz.timezone("Asia/Singapore"))
     scheduler.add_job(
         CRUDUser(db).reset_all_can_record_mood(), "cron", hour=0, minute=0
@@ -47,7 +47,8 @@ def get_scheduler(db: Session = Depends(get_db)):
 
 @app.on_event("startup")
 def startup_event():
-    scheduler = get_scheduler()
+    db_session = next(get_db())
+    scheduler = get_scheduler(db_session)
     scheduler.start()
 
 
