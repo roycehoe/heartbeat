@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from crud import CRUDCaregiver, CRUDUser
+from crud import CRUDAdmin, CRUDCaregiver, CRUDUser
 from exceptions import DBGetAccountException, InvalidUsernameOrPasswordException
 from schemas import LogInRequest, Token
 from utils.hashing import verify_password
@@ -27,13 +27,7 @@ def authenticate_caregiver(request: LogInRequest, db: Session) -> Token:
         if not verify_password(request.password, str(caregiver.password)):
             raise InvalidUsernameOrPasswordException
 
-        user = CRUDUser(db).get_by({"caregiver_id": caregiver.user_id})
-        if user is None:
-            raise DBGetAccountException
-
-        access_token = create_access_token(
-            {"user_id": user.id, "caregiver_id": caregiver.id}
-        )
+        access_token = create_access_token({"caregiver_id": caregiver.id})
         return Token(access_token=access_token, token_type="bearer")
 
     except DBGetAccountException:
@@ -42,11 +36,12 @@ def authenticate_caregiver(request: LogInRequest, db: Session) -> Token:
 
 def authenticate_admin(request: LogInRequest, db: Session) -> Token:
     try:
-        if user := CRUDUser(db).get_by({"email": request.email}):
-            if verify_password(request.password, str(user.password)):
-                access_token = create_access_token({"user_id": user.id})
-                return Token(access_token=access_token, token_type="bearer")
+        admin = CRUDAdmin(db).get_by({"email": request.email})
+        if admin is None:
+            raise DBGetAccountException
+        if not verify_password(request.password, str(admin.password)):
             raise InvalidUsernameOrPasswordException
-        raise InvalidUsernameOrPasswordException
+        access_token = create_access_token({"admin_id": admin.id})
+        return Token(access_token=access_token, token_type="bearer")
     except DBGetAccountException:
         raise DBGetAccountException
