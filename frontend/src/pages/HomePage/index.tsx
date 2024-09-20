@@ -1,4 +1,9 @@
 import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
+import {
+  RangeCalendar,
+  RestrictedGovtMasthead,
+} from "@opengovsg/design-system-react";
+import MoodBtn from "../../components/MoodBtn";
 
 function HomePage() {
   return (
@@ -8,7 +13,6 @@ function HomePage() {
       borderColor="white"
       width="100vw"
       height="100vh"
-      color="white"
     >
       <Flex
         gap="24px"
@@ -33,26 +37,36 @@ function HomePage() {
                               "plant calendar calendar"
                               "plant calendar calendar"
                               "happy-btn ok-btn sad-btn"`}
-              gridTemplateColumns="auto"
+              gridTemplateColumns="1fr 1fr 1fr"
               gridTemplateRows="auto"
               gap="24px"
               bg="brand.primary.200"
               flex="1"
             >
               <GridItem area="plant" bg="red.200" m={4}>
-                Plant
+                <iframe
+                  src="https://giphy.com/embed/Vi5TUmZz8LZb95j2xb"
+                  width="100%"
+                  height="100%"
+                  allowFullScreen
+                ></iframe>
               </GridItem>
               <GridItem area="calendar" bg="red.200" m={4}>
-                Calendar
+                <RangeCalendar
+                  showTodayButton={false}
+                  width="100%"
+                  height="100%"
+                  monthsToDisplay={1}
+                ></RangeCalendar>
               </GridItem>
               <GridItem area="happy-btn" bg="red.200" m={4}>
-                Happy
+                <MoodBtn content="Happy"></MoodBtn>
               </GridItem>
               <GridItem area="ok-btn" bg="red.200" m={4}>
-                Ok
+                <MoodBtn content="Ok"></MoodBtn>
               </GridItem>
               <GridItem area="sad-btn" bg="red.200" m={4}>
-                Sad
+                <MoodBtn content="Sad"></MoodBtn>
               </GridItem>
             </Grid>
           </Flex>
