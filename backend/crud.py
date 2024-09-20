@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from exceptions import (
     DBCreateAccountException,
     DBCreateAccountWithEmailAlreadyExistsException,
+    DBException,
     DBGetAccountException,
     NoRecordFoundException,
 )
@@ -73,15 +74,9 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
 
     def get_by_all(self, field: dict[Any, Any]) -> list[T]:
         try:
-            if (
-                account := self.session.query(self.account_model)
-                .filter_by(**field)
-                .all()
-            ):
-                return account
-            raise NoRecordFoundException
-        except Exception:
-            raise DBGetAccountException
+            return self.session.query(self.account_model).filter_by(**field).all()
+        except Exception as e:
+            raise DBException(e)
 
 
 class CRUDUser(CRUDAccount):
@@ -133,30 +128,24 @@ class CRUDMood:
 
     def get_by(self, field: dict[Any, Any]) -> list[Mood]:
         try:
-            if moods := self.session.query(Mood).filter_by(**field).all():
-                return moods
-            raise NoRecordFoundException
-        except Exception:
-            raise DBGetAccountException
+            return self.session.query(Mood).filter_by(**field).all()
+        except Exception as e:
+            raise DBException(e)
 
     def get_latest(self, user_id: int, limit: int) -> list[Mood]:
         try:
-            if (
-                moods := self.session.query(Mood)
+            return (
+                self.session.query(Mood)
                 .filter_by(id=user_id)
                 .order_by(Mood.created_at.desc())
                 .limit(limit)
                 .all()
-            ):
-                return moods
-            raise NoRecordFoundException
+            )
         except Exception:
             raise DBGetAccountException
 
     def get_all(self) -> list[Mood]:
         try:
-            if moods := self.session.query(Mood).all():
-                return moods
-            raise NoRecordFoundException
+            return self.session.query(Mood).all()
         except Exception:
             raise DBGetAccountException

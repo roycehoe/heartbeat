@@ -18,6 +18,10 @@ class DBGetAccountException(Exception):
     pass
 
 
+class DBException(Exception):
+    pass
+
+
 class NoRecordFoundException(Exception):
     pass
 
