@@ -69,8 +69,8 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
             ):
                 return account
             raise NoRecordFoundException
-        except Exception:
-            raise DBGetAccountException
+        except Exception as e:
+            raise DBException(e)
 
     def get_by_all(self, field: dict[Any, Any]) -> list[T]:
         try:
