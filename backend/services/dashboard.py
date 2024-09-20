@@ -11,28 +11,22 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
     try:
         return CRUDUser(db).get(user_id).can_record_mood
     except NoRecordFoundException:
-        raise NoRecordFoundException
-    except DBException as e:
-        raise DBException(e)
-
-
-def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
-    try:
-        user_id = get_token_data(token, "user_id")
-        moods = CRUDMood(db).get_by({"user_id": user_id})
-        return DashboardOut(
-            user_id=user_id,
-            moods=[MoodIn(**mood) for mood in moods],
-            can_record_mood=_can_record_mood(user_id, db),
-        )
-
-    except NoRecordFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No user record found",
         )
     except DBException as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+
+
+def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
+    user_id = get_token_data(token, "user_id")
+    moods = CRUDMood(db).get_by({"user_id": user_id})
+    return DashboardOut(
+        user_id=user_id,
+        moods=[MoodIn(**mood) for mood in moods],
+        can_record_mood=_can_record_mood(user_id, db),
+    )
 
 
 def get_caregiver_dashboard_response(token: str, db: Session) -> DashboardOut:

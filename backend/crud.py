@@ -112,10 +112,8 @@ class CRUDMood:
             self.session.add(mood)
             self.session.commit()
             self.session.refresh(mood)
-        except IntegrityError:
-            self.session.rollback()
-        except Exception:
-            raise DBCreateAccountException
+        except Exception as e:
+            raise DBException(e)
         return mood
 
     def get(self, id: int) -> Mood:
@@ -141,8 +139,8 @@ class CRUDMood:
                 .limit(limit)
                 .all()
             )
-        except Exception:
-            raise DBGetAccountException
+        except Exception as e:
+            raise DBException(e)
 
     def get_all(self) -> list[Mood]:
         try:
