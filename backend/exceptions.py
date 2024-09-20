@@ -6,6 +6,10 @@ class CalendarCreateException(Exception):
     pass
 
 
+class DifferentPasswordAndConfirmPasswordException(Exception):
+    pass
+
+
 class DBCreateAccountException(Exception):
     pass
 

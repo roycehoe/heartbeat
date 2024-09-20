@@ -30,8 +30,8 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 raise DBCreateAccountWithEmailAlreadyExistsException
             self.session.add(account)
             self.session.commit()
-        except Exception:
-            raise DBCreateAccountException
+        except Exception as e:
+            raise DBException(e)
         return account
 
     def update(self, id: int, field: str, value: Any) -> T:

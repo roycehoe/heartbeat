@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDMood, CRUDUser
 from exceptions import DBException, NoRecordFoundException
-from models import Mood
 from schemas import DashboardOut, MoodIn
 from utils.token import get_token_data
 
