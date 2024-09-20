@@ -7,7 +7,7 @@ from exceptions import (
     DBCreateAccountException,
     DBCreateAccountWithEmailAlreadyExistsException,
     DBGetAccountException,
-    NoAccountFoundException,
+    NoRecordFoundException,
 )
 from models import Admin, Caregiver, Mood, User
 
@@ -43,7 +43,7 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 setattr(account, field, value)
                 self.session.commit()
                 return account
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
 
@@ -55,7 +55,7 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 .first()
             ):
                 return account
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
 
@@ -67,7 +67,7 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 .first()
             ):
                 return account
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
 
@@ -79,7 +79,7 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 .all()
             ):
                 return account
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
 
@@ -127,7 +127,7 @@ class CRUDMood:
         try:
             if user := self.session.query(Mood).filter_by(id=id).first():
                 return user
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
 
@@ -135,7 +135,7 @@ class CRUDMood:
         try:
             if moods := self.session.query(Mood).filter_by(**field).all():
                 return moods
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
 
@@ -149,7 +149,7 @@ class CRUDMood:
                 .all()
             ):
                 return moods
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
 
@@ -157,6 +157,6 @@ class CRUDMood:
         try:
             if moods := self.session.query(Mood).all():
                 return moods
-            raise NoAccountFoundException
+            raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException

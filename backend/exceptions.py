@@ -9,15 +9,18 @@ class CalendarCreateException(Exception):
 class DBCreateAccountException(Exception):
     pass
 
+
 class DBCreateAccountWithEmailAlreadyExistsException(Exception):
     pass
+
 
 class DBGetAccountException(Exception):
     pass
 
 
-class NoAccountFoundException(Exception):
+class NoRecordFoundException(Exception):
     pass
+
 
 class InvalidUsernameOrPasswordException(Exception):
     pass

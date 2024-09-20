@@ -14,18 +14,18 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from services.authenticate_user import (
+from services.authentication import (
     authenticate_admin,
     authenticate_caregiver,
     authenticate_user,
 )
-from services.create_user import (
+from services.account import (
     get_create_admin_response,
     get_create_caregiver_response,
     get_create_user_response,
 )
-from services.create_user_mood import get_create_user_mood_response
-from services.get_user_mood import (
+from services.mood import get_create_user_mood_response
+from services.dashboard import (
     get_admin_dashboard_response,
     get_caregiver_dashboard_response,
     get_user_dashboard_response,
