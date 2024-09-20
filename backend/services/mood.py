@@ -3,12 +3,7 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDMood, CRUDUser
 from enums import SelectedMood
-from exceptions import (
-    DBCreateAccountException,
-    DBCreateAccountWithEmailAlreadyExistsException,
-    DBException,
-    NoRecordFoundException,
-)
+from exceptions import DBException, NoRecordFoundException
 from models import Mood
 from schemas import MoodIn, MoodRequest
 from utils.token import get_token_data

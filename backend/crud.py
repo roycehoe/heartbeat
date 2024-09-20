@@ -1,10 +1,8 @@
 from typing import Any, Generic, Type, TypeVar
 
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from exceptions import (
-    DBCreateAccountException,
     DBCreateAccountWithEmailAlreadyExistsException,
     DBException,
     DBGetAccountException,
@@ -30,6 +28,9 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 raise DBCreateAccountWithEmailAlreadyExistsException
             self.session.add(account)
             self.session.commit()
+
+        except DBCreateAccountWithEmailAlreadyExistsException:
+            raise DBCreateAccountWithEmailAlreadyExistsException
         except Exception as e:
             raise DBException(e)
         return account
@@ -45,6 +46,7 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 self.session.commit()
                 return account
             raise NoRecordFoundException
+
         except Exception:
             raise DBGetAccountException
 
@@ -56,6 +58,9 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 .first()
             ):
                 return account
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception:
             raise DBGetAccountException
@@ -69,12 +74,16 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
             ):
                 return account
             raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
         except Exception as e:
             raise DBException(e)
 
     def get_by_all(self, field: dict[Any, Any]) -> list[T]:
         try:
             return self.session.query(self.account_model).filter_by(**field).all()
+
         except Exception as e:
             raise DBException(e)
 

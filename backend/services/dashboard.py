@@ -24,7 +24,10 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
     moods = CRUDMood(db).get_by({"user_id": user_id})
     return DashboardOut(
         user_id=user_id,
-        moods=[MoodIn(**mood) for mood in moods],
+        moods=[
+            MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+            for mood in moods
+        ],
         can_record_mood=_can_record_mood(user_id, db),
     )
 
@@ -42,7 +45,10 @@ def get_caregiver_dashboard_response(token: str, db: Session) -> DashboardOut:
         moods = CRUDMood(db).get_by({"user_id": user.id})
         return DashboardOut(
             user_id=user.id,
-            moods=[MoodIn(**mood) for mood in moods],
+            moods=[
+                MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+                for mood in moods
+            ],
             can_record_mood=_can_record_mood(user.id, db),
         )
 

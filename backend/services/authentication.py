@@ -74,8 +74,8 @@ def authenticate_admin(request: LogInRequest, db: Session) -> Token:
 
     except NoRecordFoundException:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password and confirm password must be the same",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password",
         )
     except InvalidUsernameOrPasswordException:
         raise HTTPException(
