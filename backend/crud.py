@@ -144,7 +144,7 @@ class CRUDMood:
         try:
             return (
                 self.session.query(Mood)
-                .filter_by(id=user_id)
+                .filter_by(user_id=user_id)
                 .order_by(Mood.created_at.desc())
                 .limit(limit)
                 .all()
