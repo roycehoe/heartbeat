@@ -42,11 +42,12 @@ class User(Base):
     coins = Column(Integer, nullable=False)
     tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
     consecutive_checkins_to_next_tree_display_state = Column(Integer, nullable=False)
+    can_claim_gifts = Column(Boolean, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
     admin_id = Column(Integer, ForeignKey("admin.id"))
     caregiver_id = Column(Integer, ForeignKey("caregiver.id"), nullable=True)
-    can_record_mood = Column(Boolean, nullable=True)
+    can_record_mood = Column(Boolean, nullable=False)
 
     admin = relationship(
         "Admin", back_populates="users"
