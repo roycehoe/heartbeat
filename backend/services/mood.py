@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from crud import CRUDMood, CRUDUser
-from enums import SelectedMood
+from enums import SelectedMood, TreeState
 from exceptions import DBException, NoRecordFoundException
 from models import Mood
 from schemas import MoodIn, MoodRequest
@@ -43,10 +43,57 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def _is_eligible_for_bonus_coins(user_id: int, db: Session) -> bool: ...
+def _get_next_tree_state(tree_state: TreeState) -> TreeState:
+    if tree_state == TreeState.SEEDLING:
+        return TreeState.TEEN_TREE
+    if tree_state == TreeState.TEEN_TREE:
+        return TreeState.ADULT_TREE
+    if tree_state == TreeState.ADULT_TREE:
+        return TreeState.ADULT_TREE_WITH_FLOWERS
+    return TreeState.SEEDLING
 
 
-# user_moods = CRUDMood(db).get_latest(user_id, 30)
+def _get_next_consecutive_checkins_to_next_tree_state(consecutive_counter: int) -> int:
+    if consecutive_counter != 1:
+        return consecutive_counter - 1
+    return 5
+
+
+def _should_move_tree_to_next_tree_state(consecutive_counter: int) -> bool:
+    return consecutive_counter == 1
+
+
+def _update_user(user_id: int, db: Session) -> None:
+    try:
+        CRUDUser(db).update(user_id, "can_record_mood", False)
+
+        user = CRUDUser(db).get(user_id)
+        CRUDUser(db).update(
+            user_id, "coins", user.coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED
+        )
+
+        if _should_move_tree_to_next_tree_state(
+            user.consecutive_checkins_to_next_tree_state
+        ):
+            CRUDUser(db).update(
+                user_id, "tree_state", _get_next_tree_state(user.tree_state)
+            )
+
+        CRUDUser(db).update(
+            user_id,
+            "consecutive_checkins_to_next_tree_state",
+            _get_next_consecutive_checkins_to_next_tree_state(
+                user.consecutive_checkins_to_next_tree_state
+            ),
+        )
+
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No user mood record found",
+        )
+    except DBException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
 def get_create_user_mood_response(
@@ -67,12 +114,7 @@ def get_create_user_mood_response(
             created_at=mood_in_model.created_at,
         )
         CRUDMood(db).create(db_mood_model)
-        CRUDUser(db).update(user_id, "can_record_mood", False)
-
-        user_coins = CRUDUser(db).get(user_id).coins
-        CRUDUser(db).update(
-            user_id, "coins", user_coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED
-        )
+        _update_user(user_id, db)
 
         if _should_alert_caregiver(user_id, db):
             print("ALERT CAREGIVER!!!!!")  # TODO: Implement caregiver alert here
