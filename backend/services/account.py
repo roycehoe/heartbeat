@@ -91,6 +91,7 @@ def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
         db_user_model = User(
             email=user_in_model.email,
             password=hash_password(user_in_model.password),
+            coins=0,
             admin_id=user_in_model.admin_id,
             caregiver_id=user_in_model.caregiver_id,
             created_at=user_in_model.created_at,

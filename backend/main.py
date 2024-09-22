@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import Depends, FastAPI, Header, status
 from sqlalchemy.orm import Session
 
-from crud import CRUDMood, CRUDUser
+from crud import CRUDAdmin, CRUDMood, CRUDUser
 from database import Base, engine, get_db
 from models import Admin, Mood, User
 from schemas import (
@@ -50,11 +50,11 @@ def populate_db(db: Session):
 
     user_data = generate_user_data()
     for data in user_data:
-        CRUDMood(db).create(User(**data))
+        CRUDUser(db).create(User(**data))
 
     admin_data = generate_admin_data()
     for data in admin_data:
-        CRUDMood(db).create(Admin(**data))
+        CRUDAdmin(db).create(Admin(**data))
 
 
 @app.on_event("startup")

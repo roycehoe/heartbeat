@@ -23,6 +23,7 @@ class DashboardOut(BaseModel):
     user_id: int
     moods: list[MoodIn]
     can_record_mood: bool
+    coins: int
 
 
 class LogInRequest(BaseModel):

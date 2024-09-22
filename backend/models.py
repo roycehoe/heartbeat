@@ -38,6 +38,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False, comment="User's email; doubles as username")
     password = Column(String, nullable=False)
+    coins = Column(Integer, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
     admin_id = Column(Integer, ForeignKey("admin.id"))
