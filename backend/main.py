@@ -121,10 +121,10 @@ def user_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
 
 
 @app.post("/user", status_code=status.HTTP_201_CREATED)
-def send_mood(
+async def send_mood(
     request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
 ):
-    return get_create_user_mood_response(request, token, db)
+    return await get_create_user_mood_response(request, token, db)
 
 
 @app.post("/user/claim_gift", status_code=status.HTTP_201_CREATED)

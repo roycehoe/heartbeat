@@ -118,7 +118,7 @@ def _update_user(user_id: int, db: Session) -> None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def get_create_user_mood_response(
+async def get_create_user_mood_response(
     request: MoodRequest, token: str, db: Session
 ) -> None:
     try:
@@ -140,7 +140,7 @@ def get_create_user_mood_response(
 
         if _should_alert_caregiver(user_id, db):
             user = CRUDUser(db).get(user_id)
-            send_sad_user_notification_message(user.email, 5)
+            await send_sad_user_notification_message(user.email, 5)
 
     except NoRecordFoundException:
         raise HTTPException(
