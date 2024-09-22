@@ -94,7 +94,7 @@ def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
             password=hash_password(user_in_model.password),
             coins=0,
             tree_display_state=TreeDisplayState.SEEDLING,
-            consecutive_checkins_to_next_tree_display_state=0,
+            consecutive_checkins=0,
             can_claim_gifts=False,
             admin_id=user_in_model.admin_id,
             caregiver_id=user_in_model.caregiver_id,

@@ -1,11 +1,7 @@
-import pytz
-from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import Depends, FastAPI, Header, status
 from sqlalchemy.orm import Session
 
-from crud import CRUDAdmin, CRUDMood, CRUDUser
 from database import Base, engine, get_db
-from models import Admin, Mood, User
 from schemas import (
     AdminCreateRequest,
     CaregiverCreateRequest,
@@ -15,7 +11,7 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from scripts import generate_admin_data, generate_mood_data, generate_user_data
+from scripts import get_scheduler, populate_db
 from services.account import (
     get_create_admin_response,
     get_create_caregiver_response,
@@ -38,29 +34,10 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-def get_scheduler(db: Session):
-    scheduler = BackgroundScheduler(timezone=pytz.timezone("Asia/Singapore"))
-    scheduler.add_job(CRUDUser(db).reset_all_can_record_mood, "cron", hour=0, minute=0)
-    return scheduler
-
-
-def populate_db(db: Session):
-    mood_data = generate_mood_data()
-    for data in mood_data:
-        CRUDMood(db).create(Mood(**data))
-
-    user_data = generate_user_data()
-    for data in user_data:
-        CRUDUser(db).create(User(**data))
-
-    admin_data = generate_admin_data()
-    for data in admin_data:
-        CRUDAdmin(db).create(Admin(**data))
-
-
 @app.on_event("startup")
 def startup_event():
     db_session = next(get_db())
+
     populate_db(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()

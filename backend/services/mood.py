@@ -56,7 +56,7 @@ def _get_next_tree_display_state(
     return TreeDisplayState.SEEDLING
 
 
-def _get_next_consecutive_checkins_to_next_tree_display_state(
+def _get_next_consecutive_checkins(
     consecutive_counter: int,
 ) -> int:
     if consecutive_counter != 1:
@@ -65,7 +65,7 @@ def _get_next_consecutive_checkins_to_next_tree_display_state(
 
 
 def _should_move_tree_to_next_tree_display_state(consecutive_counter: int) -> bool:
-    return consecutive_counter == 1
+    return consecutive_counter % 5 == 0
 
 
 def _should_automatically_disburse_gift(
@@ -86,10 +86,14 @@ def _update_user(user_id: int, db: Session) -> None:
         CRUDUser(db).update(
             user_id, "coins", user.coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED
         )
+        CRUDUser(db).update(
+            user_id,
+            "consecutive_checkins",
+            user.consecutive_checkins + 1,
+        )
 
-        if _should_move_tree_to_next_tree_display_state(
-            user.consecutive_checkins_to_next_tree_display_state
-        ):
+        user = CRUDUser(db).get(user_id)
+        if _should_move_tree_to_next_tree_display_state(user.consecutive_checkins):
             next_tree_display_state = _get_next_tree_display_state(
                 user.tree_display_state
             )
@@ -101,21 +105,8 @@ def _update_user(user_id: int, db: Session) -> None:
                     "coins",
                     user.coins + DEFAULT_BONUS_COINS,
                 )
-                CRUDUser(db).update(
-                    user_id,
-                    "coins",
-                    user.coins + DEFAULT_BONUS_COINS,
-                )
 
             CRUDUser(db).update(user_id, "tree_display_state", next_tree_display_state)
-
-        CRUDUser(db).update(
-            user_id,
-            "consecutive_checkins_to_next_tree_display_state",
-            _get_next_consecutive_checkins_to_next_tree_display_state(
-                user.consecutive_checkins_to_next_tree_display_state
-            ),
-        )
 
     except NoRecordFoundException:
         raise HTTPException(

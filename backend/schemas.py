@@ -26,7 +26,7 @@ class DashboardOut(BaseModel):
     coins: int
     tree_display_state: TreeDisplayState
     can_claim_gifts: bool
-    consecutive_checkins_to_next_tree_display_state: int
+    consecutive_checkins: int
 
 
 class LogInRequest(BaseModel):

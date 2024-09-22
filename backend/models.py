@@ -41,7 +41,7 @@ class User(Base):
     password = Column(String, nullable=False)
     coins = Column(Integer, nullable=False)
     tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
-    consecutive_checkins_to_next_tree_display_state = Column(Integer, nullable=False)
+    consecutive_checkins = Column(Integer, nullable=False)
     can_claim_gifts = Column(Boolean, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False)

@@ -33,7 +33,7 @@ def get_claim_gift_response(token: str, db: Session) -> DashboardOut:
             ],
             coins=updated_user.coins,
             tree_display_state=updated_user.tree_display_state,
-            consecutive_checkins_to_next_tree_display_state=updated_user.consecutive_checkins_to_next_tree_display_state,
+            consecutive_checkins=updated_user.consecutive_checkins,
             can_claim_gifts=updated_user.can_claim_gifts,
             can_record_mood=updated_user.can_record_mood,
         )

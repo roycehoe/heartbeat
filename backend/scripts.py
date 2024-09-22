@@ -1,7 +1,13 @@
 from datetime import datetime, timedelta
 from random import choice, sample
 
+import pytz
+from apscheduler.schedulers.background import BackgroundScheduler
+from sqlalchemy.orm import Session
+
+from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import TreeDisplayState
+from models import Admin, Mood, User
 from utils.hashing import hash_password
 
 
@@ -75,7 +81,7 @@ def _generate_mood_data_non_compliant_user(
     return moods
 
 
-def generate_mood_data() -> list[dict]:
+def _generate_mood_data() -> list[dict]:
     return [
         *_generate_mood_data_compliant_user(),
         *_generate_mood_data_4_consecutive_sad(),
@@ -83,7 +89,7 @@ def generate_mood_data() -> list[dict]:
     ]
 
 
-def generate_user_data(created_at_days_offset=24) -> list[dict]:
+def _generate_user_data(created_at_days_offset=24) -> list[dict]:
     created_at = datetime.today() - timedelta(days=created_at_days_offset)
     return [
         {
@@ -92,8 +98,8 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
             "password": hash_password("user1@heartbeatmail.com"),
             "coins": 0,
             "tree_display_state": TreeDisplayState.SEEDLING,
-            "consecutive_checkins_to_next_tree_display_state": 5,
-            "can_claim_gifts": False,
+            "consecutive_checkins": 5,
+            "can_claim_gifts": True,
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
@@ -104,7 +110,7 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
             "password": hash_password("user2@heartbeatmail.com"),
             "coins": 0,
             "tree_display_state": TreeDisplayState.SEEDLING,
-            "consecutive_checkins_to_next_tree_display_state": 5,
+            "consecutive_checkins": 5,
             "can_claim_gifts": False,
             "created_at": created_at,
             "admin_id": 1,
@@ -116,7 +122,7 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
             "password": hash_password("user3@heartbeatmail.com"),
             "coins": 0,
             "tree_display_state": TreeDisplayState.SEEDLING,
-            "consecutive_checkins_to_next_tree_display_state": 5,
+            "consecutive_checkins": 5,
             "can_claim_gifts": False,
             "created_at": created_at,
             "admin_id": 1,
@@ -125,7 +131,7 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
     ]
 
 
-def generate_admin_data(created_at_days_offset=24) -> list[dict]:
+def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
     created_at = datetime.today() - timedelta(days=created_at_days_offset)
     return [
         {
@@ -135,3 +141,39 @@ def generate_admin_data(created_at_days_offset=24) -> list[dict]:
             "created_at": created_at,
         }
     ]
+
+
+def populate_db(db: Session):
+    mood_data = _generate_mood_data()
+    for data in mood_data:
+        CRUDMood(db).create(Mood(**data))
+
+    user_data = _generate_user_data()
+    for data in user_data:
+        CRUDUser(db).create(User(**data))
+
+    admin_data = _generate_admin_data()
+    for data in admin_data:
+        CRUDAdmin(db).create(Admin(**data))
+
+
+def _reset_all_user_can_record_mood_state(db: Session) -> None:
+    all_users = CRUDUser(db).get_by_all({})
+    for user in all_users:
+        CRUDUser(db).update(user.id, "can_record_mood", True)
+
+
+def _update_non_compliant_users_states(db: Session) -> None:
+    non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
+    for user in non_compliant_users:
+        CRUDUser(db).update(user.id, "tree_display_state", TreeDisplayState.SEEDLING)
+        CRUDUser(db).update(user.id, "consecutive_checkins", 0)
+
+
+def get_scheduler(db: Session):
+    scheduler = BackgroundScheduler(timezone=pytz.timezone("Asia/Singapore"))
+    scheduler.add_job(
+        _reset_all_user_can_record_mood_state(db), "cron", hour=0, minute=0
+    )
+    scheduler.add_job(_update_non_compliant_users_states(db), "cron", hour=0, minute=0)
+    return scheduler
