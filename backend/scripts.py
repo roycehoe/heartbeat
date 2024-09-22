@@ -190,5 +190,5 @@ def _run_end_of_day_cron_job(db: Session) -> None:
 
 def get_scheduler(db: Session):
     scheduler = BackgroundScheduler(timezone=pytz.timezone("Asia/Singapore"))
-    scheduler.add_job(_run_end_of_day_cron_job(db), "cron", hour=0, minute=0)
+    scheduler.add_job(lambda: _run_end_of_day_cron_job(db), "cron", hour=0, minute=0)
     return scheduler
