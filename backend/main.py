@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDMood, CRUDUser
 from database import Base, engine, get_db
-from models import Mood
+from models import Mood, User
 from schemas import (
     AdminCreateRequest,
     CaregiverCreateRequest,
@@ -15,7 +15,7 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from scripts import generate_mood_data
+from scripts import generate_mood_data, generate_user_data
 from services.account import (
     get_create_admin_response,
     get_create_caregiver_response,
@@ -44,9 +44,13 @@ def get_scheduler(db: Session):
 
 
 def load_dummy_mood_data(db: Session):
-    compliant_user = generate_mood_data()
-    for mood_data in compliant_user:
-        CRUDMood(db).create(Mood(**mood_data))
+    mood_data = generate_mood_data()
+    for data in mood_data:
+        CRUDMood(db).create(Mood(**data))
+
+    user_data = generate_user_data()
+    for data in user_data:
+        CRUDMood(db).create(User(**data))
 
 
 @app.on_event("startup")

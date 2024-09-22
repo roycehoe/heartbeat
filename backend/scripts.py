@@ -78,3 +78,35 @@ def generate_mood_data() -> list[dict]:
         *_generate_mood_data_4_consecutive_sad(),
         *_generate_mood_data_non_compliant_user(),
     ]
+
+
+def generate_user_data(created_date_days_offset=24) -> list[dict]:
+    default_created_at_date = datetime.today() - timedelta(
+        days=created_date_days_offset
+    )
+    return [
+        {
+            "id": 1,
+            "email": "user1@heartbeatmail.com",
+            "password": "user1@heartbeatmail.com",
+            "created_at": default_created_at_date,
+            "admin_id": 1,
+            "can_record_mood": True,
+        },
+        {
+            "id": 2,
+            "email": "user2@heartbeatmail.com",
+            "password": " user2@heartbeatmail.com",
+            "created_at": default_created_at_date,
+            "admin_id": 2,
+            "can_record_mood": True,
+        },
+        {
+            "id": 3,
+            "email": "user3@heartbeatmail.com",
+            "password": "user3@heartbeatmail.com",
+            "created_at": default_created_at_date,
+            "admin_id": 3,
+            "can_record_mood": True,
+        },
+    ]
