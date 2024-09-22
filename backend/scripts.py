@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from random import choice, sample
 
+from enums import TreeState
 from utils.hashing import hash_password
 
 
@@ -90,6 +91,8 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user1@heartbeatmail.com",
             "password": hash_password("user1@heartbeatmail.com"),
             "coins": 0,
+            "tree_state": TreeState.SEEDLING,
+            "consecutive_checkins_to_next_tree_state": 5,
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
@@ -99,6 +102,8 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user2@heartbeatmail.com",
             "password": hash_password("user2@heartbeatmail.com"),
             "coins": 0,
+            "tree_state": TreeState.SEEDLING,
+            "consecutive_checkins_to_next_tree_state": 5,
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
@@ -108,6 +113,8 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user3@heartbeatmail.com",
             "password": hash_password("user3@heartbeatmail.com"),
             "coins": 0,
+            "tree_state": TreeState.SEEDLING,
+            "consecutive_checkins_to_next_tree_state": 5,
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,

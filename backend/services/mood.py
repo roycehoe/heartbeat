@@ -9,6 +9,7 @@ from schemas import MoodIn, MoodRequest
 from utils.token import get_token_data
 
 SHOULD_ALERT_CAREGIVER_CRITERION = 5
+DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED = 10
 
 
 def _should_alert_caregiver(user_id: int, db: Session) -> bool:
@@ -42,6 +43,12 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
+def _is_eligible_for_bonus_coins(user_id: int, db: Session) -> bool: ...
+
+
+# user_moods = CRUDMood(db).get_latest(user_id, 30)
+
+
 def get_create_user_mood_response(
     request: MoodRequest, token: str, db: Session
 ) -> None:
@@ -61,6 +68,11 @@ def get_create_user_mood_response(
         )
         CRUDMood(db).create(db_mood_model)
         CRUDUser(db).update(user_id, "can_record_mood", False)
+
+        user_coins = CRUDUser(db).get(user_id).coins
+        CRUDUser(db).update(
+            user_id, "coins", user_coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED
+        )
 
         if _should_alert_caregiver(user_id, db):
             print("ALERT CAREGIVER!!!!!")  # TODO: Implement caregiver alert here
