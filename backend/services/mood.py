@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from crud import CRUDMood, CRUDUser
 from enums import SelectedMood, TreeDisplayState
 from exceptions import DBException, NoRecordFoundException
+from gateway import send_sad_user_notification_message
 from models import Mood
 from schemas import MoodIn, MoodRequest
 from utils.token import get_token_data
@@ -138,7 +139,8 @@ def get_create_user_mood_response(
         _update_user(user_id, db)
 
         if _should_alert_caregiver(user_id, db):
-            print("ALERT CAREGIVER!!!!!")  # TODO: Implement caregiver alert here
+            user = CRUDUser(db).get(user_id)
+            send_sad_user_notification_message(user.email, 5)
 
     except NoRecordFoundException:
         raise HTTPException(

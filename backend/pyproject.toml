@@ -18,6 +18,8 @@ pyjwt = "^2.9.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 apscheduler = "^3.10.4"
 pytz = "^2024.2"
+python-telegram-bot = "^21.6"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
