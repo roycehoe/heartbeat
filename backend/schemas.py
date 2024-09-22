@@ -49,6 +49,7 @@ class CaregiverCreateRequest(AccountCreateRequestBase):
 
 
 class UserCreateRequest(AccountCreateRequestBase):
+    name: str
     admin_id: int
     caregiver_id: int
 

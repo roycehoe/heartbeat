@@ -39,6 +39,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False, comment="User's email; doubles as username")
     password = Column(String, nullable=False)
+    name = Column(String, nullable=False)
     coins = Column(Integer, nullable=False)
     tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
     consecutive_checkins = Column(Integer, nullable=False)
