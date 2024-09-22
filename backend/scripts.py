@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from random import choice, sample
 
+from utils.hashing import hash_password
+
 
 def _generate_mood_data_compliant_user(user_id=1, end_date=datetime.now(), num_days=24):
     moods = []
@@ -86,7 +88,7 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
         {
             "id": 1,
             "email": "user1@heartbeatmail.com",
-            "password": "user1@heartbeatmail.com",
+            "password": hash_password("user1@heartbeatmail.com"),
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
@@ -94,7 +96,7 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
         {
             "id": 2,
             "email": "user2@heartbeatmail.com",
-            "password": " user2@heartbeatmail.com",
+            "password": hash_password("user2@heartbeatmail.com"),
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
@@ -102,7 +104,7 @@ def generate_user_data(created_at_days_offset=24) -> list[dict]:
         {
             "id": 3,
             "email": "user3@heartbeatmail.com",
-            "password": "user3@heartbeatmail.com",
+            "password": hash_password("user3@heartbeatmail.com"),
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
@@ -116,7 +118,7 @@ def generate_admin_data(created_at_days_offset=24) -> list[dict]:
         {
             "id": 1,
             "email": "admin@heartbeatmail.com",
-            "password": "admin@heartbeatmail.com",
+            "password": hash_password("admin@heartbeatmail.com"),
             "created_at": created_at,
         }
     ]

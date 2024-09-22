@@ -43,7 +43,7 @@ def get_scheduler(db: Session):
     return scheduler
 
 
-def load_dummy_mood_data(db: Session):
+def populate_db(db: Session):
     mood_data = generate_mood_data()
     for data in mood_data:
         CRUDMood(db).create(Mood(**data))
@@ -60,7 +60,7 @@ def load_dummy_mood_data(db: Session):
 @app.on_event("startup")
 def startup_event():
     db_session = next(get_db())
-    load_dummy_mood_data(db_session)
+    populate_db(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()
 
