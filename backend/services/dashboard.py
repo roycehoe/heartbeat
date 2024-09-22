@@ -30,8 +30,8 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
             for mood in moods
         ],
         coins=user.coins,
-        tree_state=user.tree_state,
-        consecutive_checkins_to_next_tree_state=user.consecutive_checkins_to_next_tree_state,
+        tree_display_state=user.tree_display_state,
+        consecutive_checkins_to_next_tree_display_state=user.consecutive_checkins_to_next_tree_display_state,
         can_record_mood=_can_record_mood(user_id, db),
     )
 
@@ -53,8 +53,8 @@ def get_caregiver_dashboard_response(token: str, db: Session) -> DashboardOut:
                 MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
                 for mood in moods
             ],
-            tree_state=user.tree_state,
-            consecutive_checkins_to_next_tree_state=user.consecutive_checkins_to_next_tree_state,
+            tree_display_state=user.tree_display_state,
+            consecutive_checkins_to_next_tree_display_state=user.consecutive_checkins_to_next_tree_display_state,
             coins=user.coins,
             can_record_mood=_can_record_mood(user.id, db),
         )
@@ -78,8 +78,8 @@ def get_admin_dashboard_response(token: str, db: Session) -> list[DashboardOut]:
                 DashboardOut(
                     user_id=user.id,
                     moods=[MoodIn(**mood) for mood in moods],
-                    tree_state=user.tree_state,
-                    consecutive_checkins_to_next_tree_state=user.consecutive_checkins_to_next_tree_state,
+                    tree_display_state=user.tree_display_state,
+                    consecutive_checkins_to_next_tree_display_state=user.consecutive_checkins_to_next_tree_display_state,
                     coins=user.coins,
                     can_record_mood=_can_record_mood(user.id, db),
                 )

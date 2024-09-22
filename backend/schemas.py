@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from enums import SelectedMood, TreeState
+from enums import SelectedMood, TreeDisplayState
 
 
 class MoodRequest(BaseModel):
@@ -24,8 +24,8 @@ class DashboardOut(BaseModel):
     moods: list[MoodIn]
     can_record_mood: bool
     coins: int
-    tree_state: TreeState
-    consecutive_checkins_to_next_tree_state: int
+    tree_display_state: TreeDisplayState
+    consecutive_checkins_to_next_tree_display_state: int
 
 
 class LogInRequest(BaseModel):

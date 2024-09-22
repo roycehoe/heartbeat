@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from crud import CRUDMood, CRUDUser
-from enums import SelectedMood, TreeState
+from enums import SelectedMood, TreeDisplayState
 from exceptions import DBException, NoRecordFoundException
 from models import Mood
 from schemas import MoodIn, MoodRequest
@@ -43,23 +43,27 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def _get_next_tree_state(tree_state: TreeState) -> TreeState:
-    if tree_state == TreeState.SEEDLING:
-        return TreeState.TEEN_TREE
-    if tree_state == TreeState.TEEN_TREE:
-        return TreeState.ADULT_TREE
-    if tree_state == TreeState.ADULT_TREE:
-        return TreeState.ADULT_TREE_WITH_FLOWERS
-    return TreeState.SEEDLING
+def _get_next_tree_display_state(
+    tree_display_state: TreeDisplayState,
+) -> TreeDisplayState:
+    if tree_display_state == TreeDisplayState.SEEDLING:
+        return TreeDisplayState.TEEN_TREE
+    if tree_display_state == TreeDisplayState.TEEN_TREE:
+        return TreeDisplayState.ADULT_TREE
+    if tree_display_state == TreeDisplayState.ADULT_TREE:
+        return TreeDisplayState.ADULT_TREE_WITH_FLOWERS
+    return TreeDisplayState.SEEDLING
 
 
-def _get_next_consecutive_checkins_to_next_tree_state(consecutive_counter: int) -> int:
+def _get_next_consecutive_checkins_to_next_tree_display_state(
+    consecutive_counter: int,
+) -> int:
     if consecutive_counter != 1:
         return consecutive_counter - 1
     return 5
 
 
-def _should_move_tree_to_next_tree_state(consecutive_counter: int) -> bool:
+def _should_move_tree_to_next_tree_display_state(consecutive_counter: int) -> bool:
     return consecutive_counter == 1
 
 
@@ -72,18 +76,20 @@ def _update_user(user_id: int, db: Session) -> None:
             user_id, "coins", user.coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED
         )
 
-        if _should_move_tree_to_next_tree_state(
-            user.consecutive_checkins_to_next_tree_state
+        if _should_move_tree_to_next_tree_display_state(
+            user.consecutive_checkins_to_next_tree_display_state
         ):
             CRUDUser(db).update(
-                user_id, "tree_state", _get_next_tree_state(user.tree_state)
+                user_id,
+                "tree_display_state",
+                _get_next_tree_display_state(user.tree_display_state),
             )
 
         CRUDUser(db).update(
             user_id,
-            "consecutive_checkins_to_next_tree_state",
-            _get_next_consecutive_checkins_to_next_tree_state(
-                user.consecutive_checkins_to_next_tree_state
+            "consecutive_checkins_to_next_tree_display_state",
+            _get_next_consecutive_checkins_to_next_tree_display_state(
+                user.consecutive_checkins_to_next_tree_display_state
             ),
         )
 

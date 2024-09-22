@@ -3,7 +3,7 @@ from sqlalchemy import TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer, St
 from sqlalchemy.orm import relationship
 
 from database import Base
-from enums import SelectedMood, TreeState
+from enums import SelectedMood, TreeDisplayState
 
 
 class Caregiver(Base):
@@ -40,8 +40,8 @@ class User(Base):
     email = Column(String, nullable=False, comment="User's email; doubles as username")
     password = Column(String, nullable=False)
     coins = Column(Integer, nullable=False)
-    tree_state = Column(Enum(TreeState), nullable=False)
-    consecutive_checkins_to_next_tree_state = Column(Integer, nullable=False)
+    tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
+    consecutive_checkins_to_next_tree_display_state = Column(Integer, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
     admin_id = Column(Integer, ForeignKey("admin.id"))

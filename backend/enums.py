@@ -7,7 +7,7 @@ class SelectedMood(str, Enum):
     SAD = "sad"
 
 
-class TreeState(Enum):
+class TreeDisplayState(Enum):
     SEEDLING = 1
     TEEN_TREE = 2
     ADULT_TREE = 3

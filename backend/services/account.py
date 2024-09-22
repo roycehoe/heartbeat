@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDCaregiver, CRUDUser
-from enums import TreeState
+from enums import TreeDisplayState
 from exceptions import (
     DBCreateAccountException,
     DBCreateAccountWithEmailAlreadyExistsException,
@@ -93,8 +93,8 @@ def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
             email=user_in_model.email,
             password=hash_password(user_in_model.password),
             coins=0,
-            tree_state=TreeState.SEEDLING,
-            consecutive_checkins_to_next_tree_state=0,
+            tree_display_state=TreeDisplayState.SEEDLING,
+            consecutive_checkins_to_next_tree_display_state=0,
             admin_id=user_in_model.admin_id,
             caregiver_id=user_in_model.caregiver_id,
             created_at=user_in_model.created_at,
