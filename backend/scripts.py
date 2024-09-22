@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from random import choice, sample
 
 
-def generate_mood_data_compliant_user(user_id=1, end_date=datetime.now(), num_days=24):
+def _generate_mood_data_compliant_user(user_id=1, end_date=datetime.now(), num_days=24):
     moods = []
     mood_options = ["happy", "ok"]
 
@@ -21,7 +21,7 @@ def generate_mood_data_compliant_user(user_id=1, end_date=datetime.now(), num_da
     return moods
 
 
-def generate_mood_data_4_consecutive_sad(
+def _generate_mood_data_4_consecutive_sad(
     user_id=2, end_date=datetime.now(), num_days=24
 ):
     happy_or_ok_mood_options = ["happy", "ok"]  # First 20 days
@@ -47,7 +47,7 @@ def generate_mood_data_4_consecutive_sad(
     return moods
 
 
-def generate_mood_data_non_compliant_user(
+def _generate_mood_data_non_compliant_user(
     user_id=3, end_date=datetime.now(), num_days=24, non_compliant_day_count=5
 ):
     moods = []
@@ -70,3 +70,11 @@ def generate_mood_data_non_compliant_user(
         moods.append(mood_data)
 
     return moods
+
+
+def generate_mood_data() -> list[dict]:
+    return [
+        *_generate_mood_data_compliant_user(),
+        *_generate_mood_data_4_consecutive_sad(),
+        *_generate_mood_data_non_compliant_user(),
+    ]

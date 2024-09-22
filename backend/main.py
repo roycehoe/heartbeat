@@ -15,7 +15,7 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from scripts import generate_mood_data_compliant_user
+from scripts import generate_mood_data
 from services.account import (
     get_create_admin_response,
     get_create_caregiver_response,
@@ -44,7 +44,7 @@ def get_scheduler(db: Session):
 
 
 def load_dummy_mood_data(db: Session):
-    compliant_user = generate_mood_data_compliant_user()
+    compliant_user = generate_mood_data()
     for mood_data in compliant_user:
         CRUDMood(db).create(Mood(**mood_data))
 
