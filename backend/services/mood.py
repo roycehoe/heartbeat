@@ -10,6 +10,7 @@ from utils.token import get_token_data
 
 SHOULD_ALERT_CAREGIVER_CRITERION = 5
 DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED = 10
+DEFAULT_BONUS_COINS = 250
 
 
 def _should_alert_caregiver(user_id: int, db: Session) -> bool:
@@ -67,6 +68,16 @@ def _should_move_tree_to_next_tree_display_state(consecutive_counter: int) -> bo
     return consecutive_counter == 1
 
 
+def _should_automatically_disburse_gift(
+    previous_tree_display_state: TreeDisplayState,
+    current_tree_display_state: TreeDisplayState,
+) -> bool:
+    return (
+        previous_tree_display_state == TreeDisplayState.ADULT_TREE_WITH_FLOWERS
+        and current_tree_display_state == TreeDisplayState.SEEDLING
+    )
+
+
 def _update_user(user_id: int, db: Session) -> None:
     try:
         CRUDUser(db).update(user_id, "can_record_mood", False)
@@ -79,11 +90,19 @@ def _update_user(user_id: int, db: Session) -> None:
         if _should_move_tree_to_next_tree_display_state(
             user.consecutive_checkins_to_next_tree_display_state
         ):
-            CRUDUser(db).update(
-                user_id,
-                "tree_display_state",
-                _get_next_tree_display_state(user.tree_display_state),
+            next_tree_display_state = _get_next_tree_display_state(
+                user.tree_display_state
             )
+            if _should_automatically_disburse_gift(
+                user.tree_display_state, next_tree_display_state
+            ):
+                CRUDUser(db).update(
+                    user_id,
+                    "coins",
+                    user.coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED,
+                )
+
+            CRUDUser(db).update(user_id, "tree_display_state", next_tree_display_state)
 
         CRUDUser(db).update(
             user_id,
