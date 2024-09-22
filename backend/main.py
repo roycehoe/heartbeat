@@ -120,13 +120,15 @@ def user_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
     return get_user_dashboard_response(token, db)
 
 
-@app.post("/user", status_code=status.HTTP_201_CREATED)
+@app.post("/user", status_code=status.HTTP_201_CREATED, response_model=DashboardOut)
 async def send_mood(
     request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
 ):
     return await get_create_user_mood_response(request, token, db)
 
 
-@app.post("/user/claim_gift", status_code=status.HTTP_201_CREATED)
+@app.post(
+    "/user/claim_gift", status_code=status.HTTP_201_CREATED, response_model=DashboardOut
+)
 def claim_gift(token: str = Header(None), db: Session = Depends(get_db)):
     return get_claim_gift_response(token, db)

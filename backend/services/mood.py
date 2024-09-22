@@ -6,7 +6,7 @@ from enums import SelectedMood, TreeDisplayState
 from exceptions import DBException, NoRecordFoundException
 from gateway import send_sad_user_notification_message
 from models import Mood
-from schemas import MoodIn, MoodRequest
+from schemas import DashboardOut, MoodIn, MoodRequest
 from utils.token import get_token_data
 
 SHOULD_ALERT_CAREGIVER_CRITERION = 5
@@ -120,7 +120,7 @@ def _update_user(user_id: int, db: Session) -> None:
 
 async def get_create_user_mood_response(
     request: MoodRequest, token: str, db: Session
-) -> None:
+) -> DashboardOut:
     try:
         user_id = get_token_data(token, "user_id")
         if not _can_record_mood(user_id, db):
@@ -141,6 +141,21 @@ async def get_create_user_mood_response(
         if _should_alert_caregiver(user_id, db):
             user = CRUDUser(db).get(user_id)
             await send_sad_user_notification_message(user.email, 5)
+
+        updated_user = CRUDUser(db).get(user_id)
+        moods = CRUDMood(db).get_by({"user_id": user_id})
+        return DashboardOut(
+            user_id=user_id,
+            moods=[
+                MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+                for mood in moods
+            ],
+            coins=updated_user.coins,
+            tree_display_state=updated_user.tree_display_state,
+            consecutive_checkins=updated_user.consecutive_checkins,
+            can_claim_gifts=updated_user.can_claim_gifts,
+            can_record_mood=updated_user.can_record_mood,
+        )
 
     except NoRecordFoundException:
         raise HTTPException(
