@@ -44,6 +44,7 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
             ):
                 setattr(account, field, value)
                 self.session.commit()
+                self.session.refresh(account)
                 return account
             raise NoRecordFoundException
 

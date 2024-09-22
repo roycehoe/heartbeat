@@ -26,6 +26,7 @@ from services.authentication import (
     authenticate_caregiver,
     authenticate_user,
 )
+from services.claim_gift import get_claim_gift_response
 from services.dashboard import (
     get_admin_dashboard_response,
     get_caregiver_dashboard_response,
@@ -147,3 +148,8 @@ def send_mood(
     request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
 ):
     return get_create_user_mood_response(request, token, db)
+
+
+@app.post("/user/claim_gift", status_code=status.HTTP_201_CREATED)
+def claim_gift(token: str = Header(None), db: Session = Depends(get_db)):
+    return get_claim_gift_response(token, db)

@@ -99,7 +99,12 @@ def _update_user(user_id: int, db: Session) -> None:
                 CRUDUser(db).update(
                     user_id,
                     "coins",
-                    user.coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED,
+                    user.coins + DEFAULT_BONUS_COINS,
+                )
+                CRUDUser(db).update(
+                    user_id,
+                    "coins",
+                    user.coins + DEFAULT_BONUS_COINS,
                 )
 
             CRUDUser(db).update(user_id, "tree_display_state", next_tree_display_state)
