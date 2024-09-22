@@ -3,8 +3,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import Depends, FastAPI, Header, status
 from sqlalchemy.orm import Session
 
-from crud import CRUDUser
+from crud import CRUDMood, CRUDUser
 from database import Base, engine, get_db
+from models import Mood
 from schemas import (
     AdminCreateRequest,
     CaregiverCreateRequest,
@@ -14,22 +15,23 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from services.authentication import (
-    authenticate_admin,
-    authenticate_caregiver,
-    authenticate_user,
-)
+from scripts import generate_mood_data_compliant_user
 from services.account import (
     get_create_admin_response,
     get_create_caregiver_response,
     get_create_user_response,
 )
-from services.mood import get_create_user_mood_response
+from services.authentication import (
+    authenticate_admin,
+    authenticate_caregiver,
+    authenticate_user,
+)
 from services.dashboard import (
     get_admin_dashboard_response,
     get_caregiver_dashboard_response,
     get_user_dashboard_response,
 )
+from services.mood import get_create_user_mood_response
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -41,9 +43,16 @@ def get_scheduler(db: Session):
     return scheduler
 
 
+def load_dummy_mood_data(db: Session):
+    compliant_user = generate_mood_data_compliant_user()
+    for mood_data in compliant_user:
+        CRUDMood(db).create(Mood(**mood_data))
+
+
 @app.on_event("startup")
 def startup_event():
     db_session = next(get_db())
+    load_dummy_mood_data(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()
 
