@@ -80,16 +80,14 @@ def generate_mood_data() -> list[dict]:
     ]
 
 
-def generate_user_data(created_date_days_offset=24) -> list[dict]:
-    default_created_at_date = datetime.today() - timedelta(
-        days=created_date_days_offset
-    )
+def generate_user_data(created_at_days_offset=24) -> list[dict]:
+    created_at = datetime.today() - timedelta(days=created_at_days_offset)
     return [
         {
             "id": 1,
             "email": "user1@heartbeatmail.com",
             "password": "user1@heartbeatmail.com",
-            "created_at": default_created_at_date,
+            "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
         },
@@ -97,16 +95,28 @@ def generate_user_data(created_date_days_offset=24) -> list[dict]:
             "id": 2,
             "email": "user2@heartbeatmail.com",
             "password": " user2@heartbeatmail.com",
-            "created_at": default_created_at_date,
-            "admin_id": 2,
+            "created_at": created_at,
+            "admin_id": 1,
             "can_record_mood": True,
         },
         {
             "id": 3,
             "email": "user3@heartbeatmail.com",
             "password": "user3@heartbeatmail.com",
-            "created_at": default_created_at_date,
-            "admin_id": 3,
+            "created_at": created_at,
+            "admin_id": 1,
             "can_record_mood": True,
         },
+    ]
+
+
+def generate_admin_data(created_at_days_offset=24) -> list[dict]:
+    created_at = datetime.today() - timedelta(days=created_at_days_offset)
+    return [
+        {
+            "id": 1,
+            "email": "admin@heartbeatmail.com",
+            "password": "admin@heartbeatmail.com",
+            "created_at": created_at,
+        }
     ]
