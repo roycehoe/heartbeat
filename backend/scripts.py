@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import TreeDisplayState
+from gateway import send_non_compliant_user_notification_message
 from models import Admin, Mood, User
 from utils.hashing import hash_password
 
@@ -170,10 +171,21 @@ def _update_non_compliant_users_states(db: Session) -> None:
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
 
 
+def _notify_admin_of_non_compliant_users(db: Session) -> None:
+    non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
+    for user in non_compliant_users:
+        send_non_compliant_user_notification_message(
+            user.email, datetime.today() - timedelta(days=1)
+        )
+
+
+def _run_end_of_day_cron_job(db: Session) -> None:
+    _notify_admin_of_non_compliant_users(db)
+    _update_non_compliant_users_states(db)
+    _reset_all_user_can_record_mood_state(db)
+
+
 def get_scheduler(db: Session):
     scheduler = BackgroundScheduler(timezone=pytz.timezone("Asia/Singapore"))
-    scheduler.add_job(
-        _reset_all_user_can_record_mood_state(db), "cron", hour=0, minute=0
-    )
-    scheduler.add_job(_update_non_compliant_users_states(db), "cron", hour=0, minute=0)
+    scheduler.add_job(_run_end_of_day_cron_job(db), "cron", hour=0, minute=0)
     return scheduler
