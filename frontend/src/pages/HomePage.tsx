@@ -5,9 +5,7 @@ import MoodBtn from "../components/MoodBtn";
 
 function HomePage() {
   const handleButtonClick = async () => {
-    const result = await getUserDashboardResponse(
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MjcyNjU2MTR9.-WWNynebPYcoQRmF2Y5tB8koNRtiFGEWvn4-teWXDFo"
-    );
+    const result = await getUserDashboardResponse();
     console.log(result);
   };
 

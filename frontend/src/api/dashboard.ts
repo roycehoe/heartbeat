@@ -34,36 +34,19 @@ export interface DashboardResponse {
   consecutive_checkins: number;
 }
 
-export async function getUserDashboardResponse(
-  token: string
-): Promise<DashboardResponse> {
-  const response = await httpClient.get("/user/dashboard", {
-    headers: {
-      token: `${token}`,
-    },
-  });
+export async function getUserDashboardResponse(): Promise<DashboardResponse> {
+  const response = await httpClient.get("/user/dashboard");
   return response.data;
 }
 
 export async function getUserMoodResponse(
-  token: string,
   moodRequest: MoodRequest
 ): Promise<DashboardResponse> {
-  const response = await httpClient.post("/user", moodRequest, {
-    headers: {
-      token: `${token}`,
-    },
-  });
+  const response = await httpClient.post("/user", moodRequest);
   return response.data;
 }
 
-export async function getUserClaimGiftResponse(
-  token: string
-): Promise<DashboardResponse> {
-  const response = await httpClient.get("/user/claim_gift", {
-    headers: {
-      token: `${token}`,
-    },
-  });
+export async function getUserClaimGiftResponse(): Promise<DashboardResponse> {
+  const response = await httpClient.get("/user/claim_gift");
   return response.data;
 }

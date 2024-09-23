@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 const BASE_URL = "http://localhost:8000";
 
@@ -8,4 +8,9 @@ export const httpClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+});
+
+httpClient.interceptors.request.use(function (config: AxiosRequestConfig) {
+  config.headers = { token: localStorage.getItem("token") || "" };
+  return config;
 });

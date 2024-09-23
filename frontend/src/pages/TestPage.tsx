@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 import { MOCK_DASHBOARD_API_RESPONSE } from "../api/constants";
 import {
   DashboardResponse,
-  getUserDashboardResponse,
   getUserMoodResponse,
   MoodValue,
 } from "../api/dashboard";
