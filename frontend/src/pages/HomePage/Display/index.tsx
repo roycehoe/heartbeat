@@ -1,6 +1,8 @@
 import { Box } from "@chakra-ui/react";
+import { DashboardResponse } from "../../../api/dashboard";
+import Coins from "../../../components/Coins";
 
-function Display() {
+function Display(props: { dashboardData: DashboardResponse }) {
   return (
     <Box display="flex" bg="green.400" className="dashboard--top" height="100%">
       <Box
@@ -11,9 +13,9 @@ function Display() {
         gap="42px"
       >
         <Box bg="skin.2base" className="dashboard--top--left">
-          Coins
+          <Coins coinCount={props.dashboardData.coins}></Coins>
         </Box>
-        <Box bg="skin.2base" className="dashboard--top--left" width="100%">
+        <Box bg="skin.2base" className="dashboard--top--left">
           <p>Tree!</p>
         </Box>
       </Box>
