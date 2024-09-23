@@ -1,116 +1,128 @@
 import {
   Box,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
-import { Button, BxLoader } from "@opengovsg/design-system-react";
-import { useEffect, useState } from "react";
-import { MOCK_DASHBOARD_API_RESPONSE } from "../api/constants";
-import {
-  DashboardResponse,
-  getUserMoodResponse,
-  MoodValue,
-} from "../api/dashboard";
-import Brand from "../components/Brand";
-import CalendarDateRange from "../components/CalendarDateRange";
-import Coins from "../components/Coins";
-import MoodBtn from "../components/MoodBtn";
-import Tree from "../components/Tree";
 
-const MoodBtnsProps = [
+const DATA = [
   {
-    icon: <img src="/src/assets/logo-heartbeat.svg"></img>,
-    value: MoodValue.HAPPY,
+    id: "1",
+    name: "Google Pixel 6 Pro",
+    data: {
+      color: "Cloudy White",
+      capacity: "128 GB",
+    },
   },
-  { icon: <img src="/src/assets/logo-bfg.svg"></img>, value: MoodValue.HAPPY },
-  { icon: <img src="/src/assets/happy.svg"></img>, value: MoodValue.HAPPY },
-  { icon: <img src="/src/assets/ok.svg"></img>, value: MoodValue.OK },
-  { icon: <img src="/src/assets/sad.svg"></img>, value: MoodValue.SAD },
+  {
+    id: "2",
+    name: "Apple iPhone 12 Mini, 256GB, Blue",
+    data: null,
+  },
+  {
+    id: "3",
+    name: "Apple iPhone 12 Pro Max",
+    data: {
+      color: "Cloudy White",
+      "capacity GB": 512,
+    },
+  },
 ];
 
-function DashboardModal() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+function TestPage() {
   return (
-    <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti
-            impedit quisquam quis, aspernatur laboriosam nemo, maxime
-            accusantium voluptates cupiditate ducimus ipsa doloremque doloribus
-            atque et natus placeat nihil praesentium assumenda?
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
-
-function HomePage() {
-  const [dashboardData, setDashboardData] = useState({} as DashboardResponse);
-  // const [isShowModal, setDashboardData] = useState({} as DashboardResponse);
-
-  const sendMoodData = async (mood: MoodValue) => {
-    const userMoodResponse = await getUserMoodResponse("token here", {
-      mood: mood,
-    });
-    setDashboardData(userMoodResponse);
-  };
-
-  useEffect(() => {
-    // const fetchUserDashboard = async () => {
-    //   const result = await getUserDashboardResponse("token here");
-    //   setDashboard(result);
-    // };
-    // fetchUserDashboard()
-    setDashboardData(MOCK_DASHBOARD_API_RESPONSE);
-  }, []);
-  if (!dashboardData.moods) {
-    return <BxLoader></BxLoader>;
-  }
-
-  return (
-    <Box width="100vw" height="100vh" display="flex" flexDirection="column">
-      <DashboardModal></DashboardModal>
-      <Tree treeDisplayState={1}></Tree>
-      <CalendarDateRange
-        dateRange={dashboardData.moods.map((mood) => {
-          return new Date(mood.created_at);
-        })}
-      ></CalendarDateRange>
-      <Coins coinCount={100}></Coins>
-      <Brand></Brand>
-      <Box display="flex" flexDirection="row">
-        {MoodBtnsProps.map((moodBtnProps) => {
-          return (
-            <MoodBtn
-              icon={moodBtnProps.icon}
-              // Call API here on click and rerender
-              onClick={() => console.log(moodBtnProps.value)}
-            ></MoodBtn>
-          );
-        })}
+    <Box
+      width="100vw"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
+      bg="brand.primary.400"
+      className="page"
+    >
+      <Box
+        display="flex"
+        flexDirection="column"
+        bg="brand.secondary.400"
+        marginX="56px"
+        marginTop="68px"
+        marginBottom="32px"
+        gap="60px"
+        justifyContent="space-between"
+        height="100%"
+        className="page--group"
+      >
+        <Box
+          display="flex"
+          bg="green.400"
+          className="dashboard--top"
+          height="100%"
+        >
+          <Box
+            bg="yellow.400"
+            className="dashboard--top--left"
+            width="50%"
+            display="flex"
+            gap="42px"
+          >
+            <Box bg="skin.2base" className="dashboard--top--left">
+              Coins
+            </Box>
+            <Box bg="skin.2base" className="dashboard--top--left" width="100%">
+              <p>Tree!</p>
+            </Box>
+          </Box>
+          <Box
+            bg="red.400"
+            className="dashboard--top--right"
+            display="flex"
+            flexDirection="column"
+            width="50%"
+            gap="56px"
+          >
+            <Box
+              bg="slate.200"
+              className="dashboard--top--left"
+              display="flex"
+              justifyContent="flex-end"
+            >
+              <p>logo</p>
+            </Box>
+            <Box
+              bg="slate.200"
+              className="dashboard--top--left"
+              display="flex"
+              justifyContent="flex-end"
+            >
+              <p>calendar</p>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          display="flex"
+          bg="green.400"
+          className="dashboard--bottom"
+          justifyContent="space-between"
+          gap="48px"
+          height="100%"
+          maxHeight="188px"
+        >
+          <Box bg="red.400" width="100%">
+            button 1
+          </Box>
+          <Box bg="red.400" width="100%">
+            button 2
+          </Box>
+          <Box bg="red.400" width="100%">
+            button 3
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
 }
 
-export default HomePage;
+export default TestPage;
