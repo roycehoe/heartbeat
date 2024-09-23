@@ -6,7 +6,7 @@ export enum MoodValue {
   SAD = "sad",
 }
 
-enum TreeDisplayState {
+export enum TreeDisplayState {
   SEEDLING = 1,
   TEEN_TREE = 2,
   ADULT_TREE = 3,

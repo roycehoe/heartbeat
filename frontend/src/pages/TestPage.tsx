@@ -18,9 +18,11 @@ import {
   getUserMoodResponse,
   MoodValue,
 } from "../api/dashboard";
+import Brand from "../components/Brand";
 import CalendarDateRange from "../components/CalendarDateRange";
 import Coins from "../components/Coins";
 import MoodBtn from "../components/MoodBtn";
+import Tree from "../components/Tree";
 
 const MoodBtnsProps = [
   {
@@ -89,12 +91,14 @@ function HomePage() {
   return (
     <Box width="100vw" height="100vh" display="flex" flexDirection="column">
       <DashboardModal></DashboardModal>
+      <Tree treeDisplayState={1}></Tree>
       <CalendarDateRange
         dateRange={dashboardData.moods.map((mood) => {
           return new Date(mood.created_at);
         })}
       ></CalendarDateRange>
       <Coins coinCount={100}></Coins>
+      <Brand></Brand>
       <Box display="flex" flexDirection="row">
         {MoodBtnsProps.map((moodBtnProps) => {
           return (
