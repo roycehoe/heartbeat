@@ -1,82 +1,92 @@
-import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
-import { RangeCalendar } from "@opengovsg/design-system-react";
-import { getUserDashboardResponse } from "../api/dashboard";
-import MoodBtn from "../components/MoodBtn";
+import { Box } from "@chakra-ui/react";
 
 function HomePage() {
-  const handleButtonClick = async () => {
-    const result = await getUserDashboardResponse();
-    console.log(result);
-  };
-
   return (
-    <Box width="100vw" height="100vh" display="flex" flexDirection="column">
+    <Box
+      width="100vw"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
+      bg="brand.primary.400"
+      className="page"
+    >
       <Box
-        bg="tomato"
-        border="24px solid"
-        borderColor="white"
-        className="thisOne"
-        flexGrow="1"
-        overflow="hidden"
+        display="flex"
+        flexDirection="column"
+        bg="brand.secondary.400"
+        marginX="56px"
+        marginTop="68px"
+        marginBottom="32px"
+        gap="60px"
+        justifyContent="space-between"
+        height="100%"
+        className="page--group"
       >
-        <Flex
-          gap="24px"
-          bg="slate.200"
-          justifyContent="space-evenly"
-          flexDirection="column"
+        <Box
+          display="flex"
+          bg="green.400"
+          className="dashboard--top"
           height="100%"
         >
-          <Box bg="brand.primary.300" className="brand-logo">
-            <Flex justifyContent="center">
-              <Box bg="brand.primary.200">
-                <p>Our Logo</p>
-              </Box>
-            </Flex>
+          <Box
+            bg="yellow.400"
+            className="dashboard--top--left"
+            width="50%"
+            display="flex"
+            gap="42px"
+          >
+            <Box bg="skin.2base" className="dashboard--top--left">
+              Coins
+            </Box>
+            <Box bg="skin.2base" className="dashboard--top--left" width="100%">
+              <p>Tree!</p>
+            </Box>
           </Box>
-
-          <Box bg="green.100" className="dashboard" flex="1">
-            <Flex width="100%" height="100%">
-              <Grid
-                templateAreas={`"plant calendar calendar"
-                              "plant calendar calendar"
-                              "plant calendar calendar"
-                              "plant calendar calendar"
-                              "happy-btn ok-btn sad-btn"`}
-                gridTemplateColumns="1fr 1fr 1fr"
-                gridTemplateRows="auto"
-                gap="24px"
-                bg="brand.primary.200"
-                flex="1"
-              >
-                <GridItem area="plant" bg="red.200" m={4}>
-                  <iframe
-                    src="https://giphy.com/embed/Vi5TUmZz8LZb95j2xb"
-                    width="100%"
-                    height="100%"
-                    allowFullScreen
-                  ></iframe>
-                </GridItem>
-                <GridItem area="calendar" bg="red.200" m={4}>
-                  <RangeCalendar
-                    showTodayButton={false}
-                    width="100%"
-                    height="100%"
-                    monthsToDisplay={1}
-                  ></RangeCalendar>
-                </GridItem>
-                <GridItem area="happy-btn" bg="red.200" m={4}>
-                  <MoodBtn content="Happy"></MoodBtn>
-                </GridItem>
-                <GridItem area="ok-btn" bg="red.200" m={4}>
-                  <MoodBtn content="Ok" onClick={handleButtonClick}></MoodBtn>
-                </GridItem>
-                <GridItem area="sad-btn" bg="red.200" m={4}>
-                  <MoodBtn content="Sad"></MoodBtn>
-                </GridItem>
-              </Grid>
-            </Flex>
+          <Box
+            bg="red.400"
+            className="dashboard--top--right"
+            display="flex"
+            flexDirection="column"
+            width="50%"
+            gap="56px"
+          >
+            <Box
+              bg="slate.200"
+              className="dashboard--top--left"
+              display="flex"
+              justifyContent="flex-end"
+            >
+              <p>logo</p>
+            </Box>
+            <Box
+              bg="slate.200"
+              className="dashboard--top--left"
+              display="flex"
+              justifyContent="flex-end"
+            >
+              <p>calendar</p>
+            </Box>
           </Box>
-        </Flex>
+        </Box>
+        <Box
+          display="flex"
+          bg="green.400"
+          className="dashboard--bottom"
+          justifyContent="space-between"
+          gap="48px"
+          height="100%"
+          maxHeight="188px"
+        >
+          <Box bg="red.400" width="100%">
+            button 1
+          </Box>
+          <Box bg="red.400" width="100%">
+            button 2
+          </Box>
+          <Box bg="red.400" width="100%">
+            button 3
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
