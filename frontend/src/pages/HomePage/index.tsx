@@ -1,8 +1,7 @@
 import { Box } from "@chakra-ui/react";
+import { MOCK_DASHBOARD_API_RESPONSE } from "../../api/constants";
 import Display from "./Display";
 import EmotionBtns from "./EmotionBtns";
-import { MOCK_DASHBOARD_API_RESPONSE } from "../../api/constants";
-
 
 function HomePage() {
   return (
