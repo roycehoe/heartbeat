@@ -1,8 +1,16 @@
 import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
 import { RangeCalendar } from "@opengovsg/design-system-react";
+import { getUserDashboardResponse } from "../api/dashboard";
 import MoodBtn from "../components";
 
 function HomePage() {
+  const handleButtonClick = async () => {
+    const result = await getUserDashboardResponse(
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MjcyNjU2MTR9.-WWNynebPYcoQRmF2Y5tB8koNRtiFGEWvn4-teWXDFo"
+    );
+    console.log(result);
+  };
+
   return (
     <Box width="100vw" height="100vh" display="flex" flexDirection="column">
       <Box
@@ -62,7 +70,7 @@ function HomePage() {
                   <MoodBtn content="Happy"></MoodBtn>
                 </GridItem>
                 <GridItem area="ok-btn" bg="red.200" m={4}>
-                  <MoodBtn content="Ok"></MoodBtn>
+                  <MoodBtn content="Ok" onClick={handleButtonClick}></MoodBtn>
                 </GridItem>
                 <GridItem area="sad-btn" bg="red.200" m={4}>
                   <MoodBtn content="Sad"></MoodBtn>
