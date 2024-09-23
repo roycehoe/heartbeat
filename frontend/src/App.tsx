@@ -5,6 +5,7 @@ import {
   ThemeProvider,
 } from "@opengovsg/design-system-react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import OgpFooter from "./components/OgpFooter";
 import HomePage from "./pages/HomePage";
 import LogIn from "./pages/LogIn";
 import TestPage from "./pages/TestPage";
@@ -29,6 +30,7 @@ const App = () => {
             <Route index element={<TestPage />}></Route>
             <Route path="/login" element={<LogIn />}></Route>
           </Routes>
+          <OgpFooter></OgpFooter>
         </Box>
       </BrowserRouter>
     </ThemeProvider>
