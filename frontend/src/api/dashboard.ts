@@ -1,6 +1,6 @@
 import { httpClient } from "./httpClient";
 
-enum MoodValue {
+export enum MoodValue {
   HAPPY = "happy",
   OK = "ok",
   SAD = "sad",
