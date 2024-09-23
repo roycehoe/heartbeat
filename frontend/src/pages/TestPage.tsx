@@ -19,6 +19,7 @@ import {
   MoodValue,
 } from "../api/dashboard";
 import CalendarDateRange from "../components/CalendarDateRange";
+import Coins from "../components/Coins";
 import MoodBtn from "../components/MoodBtn";
 
 const MoodBtnsProps = [
@@ -93,6 +94,7 @@ function HomePage() {
           return new Date(mood.created_at);
         })}
       ></CalendarDateRange>
+      <Coins coinCount={100}></Coins>
       <Box display="flex" flexDirection="row">
         {MoodBtnsProps.map((moodBtnProps) => {
           return (
