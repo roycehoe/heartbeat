@@ -32,7 +32,7 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
         coins=user.coins,
         tree_display_state=user.tree_display_state,
         consecutive_checkins=user.consecutive_checkins,
-        can_claim_gifts=user.can_claim_gifts,
+        claimable_gifts=user.claimable_gifts,
         can_record_mood=_can_record_mood(user_id, db),
     )
 
@@ -57,7 +57,7 @@ def get_caregiver_dashboard_response(token: str, db: Session) -> DashboardOut:
             coins=user.coins,
             tree_display_state=user.tree_display_state,
             consecutive_checkins=user.consecutive_checkins,
-            can_claim_gifts=user.can_claim_gifts,
+            claimable_gifts=user.claimable_gifts,
             can_record_mood=_can_record_mood(user.id, db),
         )
 
@@ -83,7 +83,7 @@ def get_admin_dashboard_response(token: str, db: Session) -> list[DashboardOut]:
                     coins=user.coins,
                     tree_display_state=user.tree_display_state,
                     consecutive_checkins=user.consecutive_checkins,
-                    can_claim_gifts=user.can_claim_gifts,
+                    claimable_gifts=user.claimable_gifts,
                     can_record_mood=_can_record_mood(user.id, db),
                 )
             )

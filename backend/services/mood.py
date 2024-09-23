@@ -153,7 +153,7 @@ async def get_create_user_mood_response(
             coins=updated_user.coins,
             tree_display_state=updated_user.tree_display_state,
             consecutive_checkins=updated_user.consecutive_checkins,
-            can_claim_gifts=updated_user.can_claim_gifts,
+            claimable_gifts=updated_user.claimable_gifts,
             can_record_mood=updated_user.can_record_mood,
         )
 

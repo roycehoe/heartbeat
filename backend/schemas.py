@@ -25,7 +25,7 @@ class DashboardOut(BaseModel):
     can_record_mood: bool
     coins: int
     tree_display_state: TreeDisplayState
-    can_claim_gifts: bool
+    claimable_gifts: int
     consecutive_checkins: int
 
 
