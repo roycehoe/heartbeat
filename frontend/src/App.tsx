@@ -7,6 +7,7 @@ import {
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LogIn from "./pages/LogIn";
+import TestPage from "./pages/TestPage";
 
 const App = () => {
   return (
@@ -24,7 +25,8 @@ const App = () => {
           </Banner>
           <RestrictedGovtMasthead></RestrictedGovtMasthead>
           <Routes>
-            <Route index element={<HomePage />}></Route>
+            {/* <Route index element={<HomePage />}></Route> */}
+            <Route index element={<TestPage />}></Route>
             <Route path="/login" element={<LogIn />}></Route>
           </Routes>
         </Box>
