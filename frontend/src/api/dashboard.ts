@@ -24,7 +24,7 @@ interface MoodRequest {
   mood: MoodValue;
 }
 
-interface DashboardResponse {
+export interface DashboardResponse {
   user_id: number;
   moods: Mood[];
   can_record_mood: boolean;

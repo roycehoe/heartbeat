@@ -1,7 +1,7 @@
 import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
 import { RangeCalendar } from "@opengovsg/design-system-react";
 import { getUserDashboardResponse } from "../api/dashboard";
-import MoodBtn from "../components";
+import MoodBtn from "../components/MoodBtn";
 
 function HomePage() {
   const handleButtonClick = async () => {

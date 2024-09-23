@@ -1,17 +1,39 @@
 import { Box } from "@chakra-ui/react";
-import { Calendar } from "react-multi-date-picker";
+import { BxLoader } from "@opengovsg/design-system-react";
+import { useEffect, useState } from "react";
+import { MOCK_DASHBOARD_API_RESPONSE } from "../api/constants";
+import { DashboardResponse, getUserDashboardResponse } from "../api/dashboard";
+import CalendarDateRange from "../components/CalendarDateRange";
+import MoodBtn from "../components/MoodBtn";
 
 function HomePage() {
-  const dateRanges: Date[] = [
-    new Date(2024, 9, 19),
-    new Date(2024, 9, 20),
-    new Date(2024, 9, 21),
-    new Date(2024, 9, 22),
-    new Date(2024, 9, 23),
-  ]; // 10/2 to 15/2
+  const [dashboardData, setDashboardData] = useState({} as DashboardResponse);
+
+  useEffect(() => {
+    // const fetchUserDashboard = async () => {
+    //   const result = await getUserDashboardResponse("token here");
+    //   setDashboard(result);
+    // };
+    // fetchUserDashboard()
+    setDashboardData(MOCK_DASHBOARD_API_RESPONSE);
+  }, []);
+  if (!dashboardData.moods) {
+    return <BxLoader></BxLoader>;
+  }
+
   return (
     <Box width="100vw" height="100vh" display="flex" flexDirection="column">
-      <Calendar disabled value={dateRanges}></Calendar>
+      <CalendarDateRange
+        dateRange={dashboardData.moods.map((mood) => {
+          return new Date(mood.created_at);
+        })}
+      ></CalendarDateRange>
+      <div>
+        <MoodBtn
+          icon={<img src="/src/assets/ok.svg"></img>}
+          onClick={() => console.log("hello world")}
+        ></MoodBtn>
+      </div>
     </Box>
   );
 }
