@@ -1,5 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { DashboardResponse } from "../../../api/dashboard";
+import Brand from "../../../components/Brand";
+import CalendarDateRange from "../../../components/CalendarDateRange";
 import Coins from "../../../components/Coins";
 import Tree from "../../../components/Tree";
 
@@ -37,19 +39,25 @@ function Display(props: { dashboardData: DashboardResponse }) {
       >
         <Box
           bg="slate.200"
-          className="dashboard--top--left"
+          className="dashboard--top--right--brand"
           display="flex"
           justifyContent="flex-end"
         >
-          <p>logo</p>
+          <Brand></Brand>
         </Box>
         <Box
           bg="slate.200"
-          className="dashboard--top--left"
+          className="dashboard--top--right--date-range"
           display="flex"
           justifyContent="flex-end"
+          width="100%"
+          height="100%"
         >
-          <p>calendar</p>
+          <CalendarDateRange
+            dateRange={props.dashboardData.moods.map((mood) => {
+              return mood.created_at;
+            })}
+          ></CalendarDateRange>
         </Box>
       </Box>
     </Box>
