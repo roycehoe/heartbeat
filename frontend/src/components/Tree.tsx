@@ -21,6 +21,7 @@ function Tree(props: { treeDisplayState: TreeDisplayState }) {
       gap={1}
       width="100%"
       height="100%"
+      maxHeight="500px"
     >
       <img
         style={{ height: "100%" }}
