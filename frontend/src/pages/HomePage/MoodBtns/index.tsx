@@ -16,6 +16,7 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
+import moment, { Moment } from "moment";
 import { useState } from "react";
 import { MoodValue } from "../../../api/dashboard";
 import ModalMoodStreak from "../../../components/ModalMoodStreak";
@@ -54,7 +55,26 @@ const MOOD_BTN_PROPS = [
   },
 ];
 
-function MoodBtns(props: { isDisabled: boolean }) {
+function getDaysOfWeek(): Moment[] {
+  const startOfWeek = moment().startOf("week");
+
+  const daysOfWeek = [];
+  for (let i = 0; i < 7; i++) {
+    daysOfWeek.push(startOfWeek.clone().add(i, "days"));
+  }
+  return daysOfWeek;
+}
+
+function getCheckedDaysBoolean(
+  daysOfWeek: Moment[],
+  checkedDays: Moment[]
+): boolean[] {
+  return daysOfWeek.map((dayOfWeek) =>
+    checkedDays.some((checkedDay) => dayOfWeek.isSame(checkedDay, "day"))
+  );
+}
+
+function MoodBtns(props: { isDisabled: boolean; moodsCreatedAt: Moment[] }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [timerId, setTimerId] = useState(null);
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
@@ -102,8 +122,10 @@ function MoodBtns(props: { isDisabled: boolean }) {
         isOpen={isOpen}
         onClose={onClose}
         handleClose={handleClose}
-        daysOfWeek={daysOfWeek}
-        tickData={tickData}
+        daysOfWeek={getDaysOfWeek().map((dayOfWeek) =>
+          dayOfWeek.format("dddd").slice(0, 3)
+        )}
+        tickData={getCheckedDaysBoolean(getDaysOfWeek(), props.moodsCreatedAt)}
       ></ModalMoodStreak>
     </Box>
   );
