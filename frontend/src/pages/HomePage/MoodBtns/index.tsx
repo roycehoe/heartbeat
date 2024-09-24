@@ -1,21 +1,4 @@
-import {
-  Box,
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import moment, { Moment } from "moment";
 import { useState } from "react";
 import { MoodValue } from "../../../api/user";
@@ -78,11 +61,13 @@ function MoodBtns(props: {
   isDisabled: boolean;
   moodsCreatedAt: Moment[];
   streak: number;
+  onClick: (mood: MoodValue) => Promise<void>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [timerId, setTimerId] = useState(null);
 
-  const handleClick = () => {
+  const handleClick = (mood: MoodValue) => {
+    props.onClick(mood);
     onOpen();
     const id = setTimeout(onClose, 5000);
     setTimerId(id);
@@ -107,7 +92,7 @@ function MoodBtns(props: {
         return (
           <Box width="100%" bg="red.200">
             <MoodBtn
-              onClick={handleClick}
+              onClick={() => handleClick(prop.value)}
               icon={prop.icon}
               isDisabled={props.isDisabled}
               bg={prop.bg}

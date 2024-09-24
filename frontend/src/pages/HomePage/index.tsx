@@ -1,5 +1,4 @@
-import { Box, Fade, Spinner } from "@chakra-ui/react";
-import { SpinnerIcon } from "@opengovsg/design-system-react";
+import { Box, Fade } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
@@ -7,7 +6,8 @@ import {
   DashboardResponse,
   getUserDashboardResponse,
   getUserLoginResponse,
-  LoginRequest,
+  getUserMoodResponse,
+  MoodValue,
 } from "../../api/user";
 import Display from "./Display";
 import MoodBtns from "./MoodBtns";
@@ -20,16 +20,14 @@ function HomePage() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  async function login(loginRequest: LoginRequest): Promise<void> {
-    const loginResponse = await getUserLoginResponse(loginRequest);
-    localStorage.setItem("token", loginResponse.access_token);
-  }
-
   useEffect(() => {
     const loadDashboard = async () => {
       setIsLoading(true);
       if (DEFAULT_USER_CREDENTIALS.length > 0) {
-        await login(DEFAULT_USER_CREDENTIALS[currentIndex]);
+        const loginResponse = await getUserLoginResponse(
+          DEFAULT_USER_CREDENTIALS[currentIndex]
+        );
+        localStorage.setItem("token", loginResponse.access_token);
       }
       const dashboardResponse = await getUserDashboardResponse();
       setDashboardData(dashboardResponse);
@@ -37,6 +35,13 @@ function HomePage() {
     };
     loadDashboard();
   }, [currentIndex]);
+
+  const onMoodButtonClick = async (mood: MoodValue) => {
+    setIsLoading(true);
+    const userMoodResponse = await getUserMoodResponse({ mood: mood });
+    setDashboardData(userMoodResponse);
+    setIsLoading(false);
+  };
 
   const incrementIndex = () => {
     const nextIndex =
@@ -47,7 +52,7 @@ function HomePage() {
     localStorage.setItem("currentIndex", nextIndex.toString());
   };
 
-  if (isLoading) {
+  if (isLoading || !dashboardData) {
     return (
       <Box
         width="100vw"
@@ -91,6 +96,7 @@ function HomePage() {
               moment(mood.created_at)
             )}
             streak={dashboardData.consecutive_checkins}
+            onClick={onMoodButtonClick}
           ></MoodBtns>
         </Box>
       </Fade>
