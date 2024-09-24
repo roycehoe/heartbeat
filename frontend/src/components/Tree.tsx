@@ -13,7 +13,10 @@ const TREE_DISPLAY_STATE_TO_SVG_LINK = {
     "/src/assets/tree/adult-tree-with-flowers-and-gifts.svg",
 };
 
-function Gifts(props: { claimableGifts: number }) {
+function Gifts(props: {
+  claimableGifts: number;
+  onClaimGiftsBtnClick: () => Promise<void>;
+}) {
   const [gifts, setGifts] = useState({
     leftFlower: props.claimableGifts > 0,
     topFlower: props.claimableGifts > 1,
@@ -23,6 +26,7 @@ function Gifts(props: { claimableGifts: number }) {
   const handleGiftClick = (
     flower: "leftFlower" | "topFlower" | "rightFlower"
   ) => {
+    props.onClaimGiftsBtnClick();
     setGifts((prev) => ({ ...prev, [flower]: false }));
   };
 
@@ -75,6 +79,7 @@ function Gifts(props: { claimableGifts: number }) {
 function Tree(props: {
   treeDisplayState: TreeDisplayState;
   claimableGifts: number;
+  onClaimGiftBtnClick: () => Promise<void>;
 }) {
   const isShowGifts =
     props.treeDisplayState ===
@@ -97,7 +102,18 @@ function Tree(props: {
       position="relative"
       backgroundPosition="center right"
     >
-      {isShowGifts ? <Gifts claimableGifts={props.claimableGifts}></Gifts> : ""}
+      <Gifts
+        claimableGifts={props.claimableGifts}
+        onClaimGiftsBtnClick={props.onClaimGiftBtnClick}
+      ></Gifts>
+      {/* {isShowGifts ? (
+        <Gifts
+          claimableGifts={props.claimableGifts}
+          onClaimGiftsBtnClick={props.onClaimGiftBtnClick}
+        ></Gifts>
+      ) : (
+        ""
+      )} */}
     </Box>
   );
 }

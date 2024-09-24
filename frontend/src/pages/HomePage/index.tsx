@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
 import {
   DashboardResponse,
+  getUserClaimGiftResponse,
   getUserDashboardResponse,
   getUserLoginResponse,
   getUserMoodResponse,
@@ -40,6 +41,13 @@ function HomePage() {
     setIsLoading(true);
     const userMoodResponse = await getUserMoodResponse({ mood: mood });
     setDashboardData(userMoodResponse);
+    setIsLoading(false);
+  };
+
+  const onClaimGiftBtnClick = async () => {
+    setIsLoading(true);
+    const userClaimGiftResponse = await getUserClaimGiftResponse();
+    setDashboardData(userClaimGiftResponse);
     setIsLoading(false);
   };
 
@@ -89,6 +97,7 @@ function HomePage() {
           <Display
             dashboardData={dashboardData}
             goToNextUser={incrementIndex}
+            onClaimGiftBtnClick={onClaimGiftBtnClick}
           ></Display>
           <MoodBtns
             isDisabled={!dashboardData.can_record_mood}

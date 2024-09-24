@@ -135,7 +135,7 @@ async def send_mood(
     return await get_create_user_mood_response(request, token, db)
 
 
-@app.post(
+@app.get(
     "/user/claim_gift", status_code=status.HTTP_201_CREATED, response_model=DashboardOut
 )
 def claim_gift(token: str = Header(None), db: Session = Depends(get_db)):

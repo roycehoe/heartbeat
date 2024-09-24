@@ -8,6 +8,7 @@ import Tree from "../../../components/Tree";
 function Display(props: {
   dashboardData: DashboardResponse;
   goToNextUser: () => void;
+  onClaimGiftBtnClick: () => Promise<void>;
 }) {
   return (
     <Box display="flex" bg="green.400" className="dashboard--top" height="100%">
@@ -32,6 +33,7 @@ function Display(props: {
           <Tree
             treeDisplayState={props.dashboardData.tree_display_state}
             claimableGifts={props.dashboardData.claimable_gifts}
+            onClaimGiftBtnClick={props.onClaimGiftBtnClick}
           ></Tree>
         </Box>
       </Box>
