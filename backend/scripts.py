@@ -147,7 +147,7 @@ def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
     ]
 
 
-def populate_db(db: Session):
+def populate_db(db: Session) -> None:
     mood_data = _generate_mood_data()
     for data in mood_data:
         CRUDMood(db).create(Mood(**data))
@@ -159,6 +159,17 @@ def populate_db(db: Session):
     admin_data = _generate_admin_data()
     for data in admin_data:
         CRUDAdmin(db).create(Admin(**data))
+
+
+def delete_all_db_data(db: Session) -> None:
+    CRUDMood(db).delete_all()
+    CRUDUser(db).delete_all()
+    CRUDAdmin(db).delete_all()
+
+
+def repopulate_db(db: Session) -> None:
+    delete_all_db_data(db)
+    populate_db(db)
 
 
 def _reset_all_user_can_record_mood_state(db: Session) -> None:

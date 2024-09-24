@@ -88,6 +88,14 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
         except Exception as e:
             raise DBException(e)
 
+    def delete_all(self) -> None:
+        try:
+            self.session.query(self.account_model).delete()
+            return
+
+        except Exception as e:
+            raise DBException(e)
+
 
 class CRUDUser(CRUDAccount):
     def __init__(self, session: Session):
@@ -155,5 +163,12 @@ class CRUDMood:
     def get_all(self) -> list[Mood]:
         try:
             return self.session.query(Mood).all()
+        except Exception:
+            raise DBGetAccountException
+
+    def delete_all(self) -> None:
+        try:
+            self.session.query(Mood).delete()
+            return
         except Exception:
             raise DBGetAccountException

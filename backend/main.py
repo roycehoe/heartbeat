@@ -13,7 +13,7 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from scripts import get_scheduler, populate_db
+from scripts import get_scheduler, populate_db, repopulate_db
 from services.account import (
     get_create_admin_response,
     get_create_caregiver_response,
@@ -141,3 +141,8 @@ async def send_mood(
 )
 def claim_gift(token: str = Header(None), db: Session = Depends(get_db)):
     return get_claim_gift_response(token, db)
+
+
+@app.get("/reset_db", status_code=status.HTTP_200_OK)
+def reset_db(db: Session = Depends(get_db)):
+    repopulate_db(db)

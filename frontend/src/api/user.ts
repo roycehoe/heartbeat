@@ -67,3 +67,8 @@ export async function getUserLoginResponse(
   const response = await httpClient.post("/user/log-in", loginRequest);
   return response.data;
 }
+
+export async function resetDB(): Promise<null> {
+  const response = await httpClient.get("/reset_db");
+  return response.data;
+}
