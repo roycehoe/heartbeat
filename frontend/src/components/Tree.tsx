@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import { useState } from "react";
 import { TreeDisplayState } from "../api/dashboard";
 
 const TREE_DISPLAY_STATE_TO_SVG_LINK = {
@@ -11,7 +12,22 @@ const TREE_DISPLAY_STATE_TO_SVG_LINK = {
     "/src/assets/tree/adult-tree-with-flowers-and-gifts.svg",
 };
 
-function Tree(props: { treeDisplayState: TreeDisplayState }) {
+function Tree(props: {
+  treeDisplayState: TreeDisplayState;
+  claimableGifts: number;
+}) {
+  const [gifts, setGifts] = useState({
+    leftFlower: props.claimableGifts > 0,
+    topFlower: props.claimableGifts > 1,
+    rightFlower: props.claimableGifts > 2,
+  });
+
+  const handleGiftClick = (
+    flower: "leftFlower" | "topFlower" | "rightFlower"
+  ) => {
+    setGifts((prev) => ({ ...prev, [flower]: false }));
+  };
+
   return (
     <Box
       display="flex"
@@ -28,33 +44,46 @@ function Tree(props: { treeDisplayState: TreeDisplayState }) {
         style={{ height: "100%" }}
         src={TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]}
       ></img>
-      <button
-        style={{
-          position: "absolute",
-          left: "600px",
-          top: "100px",
-        }}
-      >
-        <img src={"/src/assets/gift.svg"} className="left-flower"></img>
-      </button>
-      <button
-        style={{
-          position: "absolute",
-          top: "200px",
-          left: "400px",
-        }}
-      >
-        <img src={"/src/assets/gift.svg"} className="top-flower"></img>
-      </button>
-      <button
-        style={{
-          position: "absolute",
-          top: "300px",
-          left: "800px",
-        }}
-      >
-        <img className="right-flower" src={"/src/assets/gift.svg"}></img>
-      </button>
+
+      {/* Conditionally render the buttons based on state */}
+      {gifts.leftFlower && (
+        <button
+          style={{
+            position: "absolute",
+            left: "600px",
+            top: "100px",
+          }}
+          onClick={() => handleGiftClick("leftFlower")}
+        >
+          <img src={"/src/assets/gift.svg"} className="left-flower"></img>
+        </button>
+      )}
+
+      {gifts.topFlower && (
+        <button
+          style={{
+            position: "absolute",
+            top: "200px",
+            left: "400px",
+          }}
+          onClick={() => handleGiftClick("topFlower")}
+        >
+          <img src={"/src/assets/gift.svg"} className="top-flower"></img>
+        </button>
+      )}
+
+      {gifts.rightFlower && (
+        <button
+          style={{
+            position: "absolute",
+            top: "300px",
+            left: "800px",
+          }}
+          onClick={() => handleGiftClick("rightFlower")}
+        >
+          <img className="right-flower" src={"/src/assets/gift.svg"}></img>
+        </button>
+      )}
     </Box>
   );
 }

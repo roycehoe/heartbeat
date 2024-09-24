@@ -127,6 +127,6 @@ export const MOCK_DASHBOARD_API_RESPONSE: DashboardResponse = {
   can_record_mood: true,
   coins: 0,
   tree_display_state: 5,
-  can_claim_gifts: true,
+  claimable_gifts: 3,
   consecutive_checkins: 5,
 };

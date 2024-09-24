@@ -26,6 +26,7 @@ function Display(props: { dashboardData: DashboardResponse }) {
         >
           <Tree
             treeDisplayState={props.dashboardData.tree_display_state}
+            claimableGifts={props.dashboardData.claimable_gifts}
           ></Tree>
         </Box>
       </Box>
