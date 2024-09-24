@@ -74,13 +74,13 @@ function getCheckedDaysBoolean(
   );
 }
 
-function MoodBtns(props: { isDisabled: boolean; moodsCreatedAt: Moment[] }) {
+function MoodBtns(props: {
+  isDisabled: boolean;
+  moodsCreatedAt: Moment[];
+  streak: number;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [timerId, setTimerId] = useState(null);
-  const daysOfWeek = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
-
-  // Example data where tick means true, blank means false
-  const tickData = [true, false, true, true, false, true, false];
 
   const handleClick = () => {
     onOpen();
@@ -120,12 +120,12 @@ function MoodBtns(props: { isDisabled: boolean; moodsCreatedAt: Moment[] }) {
       })}
       <ModalMoodStreak
         isOpen={isOpen}
-        onClose={onClose}
         handleClose={handleClose}
         daysOfWeek={getDaysOfWeek().map((dayOfWeek) =>
           dayOfWeek.format("dddd").slice(0, 3)
         )}
         tickData={getCheckedDaysBoolean(getDaysOfWeek(), props.moodsCreatedAt)}
+        streak={props.streak}
       ></ModalMoodStreak>
     </Box>
   );

@@ -32,6 +32,7 @@ function HomePage() {
           moodsCreatedAt={MOCK_DASHBOARD_API_RESPONSE.moods.map((mood) =>
             moment(mood.created_at)
           )}
+          streak={MOCK_DASHBOARD_API_RESPONSE.consecutive_checkins}
         ></MoodBtns>
       </Box>
     </Box>

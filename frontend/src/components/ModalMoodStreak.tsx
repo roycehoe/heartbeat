@@ -3,6 +3,8 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
+  ModalHeader,
   ModalOverlay,
   Table,
   Tbody,
@@ -18,12 +20,13 @@ function ModalMoodStreak({
   handleClose,
   daysOfWeek,
   tickData,
+  streak,
 }: {
   isOpen: boolean;
-  onClose: () => void;
   handleClose: () => void;
   daysOfWeek: string[];
   tickData: boolean[];
+  streak: number[];
 }) {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isCentered>
@@ -35,6 +38,7 @@ function ModalMoodStreak({
           justifyContent="space-evenly"
           bg="brand.primary.200"
           alignItems="center"
+          borderRadius="30px"
         >
           <Box height="300px">Some image goes here. It is big</Box>
           <Box>
@@ -44,7 +48,7 @@ function ModalMoodStreak({
               color="#25AC51"
               lineHeight="1"
             >
-              2
+              {streak}
             </Text>
           </Box>
           <Box>
