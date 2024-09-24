@@ -1,3 +1,4 @@
+import random
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -6,12 +7,48 @@ from enums import SelectedMood, TreeDisplayState
 from exceptions import DBException, NoRecordFoundException
 from gateway import send_sad_user_notification_message
 from models import Mood
-from schemas import DashboardOut, MoodIn, MoodRequest
+from schemas import DashboardOut, MoodIn, MoodOut, MoodRequest
 from utils.token import get_token_data
 
 SHOULD_ALERT_CAREGIVER_CRITERION = 5
 DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED = 10
 DEFAULT_BONUS_COINS = 250
+DEFAULT_MOOD_MESSAGES = (
+    "Every day is a new beginning.",
+    "You are stronger than you think.",
+    "One small step today, a big difference tomorrow.",
+    "Your smile is your superpower.",
+    "Keep going, brighter days are ahead.",
+    "You matter, and your story matters.",
+    "Even slow progress is progress.",
+    "You’re never too old to dream.",
+    "Your strength inspires others.",
+    "Embrace today with hope.",
+    "Your heart has seen many sunsets, and each is beautiful.",
+    "You’re not alone in this journey.",
+    "Peace comes with patience.",
+    "The best is yet to come.",
+    "Take one moment at a time.",
+    "Your courage brings light to others.",
+    "Believe in yourself today.",
+    "You are loved and cherished.",
+    "Each breath is a blessing.",
+    "Small joys can fill big hearts.",
+    "You’ve overcome before, you will again.",
+    "Happiness is within you.",
+    "You’re more capable than you know.",
+    "You are a gift to the world.",
+    "Strength grows from every challenge.",
+    "Your presence makes the world brighter.",
+    "Today is yours to make beautiful.",
+    "Focus on the good around you.",
+    "Your resilience is your power.",
+    "Cherish each day as a new adventure.",
+)
+
+
+def _get_mood_message(mood_messages: tuple[str, ...] = DEFAULT_MOOD_MESSAGES) -> str:
+    return random.choice(mood_messages)
 
 
 def _should_alert_caregiver(user_id: int, db: Session) -> bool:
@@ -120,7 +157,7 @@ def _update_user(user_id: int, db: Session) -> None:
 
 async def get_create_user_mood_response(
     request: MoodRequest, token: str, db: Session
-) -> DashboardOut:
+) -> MoodOut:
     try:
         user_id = get_token_data(token, "user_id")
         if not _can_record_mood(user_id, db):
@@ -144,7 +181,7 @@ async def get_create_user_mood_response(
 
         updated_user = CRUDUser(db).get(user_id)
         moods = CRUDMood(db).get_by({"user_id": user_id})
-        return DashboardOut(
+        return MoodOut(
             user_id=user_id,
             moods=[
                 MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
@@ -155,6 +192,7 @@ async def get_create_user_mood_response(
             consecutive_checkins=updated_user.consecutive_checkins,
             claimable_gifts=updated_user.claimable_gifts,
             can_record_mood=updated_user.can_record_mood,
+            mood_message=_get_mood_message(),
         )
 
     except NoRecordFoundException:

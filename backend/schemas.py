@@ -29,6 +29,10 @@ class DashboardOut(BaseModel):
     consecutive_checkins: int
 
 
+class MoodOut(DashboardOut):
+    mood_message: str
+
+
 class LogInRequest(BaseModel):
     email: str  # Doubles as username
     password: str
