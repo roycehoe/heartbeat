@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import { Button } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { TreeDisplayState } from "../api/dashboard";
 
@@ -32,8 +33,8 @@ function Gifts(props: { claimableGifts: number }) {
           <button
             style={{
               position: "absolute",
-              left: "600px",
-              top: "100px",
+              top: "20%",
+              left: "0%",
             }}
             onClick={() => handleGiftClick("leftFlower")}
           >
@@ -45,8 +46,8 @@ function Gifts(props: { claimableGifts: number }) {
           <button
             style={{
               position: "absolute",
-              top: "200px",
-              left: "400px",
+              top: "0%",
+              left: "20%",
             }}
             onClick={() => handleGiftClick("topFlower")}
           >
@@ -58,8 +59,8 @@ function Gifts(props: { claimableGifts: number }) {
           <button
             style={{
               position: "absolute",
-              top: "300px",
-              left: "800px",
+              top: "40%",
+              left: "70%",
             }}
             onClick={() => handleGiftClick("rightFlower")}
           >
@@ -84,15 +85,17 @@ function Tree(props: {
       display="grid"
       gridTemplateColumns="repeat(10, 1fr)"
       gridTemplateRows="repeat(10, 1fr)"
+      width="100%"
+      height="100%"
+      maxWidth="500px"
+      maxHeight="500px"
       backgroundImage="url('/src/assets/tree/adult-tree-with-flowers.svg')"
       backgroundSize="contain"
-      // height="100%"
-      // width="100%"
       backgroundRepeat="no-repeat"
       position="relative"
       backgroundPosition="center right"
     >
-      Hello
+      <Gifts claimableGifts={props.claimableGifts}></Gifts>
     </Box>
   );
 }
