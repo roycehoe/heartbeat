@@ -23,10 +23,38 @@ function Tree(props: { treeDisplayState: TreeDisplayState }) {
       height="100%"
       maxHeight="500px"
     >
+      <div style={{ position: "relative", display: "inline-block" }}></div>
       <img
         style={{ height: "100%" }}
         src={TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]}
       ></img>
+      <button
+        style={{
+          position: "absolute",
+          left: "600px",
+          top: "100px",
+        }}
+      >
+        <img src={"/src/assets/gift.svg"} className="left-flower"></img>
+      </button>
+      <button
+        style={{
+          position: "absolute",
+          top: "200px",
+          left: "400px",
+        }}
+      >
+        <img src={"/src/assets/gift.svg"} className="top-flower"></img>
+      </button>
+      <button
+        style={{
+          position: "absolute",
+          top: "300px",
+          left: "800px",
+        }}
+      >
+        <img className="right-flower" src={"/src/assets/gift.svg"}></img>
+      </button>
     </Box>
   );
 }
