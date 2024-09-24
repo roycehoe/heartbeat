@@ -1,11 +1,14 @@
 import { Box } from "@chakra-ui/react";
-import { DashboardResponse } from "../../../api/dashboard";
+import { DashboardResponse } from "../../../api/user";
 import Brand from "../../../components/Brand";
 import CalendarDateRange from "../../../components/CalendarDateRange";
 import Coins from "../../../components/Coins";
 import Tree from "../../../components/Tree";
 
-function Display(props: { dashboardData: DashboardResponse }) {
+function Display(props: {
+  dashboardData: DashboardResponse;
+  goToNextUser: () => void;
+}) {
   return (
     <Box display="flex" bg="green.400" className="dashboard--top" height="100%">
       <Box
@@ -46,7 +49,7 @@ function Display(props: { dashboardData: DashboardResponse }) {
           display="flex"
           justifyContent="flex-end"
         >
-          <Brand></Brand>
+          <Brand goToNextUser={props.goToNextUser}></Brand>
         </Box>
         <Box
           bg="slate.200"

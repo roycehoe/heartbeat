@@ -1,4 +1,4 @@
-import { DashboardResponse } from "./dashboard";
+import { DashboardResponse, LoginRequest } from "./user";
 
 export const MOCK_DASHBOARD_API_RESPONSE: DashboardResponse = {
   user_id: 1,
@@ -130,3 +130,9 @@ export const MOCK_DASHBOARD_API_RESPONSE: DashboardResponse = {
   claimable_gifts: 3,
   consecutive_checkins: 5,
 };
+
+export const DEFAULT_USER_CREDENTIALS: LoginRequest[] = [
+  { email: "user1@heartbeatmail.com", password: "user1@heartbeatmail.com" },
+  { email: "user2@heartbeatmail.com", password: "user2@heartbeatmail.com" },
+  { email: "user3@heartbeatmail.com", password: "user3@heartbeatmail.com" },
+];

@@ -34,6 +34,16 @@ export interface DashboardResponse {
   consecutive_checkins: number;
 }
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export async function getUserDashboardResponse(): Promise<DashboardResponse> {
   const response = await httpClient.get("/user/dashboard");
   return response.data;
@@ -48,5 +58,12 @@ export async function getUserMoodResponse(
 
 export async function getUserClaimGiftResponse(): Promise<DashboardResponse> {
   const response = await httpClient.get("/user/claim_gift");
+  return response.data;
+}
+
+export async function getUserLoginResponse(
+  loginRequest: LoginRequest
+): Promise<LoginResponse> {
+  const response = await httpClient.post("/user/log-in", loginRequest);
   return response.data;
 }

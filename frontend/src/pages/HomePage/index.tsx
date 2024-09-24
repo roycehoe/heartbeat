@@ -1,10 +1,43 @@
 import { Box } from "@chakra-ui/react";
 import moment from "moment";
-import { MOCK_DASHBOARD_API_RESPONSE } from "../../api/constants";
+import { useEffect, useState } from "react";
+import {
+  DEFAULT_USER_CREDENTIALS,
+  MOCK_DASHBOARD_API_RESPONSE,
+} from "../../api/constants";
+import { getUserLoginResponse, LoginRequest } from "../../api/user";
 import Display from "./Display";
 import MoodBtns from "./MoodBtns";
 
 function HomePage() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  async function login(loginRequest: LoginRequest): Promise<void> {
+    const loginResponse = await getUserLoginResponse(loginRequest);
+    localStorage.removeItem("token");
+    localStorage.setItem("token", loginResponse.access_token);
+  }
+
+  useEffect(() => {
+    const storedIndex = localStorage.getItem("currentIndex");
+    if (storedIndex !== null) {
+      setCurrentIndex(Number(storedIndex));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (DEFAULT_USER_CREDENTIALS.length > 0) {
+      localStorage.setItem("currentIndex", currentIndex.toString());
+      login(DEFAULT_USER_CREDENTIALS[currentIndex]);
+    }
+  }, [currentIndex, DEFAULT_USER_CREDENTIALS]);
+
+  const incrementIndex = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === DEFAULT_USER_CREDENTIALS.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
   return (
     <Box
       width="100vw"
@@ -26,7 +59,10 @@ function HomePage() {
         height="100%"
         className="page--group"
       >
-        <Display dashboardData={MOCK_DASHBOARD_API_RESPONSE}></Display>
+        <Display
+          dashboardData={MOCK_DASHBOARD_API_RESPONSE}
+          goToNextUser={incrementIndex}
+        ></Display>
         <MoodBtns
           isDisabled={!MOCK_DASHBOARD_API_RESPONSE.can_record_mood}
           moodsCreatedAt={MOCK_DASHBOARD_API_RESPONSE.moods.map((mood) =>

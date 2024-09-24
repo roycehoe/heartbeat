@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import moment, { Moment } from "moment";
 import { useState } from "react";
-import { MoodValue } from "../../../api/dashboard";
+import { MoodValue } from "../../../api/user";
 import ModalMoodStreak from "../../../components/ModalMoodStreak";
 import MoodBtn from "../../../components/MoodBtn";
 

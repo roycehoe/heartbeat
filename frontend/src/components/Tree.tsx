@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useState } from "react";
-import { TreeDisplayState } from "../api/dashboard";
+import { TreeDisplayState } from "../api/user";
 
 const TREE_DISPLAY_STATE_TO_SVG_LINK = {
   [TreeDisplayState.SEEDLING]: "/src/assets/tree/seedling.svg",

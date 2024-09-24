@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react";
 
-function Brand() {
+function Brand(props: { goToNextUser: () => void }) {
   return (
     <Box
       display="flex"
@@ -9,7 +9,10 @@ function Brand() {
       alignItems="center"
       gap={1}
     >
-      <img src="/src/assets/logo-heartbeat.svg"></img>
+      <img
+        onClick={props.goToNextUser}
+        src="/src/assets/logo-heartbeat.svg"
+      ></img>
       <Text fontWeight={800}>|</Text>
       <img src="/src/assets/logo-bfg.svg"></img>
     </Box>
