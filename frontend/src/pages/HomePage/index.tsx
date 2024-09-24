@@ -26,7 +26,9 @@ function HomePage() {
         className="page--group"
       >
         <Display dashboardData={MOCK_DASHBOARD_API_RESPONSE}></Display>
-        <MoodBtns></MoodBtns>
+        <MoodBtns
+          isDisabled={!MOCK_DASHBOARD_API_RESPONSE.can_record_mood}
+        ></MoodBtns>
       </Box>
     </Box>
   );
