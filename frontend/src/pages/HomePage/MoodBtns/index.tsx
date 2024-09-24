@@ -63,7 +63,7 @@ function MoodBtns(props: { isDisabled: boolean }) {
 
   const handleClick = () => {
     onOpen();
-    const id = setTimeout(onClose, 3000);
+    const id = setTimeout(onClose, 5000);
     setTimerId(id);
   };
 
