@@ -52,7 +52,7 @@ export async function getUserDashboardResponse(): Promise<DashboardResponse> {
 export async function getUserMoodResponse(
   moodRequest: MoodRequest
 ): Promise<DashboardResponse> {
-  const response = await httpClient.post("/user", moodRequest);
+  const response = await httpClient.post("/user/mood", moodRequest);
   return response.data;
 }
 
