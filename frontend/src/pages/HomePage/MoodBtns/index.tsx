@@ -66,8 +66,8 @@ function MoodBtns(props: {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [timerId, setTimerId] = useState(null);
 
-  const handleClick = (mood: MoodValue) => {
-    props.onClick(mood);
+  const handleClick = async (mood: MoodValue) => {
+    await props.onClick(mood);
     onOpen();
     const id = setTimeout(onClose, 5000);
     setTimerId(id);
