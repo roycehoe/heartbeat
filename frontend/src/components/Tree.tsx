@@ -89,13 +89,15 @@ function Tree(props: {
       height="100%"
       maxWidth="500px"
       maxHeight="500px"
-      backgroundImage="url('/src/assets/tree/adult-tree-with-flowers.svg')"
+      backgroundImage={`url('${
+        TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]
+      }')`}
       backgroundSize="contain"
       backgroundRepeat="no-repeat"
       position="relative"
       backgroundPosition="center right"
     >
-      <Gifts claimableGifts={props.claimableGifts}></Gifts>
+      {isShowGifts ? <Gifts claimableGifts={props.claimableGifts}></Gifts> : ""}
     </Box>
   );
 }
