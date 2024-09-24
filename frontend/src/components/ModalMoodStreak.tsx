@@ -40,7 +40,9 @@ function ModalMoodStreak({
           alignItems="center"
           borderRadius="30px"
         >
-          <Box height="300px">Some image goes here. It is big</Box>
+          <Box bg="brand.secondary.200">
+            <img src="/src/assets/celebrate.jpg"></img>
+          </Box>
           <Box>
             <Text
               fontWeight="600"
