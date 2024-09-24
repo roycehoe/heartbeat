@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { MOCK_DASHBOARD_API_RESPONSE } from "../../api/constants";
 import Display from "./Display";
-import EmotionBtns from "./EmotionBtns";
+import MoodBtns from "./MoodBtns";
 
 function HomePage() {
   return (
@@ -26,7 +26,7 @@ function HomePage() {
         className="page--group"
       >
         <Display dashboardData={MOCK_DASHBOARD_API_RESPONSE}></Display>
-        <EmotionBtns></EmotionBtns>
+        <MoodBtns></MoodBtns>
       </Box>
     </Box>
   );
