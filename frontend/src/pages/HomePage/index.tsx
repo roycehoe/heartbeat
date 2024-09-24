@@ -38,17 +38,13 @@ function HomePage() {
   }, [currentIndex]);
 
   const onMoodButtonClick = async (mood: MoodValue) => {
-    setIsLoading(true);
     const userMoodResponse = await getUserMoodResponse({ mood: mood });
     setDashboardData(userMoodResponse);
-    setIsLoading(false);
   };
 
   const onClaimGiftBtnClick = async () => {
-    setIsLoading(true);
     const userClaimGiftResponse = await getUserClaimGiftResponse();
     setDashboardData(userClaimGiftResponse);
-    setIsLoading(false);
   };
 
   const incrementIndex = () => {

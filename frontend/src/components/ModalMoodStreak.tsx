@@ -41,7 +41,7 @@ function ModalMoodStreak({
           borderRadius="30px"
         >
           <Box bg="brand.secondary.200">
-            <img src="/src/assets/celebrate.jpg"></img>
+            <img src="/src/assets/celebrate.png"></img>
           </Box>
           <Box>
             <Text
