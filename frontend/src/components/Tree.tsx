@@ -12,10 +12,7 @@ const TREE_DISPLAY_STATE_TO_SVG_LINK = {
     "/src/assets/tree/adult-tree-with-flowers-and-gifts.svg",
 };
 
-function Tree(props: {
-  treeDisplayState: TreeDisplayState;
-  claimableGifts: number;
-}) {
+function Gifts(props: { claimableGifts: number }) {
   const [gifts, setGifts] = useState({
     leftFlower: props.claimableGifts > 0,
     topFlower: props.claimableGifts > 1,
@@ -27,6 +24,60 @@ function Tree(props: {
   ) => {
     setGifts((prev) => ({ ...prev, [flower]: false }));
   };
+
+  return (
+    <div>
+      <div>
+        {gifts.leftFlower && (
+          <button
+            style={{
+              position: "absolute",
+              left: "600px",
+              top: "100px",
+            }}
+            onClick={() => handleGiftClick("leftFlower")}
+          >
+            <img src={"/src/assets/gift.svg"} className="left-flower"></img>
+          </button>
+        )}
+
+        {gifts.topFlower && (
+          <button
+            style={{
+              position: "absolute",
+              top: "200px",
+              left: "400px",
+            }}
+            onClick={() => handleGiftClick("topFlower")}
+          >
+            <img src={"/src/assets/gift.svg"} className="top-flower"></img>
+          </button>
+        )}
+
+        {gifts.rightFlower && (
+          <button
+            style={{
+              position: "absolute",
+              top: "300px",
+              left: "800px",
+            }}
+            onClick={() => handleGiftClick("rightFlower")}
+          >
+            <img className="right-flower" src={"/src/assets/gift.svg"}></img>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Tree(props: {
+  treeDisplayState: TreeDisplayState;
+  claimableGifts: number;
+}) {
+  const isShowGifts =
+    props.treeDisplayState ===
+    TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS;
 
   return (
     <Box
@@ -44,46 +95,7 @@ function Tree(props: {
         style={{ height: "100%" }}
         src={TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]}
       ></img>
-
-      {/* Conditionally render the buttons based on state */}
-      {gifts.leftFlower && (
-        <button
-          style={{
-            position: "absolute",
-            left: "600px",
-            top: "100px",
-          }}
-          onClick={() => handleGiftClick("leftFlower")}
-        >
-          <img src={"/src/assets/gift.svg"} className="left-flower"></img>
-        </button>
-      )}
-
-      {gifts.topFlower && (
-        <button
-          style={{
-            position: "absolute",
-            top: "200px",
-            left: "400px",
-          }}
-          onClick={() => handleGiftClick("topFlower")}
-        >
-          <img src={"/src/assets/gift.svg"} className="top-flower"></img>
-        </button>
-      )}
-
-      {gifts.rightFlower && (
-        <button
-          style={{
-            position: "absolute",
-            top: "300px",
-            left: "800px",
-          }}
-          onClick={() => handleGiftClick("rightFlower")}
-        >
-          <img className="right-flower" src={"/src/assets/gift.svg"}></img>
-        </button>
-      )}
+      {isShowGifts ? <Gifts claimableGifts={props.claimableGifts}></Gifts> : ""}
     </Box>
   );
 }
