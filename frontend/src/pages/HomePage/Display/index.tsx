@@ -21,6 +21,8 @@ function Display(props: { dashboardData: DashboardResponse }) {
         <Box
           bg="skin.2base"
           className="dashboard--top--left"
+          display="flex"
+          justifyContent="flex-end"
           width="100%"
           height="100%"
         >

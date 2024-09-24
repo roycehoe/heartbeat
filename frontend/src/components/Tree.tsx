@@ -81,21 +81,18 @@ function Tree(props: {
 
   return (
     <Box
-      display="flex"
-      flexDirection="row"
-      justifyContent="flex-end"
-      alignItems="center"
-      gap={1}
-      width="100%"
-      height="100%"
-      maxHeight="500px"
+      display="grid"
+      gridTemplateColumns="repeat(10, 1fr)"
+      gridTemplateRows="repeat(10, 1fr)"
+      backgroundImage="url('/src/assets/tree/adult-tree-with-flowers.svg')"
+      backgroundSize="contain"
+      // height="100%"
+      // width="100%"
+      backgroundRepeat="no-repeat"
+      position="relative"
+      backgroundPosition="center right"
     >
-      <div style={{ position: "relative", display: "inline-block" }}></div>
-      <img
-        style={{ height: "100%" }}
-        src={TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]}
-      ></img>
-      {isShowGifts ? <Gifts claimableGifts={props.claimableGifts}></Gifts> : ""}
+      Hello
     </Box>
   );
 }
