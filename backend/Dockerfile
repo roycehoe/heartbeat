@@ -25,4 +25,4 @@ RUN poetry config virtualenvs.create false &&\
 
 EXPOSE 8000
 
-CMD fastapi run main.py
+CMD fastapi run --port 80 main.py
