@@ -4,3 +4,12 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"

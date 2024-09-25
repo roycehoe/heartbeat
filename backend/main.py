@@ -36,7 +36,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -55,6 +55,14 @@ def startup_event():
 ###################################
 # ADMIN
 ###################################
+
+
+@app.get(
+    "/healthcheck",
+    status_code=status.HTTP_200_OK,
+)
+def healthcheck():
+    return "success"
 
 
 @app.post(
