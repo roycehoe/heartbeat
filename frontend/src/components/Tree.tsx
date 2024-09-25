@@ -17,6 +17,7 @@ const TREE_DISPLAY_STATE_TO_SVG_LINK = {
 function Gifts(props: {
   claimableGifts: number;
   onClaimGiftsBtnClick: () => Promise<void>;
+  isHidden: boolean;
 }) {
   const [gifts, setGifts] = useState({
     leftFlower: props.claimableGifts > 0,
@@ -32,14 +33,15 @@ function Gifts(props: {
   };
 
   return (
-    <div>
+    <div hidden={props.isHidden}>
       <div>
         {gifts.leftFlower && (
           <button
             style={{
               position: "absolute",
               top: "20%",
-              left: "30%",
+              left: "20%",
+              width: "30%",
             }}
             onClick={() => handleGiftClick("leftFlower")}
           >
@@ -52,7 +54,8 @@ function Gifts(props: {
             style={{
               position: "absolute",
               top: "0%",
-              left: "50%",
+              left: "40%",
+              width: "30%",
             }}
             onClick={() => handleGiftClick("topFlower")}
           >
@@ -65,7 +68,8 @@ function Gifts(props: {
             style={{
               position: "absolute",
               top: "40%",
-              left: "70%",
+              left: "50%",
+              width: "20%",
             }}
             onClick={() => handleGiftClick("rightFlower")}
           >
@@ -83,8 +87,8 @@ function Tree(props: {
   onClaimGiftBtnClick: () => Promise<void>;
   coinCount: number;
 }) {
-  const isShowGifts =
-    props.treeDisplayState ===
+  const isHideGifts =
+    props.treeDisplayState !==
     TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS;
   return (
     <Box
@@ -102,15 +106,8 @@ function Tree(props: {
       <Gifts
         claimableGifts={props.claimableGifts}
         onClaimGiftsBtnClick={props.onClaimGiftBtnClick}
+        isHidden={isHideGifts}
       ></Gifts>
-      {/* {isShowGifts ? (
-        <Gifts
-          claimableGifts={props.claimableGifts}
-          onClaimGiftsBtnClick={props.onClaimGiftBtnClick}
-        ></Gifts>
-      ) : (
-        ""
-      )} */}
     </Box>
   );
 }
