@@ -38,7 +38,7 @@ function Gifts(props: {
             style={{
               position: "absolute",
               top: "20%",
-              left: "0%",
+              left: "30%",
             }}
             onClick={() => handleGiftClick("leftFlower")}
           >
@@ -51,7 +51,7 @@ function Gifts(props: {
             style={{
               position: "absolute",
               top: "0%",
-              left: "20%",
+              left: "50%",
             }}
             onClick={() => handleGiftClick("topFlower")}
           >
