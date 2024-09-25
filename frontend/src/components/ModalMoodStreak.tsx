@@ -36,12 +36,15 @@ function ModalMoodStreak({
           display="flex"
           flexDirection="column"
           justifyContent="space-evenly"
-          bg="brand.primary.200"
           alignItems="center"
-          borderRadius="30px"
+          margin="30px"
+          borderRadius="300px"
         >
-          <Box bg="brand.secondary.200">
-            <img src="/assets/celebrate.png"></img>
+          <Box>
+            <img
+              style={{ maxHeight: "250px" }}
+              src="/assets/celebrate.png"
+            ></img>
           </Box>
           <Box>
             <Text

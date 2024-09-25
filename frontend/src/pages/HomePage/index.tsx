@@ -63,7 +63,6 @@ function HomePage() {
         height="100vh"
         display="flex"
         flexDirection="column"
-        bg="brand.primary.400"
         className="page"
       ></Box>
     );
@@ -74,14 +73,12 @@ function HomePage() {
       height="100%"
       display="flex"
       flexDirection="column"
-      bg="brand.primary.400"
       className="page"
     >
       <Fade in={!isLoading} style={{ width: "100%", height: "100%" }}>
         <Box
           display="flex"
           flexDirection="column"
-          bg="brand.secondary.400"
           paddingX="56px"
           paddingTop="68px"
           paddingBottom="32px"

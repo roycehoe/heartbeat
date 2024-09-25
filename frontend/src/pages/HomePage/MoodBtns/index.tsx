@@ -69,7 +69,7 @@ function MoodBtns(props: {
   const handleClick = async (mood: MoodValue) => {
     await props.onClick(mood);
     onOpen();
-    const id = setTimeout(onClose, 5000);
+    const id = setTimeout(onClose, 500000);
     setTimerId(id);
   };
 
@@ -81,7 +81,6 @@ function MoodBtns(props: {
   return (
     <Box
       display="flex"
-      bg="green.400"
       className="dashboard--bottom"
       justifyContent="space-between"
       gap="48px"
@@ -90,7 +89,7 @@ function MoodBtns(props: {
     >
       {MOOD_BTN_PROPS.map((prop) => {
         return (
-          <Box width="100%" bg="red.200">
+          <Box width="100%">
             <MoodBtn
               onClick={() => handleClick(prop.value)}
               icon={prop.icon}

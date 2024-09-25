@@ -12,7 +12,7 @@ function MoodBtn(props: {
   isDisabled: boolean;
 }) {
   return (
-    <Button
+    <button
       isDisabled={props.isDisabled}
       className="pushable"
       onClick={props.onClick}
@@ -34,7 +34,7 @@ function MoodBtn(props: {
       >
         {props.icon}
       </span>
-    </Button>
+    </button>
   );
 }
 
