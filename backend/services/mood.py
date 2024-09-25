@@ -7,10 +7,10 @@ from enums import SelectedMood, TreeDisplayState
 from exceptions import DBException, NoRecordFoundException
 from gateway import send_sad_user_notification_message
 from models import Mood
-from schemas import DashboardOut, MoodIn, MoodOut, MoodRequest
+from schemas import MoodIn, MoodOut, MoodRequest
 from utils.token import get_token_data
 
-SHOULD_ALERT_CAREGIVER_CRITERION = 5
+SHOULD_ALERT_CAREGIVER_CRITERION = 2
 DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED = 10
 DEFAULT_BONUS_COINS = 250
 DEFAULT_MOOD_MESSAGES = (
@@ -177,7 +177,9 @@ async def get_create_user_mood_response(
 
         if _should_alert_caregiver(user_id, db):
             user = CRUDUser(db).get(user_id)
-            await send_sad_user_notification_message(user.email, 5)
+            await send_sad_user_notification_message(
+                user.email, SHOULD_ALERT_CAREGIVER_CRITERION
+            )
 
         updated_user = CRUDUser(db).get(user_id)
         moods = CRUDMood(db).get_by({"user_id": user_id})

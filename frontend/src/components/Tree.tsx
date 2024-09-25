@@ -1,5 +1,4 @@
 import { Box } from "@chakra-ui/react";
-import { Button } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { TreeDisplayState } from "../api/user";
 import Coins from "./Coins";
