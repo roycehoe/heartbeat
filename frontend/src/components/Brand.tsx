@@ -10,14 +10,11 @@ function Brand(props: { goToNextUser: () => void }) {
       alignItems="center"
       gap={1}
     >
-      <img
-        onClick={props.goToNextUser}
-        src="/src/assets/logo-heartbeat.svg"
-      ></img>
+      <img onClick={props.goToNextUser} src="/assets/logo-heartbeat.svg"></img>
       <Text fontWeight={800}>|</Text>
       <img
         onClick={async () => await resetDB()}
-        src="/src/assets/logo-bfg.svg"
+        src="/assets/logo-bfg.svg"
       ></img>
     </Box>
   );

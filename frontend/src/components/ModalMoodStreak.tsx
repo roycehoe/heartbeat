@@ -41,7 +41,7 @@ function ModalMoodStreak({
           borderRadius="30px"
         >
           <Box bg="brand.secondary.200">
-            <img src="/src/assets/celebrate.png"></img>
+            <img src="/assets/celebrate.png"></img>
           </Box>
           <Box>
             <Text
@@ -74,11 +74,7 @@ function ModalMoodStreak({
                 <Tr>
                   {tickData.map((hasTick, index) => (
                     <Td key={index} textAlign="center">
-                      {hasTick ? (
-                        <img src="/src/assets/checkbox.svg"></img>
-                      ) : (
-                        ""
-                      )}
+                      {hasTick ? <img src="/assets/checkbox.svg"></img> : ""}
                     </Td>
                   ))}
                 </Tr>

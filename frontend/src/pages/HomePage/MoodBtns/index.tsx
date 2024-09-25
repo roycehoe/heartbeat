@@ -7,7 +7,7 @@ import MoodBtn from "../../../components/MoodBtn";
 
 const MOOD_BTN_PROPS = [
   {
-    icon: <img src="/src/assets/happy.svg"></img>,
+    icon: <img src="/assets/happy.svg"></img>,
     value: MoodValue.HAPPY,
     bg: "hsl(140, 65%, 41%)",
     bgLinearGradient:
@@ -17,7 +17,7 @@ const MOOD_BTN_PROPS = [
       "linear-gradient(to left, hsl(220, 9%, 77%) 0%, hsl(220, 9%, 87%) 50%, hsl(220, 9%, 97%) 100%)",
   },
   {
-    icon: <img src="/src/assets/ok.svg"></img>,
+    icon: <img src="/assets/ok.svg"></img>,
     value: MoodValue.OK,
     bg: "hsl(33, 91%, 58%)",
     bgLinearGradient:
@@ -27,7 +27,7 @@ const MOOD_BTN_PROPS = [
       "linear-gradient(to left, hsl(220, 9%, 77%) 0%, hsl(220, 9%, 87%) 50%, hsl(220, 9%, 97%) 100%)",
   },
   {
-    icon: <img src="/src/assets/sad.svg"></img>,
+    icon: <img src="/assets/sad.svg"></img>,
     value: MoodValue.SAD,
     bg: "hsl(343, 79%, 64%)",
     bgLinearGradient:

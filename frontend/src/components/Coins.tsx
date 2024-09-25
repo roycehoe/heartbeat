@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 function Coins(props: { coinCount: number }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement>(
-    new Audio("/src/assets/alarm.mp3")
+    new Audio("/assets/alarm.mp3")
   );
 
   useEffect(() => {
-    const audioElement = new Audio("/src/assets/alarm.mp3");
+    const audioElement = new Audio("/assets/alarm.mp3");
     setAudio(audioElement);
 
     return () => {
@@ -39,7 +39,7 @@ function Coins(props: { coinCount: number }) {
     <Box display="flex" flexDirection="column">
       <Box display="flex" alignItems="center" gap="12px">
         <button onClick={toggleAlarm}>
-          <img src="/src/assets/coin.svg"></img>
+          <img src="/assets/coin.svg"></img>
         </button>
         <Text fontWeight={800}>{props.coinCount}</Text>
       </Box>

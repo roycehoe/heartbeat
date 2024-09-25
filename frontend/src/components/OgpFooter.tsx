@@ -11,7 +11,7 @@ function OgpFooter() {
       mr="24px"
     >
       <p>Built by</p>
-      <img src="/src/assets/ogp-logo.svg"></img>
+      <img src="/assets/ogp-logo.svg"></img>
     </Box>
   );
 }

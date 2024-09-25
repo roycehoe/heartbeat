@@ -4,13 +4,13 @@ import { TreeDisplayState } from "../api/user";
 import Coins from "./Coins";
 
 const TREE_DISPLAY_STATE_TO_SVG_LINK = {
-  [TreeDisplayState.SEEDLING]: "/src/assets/tree/seedling.svg",
-  [TreeDisplayState.TEEN_TREE]: "/src/assets/tree/teen-tree.svg",
-  [TreeDisplayState.ADULT_TREE]: "/src/assets/tree/adult-tree.svg",
+  [TreeDisplayState.SEEDLING]: "/assets/tree/seedling.svg",
+  [TreeDisplayState.TEEN_TREE]: "/assets/tree/teen-tree.svg",
+  [TreeDisplayState.ADULT_TREE]: "/assets/tree/adult-tree.svg",
   [TreeDisplayState.ADULT_TREE_WITH_FLOWERS]:
-    "/src/assets/tree/adult-tree-with-flowers.svg",
+    "/assets/tree/adult-tree-with-flowers.svg",
   [TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS]:
-    "/src/assets/tree/adult-tree-with-flowers-and-gifts.svg",
+    "/assets/tree/adult-tree-with-flowers-and-gifts.svg",
 };
 
 function Gifts(props: {
@@ -44,7 +44,7 @@ function Gifts(props: {
             }}
             onClick={() => handleGiftClick("leftFlower")}
           >
-            <img src={"/src/assets/gift.svg"} className="left-flower"></img>
+            <img src={"/assets/gift.svg"} className="left-flower"></img>
           </button>
         )}
 
@@ -58,7 +58,7 @@ function Gifts(props: {
             }}
             onClick={() => handleGiftClick("topFlower")}
           >
-            <img src={"/src/assets/gift.svg"} className="top-flower"></img>
+            <img src={"/assets/gift.svg"} className="top-flower"></img>
           </button>
         )}
 
@@ -72,7 +72,7 @@ function Gifts(props: {
             }}
             onClick={() => handleGiftClick("rightFlower")}
           >
-            <img className="right-flower" src={"/src/assets/gift.svg"}></img>
+            <img className="right-flower" src={"/assets/gift.svg"}></img>
           </button>
         )}
       </div>
