@@ -11,11 +11,18 @@ function Display(props: {
   onClaimGiftBtnClick: () => Promise<void>;
 }) {
   return (
-    <Box display="flex" bg="green.400" className="dashboard--top" height="100%">
+    <Box
+      display="flex"
+      bg="green.400"
+      className="dashboard--top"
+      height="100%"
+      width="100%"
+    >
       <Box
         bg="yellow.400"
         className="dashboard--top--left"
         width="50%"
+        height="100%"
         display="flex"
         gap="42px"
       >
@@ -23,12 +30,12 @@ function Display(props: {
           <Coins coinCount={props.dashboardData.coins}></Coins>
         </Box>
         <Box
+          height="100%"
+          width="100%"
           bg="skin.2base"
           className="dashboard--top--left"
           display="flex"
           justifyContent="flex-end"
-          width="100%"
-          height="100%"
         >
           <Tree
             treeDisplayState={props.dashboardData.tree_display_state}

@@ -70,21 +70,21 @@ function HomePage() {
   }
   return (
     <Box
-      width="100vw"
-      height="100vh"
+      width="100%"
+      height="100%"
       display="flex"
       flexDirection="column"
       bg="brand.primary.400"
       className="page"
     >
-      <Fade in={!isLoading}>
+      <Fade in={!isLoading} style={{ width: "100%", height: "100%" }}>
         <Box
           display="flex"
           flexDirection="column"
           bg="brand.secondary.400"
-          marginX="56px"
-          marginTop="68px"
-          marginBottom="32px"
+          paddingX="56px"
+          paddingTop="68px"
+          paddingBottom="32px"
           gap="60px"
           justifyContent="space-between"
           height="100%"
