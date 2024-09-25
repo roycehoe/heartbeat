@@ -24,12 +24,17 @@ function Display(props: {
         width="50%"
         height="100%"
         display="flex"
-        gap="42px"
       >
-        <Box bg="skin.2base" className="dashboard--top--left" minWidth="96px">
+        {/* <Box bg="skin.2base" className="dashboard--top--left" minWidth="96px">
           <Coins coinCount={props.dashboardData.coins}></Coins>
-        </Box>
-        <Box
+        </Box> */}
+        <Tree
+          treeDisplayState={props.dashboardData.tree_display_state}
+          claimableGifts={props.dashboardData.claimable_gifts}
+          onClaimGiftBtnClick={props.onClaimGiftBtnClick}
+          coinCount={props.dashboardData.coins}
+        ></Tree>
+        {/* <Box
           height="100%"
           width="100%"
           bg="skin.2base"
@@ -37,12 +42,7 @@ function Display(props: {
           display="flex"
           justifyContent="flex-end"
         >
-          <Tree
-            treeDisplayState={props.dashboardData.tree_display_state}
-            claimableGifts={props.dashboardData.claimable_gifts}
-            onClaimGiftBtnClick={props.onClaimGiftBtnClick}
-          ></Tree>
-        </Box>
+        </Box> */}
       </Box>
       <Box
         bg="red.400"

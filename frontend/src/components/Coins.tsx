@@ -36,18 +36,13 @@ function Coins(props: { coinCount: number }) {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      justifyContent="flex-end"
-      gap="8px"
-      alignItems="center"
-      mr="24px"
-    >
-      <button onClick={toggleAlarm}>
-        <img src="/src/assets/coin.svg"></img>
-      </button>
-      <Text fontWeight={800}>{props.coinCount}</Text>
+    <Box display="flex" flexDirection="column">
+      <Box display="flex" alignItems="center" gap="12px">
+        <button onClick={toggleAlarm}>
+          <img src="/src/assets/coin.svg"></img>
+        </button>
+        <Text fontWeight={800}>{props.coinCount}</Text>
+      </Box>
     </Box>
   );
 }

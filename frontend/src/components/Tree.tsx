@@ -2,6 +2,7 @@ import { Box } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { TreeDisplayState } from "../api/user";
+import Coins from "./Coins";
 
 const TREE_DISPLAY_STATE_TO_SVG_LINK = {
   [TreeDisplayState.SEEDLING]: "/src/assets/tree/seedling.svg",
@@ -80,26 +81,24 @@ function Tree(props: {
   treeDisplayState: TreeDisplayState;
   claimableGifts: number;
   onClaimGiftBtnClick: () => Promise<void>;
+  coinCount: number;
 }) {
   const isShowGifts =
     props.treeDisplayState ===
     TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS;
-
   return (
     <Box
-      display="grid"
-      gridTemplateColumns="repeat(10, 1fr)"
-      gridTemplateRows="repeat(10, 1fr)"
+      display="flex"
       width="100%"
       height="100%"
       backgroundImage={`url('${
         TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]
       }')`}
-      backgroundSize="contain"
+      backgroundSize="cover"
       backgroundRepeat="no-repeat"
       position="relative"
-      backgroundPosition="center right"
     >
+      <Coins coinCount={props.coinCount}></Coins>
       <Gifts
         claimableGifts={props.claimableGifts}
         onClaimGiftsBtnClick={props.onClaimGiftBtnClick}
