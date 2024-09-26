@@ -7,8 +7,8 @@ import MoodBtn from "../../../components/MoodBtn";
 
 const MOOD_BTN_PROPS = [
   {
-    icon: <img src="/assets/happy.svg"></img>,
-    isDisabledIcon: <img src="/assets/happy.svg"></img>,
+    icon: <img src="/assets/button/happy.svg"></img>,
+    isDisabledIcon: <img src="/assets/button/happy-inactive.svg"></img>,
     value: MoodValue.HAPPY,
     bg: "hsl(140, 65%, 41%)",
     bgLinearGradient:
@@ -18,8 +18,8 @@ const MOOD_BTN_PROPS = [
       "linear-gradient(to left, hsl(220, 9%, 77%) 0%, hsl(220, 9%, 87%) 50%, hsl(220, 9%, 97%) 100%)",
   },
   {
-    icon: <img src="/assets/ok.svg"></img>,
-    isDisabledIcon: <img src="/assets/ok.svg"></img>,
+    icon: <img src="/assets/button/ok.svg"></img>,
+    isDisabledIcon: <img src="/assets/button/ok-inactive.svg"></img>,
     value: MoodValue.OK,
     bg: "hsl(33, 91%, 58%)",
     bgLinearGradient:
@@ -29,8 +29,8 @@ const MOOD_BTN_PROPS = [
       "linear-gradient(to left, hsl(220, 9%, 77%) 0%, hsl(220, 9%, 87%) 50%, hsl(220, 9%, 97%) 100%)",
   },
   {
-    icon: <img src="/assets/sad.svg"></img>,
-    isDisabledIcon: <img src="/assets/sad.svg"></img>,
+    icon: <img src="/assets/button/sad.svg"></img>,
+    isDisabledIcon: <img src="/assets/button/sad-inactive.svg"></img>,
     value: MoodValue.SAD,
     bg: "hsl(343, 79%, 64%)",
     bgLinearGradient:

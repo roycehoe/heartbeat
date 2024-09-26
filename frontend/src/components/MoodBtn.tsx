@@ -34,7 +34,7 @@ function MoodBtn(props: {
         className="front"
         style={{ background: props.isDisabled ? props.bgDisabled : props.bg }}
       >
-        {props.isDisabled ? props.icon : props.isDisabledIcon}
+        {props.isDisabled ? props.isDisabledIcon : props.icon}
       </span>
     </button>
   );
