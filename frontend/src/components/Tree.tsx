@@ -89,6 +89,11 @@ function Tree(props: {
   const isHideGifts =
     props.treeDisplayState !==
     TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS;
+
+  // PLACEHOLDER UNTIL ALL GIFS ARE AVAILABLE
+  const isUsingGif =
+    TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState].slice(-3) === "gif";
+
   return (
     <Box
       display="flex"
@@ -100,7 +105,7 @@ function Tree(props: {
       backgroundSize="cover"
       backgroundRepeat="no-repeat"
       position="relative"
-      backgroundPosition="center"
+      backgroundPosition={isUsingGif ? "center" : ""}
       backgroundColor="transparent"
     >
       <Coins coinCount={props.coinCount}></Coins>

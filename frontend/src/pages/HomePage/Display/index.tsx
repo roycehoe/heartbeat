@@ -2,7 +2,6 @@ import { Box } from "@chakra-ui/react";
 import { DashboardResponse } from "../../../api/user";
 import Brand from "../../../components/Brand";
 import CalendarDateRange from "../../../components/CalendarDateRange";
-import Coins from "../../../components/Coins";
 import Tree from "../../../components/Tree";
 
 function Display(props: {

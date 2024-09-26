@@ -92,14 +92,14 @@ function MoodBtns(props: {
   const [timerId, setTimerId] = useState(null);
 
   const handleClick = async (mood: MoodValue) => {
-    setClickedMood(clickedMood);
+    setClickedMood(mood);
     await props.onClick(mood);
     setIsShowMoodMessage(true);
     await new Promise((r) => setTimeout(r, 5000));
     setIsShowMoodMessage(false);
 
     onOpen();
-    const id = setTimeout(onClose, 400000000);
+    const id = setTimeout(onClose, 4000);
     setTimerId(id);
   };
 

@@ -36,7 +36,7 @@ function Coins(props: { coinCount: number }) {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Box display="flex" flexDirection="column" margin="24px">
       <Box display="flex" alignItems="center" gap="12px">
         <button onClick={toggleAlarm}>
           <img src="/assets/coin.svg"></img>
