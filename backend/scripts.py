@@ -13,45 +13,37 @@ from utils.hashing import hash_password
 
 
 def _generate_mood_data_compliant_user(
-    user_id=1, end_date=datetime.now() - timedelta(days=1), num_days=24
+    user_id=1,
+    start_date=datetime(year=2024, month=9, day=2),
+    end_date=datetime.now() - timedelta(days=1),
 ):
     moods = []
-    mood_options = ["happy", "ok"]
-
-    for day_offset in range(num_days):
-        mood_date = end_date - timedelta(days=day_offset)
-        mood = choice(mood_options)
-
-        mood_data = {
-            "user_id": user_id,
-            "mood": mood,
-            "created_at": mood_date,
-        }
-
-        moods.append(mood_data)
-
+    delta = end_date - start_date
+    for day_offset in range(delta.days + 1):
+        moods.append(
+            {
+                "user_id": user_id,
+                "mood": choice(["happy", "ok"]),
+                "created_at": start_date + timedelta(days=day_offset),
+            }
+        )
     return moods
 
 
 def _generate_mood_data_4_consecutive_sad(
-    user_id=2, end_date=datetime.now() - timedelta(days=1), num_days=24
+    user_id=2,
+    start_date=datetime(year=2024, month=9, day=3),
+    end_date=datetime.now() - timedelta(days=1),
 ):
-    happy_or_ok_mood_options = ["happy", "ok"]  # First 20 days
-    sad_mood = "sad"  # Last 4 days
     moods = []
+    delta = end_date - start_date
 
-    for day_offset in range(num_days):
-        mood_date = end_date - timedelta(days=day_offset)
-
-        if day_offset < 4:  # Most recent 4 days should be "sad"
-            mood = sad_mood
-        else:  # First 20 days should be randomly "happy" or "ok"
-            mood = choice(happy_or_ok_mood_options)
-
+    for day_offset in range(delta.days + 1):
         mood_data = {
             "user_id": user_id,
-            "mood": mood,
-            "created_at": mood_date,
+            # Last 4 days should be sad
+            "mood": choice(["happy", "ok"]) if day_offset < 4 else "sad",
+            "created_at": start_date + timedelta(days=day_offset),
         }
 
         moods.append(mood_data)
@@ -61,30 +53,22 @@ def _generate_mood_data_4_consecutive_sad(
 
 def _generate_mood_data_non_compliant_user(
     user_id=3,
+    start_date=datetime(year=2024, month=9, day=4),
     end_date=datetime.now() - timedelta(days=1),
-    num_days=24,
-    non_compliant_day_count=5,
 ):
-    moods = []
-    mood_options = ["happy", "ok", "sad"]
-
-    start_date = end_date - timedelta(days=num_days)
-    mood_dates = [(start_date + timedelta(days=i)) for i in range(num_days + 1)]
-    dates_to_remove = sample(mood_dates, non_compliant_day_count)
-    for date_to_remove in dates_to_remove:
-        mood_dates.remove(date_to_remove)
-
-    for mood_date in mood_dates:
-        mood = choice(mood_options)
-        mood_data = {
-            "user_id": user_id,
-            "mood": mood,
-            "created_at": mood_date,
-        }
-
-        moods.append(mood_data)
-
-    return moods
+    mood_data_compliant_user = _generate_mood_data_compliant_user(
+        user_id, start_date, end_date
+    )
+    # We want to retain the first date for frontend rendering purposes to show that this is the third user
+    mood_data_to_remove = sample(mood_data_compliant_user[1:], 5)
+    return [
+        mood_data_compliant_user[0],
+        *[
+            mood_data
+            for mood_data in mood_data_compliant_user
+            if mood_data not in mood_data_to_remove
+        ],
+    ]
 
 
 def _generate_mood_data() -> list[dict]:
