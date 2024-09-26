@@ -1,4 +1,4 @@
-import { Box, useDisclosure } from "@chakra-ui/react";
+import { Box, SlideFade, useDisclosure } from "@chakra-ui/react";
 import moment, { Moment } from "moment";
 import { useState } from "react";
 import { MoodValue } from "../../../api/user";
@@ -99,7 +99,7 @@ function MoodBtns(props: {
     setIsShowMoodMessage(false);
 
     onOpen();
-    const id = setTimeout(onClose, 5000);
+    const id = setTimeout(onClose, 4000);
     setTimerId(id);
   };
 
@@ -121,11 +121,18 @@ function MoodBtns(props: {
         maxHeight="218px"
         bg="#D7FFB8"
       >
-        <MoodMessage
-          bg={MOOD_MESSAGE_PROPS[clickedMood].bg}
-          bgLinearGradient={MOOD_MESSAGE_PROPS[clickedMood].bgLinearGradient}
-          message={props.moodMessage}
-        ></MoodMessage>
+        <SlideFade
+          in={isShowMoodMessage}
+          style={{ width: "100%" }}
+          // offsetY="px"
+          transition={{ enter: { duration: 0.5 }, exit: { duration: 1 } }}
+        >
+          <MoodMessage
+            bg={MOOD_MESSAGE_PROPS[clickedMood].bg}
+            bgLinearGradient={MOOD_MESSAGE_PROPS[clickedMood].bgLinearGradient}
+            message={props.moodMessage}
+          ></MoodMessage>
+        </SlideFade>
       </Box>
     );
   }
