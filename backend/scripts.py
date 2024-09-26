@@ -12,7 +12,9 @@ from models import Admin, Mood, User
 from utils.hashing import hash_password
 
 
-def _generate_mood_data_compliant_user(user_id=1, end_date=datetime.now(), num_days=24):
+def _generate_mood_data_compliant_user(
+    user_id=1, end_date=datetime.now() - timedelta(days=1), num_days=24
+):
     moods = []
     mood_options = ["happy", "ok"]
 
@@ -32,7 +34,7 @@ def _generate_mood_data_compliant_user(user_id=1, end_date=datetime.now(), num_d
 
 
 def _generate_mood_data_4_consecutive_sad(
-    user_id=2, end_date=datetime.now(), num_days=24
+    user_id=2, end_date=datetime.now() - timedelta(days=1), num_days=24
 ):
     happy_or_ok_mood_options = ["happy", "ok"]  # First 20 days
     sad_mood = "sad"  # Last 4 days
@@ -58,7 +60,10 @@ def _generate_mood_data_4_consecutive_sad(
 
 
 def _generate_mood_data_non_compliant_user(
-    user_id=3, end_date=datetime.now(), num_days=24, non_compliant_day_count=5
+    user_id=3,
+    end_date=datetime.now() - timedelta(days=1),
+    num_days=24,
+    non_compliant_day_count=5,
 ):
     moods = []
     mood_options = ["happy", "ok", "sad"]
