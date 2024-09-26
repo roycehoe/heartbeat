@@ -63,14 +63,20 @@ function getCheckedDaysBoolean(
 function MoodBtns(props: {
   isDisabled: boolean;
   moodsCreatedAt: Moment[];
+  moodMessage: string;
   streak: number;
   onClick: (mood: MoodValue) => Promise<void>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isShowMoodMessage, setIsShowMoodMessage] = useState(false);
   const [timerId, setTimerId] = useState(null);
 
   const handleClick = async (mood: MoodValue) => {
     await props.onClick(mood);
+    setIsShowMoodMessage(true);
+    await new Promise((r) => setTimeout(r, 5000));
+    setIsShowMoodMessage(false);
+
     onOpen();
     const id = setTimeout(onClose, 5000);
     setTimerId(id);
@@ -81,14 +87,32 @@ function MoodBtns(props: {
     onClose();
   };
 
+  if (isShowMoodMessage) {
+    return (
+      <Box
+        display="flex"
+        className="dashboard--bottom"
+        justifyContent="space-between"
+        paddingX="54px"
+        paddingY="18px"
+        gap="48px"
+        height="100%"
+        maxHeight="218px"
+        bg="#D7FFB8"
+      ></Box>
+    );
+  }
+
   return (
     <Box
       display="flex"
       className="dashboard--bottom"
       justifyContent="space-between"
+      paddingX="54px"
+      paddingY="18px"
       gap="48px"
       height="100%"
-      maxHeight="188px"
+      maxHeight="218px"
     >
       {MOOD_BTN_PROPS.map((prop) => {
         return (

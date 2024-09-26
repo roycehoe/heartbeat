@@ -94,10 +94,11 @@ function Tree(props: {
       display="flex"
       width="100%"
       height="100%"
-      maxWidth="580px"
+      // maxWidth="580px"
       backgroundImage={`url('${
         TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]
       }')`}
+      // backgroundSize="cover"
       backgroundSize="cover"
       backgroundRepeat="no-repeat"
       position="relative"

@@ -34,6 +34,10 @@ export interface DashboardResponse {
   consecutive_checkins: number;
 }
 
+interface MoodResponse extends DashboardResponse {
+  mood_message: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -51,7 +55,7 @@ export async function getUserDashboardResponse(): Promise<DashboardResponse> {
 
 export async function getUserMoodResponse(
   moodRequest: MoodRequest
-): Promise<DashboardResponse> {
+): Promise<MoodResponse> {
   const response = await httpClient.post("/user/mood", moodRequest);
   return response.data;
 }

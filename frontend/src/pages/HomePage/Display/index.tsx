@@ -16,10 +16,12 @@ function Display(props: {
       className="dashboard--top"
       height="100%"
       width="100%"
+      paddingRight="20px"
+      paddingLeft="52px"
     >
       <Box
         className="dashboard--top--left"
-        width="50%"
+        width="70%"
         height="100%"
         display="flex"
       >
@@ -34,8 +36,10 @@ function Display(props: {
         className="dashboard--top--right"
         display="flex"
         flexDirection="column"
-        width="50%"
+        justifyContent="space-evenly"
+        width="30%"
         gap="56px"
+        marginRight="36px"
       >
         <Box
           className="dashboard--top--right--brand"
@@ -49,7 +53,6 @@ function Display(props: {
           display="flex"
           justifyContent="flex-end"
           width="100%"
-          height="100%"
         >
           <CalendarDateRange
             dateRange={props.dashboardData.moods.map((mood) => {

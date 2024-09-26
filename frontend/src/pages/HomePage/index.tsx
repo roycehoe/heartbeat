@@ -19,6 +19,7 @@ function HomePage() {
     return storedIndex !== null ? Number(storedIndex) : 0;
   });
   const [dashboardData, setDashboardData] = useState<DashboardResponse>();
+  const [moodMessage, setMoodMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ function HomePage() {
 
   const onMoodButtonClick = async (mood: MoodValue) => {
     const userMoodResponse = await getUserMoodResponse({ mood: mood });
+    setMoodMessage(userMoodResponse.mood_message);
     setDashboardData(userMoodResponse);
   };
 
@@ -79,10 +81,6 @@ function HomePage() {
         <Box
           display="flex"
           flexDirection="column"
-          paddingX="56px"
-          paddingTop="68px"
-          paddingBottom="32px"
-          gap="60px"
           justifyContent="space-between"
           height="100%"
           className="page--group"
@@ -99,6 +97,7 @@ function HomePage() {
             )}
             streak={dashboardData.consecutive_checkins}
             onClick={onMoodButtonClick}
+            moodMessage={moodMessage}
           ></MoodBtns>
         </Box>
       </Fade>
