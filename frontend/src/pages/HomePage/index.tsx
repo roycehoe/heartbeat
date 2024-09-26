@@ -66,6 +66,7 @@ function HomePage() {
         display="flex"
         flexDirection="column"
         className="page"
+        bg="url('/assets/loading.svg')"
       ></Box>
     );
   }
