@@ -124,7 +124,6 @@ function MoodBtns(props: {
         <SlideFade
           in={isShowMoodMessage}
           style={{ width: "100%" }}
-          // offsetY="px"
           transition={{ enter: { duration: 0.5 }, exit: { duration: 1 } }}
         >
           <MoodMessage

@@ -27,7 +27,12 @@ function ModalMoodStreak({
   streak: number[];
 }) {
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} isCentered>
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      isCentered
+      motionPreset="slideInBottom"
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalBody
@@ -36,7 +41,6 @@ function ModalMoodStreak({
           justifyContent="space-evenly"
           alignItems="center"
           margin="30px"
-          borderRadius="300px"
         >
           <Box>
             <img
