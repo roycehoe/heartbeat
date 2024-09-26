@@ -98,8 +98,8 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user1@heartbeatmail.com",
             "password": hash_password("user1@heartbeatmail.com"),
             "name": "user1",
-            "coins": 0,
-            "tree_display_state": TreeDisplayState.SEEDLING,
+            "coins": 1500,
+            "tree_display_state": TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS,
             "consecutive_checkins": 5,
             "claimable_gifts": 3,
             "created_at": created_at,
@@ -111,8 +111,8 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user2@heartbeatmail.com",
             "password": hash_password("user2@heartbeatmail.com"),
             "name": "user2",
-            "coins": 0,
-            "tree_display_state": TreeDisplayState.SEEDLING,
+            "coins": 800,
+            "tree_display_state": TreeDisplayState.TEEN_TREE,
             "consecutive_checkins": 5,
             "claimable_gifts": 3,
             "created_at": created_at,
@@ -124,10 +124,10 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user3@heartbeatmail.com",
             "password": hash_password("user3@heartbeatmail.com"),
             "name": "user3",
-            "coins": 0,
+            "coins": 50,
             "tree_display_state": TreeDisplayState.SEEDLING,
-            "consecutive_checkins": 5,
-            "claimable_gifts": 3,
+            "consecutive_checkins": 0,
+            "claimable_gifts": 0,
             "created_at": created_at,
             "admin_id": 1,
             "can_record_mood": True,
@@ -145,6 +145,12 @@ def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
             "created_at": created_at,
         }
     ]
+
+
+def is_db_empty(db: Session) -> bool:
+    if len(CRUDMood(db).get_all()) == 0:
+        return True
+    return False
 
 
 def populate_db(db: Session) -> None:

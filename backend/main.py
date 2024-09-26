@@ -13,7 +13,7 @@ from schemas import (
     Token,
     UserCreateRequest,
 )
-from scripts import get_scheduler, populate_db, repopulate_db
+from scripts import get_scheduler, is_db_empty, populate_db, repopulate_db
 from services.account import (
     get_create_admin_response,
     get_create_caregiver_response,
@@ -47,7 +47,8 @@ app.add_middleware(
 def startup_event():
     db_session = next(get_db())
 
-    populate_db(db_session)
+    if is_db_empty(db_session):
+        populate_db(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()
 
