@@ -8,6 +8,7 @@ import MoodBtn from "../../../components/MoodBtn";
 const MOOD_BTN_PROPS = [
   {
     icon: <img src="/assets/happy.svg"></img>,
+    isDisabledIcon: <img src="/assets/happy.svg"></img>,
     value: MoodValue.HAPPY,
     bg: "hsl(140, 65%, 41%)",
     bgLinearGradient:
@@ -18,6 +19,7 @@ const MOOD_BTN_PROPS = [
   },
   {
     icon: <img src="/assets/ok.svg"></img>,
+    isDisabledIcon: <img src="/assets/ok.svg"></img>,
     value: MoodValue.OK,
     bg: "hsl(33, 91%, 58%)",
     bgLinearGradient:
@@ -28,6 +30,7 @@ const MOOD_BTN_PROPS = [
   },
   {
     icon: <img src="/assets/sad.svg"></img>,
+    isDisabledIcon: <img src="/assets/sad.svg"></img>,
     value: MoodValue.SAD,
     bg: "hsl(343, 79%, 64%)",
     bgLinearGradient:
@@ -93,6 +96,7 @@ function MoodBtns(props: {
             <MoodBtn
               onClick={() => handleClick(prop.value)}
               icon={prop.icon}
+              isDisabledIcon={prop.isDisabledIcon}
               isDisabled={props.isDisabled}
               bg={prop.bg}
               bgLinearGradient={prop.bgLinearGradient}
