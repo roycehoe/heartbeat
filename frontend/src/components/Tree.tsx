@@ -4,8 +4,8 @@ import { TreeDisplayState } from "../api/user";
 import Coins from "./Coins";
 
 const TREE_DISPLAY_STATE_TO_SVG_LINK = {
-  [TreeDisplayState.SEEDLING]: "/assets/tree/seedling.svg",
-  [TreeDisplayState.TEEN_TREE]: "/assets/tree/teen-tree.svg",
+  [TreeDisplayState.SEEDLING]: "/assets/tree/seedling.gif",
+  [TreeDisplayState.TEEN_TREE]: "/assets/tree/teen-tree.gif",
   [TreeDisplayState.ADULT_TREE]: "/assets/tree/adult-tree.svg",
   [TreeDisplayState.ADULT_TREE_WITH_FLOWERS]:
     "/assets/tree/adult-tree-with-flowers.svg",
@@ -94,14 +94,14 @@ function Tree(props: {
       display="flex"
       width="100%"
       height="100%"
-      // maxWidth="580px"
       backgroundImage={`url('${
         TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]
       }')`}
-      // backgroundSize="cover"
       backgroundSize="cover"
       backgroundRepeat="no-repeat"
       position="relative"
+      backgroundPosition="center"
+      backgroundColor="transparent"
     >
       <Coins coinCount={props.coinCount}></Coins>
       <Gifts
