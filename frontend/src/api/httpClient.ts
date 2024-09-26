@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-// const BASE_URL = "http://localhost:8000";
-const BASE_URL = "api/";
+const BASE_URL = import.meta.env.DEV ? "http://localhost:8000" : "api/";
 
 export const httpClient = axios.create({
   baseURL: BASE_URL,
