@@ -99,7 +99,7 @@ function MoodBtns(props: {
     setIsShowMoodMessage(false);
 
     onOpen();
-    const id = setTimeout(onClose, 4000);
+    const id = setTimeout(onClose, 400000000);
     setTimerId(id);
   };
 

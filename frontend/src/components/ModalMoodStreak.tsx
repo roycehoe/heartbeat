@@ -42,11 +42,24 @@ function ModalMoodStreak({
           alignItems="center"
           margin="30px"
         >
-          <Box>
+          <Box style={{ position: "relative" }}>
             <img
-              style={{ maxHeight: "250px" }}
-              src="/assets/celebrate.png"
-            ></img>
+              style={{
+                maxHeight: "250px",
+                width: "100%",
+              }}
+              src="/assets/celebration-banner/seedling.gif"
+            />
+            <Box
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                height: "100%",
+                width: "1%", // Hack to cover black bar for gif
+                backgroundColor: "white",
+              }}
+            />
           </Box>
           <Box>
             <Text
