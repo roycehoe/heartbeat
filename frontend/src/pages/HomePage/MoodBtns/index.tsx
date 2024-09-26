@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MoodValue } from "../../../api/user";
 import ModalMoodStreak from "../../../components/ModalMoodStreak";
 import MoodBtn from "../../../components/MoodBtn";
+import MoodMessage from "../../../components/MoodMessage";
 
 const MOOD_BTN_PROPS = [
   {
@@ -41,6 +42,24 @@ const MOOD_BTN_PROPS = [
   },
 ];
 
+const MOOD_MESSAGE_PROPS = {
+  [MoodValue.HAPPY]: {
+    bg: "hsl(140, 65%, 41%)",
+    bgLinearGradient:
+      "linear-gradient(to left, hsl(140, 65%, 30%) 0%, hsl(140, 65%, 41%) 50%, hsl(140, 65%, 55%) 100%)",
+  },
+  [MoodValue.OK]: {
+    bg: "hsl(33, 91%, 58%)",
+    bgLinearGradient:
+      "linear-gradient(to left, hsl(33, 91%, 45%) 0%, hsl(33, 91%, 58%) 50%, hsl(33, 91%, 70%) 100%)",
+  },
+  [MoodValue.SAD]: {
+    bg: "hsl(343, 79%, 64%)",
+    bgLinearGradient:
+      "linear-gradient(to left, hsl(343, 79%, 52%) 0%, hsl(343, 79%, 64%) 50%, hsl(343, 79%, 75%) 100%)",
+  },
+};
+
 function getDaysOfWeek(): Moment[] {
   const startOfWeek = moment().startOf("week");
 
@@ -69,9 +88,11 @@ function MoodBtns(props: {
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isShowMoodMessage, setIsShowMoodMessage] = useState(false);
+  const [clickedMood, setClickedMood] = useState(MoodValue.HAPPY);
   const [timerId, setTimerId] = useState(null);
 
   const handleClick = async (mood: MoodValue) => {
+    setClickedMood(clickedMood);
     await props.onClick(mood);
     setIsShowMoodMessage(true);
     await new Promise((r) => setTimeout(r, 5000));
@@ -99,7 +120,13 @@ function MoodBtns(props: {
         height="100%"
         maxHeight="218px"
         bg="#D7FFB8"
-      ></Box>
+      >
+        <MoodMessage
+          bg={MOOD_MESSAGE_PROPS[clickedMood].bg}
+          bgLinearGradient={MOOD_MESSAGE_PROPS[clickedMood].bgLinearGradient}
+          message={props.moodMessage}
+        ></MoodMessage>
+      </Box>
     );
   }
 
