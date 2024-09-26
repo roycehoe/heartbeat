@@ -72,7 +72,7 @@ function MoodBtns(props: {
   const handleClick = async (mood: MoodValue) => {
     await props.onClick(mood);
     onOpen();
-    const id = setTimeout(onClose, 500000);
+    const id = setTimeout(onClose, 5000);
     setTimerId(id);
   };
 
