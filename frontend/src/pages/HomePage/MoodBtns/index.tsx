@@ -44,16 +44,19 @@ const MOOD_BTN_PROPS = [
 
 const MOOD_MESSAGE_PROPS = {
   [MoodValue.HAPPY]: {
+    flexboxBg: "#D7FFB8",
     bg: "hsl(140, 65%, 41%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(140, 65%, 30%) 0%, hsl(140, 65%, 41%) 50%, hsl(140, 65%, 55%) 100%)",
   },
   [MoodValue.OK]: {
+    flexboxBg: "hsl(44, 91%, 58%, 50%)",
     bg: "hsl(33, 91%, 58%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(33, 91%, 45%) 0%, hsl(33, 91%, 58%) 50%, hsl(33, 91%, 70%) 100%)",
   },
   [MoodValue.SAD]: {
+    flexboxBg: "#FCA5BE",
     bg: "hsl(343, 79%, 64%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(343, 79%, 52%) 0%, hsl(343, 79%, 64%) 50%, hsl(343, 79%, 75%) 100%)",
@@ -119,7 +122,7 @@ function MoodBtns(props: {
         gap="48px"
         height="100%"
         maxHeight="218px"
-        bg="#D7FFB8"
+        bg={MOOD_MESSAGE_PROPS[clickedMood].flexboxBg}
       >
         <SlideFade
           in={isShowMoodMessage}
