@@ -10,6 +10,10 @@ class DifferentPasswordAndConfirmPasswordException(Exception):
     pass
 
 
+class UserNotUnderCurrentAdminException(Exception):
+    pass
+
+
 class DBCreateAccountException(Exception):
     pass
 

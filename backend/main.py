@@ -69,14 +69,14 @@ def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     "/admin/user/create",
     status_code=status.HTTP_201_CREATED,
 )
-def create_user( request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
+def create_user(request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
     return get_create_user_response(request, token, db)
 
 @app.post(
     "/admin/user/get",
     status_code=status.HTTP_200_OK,
 )
-def get_user( request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
+def get_user(request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
     return "success"
 
 @app.put(

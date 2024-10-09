@@ -85,6 +85,20 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
         except Exception as e:
             raise DBException(e)
 
+    def delete(self, id: int) -> None:
+        try:
+            if (
+                account := self.session.query(self.account_model)
+                .filter_by(id=id)
+                .first()
+            ):
+                self.session.query(account).delete()
+                return
+            raise NoRecordFoundException
+
+        except Exception as e:
+            raise DBException(e)
+
     def delete_all(self) -> None:
         try:
             self.session.query(self.account_model).delete()

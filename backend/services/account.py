@@ -5,9 +5,12 @@ from crud import CRUDAdmin, CRUDUser
 from enums import TreeDisplayState
 from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
                         DBException,
-                        DifferentPasswordAndConfirmPasswordException)
+                        DifferentPasswordAndConfirmPasswordException,
+                        NoUsersUnderCurrentAdminFoundException,
+                        UserNotUnderCurrentAdminException)
 from models import Admin, User
-from schemas import AdminCreateRequest, AdminIn, UserCreateRequest, UserIn
+from schemas import (AdminCreateRequest, AdminIn, UserCreateRequest,
+                     UserDeleteRequest, UserIn)
 from utils.hashing import hash_password
 from utils.token import get_token_data
 
@@ -81,4 +84,18 @@ def get_create_user_response(request: UserCreateRequest, token: str, db: Session
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=e,
+        )
+
+def get_delete_user_response(request: UserDeleteRequest, token: str, db: Session) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        if request.user_id not in [user.admin_id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+        return CRUDUser(db).delete(request.user_id)
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot delete users that are not under current admin",
         )
