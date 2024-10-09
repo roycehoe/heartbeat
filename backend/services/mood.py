@@ -1,4 +1,5 @@
 import random
+
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -10,7 +11,7 @@ from models import Mood
 from schemas import MoodIn, MoodOut, MoodRequest
 from utils.token import get_token_data
 
-SHOULD_ALERT_CAREGIVER_CRITERION = 2
+SHOULD_ALERT_ADMIN_CRITERION = 2
 DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED = 10
 DEFAULT_BONUS_COINS = 250
 DEFAULT_MOOD_MESSAGES = (
@@ -51,15 +52,15 @@ def _get_mood_message(mood_messages: tuple[str, ...] = DEFAULT_MOOD_MESSAGES) ->
     return random.choice(mood_messages)
 
 
-def _should_alert_caregiver(user_id: int, db: Session) -> bool:
+def _should_alert_admin(user_id: int, db: Session) -> bool:
     try:
         previous_moods = CRUDMood(db).get_latest(
-            user_id, SHOULD_ALERT_CAREGIVER_CRITERION
+            user_id, SHOULD_ALERT_ADMIN_CRITERION
         )
-        if len(previous_moods) < SHOULD_ALERT_CAREGIVER_CRITERION:
+        if len(previous_moods) < SHOULD_ALERT_ADMIN_CRITERION:
             return False
         for previous_mood in previous_moods:
-            if previous_mood.mood != SelectedMood.SAD:
+            if previous_mood.mood != SelectedMood.SAD: 
                 return False
         return True
 
@@ -68,7 +69,6 @@ def _should_alert_caregiver(user_id: int, db: Session) -> bool:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=e,
         )
-
 
 def _can_record_mood(user_id: int, db: Session) -> bool:
     try:
@@ -175,10 +175,10 @@ async def get_create_user_mood_response(
         CRUDMood(db).create(db_mood_model)
         _update_user(user_id, db)
 
-        if _should_alert_caregiver(user_id, db):
+        if _should_alert_admin(user_id, db):
             user = CRUDUser(db).get(user_id)
             await send_sad_user_notification_message(
-                user.email, SHOULD_ALERT_CAREGIVER_CRITERION
+                user.email, SHOULD_ALERT_ADMIN_CRITERION
             )
 
         updated_user = CRUDUser(db).get(user_id)

@@ -48,25 +48,12 @@ class AdminCreateRequest(AccountCreateRequestBase):
     pass
 
 
-class CaregiverCreateRequest(AccountCreateRequestBase):
-    admin_id: int
-
-
 class UserCreateRequest(AccountCreateRequestBase):
     name: str
     admin_id: int
-    caregiver_id: int
 
 
 class AdminIn(AdminCreateRequest):
-    created_at: datetime = Field(default_factory=datetime.now)
-
-    class Config:
-        use_enum_values = True
-        from_attributes = True
-
-
-class CaregiverIn(CaregiverCreateRequest):
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Config:

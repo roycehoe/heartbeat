@@ -2,15 +2,12 @@ from typing import Any, Generic, Type, TypeVar
 
 from sqlalchemy.orm import Session
 
-from exceptions import (
-    DBCreateAccountWithEmailAlreadyExistsException,
-    DBException,
-    DBGetAccountException,
-    NoRecordFoundException,
-)
-from models import Admin, Caregiver, Mood, User
+from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
+                        DBException, DBGetAccountException,
+                        NoRecordFoundException)
+from models import Admin, Mood, User
 
-T = TypeVar("T", User, Caregiver, Admin)
+T = TypeVar("T", User, Admin)
 
 
 class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
@@ -109,11 +106,6 @@ class CRUDUser(CRUDAccount):
             row.update({"can_record_mood": True})
         self.session.commit()
         return
-
-
-class CRUDCaregiver(CRUDAccount):
-    def __init__(self, session: Session):
-        super().__init__(session, Caregiver)
 
 
 class CRUDAdmin(CRUDAccount):
