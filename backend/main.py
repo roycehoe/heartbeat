@@ -55,21 +55,46 @@ def healthcheck():
 def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
     return get_create_admin_response(request, db)
 
-@app.post(
-    "/admin/create_user",
-    status_code=status.HTTP_201_CREATED,
-)
-def create_user( request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
-    return get_create_user_response(request, token, db)
-
 
 @app.post("/admin/log-in", status_code=status.HTTP_200_OK, response_model=Token)
 def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_admin(request, db)
 
 
+###################################
+# ADMIN USER ACTIONS
+###################################
+
+@app.post(
+    "/admin/user/create",
+    status_code=status.HTTP_201_CREATED,
+)
+def create_user( request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
+    return get_create_user_response(request, token, db)
+
+@app.post(
+    "/admin/user/get",
+    status_code=status.HTTP_200_OK,
+)
+def get_user( request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
+    return "success"
+
+@app.put(
+    "/admin/user/update",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def update_user(request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
+    return "success"
+
+@app.delete(
+    "/admin/user/delete",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_user(request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
+    return "success"
+
 @app.get(
-    "/admin/dashboard",
+    "/admin/get_all",
     status_code=status.HTTP_200_OK,
     response_model=list[DashboardOut],
 )
@@ -80,14 +105,6 @@ def admin_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
 ###################################
 # USER
 ###################################
-
-
-@app.post(
-    "/user/sign-up",
-    status_code=status.HTTP_201_CREATED,
-)
-def user_sign_up(request: UserCreateRequest, db: Session = Depends(get_db)):
-    return get_create_user_response(request, db)
 
 
 @app.post("/user/log-in", status_code=status.HTTP_200_OK, response_model=Token)
