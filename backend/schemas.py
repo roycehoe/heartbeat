@@ -50,7 +50,6 @@ class AdminCreateRequest(AccountCreateRequestBase):
 
 class UserCreateRequest(AccountCreateRequestBase):
     name: str
-    admin_id: int
 
 
 class AdminIn(AdminCreateRequest):

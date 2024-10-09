@@ -9,6 +9,7 @@ from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
 from models import Admin, User
 from schemas import AdminCreateRequest, AdminIn, UserCreateRequest, UserIn
 from utils.hashing import hash_password
+from utils.token import get_token_data
 
 
 def _is_valid_password(password: str, confirm_password: str) -> bool:
@@ -45,10 +46,12 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
 
 
 
-def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
+def get_create_user_response(request: UserCreateRequest, token: str, db: Session) -> None:
     try:
         if not _is_valid_password(request.password, request.confirm_password):
             raise DifferentPasswordAndConfirmPasswordException
+
+        admin_id = get_token_data(token, "admin_id")
         user_in_model = UserIn(**request.model_dump())
         db_user_model = User(
             email=user_in_model.email,
@@ -58,7 +61,7 @@ def get_create_user_response(request: UserCreateRequest, db: Session) -> None:
             tree_display_state=TreeDisplayState.SEEDLING,
             consecutive_checkins=0,
             claimable_gifts=0,
-            admin_id=user_in_model.admin_id,
+            admin_id=admin_id,
             can_record_mood=True,
             created_at=user_in_model.created_at,
         )

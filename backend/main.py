@@ -55,6 +55,13 @@ def healthcheck():
 def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
     return get_create_admin_response(request, db)
 
+@app.post(
+    "/admin/create_user",
+    status_code=status.HTTP_201_CREATED,
+)
+def create_user( request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)):
+    return get_create_user_response(request, token, db)
+
 
 @app.post("/admin/log-in", status_code=status.HTTP_200_OK, response_model=Token)
 def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
