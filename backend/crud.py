@@ -92,7 +92,8 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 .filter_by(id=id)
                 .first()
             ):
-                self.session.query(account).delete()
+                self.session.delete(account)
+                self.session.commit()
                 return
             raise NoRecordFoundException
 

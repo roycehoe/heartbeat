@@ -8,11 +8,9 @@ from enums import TreeDisplayState
 from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
                         DBException,
                         DifferentPasswordAndConfirmPasswordException,
-                        NoUsersUnderCurrentAdminFoundException,
                         UserNotUnderCurrentAdminException)
 from models import Admin, User
-from schemas import (AdminCreateRequest, AdminIn, UserCreateRequest,
-                     UserDeleteRequest, UserIn)
+from schemas import AdminCreateRequest, AdminIn, UserCreateRequest, UserIn
 from utils.hashing import hash_password
 from utils.token import get_token_data
 
