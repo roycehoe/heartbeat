@@ -116,7 +116,7 @@ def delete_user(user_id: int, token: str = Header(None), db: Session = Depends(g
     response_model=list[DashboardOut],
 )
 def admin_dashboard(token: str = Header(None), db: Session = Depends(get_db),
-                    sort: str="created_at", sort_direction: int=0):
+                    sort: str="consecutive_checkins", sort_direction: int=0):
     return get_admin_dashboard_response(token, db, sort, sort_direction)
 
 
