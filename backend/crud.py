@@ -1,5 +1,6 @@
 from typing import Any, Generic, Type, TypeVar
 
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
 from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
@@ -78,9 +79,12 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
         except Exception as e:
             raise DBException(e)
 
-    def get_by_all(self, field: dict[Any, Any]) -> list[T]:
+    def get_by_all(self, field: dict[Any, Any], sort: str, sort_direction: int) -> list[T]:
         try:
-            return self.session.query(self.account_model).filter_by(**field).all()
+            if sort_direction == 0:
+                return self.session.query(self.account_model).filter_by(**field).order_by(desc(sort)).all()
+            if sort_direction == 1:
+                return self.session.query(self.account_model).filter_by(**field).order_by(asc(sort)).all()
 
         except Exception as e:
             raise DBException(e)
@@ -96,7 +100,7 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 self.session.commit()
                 return
             raise NoRecordFoundException
-        
+
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception as e:

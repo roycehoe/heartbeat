@@ -5,14 +5,22 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDUser
 from enums import TreeDisplayState
-from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
-                        DBException,
-                        DifferentPasswordAndConfirmPasswordException,
-                        NoRecordFoundException,
-                        UserNotUnderCurrentAdminException)
+from exceptions import (
+    DBCreateAccountWithEmailAlreadyExistsException,
+    DBException,
+    DifferentPasswordAndConfirmPasswordException,
+    NoRecordFoundException,
+    UserNotUnderCurrentAdminException,
+)
 from models import Admin, User
-from schemas import (AdminCreateRequest, AdminIn, DashboardOut, MoodIn,
-                     UserCreateRequest, UserIn)
+from schemas import (
+    AdminCreateRequest,
+    AdminIn,
+    DashboardOut,
+    MoodIn,
+    UserCreateRequest,
+    UserIn,
+)
 from utils.hashing import hash_password
 from utils.token import get_token_data
 
@@ -110,7 +118,6 @@ def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
         )
 
 
-
 def get_update_user_response(
     user_id: int, fields: dict[Any, Any], token: str, db: Session
 ) -> None:
@@ -135,9 +142,8 @@ def get_update_user_response(
             detail="No record of user found",
         )
 
-def get_get_user_response(
-    user_id: int, token: str, db: Session
-) -> DashboardOut:
+
+def get_get_user_response(user_id: int, token: str, db: Session) -> DashboardOut:
     try:
         admin_id = get_token_data(token, "admin_id")
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
@@ -157,7 +163,6 @@ def get_get_user_response(
             claimable_gifts=user.claimable_gifts,
             can_record_mood=user.can_record_mood,
         )
-
 
     except UserNotUnderCurrentAdminException:
         raise HTTPException(

@@ -111,12 +111,13 @@ def delete_user(user_id: int, token: str = Header(None), db: Session = Depends(g
 
 
 @app.get(
-    "/admin/get_all",
+    "/admin/",
     status_code=status.HTTP_200_OK,
     response_model=list[DashboardOut],
 )
-def admin_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
-    return get_admin_dashboard_response(token, db)
+def admin_dashboard(token: str = Header(None), db: Session = Depends(get_db),
+                    sort: str="created_at", sort_direction: int=0):
+    return get_admin_dashboard_response(token, db, sort, sort_direction)
 
 
 ###################################

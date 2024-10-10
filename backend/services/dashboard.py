@@ -37,12 +37,13 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
     )
 
 
-def get_admin_dashboard_response(token: str, db: Session) -> list[DashboardOut]:
+def get_admin_dashboard_response(token: str, db: Session, sort: str,
+                                 sort_direction: int) -> list[DashboardOut]:
     try:
         response: list[DashboardOut] = []
 
         admin_id = get_token_data(token, "admin_id")
-        users = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        users = CRUDUser(db).get_by_all({"admin_id": admin_id}, sort, sort_direction)
         if not users:
             return []
 
