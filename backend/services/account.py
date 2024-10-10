@@ -11,7 +11,8 @@ from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
                         NoRecordFoundException,
                         UserNotUnderCurrentAdminException)
 from models import Admin, User
-from schemas import AdminCreateRequest, AdminIn, UserCreateRequest, UserIn
+from schemas import (AdminCreateRequest, AdminIn, DashboardOut, MoodIn,
+                     UserCreateRequest, UserIn)
 from utils.hashing import hash_password
 from utils.token import get_token_data
 
@@ -136,14 +137,27 @@ def get_update_user_response(
 
 def get_get_user_response(
     user_id: int, token: str, db: Session
-) -> User:
+) -> DashboardOut:
     try:
         admin_id = get_token_data(token, "admin_id")
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
-        if user_id not in [user.admin_id for user in users_under_admin]:
+        if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
 
-        return CRUDUser(db).get(user_id)
+        user = CRUDUser(db).get(user_id)
+        return DashboardOut(
+            user_id=user.id,
+            moods=[
+                MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+                for mood in user.moods
+            ],
+            coins=user.coins,
+            tree_display_state=user.tree_display_state,
+            consecutive_checkins=user.consecutive_checkins,
+            claimable_gifts=user.claimable_gifts,
+            can_record_mood=user.can_record_mood,
+        )
+
 
     except UserNotUnderCurrentAdminException:
         raise HTTPException(

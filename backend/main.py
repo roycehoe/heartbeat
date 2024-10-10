@@ -83,6 +83,7 @@ def create_user(
 @app.post(
     "/admin/user/{user_id}",
     status_code=status.HTTP_200_OK,
+    response_model=DashboardOut
 )
 def get_user(user_id: int, token: str = Header(None), db: Session = Depends(get_db)):
     return get_get_user_response(user_id, token, db)
