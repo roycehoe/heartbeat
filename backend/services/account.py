@@ -1,23 +1,18 @@
+from typing import Any
+
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDUser
 from enums import TreeDisplayState
-from exceptions import (
-    DBCreateAccountWithEmailAlreadyExistsException,
-    DBException,
-    DifferentPasswordAndConfirmPasswordException,
-    NoUsersUnderCurrentAdminFoundException,
-    UserNotUnderCurrentAdminException,
-)
+from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
+                        DBException,
+                        DifferentPasswordAndConfirmPasswordException,
+                        NoUsersUnderCurrentAdminFoundException,
+                        UserNotUnderCurrentAdminException)
 from models import Admin, User
-from schemas import (
-    AdminCreateRequest,
-    AdminIn,
-    UserCreateRequest,
-    UserDeleteRequest,
-    UserIn,
-)
+from schemas import (AdminCreateRequest, AdminIn, UserCreateRequest,
+                     UserDeleteRequest, UserIn)
 from utils.hashing import hash_password
 from utils.token import get_token_data
 
@@ -95,18 +90,53 @@ def get_create_user_response(
         )
 
 
-def get_delete_user_response(
-    request: UserDeleteRequest, token: str, db: Session
-) -> None:
+def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
-        if request.user_id not in [user.admin_id for user in users_under_admin]:
+        if user_id not in [user.admin_id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
-        return CRUDUser(db).delete(request.user_id)
+        return CRUDUser(db).delete(user_id)
 
     except UserNotUnderCurrentAdminException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot delete users that are not under current admin",
+        )
+
+
+def get_update_user_response(
+    user_id: int, fields: dict[Any, Any], token: str, db: Session
+) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        if user_id not in [user.admin_id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+
+        for key, value in fields.items():
+            CRUDUser(db).update(user_id, key, value)
+        return
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot modify users that are not under current admin",
+        )
+
+def get_get_user_response(
+    user_id: int, token: str, db: Session
+) -> User:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        if user_id not in [user.admin_id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+
+        return CRUDUser(db).get(user_id)
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot modify users that are not under current admin",
         )

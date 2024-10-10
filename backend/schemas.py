@@ -52,10 +52,6 @@ class UserCreateRequest(AccountCreateRequestBase):
     name: str
 
 
-class UserDeleteRequest(BaseModel):
-    user_id: int
-
-
 class AdminIn(AdminCreateRequest):
     created_at: datetime = Field(default_factory=datetime.now)
 
