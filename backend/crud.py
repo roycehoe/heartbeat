@@ -96,7 +96,9 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
                 self.session.commit()
                 return
             raise NoRecordFoundException
-
+        
+        except NoRecordFoundException:
+            raise NoRecordFoundException
         except Exception as e:
             raise DBException(e)
 

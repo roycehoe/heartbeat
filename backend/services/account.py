@@ -8,6 +8,7 @@ from enums import TreeDisplayState
 from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
                         DBException,
                         DifferentPasswordAndConfirmPasswordException,
+                        NoRecordFoundException,
                         UserNotUnderCurrentAdminException)
 from models import Admin, User
 from schemas import AdminCreateRequest, AdminIn, UserCreateRequest, UserIn
@@ -101,6 +102,12 @@ def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot delete users that are not under current admin",
         )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
+
 
 
 def get_update_user_response(
@@ -121,6 +128,11 @@ def get_update_user_response(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot modify users that are not under current admin",
         )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
 
 def get_get_user_response(
     user_id: int, token: str, db: Session
@@ -137,4 +149,10 @@ def get_get_user_response(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot modify users that are not under current admin",
+        )
+
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
         )
