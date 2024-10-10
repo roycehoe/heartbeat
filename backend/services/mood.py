@@ -54,13 +54,11 @@ def _get_mood_message(mood_messages: tuple[str, ...] = DEFAULT_MOOD_MESSAGES) ->
 
 def _should_alert_admin(user_id: int, db: Session) -> bool:
     try:
-        previous_moods = CRUDMood(db).get_latest(
-            user_id, SHOULD_ALERT_ADMIN_CRITERION
-        )
+        previous_moods = CRUDMood(db).get_latest(user_id, SHOULD_ALERT_ADMIN_CRITERION)
         if len(previous_moods) < SHOULD_ALERT_ADMIN_CRITERION:
             return False
         for previous_mood in previous_moods:
-            if previous_mood.mood != SelectedMood.SAD: 
+            if previous_mood.mood != SelectedMood.SAD:
                 return False
         return True
 
@@ -69,6 +67,7 @@ def _should_alert_admin(user_id: int, db: Session) -> bool:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=e,
         )
+
 
 def _can_record_mood(user_id: int, db: Session) -> bool:
     try:

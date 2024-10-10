@@ -2,9 +2,12 @@ from typing import Any, Generic, Type, TypeVar
 
 from sqlalchemy.orm import Session
 
-from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
-                        DBException, DBGetAccountException,
-                        NoRecordFoundException)
+from exceptions import (
+    DBCreateAccountWithEmailAlreadyExistsException,
+    DBException,
+    DBGetAccountException,
+    NoRecordFoundException,
+)
 from models import Admin, Mood, User
 
 T = TypeVar("T", User, Admin)

@@ -1,5 +1,4 @@
-from sqlalchemy import (TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer,
-                        String)
+from sqlalchemy import TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -11,6 +10,7 @@ class Admin(Base):
 
     id = Column(Integer, primary_key=True, comment="Primary key")
     email = Column(String, nullable=False, comment="User's email; doubles as username")
+
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP, nullable=False)
 

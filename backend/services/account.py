@@ -3,14 +3,21 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDUser
 from enums import TreeDisplayState
-from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
-                        DBException,
-                        DifferentPasswordAndConfirmPasswordException,
-                        NoUsersUnderCurrentAdminFoundException,
-                        UserNotUnderCurrentAdminException)
+from exceptions import (
+    DBCreateAccountWithEmailAlreadyExistsException,
+    DBException,
+    DifferentPasswordAndConfirmPasswordException,
+    NoUsersUnderCurrentAdminFoundException,
+    UserNotUnderCurrentAdminException,
+)
 from models import Admin, User
-from schemas import (AdminCreateRequest, AdminIn, UserCreateRequest,
-                     UserDeleteRequest, UserIn)
+from schemas import (
+    AdminCreateRequest,
+    AdminIn,
+    UserCreateRequest,
+    UserDeleteRequest,
+    UserIn,
+)
 from utils.hashing import hash_password
 from utils.token import get_token_data
 
@@ -48,8 +55,9 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         )
 
 
-
-def get_create_user_response(request: UserCreateRequest, token: str, db: Session) -> None:
+def get_create_user_response(
+    request: UserCreateRequest, token: str, db: Session
+) -> None:
     try:
         if not _is_valid_password(request.password, request.confirm_password):
             raise DifferentPasswordAndConfirmPasswordException
@@ -86,7 +94,10 @@ def get_create_user_response(request: UserCreateRequest, token: str, db: Session
             detail=e,
         )
 
-def get_delete_user_response(request: UserDeleteRequest, token: str, db: Session) -> None:
+
+def get_delete_user_response(
+    request: UserDeleteRequest, token: str, db: Session
+) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})

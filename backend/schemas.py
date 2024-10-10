@@ -51,6 +51,7 @@ class AdminCreateRequest(AccountCreateRequestBase):
 class UserCreateRequest(AccountCreateRequestBase):
     name: str
 
+
 class UserDeleteRequest(BaseModel):
     user_id: int
 

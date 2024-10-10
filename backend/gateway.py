@@ -9,6 +9,7 @@ TELEGRAM_CHAT_ID: int = dotenv_values(".env").get("TELEGRAM_CHAT_ID")
 
 
 def _init_telegram_bot_connection_instance(token: str = TELEGRAM_BOT_TOKEN):
+
     return Bot(token=token)
 
 

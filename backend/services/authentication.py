@@ -2,8 +2,11 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDUser
-from exceptions import (DBException, InvalidUsernameOrPasswordException,
-                        NoRecordFoundException)
+from exceptions import (
+    DBException,
+    InvalidUsernameOrPasswordException,
+    NoRecordFoundException,
+)
 from schemas import LogInRequest, Token
 from utils.hashing import verify_password
 from utils.token import create_access_token
@@ -33,7 +36,6 @@ def authenticate_user(request: LogInRequest, db: Session) -> Token:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=e,
         )
-
 
 
 def authenticate_admin(request: LogInRequest, db: Session) -> Token:
