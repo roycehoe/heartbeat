@@ -101,7 +101,7 @@ def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
     except UserNotUnderCurrentAdminException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Cannot delete users that are not under current admin",
+            detail="Cannot delete user that is not under current admin",
         )
     except NoRecordFoundException:
         raise HTTPException(
@@ -127,7 +127,7 @@ def get_update_user_response(
     except UserNotUnderCurrentAdminException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Cannot modify users that are not under current admin",
+            detail="Cannot update user that is not under current admin",
         )
     except NoRecordFoundException:
         raise HTTPException(
@@ -162,7 +162,7 @@ def get_get_user_response(
     except UserNotUnderCurrentAdminException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Cannot modify users that are not under current admin",
+            detail="Cannot get user that are not under current admin",
         )
 
     except NoRecordFoundException:
