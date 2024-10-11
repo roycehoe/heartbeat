@@ -5,17 +5,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from database import Base, engine, get_db
-from schemas import (AdminCreateRequest, DashboardOut, LogInRequest, MoodOut,
-                     MoodRequest, Token, UserCreateRequest)
+from schemas import (
+    AdminCreateRequest,
+    DashboardOut,
+    LogInRequest,
+    MoodOut,
+    MoodRequest,
+    Token,
+    UserCreateRequest,
+)
 from scripts import get_scheduler, is_db_empty, populate_db, repopulate_db
-from services.account import (get_create_admin_response,
-                              get_create_user_response,
-                              get_delete_user_response, get_get_user_response,
-                              get_update_user_response)
+from services.account import (
+    get_create_admin_response,
+    get_create_user_response,
+    get_delete_user_response,
+    get_get_user_response,
+    get_update_user_response,
+)
 from services.authentication import authenticate_admin, authenticate_user
 from services.claim_gift import get_claim_gift_response
-from services.dashboard import (get_admin_dashboard_response,
-                                get_user_dashboard_response)
+from services.dashboard import get_admin_dashboard_response, get_user_dashboard_response
 from services.mood import get_create_user_mood_response
 
 Base.metadata.create_all(bind=engine)
@@ -81,9 +90,7 @@ def create_user(
 
 
 @app.post(
-    "/admin/user/{user_id}",
-    status_code=status.HTTP_200_OK,
-    response_model=DashboardOut
+    "/admin/user/{user_id}", status_code=status.HTTP_200_OK, response_model=DashboardOut
 )
 def get_user(user_id: int, token: str = Header(None), db: Session = Depends(get_db)):
     return get_get_user_response(user_id, token, db)
@@ -115,8 +122,12 @@ def delete_user(user_id: int, token: str = Header(None), db: Session = Depends(g
     status_code=status.HTTP_200_OK,
     response_model=list[DashboardOut],
 )
-def admin_dashboard(token: str = Header(None), db: Session = Depends(get_db),
-                    sort: str="consecutive_checkins", sort_direction: int=0):
+def admin_dashboard(
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+    sort: str = "consecutive_checkins",
+    sort_direction: int = 0,
+):
     return get_admin_dashboard_response(token, db, sort, sort_direction)
 
 

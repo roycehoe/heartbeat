@@ -3,9 +3,12 @@ from typing import Any, Generic, Type, TypeVar
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
-from exceptions import (DBCreateAccountWithEmailAlreadyExistsException,
-                        DBException, DBGetAccountException,
-                        NoRecordFoundException)
+from exceptions import (
+    DBCreateAccountWithEmailAlreadyExistsException,
+    DBException,
+    DBGetAccountException,
+    NoRecordFoundException,
+)
 from models import Admin, Mood, User
 
 T = TypeVar("T", User, Admin)
@@ -79,12 +82,26 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
         except Exception as e:
             raise DBException(e)
 
-    def get_by_all(self, field: dict[Any, Any], sort: str, sort_direction: int) -> list[T]:
+    def get_by_all(
+        self,
+        field: dict[Any, Any],
+        sort: str = "consecutive_checkins",
+        sort_direction: int = 0,
+    ) -> list[T]:
         try:
             if sort_direction == 0:
-                return self.session.query(self.account_model).filter_by(**field).order_by(desc(sort)).all()
-            if sort_direction == 1:
-                return self.session.query(self.account_model).filter_by(**field).order_by(asc(sort)).all()
+                return (
+                    self.session.query(self.account_model)
+                    .filter_by(**field)
+                    .order_by(desc(sort))
+                    .all()
+                )
+            return (
+                self.session.query(self.account_model)
+                .filter_by(**field)
+                .order_by(asc(sort))
+                .all()
+            )
 
         except Exception as e:
             raise DBException(e)
