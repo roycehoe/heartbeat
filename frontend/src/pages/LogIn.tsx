@@ -10,8 +10,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Button, Input, Link, Tabs } from "@opengovsg/design-system-react";
-import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAdminLoginResponse, getUserLoginResponse } from "../api/user";
 
 const DEFAULT_ROLES: string[] = ["user", "admin"];
 
@@ -20,19 +21,49 @@ function LogIn() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user"); // Track the role being used for login
   const [errorMessage, setErrorMessage] = useState(""); // State to track the error message
+  const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post("/api/login", {
-        username,
-        password,
-      });
-      console.log("Login success", response.data);
-      setErrorMessage(""); // Clear error message on success
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        setErrorMessage("Username or password incorrect. Please try again.");
-      } else {
+  const handleLogInBtnClick = async () => {
+    if (username === "") {
+      setErrorMessage("Please input your username");
+      return;
+    }
+    if (password === "") {
+      setErrorMessage("Please input your password");
+      return;
+    }
+    if (role === "user") {
+      try {
+        const response = await getUserLoginResponse({
+          email: username,
+          password: password,
+        });
+        setErrorMessage(""); // Clear error message on success
+        localStorage.setItem("token", response.access_token);
+        navigate("/");
+      } catch (error) {
+        if (error?.response && error.response.status === 400) {
+          setErrorMessage("Username or password incorrect. Please try again.");
+          return;
+        }
+        setErrorMessage(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    }
+    if (role === "admin") {
+      try {
+        const response = await getAdminLoginResponse({
+          email: username,
+          password: password,
+        });
+        setErrorMessage(""); // Clear error message on success
+        localStorage.setItem("token", response.access_token);
+      } catch (error) {
+        if (error?.response && error.response.status === 400) {
+          setErrorMessage("Username or password incorrect. Please try again.");
+          return;
+        }
         setErrorMessage(
           "An unexpected error occurred. Please try again later."
         );
@@ -105,7 +136,7 @@ function LogIn() {
                 />
               </FormControl>
 
-              <Button width="100%" onClick={handleLogin}>
+              <Button width="100%" onClick={handleLogInBtnClick}>
                 <Text>Log In</Text>
               </Button>
             </TabPanel>
@@ -133,7 +164,7 @@ function LogIn() {
                 />
               </FormControl>
 
-              <Button width="100%" onClick={handleLogin}>
+              <Button width="100%" onClick={handleLogInBtnClick}>
                 <Text>
                   Log In as {role.charAt(0).toUpperCase() + role.slice(1)}
                 </Text>

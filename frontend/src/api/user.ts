@@ -68,7 +68,14 @@ export async function getUserClaimGiftResponse(): Promise<DashboardResponse> {
 export async function getUserLoginResponse(
   loginRequest: LoginRequest
 ): Promise<LoginResponse> {
-  const response = await httpClient.post("/user/log-in", loginRequest);
+  const response = await httpClient.post("/user/login", loginRequest);
+  return response.data;
+}
+
+export async function getAdminLoginResponse(
+  loginRequest: LoginRequest
+): Promise<LoginResponse> {
+  const response = await httpClient.post("/admin/login", loginRequest);
   return response.data;
 }
 

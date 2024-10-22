@@ -69,7 +69,7 @@ def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
     return get_create_admin_response(request, db)
 
 
-@app.post("/admin/log-in", status_code=status.HTTP_200_OK, response_model=Token)
+@app.post("/admin/login", status_code=status.HTTP_200_OK, response_model=Token)
 def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_admin(request, db)
 
@@ -136,7 +136,7 @@ def admin_dashboard(
 ###################################
 
 
-@app.post("/user/log-in", status_code=status.HTTP_200_OK, response_model=Token)
+@app.post("/user/login", status_code=status.HTTP_200_OK, response_model=Token)
 def user_log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_user(user_log_in_request, db)
 
