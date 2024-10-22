@@ -1,6 +1,7 @@
 import { Box, Fade } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
 import {
   DashboardResponse,
@@ -21,8 +22,14 @@ function HomePage() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse>();
   const [moodMessage, setMoodMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+      return;
+    }
+
     const loadDashboard = async () => {
       setIsLoading(true);
       if (DEFAULT_USER_CREDENTIALS.length > 0) {
