@@ -13,7 +13,7 @@ import { Button, Input, Link, Tabs } from "@opengovsg/design-system-react";
 import axios from "axios";
 import { useState } from "react";
 
-const DEFAULT_ROLES: string[] = ["user", "caregiver", "admin"];
+const DEFAULT_ROLES: string[] = ["user", "admin"];
 
 function LogIn() {
   const [username, setUsername] = useState("");
@@ -41,9 +41,13 @@ function LogIn() {
   };
 
   return (
-    <Flex height="100vh" justifyContent="center" alignItems="center">
+    <Flex justifyContent="center" alignItems="center" height="100%">
       <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
         bg="white"
+        height="100%"
         width="400px"
         p="32px"
         boxShadow="lg"
@@ -51,7 +55,6 @@ function LogIn() {
         textAlign="center"
       >
         <Box mb="24px">
-          {/* Logo Substitute */}
           <Box
             mb="16px"
             width="60px"
@@ -104,36 +107,6 @@ function LogIn() {
 
               <Button width="100%" onClick={handleLogin}>
                 <Text>Log In</Text>
-              </Button>
-            </TabPanel>
-            <TabPanel>
-              <FormControl id="caregiver-username" isRequired mb="16px">
-                <Input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Email"
-                  size="lg"
-                  borderColor="slate.300"
-                  _placeholder={{ color: "gray.500" }}
-                />
-              </FormControl>
-
-              <FormControl id="caregiver-password" isRequired mb="16px">
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  size="lg"
-                  borderColor="slate.300"
-                  _placeholder={{ color: "gray.500" }}
-                />
-              </FormControl>
-
-              <Button width="100%" onClick={handleLogin}>
-                <Text>
-                  Log In as {role.charAt(0).toUpperCase() + role.slice(1)}
-                </Text>
               </Button>
             </TabPanel>
             <TabPanel>

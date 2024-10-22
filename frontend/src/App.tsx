@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import {
   Banner,
   RestrictedGovtMasthead,
@@ -15,12 +15,11 @@ const App = () => {
       <BrowserRouter>
         <Box width="100vw" height="100vh" display="flex" flexDirection="column">
           <Banner size="sm">
-            <p>
-              This is an exploratory prototype that was built as part of
-              OGP’s&nbsp;
-            </p>
             <a target="_blank" rel="noopener" href="https://hack.gov.sg">
-              Hack for Public Good
+              <Text fontSize="xs">
+                This is an exploratory prototype that was built as part of OGP’s
+                Hack for Public Good
+              </Text>
             </a>
           </Banner>
           <RestrictedGovtMasthead></RestrictedGovtMasthead>
