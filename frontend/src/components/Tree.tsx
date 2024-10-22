@@ -95,26 +95,26 @@ function Tree(props: {
     TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState].slice(-3) === "gif";
 
   return (
-    <Box
-      display="flex"
-      width="100%"
-      height="100%"
-      backgroundImage={`url('${
-        TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]
-      }')`}
-      backgroundSize="cover"
-      backgroundRepeat="no-repeat"
-      position="relative"
-      backgroundPosition={isUsingGif ? "center" : ""}
-      backgroundColor="transparent"
-    >
-      <Coins coinCount={props.coinCount}></Coins>
-      <Gifts
+    <>
+      <Box
+        display="flex"
+        width="100%"
+        height="100%"
+        backgroundImage={`url('${
+          TREE_DISPLAY_STATE_TO_SVG_LINK[props.treeDisplayState]
+        }')`}
+        backgroundSize="cover"
+        backgroundRepeat="no-repeat"
+        position="relative"
+        backgroundPosition={isUsingGif ? "center" : ""}
+        backgroundColor="transparent"
+      ></Box>
+      {/* <Gifts
         claimableGifts={props.claimableGifts}
         onClaimGiftsBtnClick={props.onClaimGiftBtnClick}
         isHidden={isHideGifts}
-      ></Gifts>
-    </Box>
+      ></Gifts> */}
+    </>
   );
 }
 

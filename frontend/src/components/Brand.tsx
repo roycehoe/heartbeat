@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
 import { resetDB } from "../api/user";
 
 function Brand(props: { goToNextUser: () => void }) {
@@ -10,12 +10,11 @@ function Brand(props: { goToNextUser: () => void }) {
       alignItems="center"
       gap={1}
     >
-      <img onClick={props.goToNextUser} src="/assets/logo-heartbeat.svg"></img>
-      <Text fontWeight={800}>|</Text>
-      <img
-        onClick={async () => await resetDB()}
-        src="/assets/logo-bfg.svg"
-      ></img>
+      <Image
+        onClick={props.goToNextUser}
+        src="/assets/logo-heartbeat.svg"
+        width="128px"
+      ></Image>
     </Box>
   );
 }

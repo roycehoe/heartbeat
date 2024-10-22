@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 function Coins(props: { coinCount: number }) {
@@ -36,12 +36,14 @@ function Coins(props: { coinCount: number }) {
   };
 
   return (
-    <Box display="flex" flexDirection="column" margin="24px">
-      <Box display="flex" alignItems="center" gap="12px">
+    <Box display="flex" flexDirection="column" justifyContent="center">
+      <Box display="flex" alignItems="center" gap="8px">
         <button onClick={toggleAlarm}>
-          <img src="/assets/coin.svg"></img>
+          <Image boxSize="24px" src="/assets/coin.svg"></Image>
         </button>
-        <Text fontWeight={800}>{props.coinCount}</Text>
+        <Text fontWeight={800} fontSize="md">
+          {props.coinCount}
+        </Text>
       </Box>
     </Box>
   );
