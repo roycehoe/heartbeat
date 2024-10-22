@@ -23,12 +23,12 @@ function Display(props: {
           className="dashboard--top--info"
           display="flex"
           justifyContent="space-between"
-          margin="24px"
+          margin="12px"
         >
           <Coins coinCount={props.dashboardData.coins}></Coins>
           <Brand goToNextUser={props.goToNextUser}></Brand>
         </Box>
-        <Box className="dashboard--top--tree" bg="red">
+        <Box className="dashboard--top--tree" height="100%" width="100%">
           <Tree
             treeDisplayState={props.dashboardData.tree_display_state}
             claimableGifts={props.dashboardData.claimable_gifts}
