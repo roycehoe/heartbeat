@@ -1,9 +1,5 @@
-import { Box, Text } from "@chakra-ui/react";
-import {
-  Banner,
-  RestrictedGovtMasthead,
-  ThemeProvider,
-} from "@opengovsg/design-system-react";
+import { Box } from "@chakra-ui/react";
+import { ThemeProvider } from "@opengovsg/design-system-react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import OgpFooter from "./components/OgpFooter";
 import HomePage from "./pages/HomePage";
