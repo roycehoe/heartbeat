@@ -1,16 +1,12 @@
-import React from "react";
 import "./MoodBtn.css"; // We'll create a CSS file for 3D styles
 
 function MoodBtn(props: {
-  icon: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+  icon: string;
   onClick: () => void;
   bg: string;
   bgLinearGradient: string;
 
-  isDisabledIcon: React.ReactElement<
-    any,
-    string | React.JSXElementConstructor<any>
-  >;
+  isDisabledIcon: string;
   bgDisabled: string;
   bgDisabledLinearGradient: string;
   isDisabled: boolean;
@@ -39,7 +35,14 @@ function MoodBtn(props: {
           objectFit: "contain",
         }}
       >
-        {props.isDisabled ? props.isDisabledIcon : props.icon}
+        <img
+          src={props.isDisabled ? props.isDisabledIcon : props.icon}
+          style={{
+            background: props.isDisabled ? props.bgDisabled : props.bg,
+            height: "60px",
+            objectFit: "contain",
+          }}
+        ></img>
       </span>
     </button>
   );

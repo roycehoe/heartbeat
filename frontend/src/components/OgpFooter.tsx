@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
 
 function OgpFooter() {
   return (
@@ -6,12 +6,12 @@ function OgpFooter() {
       display="flex"
       flexDirection="row"
       justifyContent="flex-end"
-      gap="8px"
+      gap="6px"
       alignItems="center"
-      mr="24px"
+      mr="6px"
     >
-      <p>Built by</p>
-      <img src="/assets/ogp-logo.svg"></img>
+      <Text textStyle="4xl">Built by</Text>
+      <Image src="/assets/ogp-logo.svg"></Image>
     </Box>
   );
 }

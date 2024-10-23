@@ -8,8 +8,8 @@ import MoodMessage from "../../../components/MoodMessage";
 
 const MOOD_BTN_PROPS = [
   {
-    icon: <img src="/assets/button/happy.svg"></img>,
-    isDisabledIcon: <img src="/assets/button/happy-inactive.svg"></img>,
+    icon: "/assets/button/happy.svg",
+    isDisabledIcon: "/assets/button/happy-inactive.svg",
     value: MoodValue.HAPPY,
     bg: "hsl(140, 65%, 41%)",
     bgLinearGradient:
@@ -19,8 +19,8 @@ const MOOD_BTN_PROPS = [
       "linear-gradient(to left, hsl(220, 9%, 77%) 0%, hsl(220, 9%, 87%) 50%, hsl(220, 9%, 97%) 100%)",
   },
   {
-    icon: <img src="/assets/button/ok.svg"></img>,
-    isDisabledIcon: <img src="/assets/button/ok-inactive.svg"></img>,
+    icon: "/assets/button/ok.svg",
+    isDisabledIcon: "/assets/button/ok-inactive.svg",
     value: MoodValue.OK,
     bg: "hsl(33, 91%, 58%)",
     bgLinearGradient:
@@ -30,8 +30,8 @@ const MOOD_BTN_PROPS = [
       "linear-gradient(to left, hsl(220, 9%, 77%) 0%, hsl(220, 9%, 87%) 50%, hsl(220, 9%, 97%) 100%)",
   },
   {
-    icon: <img src="/assets/button/sad.svg"></img>,
-    isDisabledIcon: <img src="/assets/button/sad-inactive.svg"></img>,
+    icon: "/assets/button/sad.svg",
+    isDisabledIcon: "/assets/button/sad-inactive.svg",
     value: MoodValue.SAD,
     bg: "hsl(343, 79%, 64%)",
     bgLinearGradient:
@@ -145,8 +145,7 @@ function MoodBtns(props: {
       flexDirection="column"
       className="dashboard--bottom"
       justifyContent="space-between"
-      paddingX="54px"
-      paddingY="18px"
+      padding="12px"
       gap="12px"
       height="100%"
     >
