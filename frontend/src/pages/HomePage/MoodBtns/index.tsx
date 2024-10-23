@@ -142,28 +142,26 @@ function MoodBtns(props: {
   return (
     <Box
       display="flex"
+      flexDirection="column"
       className="dashboard--bottom"
       justifyContent="space-between"
       paddingX="54px"
       paddingY="18px"
-      gap="48px"
+      gap="12px"
       height="100%"
-      maxHeight="218px"
     >
       {MOOD_BTN_PROPS.map((prop) => {
         return (
-          <Box width="100%">
-            <MoodBtn
-              onClick={() => handleClick(prop.value)}
-              icon={prop.icon}
-              isDisabledIcon={prop.isDisabledIcon}
-              isDisabled={props.isDisabled}
-              bg={prop.bg}
-              bgLinearGradient={prop.bgLinearGradient}
-              bgDisabled={prop.bgDisabled}
-              bgDisabledLinearGradient={prop.bgDisabledLinearGradient}
-            ></MoodBtn>
-          </Box>
+          <MoodBtn
+            onClick={() => handleClick(prop.value)}
+            icon={prop.icon}
+            isDisabledIcon={prop.isDisabledIcon}
+            isDisabled={props.isDisabled}
+            bg={prop.bg}
+            bgLinearGradient={prop.bgLinearGradient}
+            bgDisabled={prop.bgDisabled}
+            bgDisabledLinearGradient={prop.bgDisabledLinearGradient}
+          ></MoodBtn>
         );
       })}
       <ModalMoodStreak

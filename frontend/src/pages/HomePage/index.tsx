@@ -93,20 +93,24 @@ function HomePage() {
           height="100%"
           className="page--group"
         >
-          <Display
-            dashboardData={dashboardData}
-            goToNextUser={incrementIndex}
-            onClaimGiftBtnClick={onClaimGiftBtnClick}
-          ></Display>
-          <MoodBtns
-            isDisabled={!dashboardData.can_record_mood}
-            moodsCreatedAt={dashboardData.moods.map((mood) =>
-              moment(mood.created_at)
-            )}
-            streak={dashboardData.consecutive_checkins}
-            onClick={onMoodButtonClick}
-            moodMessage={moodMessage}
-          ></MoodBtns>
+          <Box height="50%">
+            <Display
+              dashboardData={dashboardData}
+              goToNextUser={incrementIndex}
+              onClaimGiftBtnClick={onClaimGiftBtnClick}
+            ></Display>
+          </Box>
+          <Box height="50%">
+            <MoodBtns
+              isDisabled={!dashboardData.can_record_mood}
+              moodsCreatedAt={dashboardData.moods.map((mood) =>
+                moment(mood.created_at)
+              )}
+              streak={dashboardData.consecutive_checkins}
+              onClick={onMoodButtonClick}
+              moodMessage={moodMessage}
+            ></MoodBtns>
+          </Box>
         </Box>
       </Fade>
     </Box>

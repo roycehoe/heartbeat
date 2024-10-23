@@ -32,7 +32,12 @@ function MoodBtn(props: {
       ></span>
       <span
         className="front"
-        style={{ background: props.isDisabled ? props.bgDisabled : props.bg }}
+        style={{
+          background: props.isDisabled ? props.bgDisabled : props.bg,
+          maxWidth: "100%",
+          maxHeight: "100%",
+          objectFit: "contain",
+        }}
       >
         {props.isDisabled ? props.isDisabledIcon : props.icon}
       </span>
