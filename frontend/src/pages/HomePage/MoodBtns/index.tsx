@@ -117,11 +117,10 @@ function MoodBtns(props: {
         display="flex"
         className="dashboard--bottom"
         justifyContent="space-between"
-        paddingX="54px"
-        paddingY="18px"
+        padding="12px"
         gap="48px"
         height="100%"
-        maxHeight="218px"
+        // maxHeight="218px"
         bg={MOOD_MESSAGE_PROPS[clickedMood].flexboxBg}
       >
         <SlideFade

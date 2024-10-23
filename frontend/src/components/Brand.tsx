@@ -15,6 +15,7 @@ function Brand(props: { goToNextUser: () => void }) {
         src="/assets/logo-heartbeat.svg"
         width="128px"
       ></Image>
+      <Text onClick={resetDB}>PLACEHOLDER TEXT TO RESET DB</Text>
     </Box>
   );
 }
