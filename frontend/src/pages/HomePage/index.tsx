@@ -43,6 +43,11 @@ function HomePage() {
       setIsLoading(false);
     };
     loadDashboard();
+
+    const intervalId = setInterval(() => {
+      loadDashboard();
+    }, 60 * 60 * 1000);
+    return () => clearInterval(intervalId);
   }, [currentIndex]);
 
   const onMoodButtonClick = async (mood: MoodValue) => {
