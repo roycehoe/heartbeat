@@ -137,7 +137,6 @@ def get_update_user_response(
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
         if user_id not in [user.admin_id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
-
         for key, value in fields.items():
             CRUDUser(db).update(user_id, key, value)
         return
