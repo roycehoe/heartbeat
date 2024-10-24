@@ -63,51 +63,65 @@ function ModalMoodStreak({
               }}
             />
           </Box>
-          <Box>
-            <Text
-              fontWeight="600"
-              fontSize="86px"
-              color="#25AC51"
-              lineHeight="1"
-            >
-              {streak}
-            </Text>
-          </Box>
-          <Box>
-            <Text fontWeight="600" fontSize="32px" color="#25AC51">
-              day streak!
-            </Text>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="space-evenly"
+            alignItems="center"
+          >
+            <Box>
+              <Text
+                fontWeight="600"
+                fontSize="86px"
+                color="#25AC51"
+                lineHeight="1"
+              >
+                {streak}
+              </Text>
+            </Box>
+            <Box>
+              <Text fontWeight="600" fontSize="32px" color="#25AC51">
+                day streak!
+              </Text>
+            </Box>
           </Box>
 
           <Box>
-            <Table variant="unstyled" size="sm">
-              <Thead>
-                <Tr>
-                  {daysOfWeek.map((day, index) => (
-                    <Th key={index} textAlign="center">
-                      {day}
-                    </Th>
-                  ))}
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  {tickData.map((hasTick, index) => (
-                    <Td key={index} textAlign="center">
-                      {hasTick ? (
-                        <Image
-                          src="/assets/checkbox.svg"
-                          width="20px"
-                          height="20px"
-                        ></Image>
-                      ) : (
-                        ""
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              </Tbody>
-            </Table>
+            <Box
+              py="12px"
+              borderRadius="12px"
+              border="1px"
+              borderColor="grey.100"
+            >
+              <Table variant="unstyled" size="sm">
+                <Thead>
+                  <Tr>
+                    {daysOfWeek.map((day, index) => (
+                      <Th key={index} textAlign="center">
+                        {day}
+                      </Th>
+                    ))}
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    {tickData.map((hasTick, index) => (
+                      <Td key={index} textAlign="center">
+                        {hasTick ? (
+                          <Image
+                            src="/assets/checkbox.svg"
+                            width="20px"
+                            height="20px"
+                          ></Image>
+                        ) : (
+                          ""
+                        )}
+                      </Td>
+                    ))}
+                  </Tr>
+                </Tbody>
+              </Table>
+            </Box>
             <Box marginBottom="18px" mt="12px">
               <Text textAlign="center">
                 Keep your streak going by checking in tomorrow!
