@@ -166,7 +166,7 @@ function MoodBtns(props: {
         isOpen={isOpen}
         handleClose={handleClose}
         daysOfWeek={getDaysOfWeek().map((dayOfWeek) =>
-          dayOfWeek.format("dddd").slice(0, 2)
+          dayOfWeek.format("dddd").slice(0, 3)
         )}
         tickData={getCheckedDaysBoolean(getDaysOfWeek(), props.moodsCreatedAt)}
         streak={props.streak}

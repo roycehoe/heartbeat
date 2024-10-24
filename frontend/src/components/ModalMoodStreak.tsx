@@ -88,39 +88,37 @@ function ModalMoodStreak({
 
           <Box>
             <Box
-              py="12px"
+              className="streak__table"
               borderRadius="12px"
               border="1px"
               borderColor="grey.100"
+              padding="12px"
+              display="flex"
+              justifyContent="space-evenly"
+              gap="16px"
             >
-              <Table variant="unstyled" size="sm">
-                <Thead>
-                  <Tr>
-                    {daysOfWeek.map((day, index) => (
-                      <Th key={index} textAlign="center">
-                        {day}
-                      </Th>
-                    ))}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    {tickData.map((hasTick, index) => (
-                      <Td key={index} textAlign="center">
-                        {hasTick ? (
-                          <Image
-                            src="/assets/checkbox.svg"
-                            width="20px"
-                            height="20px"
-                          ></Image>
-                        ) : (
-                          ""
-                        )}
-                      </Td>
-                    ))}
-                  </Tr>
-                </Tbody>
-              </Table>
+              {daysOfWeek.map((day, index) => (
+                <Box
+                  className="streak__table-element"
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  gap="4px"
+                >
+                  <Text key={index} textAlign="center">
+                    {day}
+                  </Text>
+                  {tickData[index] ? (
+                    <Image
+                      src="/assets/checkbox.svg"
+                      width="20px"
+                      height="20px"
+                    ></Image>
+                  ) : (
+                    ""
+                  )}
+                </Box>
+              ))}
             </Box>
             <Box marginBottom="18px" mt="12px">
               <Text textAlign="center">
