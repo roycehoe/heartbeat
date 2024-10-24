@@ -1,4 +1,13 @@
-from sqlalchemy import TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer, String
+from sqlalchemy import (
+    TIMESTAMP,
+    Boolean,
+    Column,
+    Enum,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+)
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -9,9 +18,12 @@ class Admin(Base):
     __tablename__ = "admin"
 
     id = Column(Integer, primary_key=True, comment="Primary key")
-    email = Column(String, nullable=False, comment="User's email; doubles as username")
 
+    email = Column(String, nullable=False, comment="User's email; doubles as username")
+    name = Column(String, nullable=False)
     password = Column(String, nullable=False)
+    contact_number = Column(Integer, nullable=False, comment="Assumes SG phone number")
+
     created_at = Column(TIMESTAMP, nullable=False)
 
     users = relationship("User", back_populates="admin")  # One-to-Zero/Many
@@ -21,9 +33,21 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
+
+    # USER SIGNUP FIELDS
     email = Column(String, nullable=False, comment="User's email; doubles as username")
     password = Column(String, nullable=False)
     name = Column(String, nullable=False)
+    alias = Column(
+        String, nullable=False, comment="To prevent data overflow on frontend"
+    )
+    age = Column(Integer, nullable=False)
+    race = Column(String, nullable=False)
+    gender = Column(String, nullable=False)
+    postal_code = Column(String, nullable=False)
+    floor = Column(Integer, nullable=False)
+    contact_number = Column(Integer, nullable=False, comment="Assumes SG phone number")
+
     coins = Column(Integer, nullable=False)
     tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
     consecutive_checkins = Column(Integer, nullable=False)

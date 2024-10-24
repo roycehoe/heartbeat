@@ -42,6 +42,7 @@ class AccountCreateRequestBase(BaseModel):
     email: str  # Doubles as username
     password: str
     confirm_password: str
+    contact_number: int
 
 
 class AdminCreateRequest(AccountCreateRequestBase):

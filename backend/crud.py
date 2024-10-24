@@ -11,21 +11,14 @@ from exceptions import (
 )
 from models import Admin, Mood, User
 
-T = TypeVar("T", User, Admin)
 
-
-class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
-    def __init__(self, session: Session, account_model: Type[T]):
+class CRUDUser:
+    def __init__(self, session: Session):
         self.session = session
-        self.account_model = account_model
 
-    def create(self, account: T) -> T:
+    def create(self, account: User) -> User:
         try:
-            if (
-                self.session.query(self.account_model)
-                .filter_by(email=account.email)
-                .first()
-            ):
+            if self.session.query(User).filter_by(email=account.email).first():
                 raise DBCreateAccountWithEmailAlreadyExistsException
             self.session.add(account)
             self.session.commit()
@@ -36,13 +29,9 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
             raise DBException(e)
         return account
 
-    def update(self, id: int, field: str, value: Any) -> T:
+    def update(self, id: int, field: str, value: Any) -> User:
         try:
-            if (
-                account := self.session.query(self.account_model)
-                .filter_by(id=id)
-                .first()
-            ):
+            if account := self.session.query(User).filter_by(id=id).first():
                 setattr(account, field, value)
                 self.session.commit()
                 self.session.refresh(account)
@@ -52,13 +41,9 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
         except Exception:
             raise DBGetAccountException
 
-    def get(self, id: int) -> T:
+    def get(self, id: int) -> User:
         try:
-            if (
-                account := self.session.query(self.account_model)
-                .filter_by(id=id)
-                .first()
-            ):
+            if account := self.session.query(User).filter_by(id=id).first():
                 return account
             raise NoRecordFoundException
 
@@ -67,13 +52,9 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
         except Exception:
             raise DBGetAccountException
 
-    def get_by(self, field: dict[Any, Any]) -> T:
+    def get_by(self, field: dict[Any, Any]) -> User:
         try:
-            if (
-                account := self.session.query(self.account_model)
-                .filter_by(**field)
-                .first()
-            ):
+            if account := self.session.query(User).filter_by(**field).first():
                 return account
             raise NoRecordFoundException
 
@@ -87,32 +68,23 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
         field: dict[Any, Any],
         sort: str = "consecutive_checkins",
         sort_direction: int = 0,
-    ) -> list[T]:
+    ) -> list[User]:
         try:
             if sort_direction == 0:
                 return (
-                    self.session.query(self.account_model)
+                    self.session.query(User)
                     .filter_by(**field)
                     .order_by(desc(sort))
                     .all()
                 )
-            return (
-                self.session.query(self.account_model)
-                .filter_by(**field)
-                .order_by(asc(sort))
-                .all()
-            )
+            return self.session.query(User).filter_by(**field).order_by(asc(sort)).all()
 
         except Exception as e:
             raise DBException(e)
 
     def delete(self, id: int) -> None:
         try:
-            if (
-                account := self.session.query(self.account_model)
-                .filter_by(id=id)
-                .first()
-            ):
+            if account := self.session.query(User).filter_by(id=id).first():
                 self.session.delete(account)
                 self.session.commit()
                 return
@@ -125,16 +97,11 @@ class CRUDAccount(Generic[T]):  # TODO: Methods for all account tables
 
     def delete_all(self) -> None:
         try:
-            self.session.query(self.account_model).delete()
+            self.session.query(User).delete()
             return
 
         except Exception as e:
             raise DBException(e)
-
-
-class CRUDUser(CRUDAccount):
-    def __init__(self, session: Session):
-        super().__init__(session, User)
 
     def reset_all_can_record_mood(self) -> None:
         # TODO: Think of a better way to
@@ -146,9 +113,98 @@ class CRUDUser(CRUDAccount):
         return
 
 
-class CRUDAdmin(CRUDAccount):
+class CRUDAdmin:
     def __init__(self, session: Session):
-        super().__init__(session, Admin)
+        self.session = session
+
+    def create(self, account: Admin) -> Admin:
+        try:
+            if self.session.query(Admin).filter_by(email=account.email).first():
+                raise DBCreateAccountWithEmailAlreadyExistsException
+            self.session.add(account)
+            self.session.commit()
+
+        except DBCreateAccountWithEmailAlreadyExistsException:
+            raise DBCreateAccountWithEmailAlreadyExistsException
+        except Exception as e:
+            raise DBException(e)
+        return account
+
+    def update(self, id: int, field: str, value: Any) -> Admin:
+        try:
+            if account := self.session.query(Admin).filter_by(id=id).first():
+                setattr(account, field, value)
+                self.session.commit()
+                self.session.refresh(account)
+                return account
+            raise NoRecordFoundException
+
+        except Exception:
+            raise DBGetAccountException
+
+    def get(self, id: int) -> Admin:
+        try:
+            if account := self.session.query(Admin).filter_by(id=id).first():
+                return account
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception:
+            raise DBGetAccountException
+
+    def get_by(self, field: dict[Any, Any]) -> Admin:
+        try:
+            if account := self.session.query(Admin).filter_by(**field).first():
+                return account
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
+    def get_by_all(
+        self,
+        field: dict[Any, Any],
+        sort: str = "consecutive_checkins",
+        sort_direction: int = 0,
+    ) -> list[Admin]:
+        try:
+            if sort_direction == 0:
+                return (
+                    self.session.query(Admin)
+                    .filter_by(**field)
+                    .order_by(desc(sort))
+                    .all()
+                )
+            return (
+                self.session.query(Admin).filter_by(**field).order_by(asc(sort)).all()
+            )
+
+        except Exception as e:
+            raise DBException(e)
+
+    def delete(self, id: int) -> None:
+        try:
+            if account := self.session.query(Admin).filter_by(id=id).first():
+                self.session.delete(account)
+                self.session.commit()
+                return
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
+    def delete_all(self) -> None:
+        try:
+            self.session.query(Admin).delete()
+            return
+
+        except Exception as e:
+            raise DBException(e)
 
 
 class CRUDMood:

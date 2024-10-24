@@ -38,8 +38,10 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
             email=admin_in_model.email,
             password=hash_password(admin_in_model.password),
             created_at=admin_in_model.created_at,
+            contact_number=admin_in_model.contact_number,
         )
-        return CRUDAdmin(db).create(db_admin_model)
+        CRUDAdmin(db).create(db_admin_model)
+        return
 
     except DifferentPasswordAndConfirmPasswordException:
         raise HTTPException(
@@ -79,7 +81,8 @@ def get_create_user_response(
             can_record_mood=True,
             created_at=user_in_model.created_at,
         )
-        return CRUDUser(db).create(db_user_model)
+        CRUDUser(db).create(db_user_model)
+        return
 
     except DifferentPasswordAndConfirmPasswordException:
         raise HTTPException(
