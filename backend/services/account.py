@@ -2,6 +2,7 @@ from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.util import generic_fn_descriptor
 
 from crud import CRUDAdmin, CRUDUser
 from enums import TreeDisplayState
@@ -73,6 +74,13 @@ def get_create_user_response(
             email=user_in_model.email,
             password=hash_password(user_in_model.password),
             name=user_in_model.name,
+            alias=user_in_model.alias,
+            age=user_in_model.age,
+            race=user_in_model.race,
+            gender=user_in_model.gender,
+            postal_code=user_in_model.postal_code,
+            floor=user_in_model.floor,
+            contact_number=user_in_model.contact_number,
             coins=0,
             tree_display_state=TreeDisplayState.SEEDLING,
             consecutive_checkins=0,

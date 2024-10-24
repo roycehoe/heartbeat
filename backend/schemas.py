@@ -51,6 +51,13 @@ class AdminCreateRequest(AccountCreateRequestBase):
 
 class UserCreateRequest(AccountCreateRequestBase):
     name: str
+    alias: str
+    age: int
+    race: str
+    gender: str
+    postal_code: int
+    floor: int
+    contact_number: int
 
 
 class AdminIn(AdminCreateRequest):
