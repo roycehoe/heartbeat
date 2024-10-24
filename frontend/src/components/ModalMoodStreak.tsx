@@ -31,11 +31,12 @@ function ModalMoodStreak({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
+      size="full"
       isCentered
       motionPreset="slideInBottom"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent margin="0" rounded="none">
         <ModalBody
           display="flex"
           flexDirection="column"
