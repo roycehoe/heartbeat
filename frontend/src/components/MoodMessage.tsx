@@ -16,7 +16,7 @@ function MoodMessage(props: {
         }}
       ></span>
       <span className="front" style={{ background: props.bg }}>
-        <Text fontWeight="600" fontSize="42px">
+        <Text fontSize="36px" fontWeight="semibold">
           {props.message}
         </Text>
       </span>

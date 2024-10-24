@@ -1,5 +1,6 @@
 import {
   Box,
+  Image,
   Modal,
   ModalBody,
   ModalContent,
@@ -92,16 +93,25 @@ function ModalMoodStreak({
                 <Tr>
                   {tickData.map((hasTick, index) => (
                     <Td key={index} textAlign="center">
-                      {hasTick ? <img src="/assets/checkbox.svg"></img> : ""}
+                      {hasTick ? (
+                        <Image
+                          src="/assets/checkbox.svg"
+                          width="20px"
+                          height="20px"
+                        ></Image>
+                      ) : (
+                        ""
+                      )}
                     </Td>
                   ))}
                 </Tr>
               </Tbody>
             </Table>
-          </Box>
-
-          <Box marginBottom="18px">
-            Keep your streak going by checking in tomorrow
+            <Box marginBottom="18px" mt="12px">
+              <Text textAlign="center">
+                Keep your streak going by checking in tomorrow!
+              </Text>
+            </Box>
           </Box>
         </ModalBody>
       </ModalContent>

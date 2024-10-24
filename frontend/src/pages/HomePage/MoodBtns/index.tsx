@@ -120,7 +120,6 @@ function MoodBtns(props: {
         padding="12px"
         gap="48px"
         height="100%"
-        // maxHeight="218px"
         bg={MOOD_MESSAGE_PROPS[clickedMood].flexboxBg}
       >
         <SlideFade
@@ -166,7 +165,7 @@ function MoodBtns(props: {
         isOpen={isOpen}
         handleClose={handleClose}
         daysOfWeek={getDaysOfWeek().map((dayOfWeek) =>
-          dayOfWeek.format("dddd").slice(0, 3)
+          dayOfWeek.format("dddd").slice(0, 2)
         )}
         tickData={getCheckedDaysBoolean(getDaysOfWeek(), props.moodsCreatedAt)}
         streak={props.streak}
