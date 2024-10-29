@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from random import choice, sample
+from enums import Gender, Race
 
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -87,6 +88,13 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user1@heartbeatmail.com",
             "password": hash_password("user1@heartbeatmail.com"),
             "name": "user1",
+            "alias": "alias1",
+            "age": 69,
+            "race": Race.CHINESE,
+            "gender": Gender.MALE,
+            "postal_code": 123123,
+            "floor": 9,
+            "contact_number": "90001111",
             "coins": 1500,
             "tree_display_state": TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS,
             "consecutive_checkins": 5,
@@ -100,6 +108,13 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user2@heartbeatmail.com",
             "password": hash_password("user2@heartbeatmail.com"),
             "name": "user2",
+            "alias": "alias1",
+            "age": 69,
+            "race": Race.CHINESE,
+            "gender": Gender.MALE,
+            "postal_code": 123123,
+            "floor": 9,
+            "contact_number": "90001111",
             "coins": 800,
             "tree_display_state": TreeDisplayState.TEEN_TREE,
             "consecutive_checkins": 5,
@@ -113,6 +128,13 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "email": "user3@heartbeatmail.com",
             "password": hash_password("user3@heartbeatmail.com"),
             "name": "user3",
+            "alias": "alias1",
+            "age": 69,
+            "race": Race.CHINESE,
+            "gender": Gender.MALE,
+            "postal_code": 123123,
+            "floor": 9,
+            "contact_number": "90001111",
             "coins": 50,
             "tree_display_state": TreeDisplayState.SEEDLING,
             "consecutive_checkins": 0,
@@ -130,6 +152,8 @@ def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
         {
             "id": 1,
             "email": "admin@heartbeatmail.com",
+            "name": "admin1",
+            "contact_number": "91231231",
             "password": hash_password("admin@heartbeatmail.com"),
             "created_at": created_at,
         }

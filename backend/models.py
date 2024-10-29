@@ -5,13 +5,15 @@ from sqlalchemy import (
     Enum,
     ForeignKey,
     Integer,
-    Numeric,
     String,
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy_utils import EncryptedType
 
 from database import Base
 from enums import SelectedMood, TreeDisplayState
+
+SECRET = "This is a secret"
 
 
 class Admin(Base):
@@ -20,9 +22,11 @@ class Admin(Base):
     id = Column(Integer, primary_key=True, comment="Primary key")
 
     email = Column(String, nullable=False, comment="User's email; doubles as username")
-    name = Column(String, nullable=False)
+    name = Column(EncryptedType(String, SECRET), nullable=False)
     password = Column(String, nullable=False)
-    contact_number = Column(Integer, nullable=False, comment="Assumes SG phone number")
+    contact_number = Column(
+        EncryptedType(String, SECRET), nullable=False, comment="Assumes SG phone number"
+    )
 
     created_at = Column(TIMESTAMP, nullable=False)
 
@@ -37,7 +41,7 @@ class User(Base):
     # USER SIGNUP FIELDS
     email = Column(String, nullable=False, comment="User's email; doubles as username")
     password = Column(String, nullable=False)
-    name = Column(String, nullable=False)
+    name = Column(EncryptedType(String, SECRET), nullable=False)
     alias = Column(
         String, nullable=False, comment="To prevent data overflow on frontend"
     )
@@ -46,7 +50,9 @@ class User(Base):
     gender = Column(String, nullable=False)
     postal_code = Column(String, nullable=False)
     floor = Column(Integer, nullable=False)
-    contact_number = Column(Integer, nullable=False, comment="Assumes SG phone number")
+    contact_number = Column(
+        EncryptedType(String, SECRET), nullable=False, comment="Assumes SG phone number"
+    )
 
     coins = Column(Integer, nullable=False)
     tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
