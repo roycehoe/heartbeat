@@ -16,7 +16,60 @@ import {
   DashboardResponse,
   getAdminDashboardResponse,
   getAdminLoginResponse,
+  MoodValue,
 } from "../../api/user";
+
+const MOOD_VALUE_TO_EMOJI = {
+  [MoodValue.HAPPY]: "🟩",
+  [MoodValue.OK]: "🟨",
+  [MoodValue.SAD]: "🟥",
+};
+const MAX_MOOD_DISPLAY = 7;
+
+function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
+  return (
+    <AccordionItem>
+      <Box>
+        <AccordionButton display="flex" justifyContent="space-between">
+          <Box display="flex" gap="8px">
+            <Text>{props.dashboardData.can_record_mood ? "🟩" : "🟫"}</Text>
+            <Text>{props.dashboardData.alias}</Text>
+          </Box>
+          <AccordionIcon></AccordionIcon>
+        </AccordionButton>
+      </Box>
+      <AccordionPanel pb="4" display="flex" flexDirection="column" gap="12px">
+        <Box className="accordion-details-text">
+          <Text>Name: {props.dashboardData.name}</Text>
+          <Text>Age: {props.dashboardData.age}</Text>
+          <Text>Race: {props.dashboardData.race}</Text>
+          <Text>Contact no: {props.dashboardData.contact_number}</Text>
+          <Text>Postal code: {props.dashboardData.postal_code}</Text>
+          <Text>
+            Mood:{" "}
+            {props.dashboardData.moods
+              .map((mood) => MOOD_VALUE_TO_EMOJI[mood.mood])
+              .slice(0)
+              .slice(-MAX_MOOD_DISPLAY)}
+          </Text>
+        </Box>
+        <Box
+          className="accordion-details-buttons"
+          display="flex"
+          justifyContent="flex-end"
+          gap="8px"
+        >
+          <Button colorScheme="success" variant="solid">
+            Update
+          </Button>
+          <Button colorScheme="critical" variant="solid">
+            Delete
+          </Button>
+        </Box>
+      </AccordionPanel>
+    </AccordionItem>
+  );
+}
 
 function Admin() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
@@ -90,48 +143,13 @@ function Admin() {
             </Box>
             <Box background="yellow.100" height="100%">
               <Accordion allowMultiple>
-                <AccordionItem>
-                  <Box>
-                    <AccordionButton
-                      display="flex"
-                      justifyContent="space-between"
-                    >
-                      <Box display="flex" gap="8px">
-                        <Text>🟩</Text>
-                        <Text>Lee Something</Text>
-                      </Box>
-                      <AccordionIcon></AccordionIcon>
-                    </AccordionButton>
-                  </Box>
-                  <AccordionPanel
-                    pb="4"
-                    display="flex"
-                    flexDirection="column"
-                    gap="12px"
-                  >
-                    <Box className="accordion-details-text">
-                      <Text>Name: Some very long name goes here</Text>
-                      <Text>Age: 69</Text>
-                      <Text>Race: Chinese</Text>
-                      <Text>Contact no: 91234123</Text>
-                      <Text>Address: Blk 123</Text>
-                      <Text>Mood: 🟩🟩🟩🟩🟩 </Text>
-                    </Box>
-                    <Box
-                      className="accordion-details-buttons"
-                      display="flex"
-                      justifyContent="flex-end"
-                      gap="8px"
-                    >
-                      <Button colorScheme="success" variant="solid">
-                        Update
-                      </Button>
-                      <Button colorScheme="critical" variant="solid">
-                        Delete
-                      </Button>
-                    </Box>
-                  </AccordionPanel>
-                </AccordionItem>
+                {dashboardData.map((data) => {
+                  return (
+                    <AccordionItemDashboard
+                      dashboardData={data}
+                    ></AccordionItemDashboard>
+                  );
+                })}
               </Accordion>
             </Box>
           </Box>
