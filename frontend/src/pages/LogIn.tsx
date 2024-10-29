@@ -59,6 +59,7 @@ function LogIn() {
         });
         setErrorMessage(""); // Clear error message on success
         localStorage.setItem("token", response.access_token);
+        navigate("/admin");
       } catch (error) {
         if (error?.response && error.response.status === 400) {
           setErrorMessage("Username or password incorrect. Please try again.");

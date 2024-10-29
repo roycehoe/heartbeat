@@ -25,6 +25,13 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
     user = CRUDUser(db).get(user_id)
     return DashboardOut(
         user_id=user_id,
+        name=user.name,
+        alias=user.alias,
+        age=user.age,
+        race=user.race,
+        gender=user.gender,
+        postal_code=user.postal_code,
+        floor=user.floor,
         moods=[
             MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
             for mood in moods
