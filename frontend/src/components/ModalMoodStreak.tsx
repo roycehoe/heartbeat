@@ -5,13 +5,7 @@ import {
   ModalBody,
   ModalContent,
   ModalOverlay,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
 } from "@chakra-ui/react";
 
 function ModalMoodStreak({

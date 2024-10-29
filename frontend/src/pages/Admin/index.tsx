@@ -1,4 +1,14 @@
-import { Box, Fade } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Fade,
+  Text,
+} from "@chakra-ui/react";
+import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_ADMIN_CREDENTIALS } from "../../api/constants";
@@ -7,7 +17,6 @@ import {
   getAdminDashboardResponse,
   getAdminLoginResponse,
 } from "../../api/user";
-import Brand from "../../components/Brand";
 
 function Admin() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
@@ -77,16 +86,53 @@ function Admin() {
               justifyContent="flex-end"
               gap="8px"
             >
-              <Box background="green.100">First button</Box>
-              <Box background="green.100">Second button</Box>
+              <Button variant="solid">Create user</Button>
             </Box>
             <Box background="yellow.100" height="100%">
-              <Box>This is a row</Box>
-              <Box>This is a row</Box>
-              <Box>This is a row</Box>
-              <Box>This is a row</Box>
-              <Box>This is a row</Box>
-              <Box>This is a row</Box>
+              <Accordion allowMultiple>
+                <AccordionItem>
+                  <Box>
+                    <AccordionButton
+                      display="flex"
+                      justifyContent="space-between"
+                    >
+                      <Box display="flex" gap="8px">
+                        <Text>🟩</Text>
+                        <Text>Lee Something</Text>
+                      </Box>
+                      <AccordionIcon></AccordionIcon>
+                    </AccordionButton>
+                  </Box>
+                  <AccordionPanel
+                    pb="4"
+                    display="flex"
+                    flexDirection="column"
+                    gap="12px"
+                  >
+                    <Box className="accordion-details-text">
+                      <Text>Name: Some very long name goes here</Text>
+                      <Text>Age: 69</Text>
+                      <Text>Race: Chinese</Text>
+                      <Text>Contact no: 91234123</Text>
+                      <Text>Address: Blk 123</Text>
+                      <Text>Mood: 🟩🟩🟩🟩🟩 </Text>
+                    </Box>
+                    <Box
+                      className="accordion-details-buttons"
+                      display="flex"
+                      justifyContent="flex-end"
+                      gap="8px"
+                    >
+                      <Button colorScheme="success" variant="solid">
+                        Update
+                      </Button>
+                      <Button colorScheme="critical" variant="solid">
+                        Delete
+                      </Button>
+                    </Box>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
             </Box>
           </Box>
         </Box>
