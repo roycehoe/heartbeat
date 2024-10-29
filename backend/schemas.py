@@ -24,6 +24,7 @@ class DashboardOut(BaseModel):
     moods: list[MoodIn]
     can_record_mood: bool
     coins: int
+    contact_number: str
     tree_display_state: TreeDisplayState
     claimable_gifts: int
     consecutive_checkins: int

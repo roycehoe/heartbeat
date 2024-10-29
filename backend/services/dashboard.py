@@ -29,6 +29,7 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
             MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
             for mood in moods
         ],
+        contact_number=user.contact_number,
         coins=user.coins,
         tree_display_state=user.tree_display_state,
         consecutive_checkins=user.consecutive_checkins,
@@ -37,8 +38,9 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
     )
 
 
-def get_admin_dashboard_response(token: str, db: Session, sort: str,
-                                 sort_direction: int) -> list[DashboardOut]:
+def get_admin_dashboard_response(
+    token: str, db: Session, sort: str, sort_direction: int
+) -> list[DashboardOut]:
     try:
         response: list[DashboardOut] = []
 
@@ -52,7 +54,15 @@ def get_admin_dashboard_response(token: str, db: Session, sort: str,
             response.append(
                 DashboardOut(
                     user_id=user.id,
-                    moods=[MoodIn(**mood) for mood in moods],
+                    moods=[
+                        MoodIn(
+                            mood=mood.mood,
+                            user_id=mood.user_id,
+                            created_at=mood.created_at,
+                        )
+                        for mood in moods
+                    ],
+                    contact_number=user.contact_number,
                     coins=user.coins,
                     tree_display_state=user.tree_display_state,
                     consecutive_checkins=user.consecutive_checkins,
