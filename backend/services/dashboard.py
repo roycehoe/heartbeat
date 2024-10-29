@@ -54,6 +54,14 @@ def get_admin_dashboard_response(
             response.append(
                 DashboardOut(
                     user_id=user.id,
+                    contact_number=user.contact_number,
+                    name=user.name,
+                    alias=user.alias,
+                    age=user.age,
+                    race=user.race,
+                    gender=user.gender,
+                    postal_code=user.postal_code,
+                    floor=user.floor,
                     moods=[
                         MoodIn(
                             mood=mood.mood,
@@ -62,7 +70,6 @@ def get_admin_dashboard_response(
                         )
                         for mood in moods
                     ],
-                    contact_number=user.contact_number,
                     coins=user.coins,
                     tree_display_state=user.tree_display_state,
                     consecutive_checkins=user.consecutive_checkins,
