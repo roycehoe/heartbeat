@@ -48,10 +48,12 @@ class User(Base):
     age = Column(Integer, nullable=False)
     race = Column(String, nullable=False)
     gender = Column(String, nullable=False)
-    postal_code = Column(String, nullable=False)
+    postal_code = Column(Integer, nullable=False)
     floor = Column(Integer, nullable=False)
     contact_number = Column(
-        EncryptedType(String, SECRET), nullable=False, comment="Assumes SG phone number"
+        EncryptedType(Integer, SECRET),
+        nullable=False,
+        comment="Assumes SG phone number",
     )
 
     coins = Column(Integer, nullable=False)

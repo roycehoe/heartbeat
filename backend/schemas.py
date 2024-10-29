@@ -26,9 +26,9 @@ class DashboardOut(BaseModel):
     age: int
     race: Race
     gender: Gender
-    postal_code: str
+    postal_code: int
     floor: int
-    contact_number: str
+    contact_number: int
 
     moods: list[MoodIn]
     can_record_mood: bool
