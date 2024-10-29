@@ -118,7 +118,7 @@ def delete_user(user_id: int, token: str = Header(None), db: Session = Depends(g
 
 
 @app.get(
-    "/admin/",
+    "/admin/dashboard",
     status_code=status.HTTP_200_OK,
     response_model=list[DashboardOut],
 )

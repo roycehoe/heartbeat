@@ -137,7 +137,7 @@ export const DEFAULT_USER_CREDENTIALS: LoginRequest[] = [
   { email: "user3@heartbeatmail.com", password: "user3@heartbeatmail.com" },
 ];
 
-export const DEFAULT_ADMIN_CREDENTIAL: LoginRequest = {
+export const DEFAULT_ADMIN_CREDENTIALS: LoginRequest = {
   email: "admin@heartbeatmail.com",
   password: "admin@heartbeatmail.com",
 };

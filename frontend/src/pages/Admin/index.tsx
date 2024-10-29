@@ -1,10 +1,16 @@
 import { Box, Fade } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_ADMIN_CREDENTIAL as DEFAULT_ADMIN_CREDENTIALS } from "../../api/constants";
-import { getAdminLoginResponse } from "../../api/user";
+import { DEFAULT_ADMIN_CREDENTIALS } from "../../api/constants";
+import {
+  DashboardResponse,
+  getAdminDashboardResponse,
+  getAdminLoginResponse,
+} from "../../api/user";
+import Brand from "../../components/Brand";
 
 function Admin() {
+  const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
@@ -20,14 +26,14 @@ function Admin() {
         DEFAULT_ADMIN_CREDENTIALS
       );
       localStorage.setItem("token", loginResponse.access_token);
-      // const dashboardResponse = await getUserDashboardResponse();
-      // setDashboardData(dashboardResponse);
+      const dashboardResponse = await getAdminDashboardResponse();
+      setDashboardData(dashboardResponse);
       setIsLoading(false);
     };
     loadDashboard();
   }, []);
 
-  if (isLoading) {
+  if (isLoading || !dashboardData) {
     return (
       <Box
         width="100vw"
@@ -54,8 +60,35 @@ function Admin() {
           justifyContent="space-between"
           height="100%"
           className="page--group"
+          background="brand.secondary.300"
         >
-          THIS IS THE ADMIN PAGE!
+          <Box
+            height="100%"
+            margin="36px"
+            display="flex"
+            flexDirection="column"
+            gap="8px"
+            background="brand.primary.100"
+          >
+            <Box
+              background="red.300"
+              display="flex"
+              width="100%"
+              justifyContent="flex-end"
+              gap="8px"
+            >
+              <Box background="green.100">First button</Box>
+              <Box background="green.100">Second button</Box>
+            </Box>
+            <Box background="yellow.100" height="100%">
+              <Box>This is a row</Box>
+              <Box>This is a row</Box>
+              <Box>This is a row</Box>
+              <Box>This is a row</Box>
+              <Box>This is a row</Box>
+              <Box>This is a row</Box>
+            </Box>
+          </Box>
         </Box>
       </Fade>
     </Box>

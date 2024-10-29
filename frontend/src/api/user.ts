@@ -14,6 +14,18 @@ export enum TreeDisplayState {
   ADULT_TREE_WITH_FLOWERS_AND_GIFTS = 5,
 }
 
+enum Race {
+  CHINESE = "Chinese",
+  MALAY = "Malay",
+  INDIAN = "Indian",
+  OTHERS = "Others",
+}
+
+enum Gender {
+  MALE = "Male",
+  FEMALE = "Female",
+}
+
 interface Mood {
   mood: MoodValue;
   user_id: number;
@@ -26,6 +38,15 @@ interface MoodRequest {
 
 export interface DashboardResponse {
   user_id: number;
+  name: string;
+  alias: string;
+  age: number;
+  race: Race;
+  gender: Gender;
+  postal_code: number;
+  floor: number;
+  contact_number: number;
+
   moods: Mood[];
   can_record_mood: boolean;
   coins: number;
@@ -50,6 +71,13 @@ interface LoginResponse {
 
 export async function getUserDashboardResponse(): Promise<DashboardResponse> {
   const response = await httpClient.get("/user/dashboard");
+  return response.data;
+}
+
+export async function getAdminDashboardResponse(): Promise<
+  DashboardResponse[]
+> {
+  const response = await httpClient.get("/admin/dashboard");
   return response.data;
 }
 
