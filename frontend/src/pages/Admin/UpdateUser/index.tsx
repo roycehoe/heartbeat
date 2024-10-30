@@ -52,6 +52,7 @@ function ModalUpdateUser(props: {
   dashboardData: DashboardResponse;
   isOpen: boolean;
   onClose: () => void;
+  reloadDashboardData: () => Promise<void>;
 }) {
   const [updateUserForm, setCreateUserForm] = useState({} as UpdateUserForm);
   const [errorMessage, setErrorMessage] = useState("");
@@ -83,6 +84,7 @@ function ModalUpdateUser(props: {
         setErrorMessage("Something went wrong. Please try again later.");
       }
     }
+    props.reloadDashboardData();
     setIsCreateUserButtonLoading(false);
   }
 

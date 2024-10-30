@@ -2,7 +2,6 @@ from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy.util import generic_fn_descriptor
 
 from crud import CRUDAdmin, CRUDUser
 from enums import TreeDisplayState

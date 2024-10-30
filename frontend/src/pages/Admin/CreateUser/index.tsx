@@ -18,9 +18,7 @@ import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import {
-  CREATE_UPDATE_USER_FORM_FIELDS_PROPS,
-} from "../constants";
+import { CREATE_UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
 import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
 const MODAL_HEADER = "Create user";
@@ -42,7 +40,11 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   floor: "",
 };
 
-function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
+function ModalCreateUser(props: {
+  isOpen: boolean;
+  onClose: () => void;
+  reloadDashboardData: () => Promise<void>;
+}) {
   const [createUserForm, setCreateUserForm] = useState({
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
@@ -76,6 +78,7 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
         setErrorMessage("Something went wrong. Please try again later.");
       }
     }
+    props.reloadDashboardData();
     setIsCreateUserButtonLoading(false);
   }
 

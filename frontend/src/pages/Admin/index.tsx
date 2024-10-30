@@ -29,7 +29,11 @@ const MOOD_VALUE_TO_EMOJI = {
 };
 const MAX_MOOD_DISPLAY = 7;
 
-function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
+function AccordionItemDashboard(props: {
+  dashboardData: DashboardResponse;
+
+  reloadDashboardData: () => Promise<void>;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <AccordionItem>
@@ -66,7 +70,12 @@ function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
           <Button colorScheme="success" variant="solid" onClick={onOpen}>
             Update
           </Button>
-          <ModalUpdateUser dashboardData={props.dashboardData} isOpen={isOpen} onClose={onClose}></ModalUpdateUser>
+          <ModalUpdateUser
+            dashboardData={props.dashboardData}
+            isOpen={isOpen}
+            onClose={onClose}
+            reloadDashboardData={props.reloadDashboardData}
+          ></ModalUpdateUser>
           <Button colorScheme="critical" variant="solid">
             Delete
           </Button>
@@ -82,23 +91,23 @@ function Admin() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
+  const loadDashboardData = async () => {
+    setIsLoading(true);
+    const loginResponse = await getAdminLoginResponse(
+      DEFAULT_ADMIN_CREDENTIALS
+    );
+    localStorage.setItem("token", loginResponse.access_token);
+    const dashboardResponse = await getAdminDashboardResponse();
+    setDashboardData(dashboardResponse);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
       return;
     }
-
-    const loadDashboard = async () => {
-      setIsLoading(true);
-      const loginResponse = await getAdminLoginResponse(
-        DEFAULT_ADMIN_CREDENTIALS
-      );
-      localStorage.setItem("token", loginResponse.access_token);
-      const dashboardResponse = await getAdminDashboardResponse();
-      setDashboardData(dashboardResponse);
-      setIsLoading(false);
-    };
-    loadDashboard();
+    loadDashboardData();
   }, []);
 
   if (isLoading || !dashboardData) {
@@ -148,6 +157,7 @@ function Admin() {
               <ModalCreateUser
                 isOpen={isOpen}
                 onClose={onClose}
+                reloadDashboardData={loadDashboardData}
               ></ModalCreateUser>
             </Box>
             <Box height="100%" borderWidth="1px" borderRadius="lg">
