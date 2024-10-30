@@ -69,7 +69,7 @@ def get_create_user_response(
             raise DifferentPasswordAndConfirmPasswordException
 
         admin_id = get_token_data(token, "admin_id")
-        user_in_model = UserIn(**request.model_dump())
+        user_in_model = UserIn(**request.model_dump(by_alias=True))
         db_user_model = User(
             email=user_in_model.email,
             password=hash_password(user_in_model.password),

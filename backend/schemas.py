@@ -53,8 +53,8 @@ class LogInRequest(BaseModel):
 class AccountCreateRequestBase(BaseModel):
     email: str  # Doubles as username
     password: str
-    confirm_password: str
-    contact_number: int
+    confirm_password: str = Field(..., alias="confirmPassword")
+    contact_number: int = Field(..., alias="contactNumber")
 
 
 class AdminCreateRequest(AccountCreateRequestBase):
@@ -67,9 +67,8 @@ class UserCreateRequest(AccountCreateRequestBase):
     age: int
     race: str
     gender: str
-    postal_code: int
+    postal_code: int = Field(..., alias="postalCode")
     floor: int
-    contact_number: int
 
 
 class AdminIn(AdminCreateRequest):

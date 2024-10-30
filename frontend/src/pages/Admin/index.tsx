@@ -26,6 +26,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
+import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CreateUserRequest, getCreateUserResponse } from "../../api/admin";
@@ -76,6 +77,12 @@ const CREATE_USER_FORM_FIELDS = {
     type: "text",
     options: [],
   },
+  age: {
+    formLabel: "Age",
+    isRequired: true,
+    type: "number",
+    options: [],
+  },
   alias: {
     formLabel: "Alias",
     isRequired: true,
@@ -116,6 +123,7 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   confirmPassword: "",
   contactNumber: "",
   name: "",
+  age: "",
   alias: "",
   race: Race.CHINESE,
   gender: Gender.MALE,
@@ -248,6 +256,10 @@ function getSubmitCreateUserFormErrorMessage(
     return "Name is required.";
   }
 
+  if (!createUserForm.age) {
+    return "Age is required.";
+  }
+
   if (!createUserForm.alias) {
     return "Alias is required.";
   }
@@ -339,6 +351,10 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
 
+  function resetCreateUserForm() {
+    setCreateUserForm({ ...DEFAULT_CREATE_USER_FORM });
+  }
+
   useEffect(() => {
     setErrorMessage(getSubmitCreateUserFormErrorMessage(createUserForm));
   }, [createUserForm]);
@@ -348,9 +364,14 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
     try {
       await getCreateUserResponse(createUserForm);
       setHasCreatedUserSuccessfully(true);
+      resetCreateUserForm();
+      debounce(props.onClose, 5000);
     } catch (error) {
-      setErrorMessage(error?.response);
+      if (error?.response) {
+        setErrorMessage("Something went wrong. Please try again later.");
+      }
     }
+    console.log("I am called");
     setIsCreateUserButtonLoading(false);
   }
 
@@ -376,7 +397,7 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
             <Button
               mr="3px"
               variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
-              onClick={props.onClose}
+              onClick={handleCreateUser}
               isDisabled={errorMessage !== ""}
               isLoading={isCreateUserButtonLoading}
             >

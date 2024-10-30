@@ -7,6 +7,7 @@ export interface CreateUserRequest {
   confirmPassword: string;
   contactNumber: string;
   name: string;
+  age: string;
   alias: string;
   race: Race;
   gender: Gender;
@@ -17,6 +18,6 @@ export interface CreateUserRequest {
 export async function getCreateUserResponse(
   createUserRequest: CreateUserRequest
 ): Promise<null> {
-  const response = await httpClient.post("/admin/dashboard", createUserRequest);
+  const response = await httpClient.post("/admin/user", createUserRequest);
   return response.data;
 }
