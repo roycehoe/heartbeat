@@ -3,11 +3,6 @@ import {
   AlertDescription,
   AlertIcon,
   Box,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,13 +10,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
 } from "@chakra-ui/react";
 import { Banner, Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
 import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { Gender, Race } from "../../../api/user";
+import FormInputUser from "../../../components/FormInputUser";
+import FormInputUserPassword from "../../../components/FormInputUserPassword";
+import FormSelectUser from "../../../components/FormSelectUser";
 
 const CREATE_USER_FORM_FIELDS = {
   email: {
@@ -108,93 +105,6 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   floor: "",
 };
 
-function FormSelect(props: {
-  field: string;
-  isRequired: boolean;
-  formLabel: string;
-  type: string;
-  value: string;
-  onChange: (e: any, field: any) => void;
-  placeholder: string;
-  options: string[];
-}) {
-  return (
-    <FormControl key={props.field} isRequired={props.isRequired}>
-      <FormLabel>{props.formLabel}</FormLabel>
-      <Select variant="outline">
-        {props.options.map((option) => {
-          return <option value={option}>{option}</option>;
-        })}
-      </Select>
-    </FormControl>
-  );
-}
-
-function FormInputPassword(props: {
-  field: string;
-  isRequired: boolean;
-  formLabel: string;
-  type: string;
-  value: string;
-  onChange: (e: any, field: any) => void;
-  placeholder: string;
-}) {
-  const [isShow, setIsShow] = useState(false);
-  const handleClick = () => setIsShow(!isShow);
-
-  return (
-    <FormControl key={props.field} isRequired={props.isRequired}>
-      <FormLabel>{props.formLabel}</FormLabel>
-      <InputGroup>
-        <Input
-          type={isShow ? "text" : "password"}
-          value={props.value}
-          onChange={props.onChange}
-          placeholder={props.placeholder}
-          borderColor="slate.300"
-          _placeholder={{ color: "gray.500" }}
-        />
-        <InputRightElement>
-          <Button
-            size="xs"
-            marginRight="18px"
-            padding="8px"
-            variant="outline"
-            onClick={handleClick}
-          >
-            {isShow ? "Hide" : "Show"}
-          </Button>
-        </InputRightElement>
-      </InputGroup>
-    </FormControl>
-  );
-}
-
-function FormInput(props: {
-  field: string;
-  isRequired: boolean;
-  formLabel: string;
-  type: string;
-  value: string;
-  onChange: (e: any, field: any) => void;
-  placeholder: string;
-}) {
-  return (
-    <FormControl key={props.field} isRequired={props.isRequired}>
-      <FormLabel>{props.formLabel}</FormLabel>
-      <Input
-        type={props.type}
-        value={props.value}
-        onChange={props.onChange}
-        placeholder={props.placeholder}
-        size="xs"
-        borderColor="slate.300"
-        _placeholder={{ color: "gray.500" }}
-      />
-    </FormControl>
-  );
-}
-
 function getSubmitCreateUserFormErrorMessage(
   createUserForm: CreateUserForm
 ): string {
@@ -276,7 +186,7 @@ function FormCreateUser(props: {
 
         if (type === "select") {
           return (
-            <FormSelect
+            <FormSelectUser
               field={field}
               isRequired={isRequired}
               formLabel={formLabel}
@@ -285,12 +195,12 @@ function FormCreateUser(props: {
               onChange={(e) => handleChange(e, field)}
               placeholder={formLabel}
               options={options}
-            ></FormSelect>
+            ></FormSelectUser>
           );
         }
         if (type === "password") {
           return (
-            <FormInputPassword
+            <FormInputUserPassword
               field={field}
               isRequired={isRequired}
               formLabel={formLabel}
@@ -298,12 +208,12 @@ function FormCreateUser(props: {
               value={props.createUserForm[field]}
               onChange={(e) => handleChange(e, field)}
               placeholder={formLabel}
-            ></FormInputPassword>
+            ></FormInputUserPassword>
           );
         }
 
         return (
-          <FormInput
+          <FormInputUser
             field={field}
             isRequired={isRequired}
             formLabel={formLabel}
@@ -311,7 +221,7 @@ function FormCreateUser(props: {
             value={props.createUserForm[field]}
             onChange={(e) => handleChange(e, field)}
             placeholder={formLabel}
-          ></FormInput>
+          ></FormInputUser>
         );
       })}
     </Box>
