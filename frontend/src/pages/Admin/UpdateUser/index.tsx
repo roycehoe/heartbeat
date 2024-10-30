@@ -19,16 +19,90 @@ import { Gender, Race } from "../../../api/user";
 import FormInputUser from "../../../components/FormInputUser";
 import FormInputUserPassword from "../../../components/FormInputUserPassword";
 import FormSelectUser from "../../../components/FormSelectUser";
-import {
-  CREATE_UPDATE_USER_FORM_FIELDS_PROPS,
-  CreateUpdateUserFormFieldProps,
-} from "../constants";
-import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
-const MODAL_HEADER = "Create user";
+const MODAL_HEADER = "Update user";
 const MODAL_BODY_BANNER = "User created successfully!";
 
-export interface CreateUserForm extends CreateUserRequest {}
+interface UpdateUserForm extends CreateUserRequest {}
+
+interface CreateUpdateUserFormFieldProps {
+  formLabel: string;
+  isRequired: boolean;
+  type: string;
+  options: string[];
+}
+
+const CREATE_UPDATE_USER_FORM_FIELDS_PROPS: Record<
+  keyof UpdateUserForm,
+  CreateUpdateUserFormFieldProps
+> = {
+  email: {
+    formLabel: "Email",
+    isRequired: true,
+    type: "email",
+    options: [],
+  },
+  password: {
+    formLabel: "Password",
+    isRequired: true,
+    type: "password",
+    options: [],
+  },
+  confirmPassword: {
+    formLabel: "Confirm Password",
+    isRequired: true,
+    type: "password",
+    options: [],
+  },
+  contactNumber: {
+    formLabel: "Contact Number",
+    isRequired: true,
+    type: "tel",
+    options: [],
+  },
+  name: {
+    formLabel: "Name",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+  age: {
+    formLabel: "Age",
+    isRequired: true,
+    type: "number",
+    options: [],
+  },
+  alias: {
+    formLabel: "Alias",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+  race: {
+    formLabel: "Race",
+    isRequired: true,
+    type: "select",
+    options: [Race.CHINESE, Race.INDIAN, Race.MALAY, Race.OTHERS],
+  },
+  gender: {
+    formLabel: "Gender",
+    isRequired: true,
+    type: "select",
+    options: [Gender.MALE, Gender.FEMALE],
+  },
+  postalCode: {
+    formLabel: "Postal Code",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+  floor: {
+    formLabel: "Floor",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+};
 
 const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   email: "",
@@ -43,6 +117,68 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   postalCode: "",
   floor: "",
 };
+
+function getSubmitCreateUpdateUserFormErrorMessage(
+  createUserForm: CreateUserForm
+): string {
+  if (!createUserForm.email) {
+    return "Email is required.";
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(createUserForm.email)) {
+    return "Invalid email format.";
+  }
+
+  if (!createUserForm.password) {
+    return "Password is required.";
+  }
+  if (createUserForm.password.length < 8) {
+    return "Password must be at least 8 characters long.";
+  }
+
+  if (!createUserForm.confirmPassword) {
+    return "Please confirm your password.";
+  }
+  if (createUserForm.password !== createUserForm.confirmPassword) {
+    return "Passwords do not match.";
+  }
+
+  if (!createUserForm.contactNumber) {
+    return "Contact number is required.";
+  }
+  if (!/^\d+$/.test(createUserForm.contactNumber)) {
+    return "Contact number must contain only digits.";
+  }
+  if (createUserForm.contactNumber.length !== 8) {
+    return "Contact number must contain exactly eight digits.";
+  }
+
+  if (!createUserForm.name) {
+    return "Name is required.";
+  }
+
+  if (!createUserForm.age) {
+    return "Age is required.";
+  }
+
+  if (!createUserForm.alias) {
+    return "Alias is required.";
+  }
+  if (createUserForm.alias.length > 12) {
+    return "Alias must be less than 12 characters.";
+  }
+
+  if (!createUserForm.postalCode) {
+    return "Postal code is required.";
+  } else if (!/^\d{6}$/.test(createUserForm.postalCode)) {
+    return "Postal code must be 6 digits.";
+  }
+
+  if (!createUserForm.floor) {
+    return "Floor is required.";
+  }
+
+  return "";
+}
 
 function FormUserCreateUpdate(props: {
   createUpdateUserFormFields: Record<
@@ -173,7 +309,7 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
           ></ModalContentWithBannerSuccess>
         ) : (
           <>
-            <ModalHeader>Create user</ModalHeader>
+            <ModalHeader>{MODAL_HEADER}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <FormUserCreateUpdate
