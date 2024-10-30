@@ -28,6 +28,7 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CreateUserRequest, getCreateUserResponse } from "../../api/admin";
 import { DEFAULT_ADMIN_CREDENTIALS } from "../../api/constants";
 import {
   DashboardResponse,
@@ -107,18 +108,7 @@ const CREATE_USER_FORM_FIELDS = {
   },
 };
 
-interface CreateUserForm {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  contactNumber: string;
-  name: string;
-  alias: string;
-  race: Race;
-  gender: Gender;
-  postalCode: string;
-  floor: string;
-}
+interface CreateUserForm extends CreateUserRequest {}
 
 const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   email: "",
@@ -344,10 +334,25 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isCreateUserButtonLoading, setIsCreateUserButtonLoading] =
+    useState(false);
+  const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
+    useState(false);
 
   useEffect(() => {
     setErrorMessage(getSubmitCreateUserFormErrorMessage(createUserForm));
   }, [createUserForm]);
+
+  async function handleCreateUser() {
+    setIsCreateUserButtonLoading(true);
+    try {
+      await getCreateUserResponse(createUserForm);
+      setHasCreatedUserSuccessfully(true);
+    } catch (error) {
+      setErrorMessage(error?.response);
+    }
+    setIsCreateUserButtonLoading(false);
+  }
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -366,15 +371,16 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
           <Box display="flex" flexDirection="column" width="100%" gap="24px">
             <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
               <AlertIcon />
-              <AlertDescription size="xs">{errorMessage}</AlertDescription>
+              <AlertDescription>{errorMessage}</AlertDescription>
             </Alert>
             <Button
               mr="3px"
-              variant="outline"
+              variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
               onClick={props.onClose}
               isDisabled={errorMessage !== ""}
+              isLoading={isCreateUserButtonLoading}
             >
-              Create
+              {hasCreatedUserSuccessfully ? "User created!" : "Create"}
             </Button>
           </Box>
         </ModalFooter>
