@@ -74,19 +74,19 @@ const CREATE_USER_FORM_FIELDS = {
   },
   alias: {
     formLabel: "Alias",
-    isRequired: false,
+    isRequired: true,
     type: "text",
     options: [],
   },
   race: {
     formLabel: "Race",
-    isRequired: false,
+    isRequired: true,
     type: "select",
     options: [Race.CHINESE, Race.INDIAN, Race.MALAY, Race.OTHERS],
   },
   gender: {
     formLabel: "Gender",
-    isRequired: false,
+    isRequired: true,
     type: "select",
     options: [Gender.MALE, Gender.FEMALE],
   },
@@ -98,7 +98,7 @@ const CREATE_USER_FORM_FIELDS = {
   },
   floor: {
     formLabel: "Floor",
-    isRequired: false,
+    isRequired: true,
     type: "text",
     options: [],
   },
@@ -211,23 +211,91 @@ function FormInput(props: {
   );
 }
 
-function FormCreateUser() {
-  const [formValues, setFormValues] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    contactNumber: "",
-    name: "",
-    alias: "",
-    race: "",
-    gender: "",
-    postalCode: "",
-    floor: "",
-  });
+interface CreateUserForm {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  contactNumber: string;
+  name: string;
+  alias: string;
+  race: Race;
+  gender: Gender;
+  postalCode: string;
+  floor: string;
+}
 
+const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+  contactNumber: "",
+  name: "",
+  alias: "",
+  race: Race.CHINESE,
+  gender: Gender.MALE,
+  postalCode: "",
+  floor: "",
+};
+
+function getSubmitCreateUserFormErrorMessage(
+  createUserForm: CreateUserForm
+): string | null {
+  if (!createUserForm.email) {
+    return "Email is required.";
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(createUserForm.email)) {
+    return "Invalid email format.";
+  }
+
+  if (!createUserForm.password) {
+    return "Password is required.";
+  }
+  if (createUserForm.password.length < 8) {
+    return "Password must be at least 8 characters long.";
+  }
+
+  if (!createUserForm.confirmPassword) {
+    return "Please confirm your password.";
+  }
+  if (createUserForm.password !== createUserForm.confirmPassword) {
+    return "Passwords do not match.";
+  }
+
+  if (!createUserForm.contactNumber) {
+    return "Contact number is required.";
+  }
+  if (!/^\d+$/.test(createUserForm.contactNumber)) {
+    return "Contact number must contain only digits.";
+  }
+
+  if (!createUserForm.name) {
+    return "Name is required.";
+  }
+
+  if (!createUserForm.alias) {
+    return "Alias is required.";
+  }
+
+  if (!createUserForm.postalCode) {
+    return "Postal code is required.";
+  } else if (!/^\d{6}$/.test(createUserForm.postalCode)) {
+    return "Postal code must be 6 digits.";
+  }
+
+  if (!createUserForm.floor) {
+    return "Floor is required.";
+  }
+
+  return null;
+}
+
+function FormCreateUser(props: {
+  createUserForm: CreateUserForm;
+  setCreateUserForm: React.Dispatch<React.SetStateAction<CreateUserForm>>;
+}) {
   const handleChange = (e, field) => {
-    setFormValues({
-      ...formValues,
+    props.setCreateUserForm({
+      ...props.createUserForm,
       [field]: e.target.value,
     });
   };
@@ -245,7 +313,7 @@ function FormCreateUser() {
               isRequired={isRequired}
               formLabel={formLabel}
               type={type}
-              value={formValues[field]}
+              value={props.createUserForm[field]}
               onChange={(e) => handleChange(e, field)}
               placeholder={formLabel}
               options={options}
@@ -259,7 +327,7 @@ function FormCreateUser() {
               isRequired={isRequired}
               formLabel={formLabel}
               type={type}
-              value={formValues[field]}
+              value={props.createUserForm[field]}
               onChange={(e) => handleChange(e, field)}
               placeholder={formLabel}
             ></FormInputPassword>
@@ -272,7 +340,7 @@ function FormCreateUser() {
             isRequired={isRequired}
             formLabel={formLabel}
             type={type}
-            value={formValues[field]}
+            value={props.createUserForm[field]}
             onChange={(e) => handleChange(e, field)}
             placeholder={formLabel}
           ></FormInput>
@@ -283,6 +351,10 @@ function FormCreateUser() {
 }
 
 function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
+  const [createUserForm, setCreateUserForm] = useState({
+    ...DEFAULT_CREATE_USER_FORM,
+  } as CreateUserForm);
+
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
@@ -290,7 +362,10 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
         <ModalHeader>Create user</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormCreateUser></FormCreateUser>
+          <FormCreateUser
+            createUserForm={createUserForm}
+            setCreateUserForm={setCreateUserForm}
+          ></FormCreateUser>
         </ModalBody>
 
         <ModalFooter>
