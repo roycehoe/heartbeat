@@ -126,6 +126,25 @@ function FormSelect(props: {
   );
 }
 
+function PasswordInput() {
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+
+  return (
+    <InputGroup size="md">
+      <Input
+        pr="4.5rem"
+        type={show ? "text" : "password"}
+        placeholder="Enter password"
+      />
+      <InputRightElement width="4.5rem">
+        <Button h="1.75rem" size="sm" onClick={handleClick}>
+          {show ? "Hide" : "Show"}
+        </Button>
+      </InputRightElement>
+    </InputGroup>
+  );
+}
 function FormInputPassword(props: {
   field: string;
   isRequired: boolean;
@@ -143,16 +162,22 @@ function FormInputPassword(props: {
       <FormLabel>{props.formLabel}</FormLabel>
       <InputGroup>
         <Input
+          pr="4.5rem"
           type={isShow ? "text" : "password"}
           value={props.value}
           onChange={props.onChange}
           placeholder={props.placeholder}
-          size="xs"
           borderColor="slate.300"
           _placeholder={{ color: "gray.500" }}
         />
         <InputRightElement>
-          <Button size="xs" onClick={handleClick}>
+          <Button
+            size="xs"
+            marginRight="18px"
+            padding="8px"
+            variant="outline"
+            onClick={handleClick}
+          >
             {isShow ? "Hide" : "Show"}
           </Button>
         </InputRightElement>
