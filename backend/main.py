@@ -13,6 +13,7 @@ from schemas import (
     MoodRequest,
     Token,
     UserCreateRequest,
+    UserUpdateRequest,
 )
 from scripts import get_scheduler, is_db_empty, populate_db, repopulate_db
 from services.account import (
@@ -102,11 +103,11 @@ def get_user(user_id: int, token: str = Header(None), db: Session = Depends(get_
 )
 def update_user(
     user_id: int,
-    fields: dict[Any, Any],
+    request: UserUpdateRequest,
     token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_update_user_response(user_id, fields, token, db)
+    return get_update_user_response(user_id, request, token, db)
 
 
 @app.delete(

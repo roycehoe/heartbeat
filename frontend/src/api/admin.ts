@@ -5,19 +5,32 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   confirmPassword: string;
-  contactNumber: string;
+  contactNumber: number;
   name: string;
-  age: string;
+  age: number;
   alias: string;
   race: Race;
   gender: Gender;
-  postalCode: string;
-  floor: string;
+  postalCode: number;
+  floor: number;
 }
+
+export interface UpdateUserRequest extends CreateUserRequest {}
 
 export async function getCreateUserResponse(
   createUserRequest: CreateUserRequest
 ): Promise<null> {
   const response = await httpClient.post("/admin/user", createUserRequest);
+  return response.data;
+}
+
+export async function getUpdateUserResponse(
+  userId: number,
+  createUserRequest: CreateUserRequest
+): Promise<null> {
+  const response = await httpClient.put(
+    `/admin/user/${userId}`,
+    createUserRequest
+  );
   return response.data;
 }

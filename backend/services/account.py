@@ -21,6 +21,7 @@ from schemas import (
     MoodIn,
     UserCreateRequest,
     UserIn,
+    UserUpdateRequest,
 )
 from utils.hashing import hash_password
 from utils.token import get_token_data
@@ -130,14 +131,17 @@ def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
 
 
 def get_update_user_response(
-    user_id: int, fields: dict[Any, Any], token: str, db: Session
+    user_id: int, request: UserUpdateRequest, token: str, db: Session
 ) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
-        if user_id not in [user.admin_id for user in users_under_admin]:
+        if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
-        for key, value in fields.items():
+        if request.password != request.confirm_password:
+            raise DifferentPasswordAndConfirmPasswordException
+
+        for key, value in request.model_dump(exclude={"confirm_password"}).items():
             CRUDUser(db).update(user_id, key, value)
         return
 

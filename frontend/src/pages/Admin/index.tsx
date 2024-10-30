@@ -20,6 +20,7 @@ import {
   MoodValue,
 } from "../../api/user";
 import ModalCreateUser from "./CreateUser";
+import ModalUpdateUser from "./UpdateUser";
 
 const MOOD_VALUE_TO_EMOJI = {
   [MoodValue.HAPPY]: "🟩",
@@ -29,6 +30,7 @@ const MOOD_VALUE_TO_EMOJI = {
 const MAX_MOOD_DISPLAY = 7;
 
 function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <AccordionItem>
       <Box>
@@ -61,9 +63,10 @@ function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
           justifyContent="flex-end"
           gap="8px"
         >
-          <Button colorScheme="success" variant="solid">
+          <Button colorScheme="success" variant="solid" onClick={onOpen}>
             Update
           </Button>
+          <ModalUpdateUser dashboardData={props.dashboardData} isOpen={isOpen} onClose={onClose}></ModalUpdateUser>
           <Button colorScheme="critical" variant="solid">
             Delete
           </Button>

@@ -61,6 +61,7 @@ def get_admin_dashboard_response(
             response.append(
                 DashboardOut(
                     user_id=user.id,
+                    email=user.email,
                     contact_number=user.contact_number,
                     name=user.name,
                     alias=user.alias,

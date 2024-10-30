@@ -14,55 +14,64 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
-import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
-import { Gender, Race } from "../../../api/user";
+import {
+  CreateUserRequest,
+  getCreateUserResponse,
+  getUpdateUserResponse,
+} from "../../../api/admin";
+import { DashboardResponse } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
 import { CREATE_UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
 import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
-const MODAL_HEADER = "Create user";
-const MODAL_BODY_BANNER = "User created successfully!";
+const MODAL_HEADER = "Update user";
+const MODAL_BODY_BANNER = "User updated successfully!";
 
-export interface CreateUserForm extends CreateUserRequest {}
+export interface UpdateUserForm extends CreateUserRequest {}
 
-const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
-  email: "",
-  password: "",
-  confirmPassword: "",
-  contactNumber: "",
-  name: "",
-  age: "",
-  alias: "",
-  race: Race.CHINESE,
-  gender: Gender.MALE,
-  postalCode: "",
-  floor: "",
-};
+function dashboardDataToUpdateUserFormData(
+  dashboardData: DashboardResponse
+): UpdateUserForm {
+  return {
+    email: dashboardData.email,
+    password: "",
+    confirmPassword: "",
+    contactNumber: dashboardData.contact_number,
+    name: dashboardData.name,
+    age: dashboardData.age,
+    alias: dashboardData.alias,
+    race: dashboardData.race,
+    gender: dashboardData.gender,
+    postalCode: dashboardData.postal_code,
+    floor: dashboardData.floor,
+  };
+}
 
-function ModalUpdateUser(props: { isOpen: boolean; onClose: () => void }) {
-  const [createUserForm, setCreateUserForm] = useState({
-    ...DEFAULT_CREATE_USER_FORM,
-  } as CreateUserForm);
+function ModalUpdateUser(props: {
+  dashboardData: DashboardResponse;
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  const [updateUserForm, setCreateUserForm] = useState({} as UpdateUserForm);
   const [errorMessage, setErrorMessage] = useState("");
   const [isCreateUserButtonLoading, setIsCreateUserButtonLoading] =
     useState(false);
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
 
-  function resetCreateUserForm() {
-    setCreateUserForm({ ...DEFAULT_CREATE_USER_FORM });
-  }
+  useEffect(() => {
+    setCreateUserForm(dashboardDataToUpdateUserFormData(props.dashboardData));
+  }, []);
 
   useEffect(() => {
-    setErrorMessage(getSubmitCreateUpdateUserFormErrorMessage(createUserForm));
-  }, [createUserForm]);
+    setErrorMessage(getSubmitCreateUpdateUserFormErrorMessage(updateUserForm));
+  }, [updateUserForm]);
 
   async function handleCreateUser() {
     setIsCreateUserButtonLoading(true);
     try {
-      await getCreateUserResponse(createUserForm);
-      resetCreateUserForm();
+      await getUpdateUserResponse(props.dashboardData.user_id, updateUserForm);
       setHasCreatedUserSuccessfully(true);
       setErrorMessage("");
       const closeModalWithDebounce = debounce(() => {
@@ -88,11 +97,11 @@ function ModalUpdateUser(props: { isOpen: boolean; onClose: () => void }) {
           ></ModalContentWithBannerSuccess>
         ) : (
           <>
-            <ModalHeader>Create user</ModalHeader>
+            <ModalHeader>{MODAL_HEADER}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <FormFieldsUserCreateUpdate
-                createUserForm={createUserForm}
+                createUserForm={updateUserForm}
                 setCreateUserForm={setCreateUserForm}
                 createUpdateUserFormFields={
                   CREATE_UPDATE_USER_FORM_FIELDS_PROPS
@@ -122,7 +131,7 @@ function ModalUpdateUser(props: { isOpen: boolean; onClose: () => void }) {
                   isDisabled={errorMessage !== ""}
                   isLoading={isCreateUserButtonLoading}
                 >
-                  {hasCreatedUserSuccessfully ? "User created!" : "Create"}
+                  {hasCreatedUserSuccessfully ? "User updated!" : "Update"}
                 </Button>
               </Box>
             </ModalFooter>

@@ -21,6 +21,7 @@ class MoodIn(MoodRequest):
 
 class DashboardOut(BaseModel):
     user_id: int
+    email: str
     name: str
     alias: str
     age: int
@@ -69,6 +70,10 @@ class UserCreateRequest(AccountCreateRequestBase):
     gender: str
     postal_code: int = Field(..., alias="postalCode")
     floor: int
+
+
+class UserUpdateRequest(UserCreateRequest):
+    pass
 
 
 class AdminIn(AdminCreateRequest):

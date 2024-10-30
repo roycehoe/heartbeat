@@ -38,6 +38,7 @@ interface MoodRequest {
 
 export interface DashboardResponse {
   user_id: number;
+  email: string;
   name: string;
   alias: string;
   age: number;
