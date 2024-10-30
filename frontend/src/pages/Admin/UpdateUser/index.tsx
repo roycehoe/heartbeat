@@ -11,98 +11,20 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { Banner, Button } from "@opengovsg/design-system-react";
+import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
 import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { Gender, Race } from "../../../api/user";
-import FormInputUser from "../../../components/FormInputUser";
-import FormInputUserPassword from "../../../components/FormInputUserPassword";
-import FormSelectUser from "../../../components/FormSelectUser";
+import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
+import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
+import { CREATE_UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
+import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
-const MODAL_HEADER = "Update user";
+const MODAL_HEADER = "Create user";
 const MODAL_BODY_BANNER = "User created successfully!";
 
-interface UpdateUserForm extends CreateUserRequest {}
-
-interface CreateUpdateUserFormFieldProps {
-  formLabel: string;
-  isRequired: boolean;
-  type: string;
-  options: string[];
-}
-
-const CREATE_UPDATE_USER_FORM_FIELDS_PROPS: Record<
-  keyof UpdateUserForm,
-  CreateUpdateUserFormFieldProps
-> = {
-  email: {
-    formLabel: "Email",
-    isRequired: true,
-    type: "email",
-    options: [],
-  },
-  password: {
-    formLabel: "Password",
-    isRequired: true,
-    type: "password",
-    options: [],
-  },
-  confirmPassword: {
-    formLabel: "Confirm Password",
-    isRequired: true,
-    type: "password",
-    options: [],
-  },
-  contactNumber: {
-    formLabel: "Contact Number",
-    isRequired: true,
-    type: "tel",
-    options: [],
-  },
-  name: {
-    formLabel: "Name",
-    isRequired: true,
-    type: "text",
-    options: [],
-  },
-  age: {
-    formLabel: "Age",
-    isRequired: true,
-    type: "number",
-    options: [],
-  },
-  alias: {
-    formLabel: "Alias",
-    isRequired: true,
-    type: "text",
-    options: [],
-  },
-  race: {
-    formLabel: "Race",
-    isRequired: true,
-    type: "select",
-    options: [Race.CHINESE, Race.INDIAN, Race.MALAY, Race.OTHERS],
-  },
-  gender: {
-    formLabel: "Gender",
-    isRequired: true,
-    type: "select",
-    options: [Gender.MALE, Gender.FEMALE],
-  },
-  postalCode: {
-    formLabel: "Postal Code",
-    isRequired: true,
-    type: "text",
-    options: [],
-  },
-  floor: {
-    formLabel: "Floor",
-    isRequired: true,
-    type: "text",
-    options: [],
-  },
-};
+export interface CreateUserForm extends CreateUserRequest {}
 
 const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   email: "",
@@ -118,150 +40,7 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   floor: "",
 };
 
-function getSubmitCreateUpdateUserFormErrorMessage(
-  createUserForm: CreateUserForm
-): string {
-  if (!createUserForm.email) {
-    return "Email is required.";
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(createUserForm.email)) {
-    return "Invalid email format.";
-  }
-
-  if (!createUserForm.password) {
-    return "Password is required.";
-  }
-  if (createUserForm.password.length < 8) {
-    return "Password must be at least 8 characters long.";
-  }
-
-  if (!createUserForm.confirmPassword) {
-    return "Please confirm your password.";
-  }
-  if (createUserForm.password !== createUserForm.confirmPassword) {
-    return "Passwords do not match.";
-  }
-
-  if (!createUserForm.contactNumber) {
-    return "Contact number is required.";
-  }
-  if (!/^\d+$/.test(createUserForm.contactNumber)) {
-    return "Contact number must contain only digits.";
-  }
-  if (createUserForm.contactNumber.length !== 8) {
-    return "Contact number must contain exactly eight digits.";
-  }
-
-  if (!createUserForm.name) {
-    return "Name is required.";
-  }
-
-  if (!createUserForm.age) {
-    return "Age is required.";
-  }
-
-  if (!createUserForm.alias) {
-    return "Alias is required.";
-  }
-  if (createUserForm.alias.length > 12) {
-    return "Alias must be less than 12 characters.";
-  }
-
-  if (!createUserForm.postalCode) {
-    return "Postal code is required.";
-  } else if (!/^\d{6}$/.test(createUserForm.postalCode)) {
-    return "Postal code must be 6 digits.";
-  }
-
-  if (!createUserForm.floor) {
-    return "Floor is required.";
-  }
-
-  return "";
-}
-
-function FormUserCreateUpdate(props: {
-  createUpdateUserFormFields: Record<
-    keyof CreateUserForm,
-    CreateUpdateUserFormFieldProps
-  >;
-  createUserForm: CreateUserForm;
-  setCreateUserForm: React.Dispatch<React.SetStateAction<CreateUserForm>>;
-}) {
-  const handleChange = (e, field) => {
-    props.setCreateUserForm({
-      ...props.createUserForm,
-      [field]: e.target.value,
-    });
-  };
-
-  return (
-    <Box display="flex" flexDirection="column" gap="16px">
-      {Object.keys(props.createUpdateUserFormFields).map((field) => {
-        const { formLabel, isRequired, type, options } =
-          props.createUpdateUserFormFields[field];
-
-        if (type === "select") {
-          return (
-            <FormSelectUser
-              field={field}
-              isRequired={isRequired}
-              formLabel={formLabel}
-              type={type}
-              value={props.createUserForm[field]}
-              onChange={(e) => handleChange(e, field)}
-              placeholder={formLabel}
-              options={options}
-            ></FormSelectUser>
-          );
-        }
-        if (type === "password") {
-          return (
-            <FormInputUserPassword
-              field={field}
-              isRequired={isRequired}
-              formLabel={formLabel}
-              type={type}
-              value={props.createUserForm[field]}
-              onChange={(e) => handleChange(e, field)}
-              placeholder={formLabel}
-            ></FormInputUserPassword>
-          );
-        }
-
-        return (
-          <FormInputUser
-            field={field}
-            isRequired={isRequired}
-            formLabel={formLabel}
-            type={type}
-            value={props.createUserForm[field]}
-            onChange={(e) => handleChange(e, field)}
-            placeholder={formLabel}
-          ></FormInputUser>
-        );
-      })}
-    </Box>
-  );
-}
-
-function ModalContentWithBannerSuccess(props: {
-  header: string;
-  banner: string;
-}) {
-  return (
-    <ModalContent>
-      <ModalHeader>{props.header}</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <Banner>{props.banner}</Banner>
-      </ModalBody>
-      <ModalFooter></ModalFooter>
-    </ModalContent>
-  );
-}
-
-function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
+function ModalUpdateUser(props: { isOpen: boolean; onClose: () => void }) {
   const [createUserForm, setCreateUserForm] = useState({
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
@@ -309,16 +88,16 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
           ></ModalContentWithBannerSuccess>
         ) : (
           <>
-            <ModalHeader>{MODAL_HEADER}</ModalHeader>
+            <ModalHeader>Create user</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <FormUserCreateUpdate
+              <FormFieldsUserCreateUpdate
                 createUserForm={createUserForm}
                 setCreateUserForm={setCreateUserForm}
                 createUpdateUserFormFields={
                   CREATE_UPDATE_USER_FORM_FIELDS_PROPS
                 }
-              ></FormUserCreateUpdate>
+              ></FormFieldsUserCreateUpdate>
             </ModalBody>
 
             <ModalFooter>
@@ -354,4 +133,4 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
   );
 }
 
-export default ModalCreateUser;
+export default ModalUpdateUser;

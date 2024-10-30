@@ -11,17 +11,15 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { Banner, Button } from "@opengovsg/design-system-react";
+import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
 import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { Gender, Race } from "../../../api/user";
-import FormInputUser from "../../../components/FormInputUser";
-import FormInputUserPassword from "../../../components/FormInputUserPassword";
-import FormSelectUser from "../../../components/FormSelectUser";
+import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
+import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
 import {
   CREATE_UPDATE_USER_FORM_FIELDS_PROPS,
-  CreateUpdateUserFormFieldProps,
 } from "../constants";
 import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
@@ -43,87 +41,6 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   postalCode: "",
   floor: "",
 };
-
-function FormUserCreateUpdate(props: {
-  createUpdateUserFormFields: Record<
-    keyof CreateUserForm,
-    CreateUpdateUserFormFieldProps
-  >;
-  createUserForm: CreateUserForm;
-  setCreateUserForm: React.Dispatch<React.SetStateAction<CreateUserForm>>;
-}) {
-  const handleChange = (e, field) => {
-    props.setCreateUserForm({
-      ...props.createUserForm,
-      [field]: e.target.value,
-    });
-  };
-
-  return (
-    <Box display="flex" flexDirection="column" gap="16px">
-      {Object.keys(props.createUpdateUserFormFields).map((field) => {
-        const { formLabel, isRequired, type, options } =
-          props.createUpdateUserFormFields[field];
-
-        if (type === "select") {
-          return (
-            <FormSelectUser
-              field={field}
-              isRequired={isRequired}
-              formLabel={formLabel}
-              type={type}
-              value={props.createUserForm[field]}
-              onChange={(e) => handleChange(e, field)}
-              placeholder={formLabel}
-              options={options}
-            ></FormSelectUser>
-          );
-        }
-        if (type === "password") {
-          return (
-            <FormInputUserPassword
-              field={field}
-              isRequired={isRequired}
-              formLabel={formLabel}
-              type={type}
-              value={props.createUserForm[field]}
-              onChange={(e) => handleChange(e, field)}
-              placeholder={formLabel}
-            ></FormInputUserPassword>
-          );
-        }
-
-        return (
-          <FormInputUser
-            field={field}
-            isRequired={isRequired}
-            formLabel={formLabel}
-            type={type}
-            value={props.createUserForm[field]}
-            onChange={(e) => handleChange(e, field)}
-            placeholder={formLabel}
-          ></FormInputUser>
-        );
-      })}
-    </Box>
-  );
-}
-
-function ModalContentWithBannerSuccess(props: {
-  header: string;
-  banner: string;
-}) {
-  return (
-    <ModalContent>
-      <ModalHeader>{props.header}</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <Banner>{props.banner}</Banner>
-      </ModalBody>
-      <ModalFooter></ModalFooter>
-    </ModalContent>
-  );
-}
 
 function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
   const [createUserForm, setCreateUserForm] = useState({
@@ -176,13 +93,13 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
             <ModalHeader>Create user</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <FormUserCreateUpdate
+              <FormFieldsUserCreateUpdate
                 createUserForm={createUserForm}
                 setCreateUserForm={setCreateUserForm}
                 createUpdateUserFormFields={
                   CREATE_UPDATE_USER_FORM_FIELDS_PROPS
                 }
-              ></FormUserCreateUpdate>
+              ></FormFieldsUserCreateUpdate>
             </ModalBody>
 
             <ModalFooter>
