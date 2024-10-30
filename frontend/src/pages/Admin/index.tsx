@@ -25,7 +25,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Button } from "@opengovsg/design-system-react";
+import { Banner, Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -341,6 +341,19 @@ function FormCreateUser(props: {
   );
 }
 
+function ModalContentCreateUserSuccess() {
+  return (
+    <ModalContent>
+      <ModalHeader>Create user</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+        <Banner>User created successfully!</Banner>
+      </ModalBody>
+      <ModalFooter></ModalFooter>
+    </ModalContent>
+  );
+}
+
 function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
   const [createUserForm, setCreateUserForm] = useState({
     ...DEFAULT_CREATE_USER_FORM,
@@ -363,15 +376,18 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
     setIsCreateUserButtonLoading(true);
     try {
       await getCreateUserResponse(createUserForm);
-      setHasCreatedUserSuccessfully(true);
       resetCreateUserForm();
-      debounce(props.onClose, 5000);
+      setHasCreatedUserSuccessfully(true);
+      setErrorMessage("");
+      const closeModalWithDebounce = debounce(() => {
+        props.onClose();
+      }, 1000);
+      closeModalWithDebounce();
     } catch (error) {
       if (error?.response) {
         setErrorMessage("Something went wrong. Please try again later.");
       }
     }
-    console.log("I am called");
     setIsCreateUserButtonLoading(false);
   }
 
@@ -379,32 +395,47 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create user</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormCreateUser
-            createUserForm={createUserForm}
-            setCreateUserForm={setCreateUserForm}
-          ></FormCreateUser>
-        </ModalBody>
+        {hasCreatedUserSuccessfully ? (
+          <ModalContentCreateUserSuccess></ModalContentCreateUserSuccess>
+        ) : (
+          <>
+            <ModalHeader>Create user</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <FormCreateUser
+                createUserForm={createUserForm}
+                setCreateUserForm={setCreateUserForm}
+              ></FormCreateUser>
+            </ModalBody>
 
-        <ModalFooter>
-          <Box display="flex" flexDirection="column" width="100%" gap="24px">
-            <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
-              <AlertIcon />
-              <AlertDescription>{errorMessage}</AlertDescription>
-            </Alert>
-            <Button
-              mr="3px"
-              variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
-              onClick={handleCreateUser}
-              isDisabled={errorMessage !== ""}
-              isLoading={isCreateUserButtonLoading}
-            >
-              {hasCreatedUserSuccessfully ? "User created!" : "Create"}
-            </Button>
-          </Box>
-        </ModalFooter>
+            <ModalFooter>
+              <Box
+                display="flex"
+                flexDirection="column"
+                width="100%"
+                gap="24px"
+              >
+                <Alert
+                  status="error"
+                  variant="subtle"
+                  hidden={errorMessage === ""}
+                >
+                  <AlertIcon />
+                  <AlertDescription>{errorMessage}</AlertDescription>
+                </Alert>
+                <Button
+                  mr="3px"
+                  variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
+                  onClick={handleCreateUser}
+                  isDisabled={errorMessage !== ""}
+                  isLoading={isCreateUserButtonLoading}
+                >
+                  {hasCreatedUserSuccessfully ? "User created!" : "Create"}
+                </Button>
+              </Box>
+            </ModalFooter>
+          </>
+        )}
       </ModalContent>
     </Modal>
   );
