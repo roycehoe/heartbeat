@@ -144,7 +144,7 @@ function FormSelect(props: {
   options: string[];
 }) {
   return (
-    <FormControl key={props.field} isRequired={props.isRequired} mb="16px">
+    <FormControl key={props.field} isRequired={props.isRequired}>
       <FormLabel>{props.formLabel}</FormLabel>
       <Select variant="outline">
         {props.options.map((option) => {
@@ -168,11 +168,10 @@ function FormInputPassword(props: {
   const handleClick = () => setIsShow(!isShow);
 
   return (
-    <FormControl key={props.field} isRequired={props.isRequired} mb="16px">
+    <FormControl key={props.field} isRequired={props.isRequired}>
       <FormLabel>{props.formLabel}</FormLabel>
       <InputGroup>
         <Input
-          pr="4.5rem"
           type={isShow ? "text" : "password"}
           value={props.value}
           onChange={props.onChange}
@@ -206,7 +205,7 @@ function FormInput(props: {
   placeholder: string;
 }) {
   return (
-    <FormControl key={props.field} isRequired={props.isRequired} mb="16px">
+    <FormControl key={props.field} isRequired={props.isRequired}>
       <FormLabel>{props.formLabel}</FormLabel>
       <Input
         type={props.type}
@@ -251,6 +250,9 @@ function getSubmitCreateUserFormErrorMessage(
   if (!/^\d+$/.test(createUserForm.contactNumber)) {
     return "Contact number must contain only digits.";
   }
+  if (createUserForm.contactNumber.length !== 8) {
+    return "Contact number must contain exactly eight digits.";
+  }
 
   if (!createUserForm.name) {
     return "Name is required.";
@@ -258,6 +260,9 @@ function getSubmitCreateUserFormErrorMessage(
 
   if (!createUserForm.alias) {
     return "Alias is required.";
+  }
+  if (createUserForm.alias.length > 12) {
+    return "Alias must be less than 12 characters.";
   }
 
   if (!createUserForm.postalCode) {
@@ -285,7 +290,7 @@ function FormCreateUser(props: {
   };
 
   return (
-    <>
+    <Box display="flex" flexDirection="column" gap="16px">
       {Object.keys(CREATE_USER_FORM_FIELDS).map((field) => {
         const { formLabel, isRequired, type, options } =
           CREATE_USER_FORM_FIELDS[field];
@@ -330,7 +335,7 @@ function FormCreateUser(props: {
           ></FormInput>
         );
       })}
-    </>
+    </Box>
   );
 }
 
