@@ -6,7 +6,18 @@ import {
   AccordionPanel,
   Box,
   Fade,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
@@ -25,6 +36,190 @@ const MOOD_VALUE_TO_EMOJI = {
   [MoodValue.SAD]: "🟥",
 };
 const MAX_MOOD_DISPLAY = 7;
+const CREATE_USER_FORM_FIELDS = {
+  email: {
+    formLabel: "Email",
+    isRequired: true,
+    type: "email",
+  },
+  password: {
+    formLabel: "Password",
+    isRequired: true,
+    type: "password",
+  },
+  confirmPassword: {
+    formLabel: "Confirm Password",
+    isRequired: true,
+    type: "password",
+  },
+  contactNumber: {
+    formLabel: "Contact Number",
+    isRequired: true,
+    type: "tel",
+  },
+  name: {
+    formLabel: "Name",
+    isRequired: true,
+    type: "text",
+  },
+  alias: {
+    formLabel: "Alias",
+    isRequired: false,
+    type: "text",
+  },
+  race: {
+    formLabel: "Race",
+    isRequired: false,
+    type: "text",
+  },
+  gender: {
+    formLabel: "Gender",
+    isRequired: false,
+    type: "text",
+  },
+  postalCode: {
+    formLabel: "Postal Code",
+    isRequired: true,
+    type: "text",
+  },
+  floor: {
+    formLabel: "Floor",
+    isRequired: false,
+    type: "text",
+  },
+};
+// function FormCreateUser() {
+//   const [formValues, setFormValues] = useState({
+//     email: "",
+//     password: "",
+//     confirmPassword: "",
+//     contactNumber: "",
+//     name: "",
+//     alias: "",
+//     race: "",
+//     gender: "",
+//     postalCode: "",
+//     floor: "",
+//   });
+
+//   const handleChange = (e, field) => {
+//     setFormValues({
+//       ...formValues,
+//       [field]: e.target.value,
+//     });
+//   };
+
+//   return (
+//     <>
+//       {Object.keys(CREATE_USER_FORM_FIELDS).map((field) => {
+//         const { formLabel, isRequired, type } = CREATE_USER_FORM_FIELDS[field];
+
+//         return (
+//           <FormControl key={field} isRequired={isRequired} mb="16px">
+//             <FormLabel>{formLabel}</FormLabel>
+//             <Input
+//               type={type}
+//               value={formValues[field]}
+//               onChange={(e) => handleChange(e, field)}
+//               placeholder={formLabel}
+//               size="xs"
+//               borderColor="slate.300"
+//               _placeholder={{ color: "gray.500" }}
+//             />
+//           </FormControl>
+//         );
+//       })}
+//     </>
+//   );
+// }
+
+function FormInput(props: {
+  field: string;
+  isRequired: boolean;
+  formLabel: string;
+  type: string;
+  value: string;
+  onChange: (e: any, field: any) => void;
+  placeholder: string;
+}) {
+  return (
+    <FormControl key={props.field} isRequired={props.isRequired} mb="16px">
+      <FormLabel>{props.formLabel}</FormLabel>
+      <Input
+        type={props.type}
+        value={props.value}
+        onChange={props.onChange}
+        placeholder={props.placeholder}
+        size="xs"
+        borderColor="slate.300"
+        _placeholder={{ color: "gray.500" }}
+      />
+    </FormControl>
+  );
+}
+
+function FormCreateUser() {
+  const [formValues, setFormValues] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    contactNumber: "",
+    name: "",
+    alias: "",
+    race: "",
+    gender: "",
+    postalCode: "",
+    floor: "",
+  });
+
+  const handleChange = (e, field) => {
+    setFormValues({
+      ...formValues,
+      [field]: e.target.value,
+    });
+  };
+
+  return (
+    <>
+      {Object.keys(CREATE_USER_FORM_FIELDS).map((field) => {
+        const { formLabel, isRequired, type } = CREATE_USER_FORM_FIELDS[field];
+
+        return (
+          <FormInput
+            field={field}
+            isRequired={isRequired}
+            formLabel={formLabel}
+            type={type}
+            value={formValues[field]}
+            onChange={(e) => handleChange(e, field)}
+            placeholder={formLabel}
+          ></FormInput>
+        );
+      })}
+    </>
+  );
+}
+
+function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
+  return (
+    <Modal isOpen={props.isOpen} onClose={props.onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Create user</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormCreateUser></FormCreateUser>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button mr="3px" variant="outline" onClick={props.onClose}>
+            Create
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
 
 function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
   return (
@@ -32,7 +227,7 @@ function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
       <Box>
         <AccordionButton display="flex" justifyContent="space-between">
           <Box display="flex" gap="8px">
-            <Text>{props.dashboardData.can_record_mood ? "🟩" : "🟫"}</Text>
+            <Text>{props.dashboardData.can_record_mood ? "⌛" : "🟩"}</Text>
             <Text>{props.dashboardData.alias}</Text>
           </Box>
           <AccordionIcon></AccordionIcon>
@@ -74,6 +269,7 @@ function AccordionItemDashboard(props: { dashboardData: DashboardResponse }) {
 function Admin() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -122,7 +318,6 @@ function Admin() {
           justifyContent="space-between"
           height="100%"
           className="page--group"
-          background="brand.secondary.300"
         >
           <Box
             height="100%"
@@ -130,18 +325,22 @@ function Admin() {
             display="flex"
             flexDirection="column"
             gap="8px"
-            background="brand.primary.100"
           >
             <Box
-              background="red.300"
               display="flex"
               width="100%"
               justifyContent="flex-end"
               gap="8px"
             >
-              <Button variant="solid">Create user</Button>
+              <Button variant="outline" onClick={onOpen}>
+                Create user
+              </Button>
+              <ModalCreateUser
+                isOpen={isOpen}
+                onClose={onClose}
+              ></ModalCreateUser>
             </Box>
-            <Box background="yellow.100" height="100%">
+            <Box height="100%" borderWidth="1px" borderRadius="lg">
               <Accordion allowMultiple>
                 {dashboardData.map((data) => {
                   return (
