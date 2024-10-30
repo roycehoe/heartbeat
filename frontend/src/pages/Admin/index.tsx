@@ -4,6 +4,9 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Box,
   Fade,
   FormControl,
@@ -104,6 +107,32 @@ const CREATE_USER_FORM_FIELDS = {
   },
 };
 
+interface CreateUserForm {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  contactNumber: string;
+  name: string;
+  alias: string;
+  race: Race;
+  gender: Gender;
+  postalCode: string;
+  floor: string;
+}
+
+const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+  contactNumber: "",
+  name: "",
+  alias: "",
+  race: Race.CHINESE,
+  gender: Gender.MALE,
+  postalCode: "",
+  floor: "",
+};
+
 function FormSelect(props: {
   field: string;
   isRequired: boolean;
@@ -126,25 +155,6 @@ function FormSelect(props: {
   );
 }
 
-function PasswordInput() {
-  const [show, setShow] = useState(false);
-  const handleClick = () => setShow(!show);
-
-  return (
-    <InputGroup size="md">
-      <Input
-        pr="4.5rem"
-        type={show ? "text" : "password"}
-        placeholder="Enter password"
-      />
-      <InputRightElement width="4.5rem">
-        <Button h="1.75rem" size="sm" onClick={handleClick}>
-          {show ? "Hide" : "Show"}
-        </Button>
-      </InputRightElement>
-    </InputGroup>
-  );
-}
 function FormInputPassword(props: {
   field: string;
   isRequired: boolean;
@@ -211,35 +221,9 @@ function FormInput(props: {
   );
 }
 
-interface CreateUserForm {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  contactNumber: string;
-  name: string;
-  alias: string;
-  race: Race;
-  gender: Gender;
-  postalCode: string;
-  floor: string;
-}
-
-const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
-  email: "",
-  password: "",
-  confirmPassword: "",
-  contactNumber: "",
-  name: "",
-  alias: "",
-  race: Race.CHINESE,
-  gender: Gender.MALE,
-  postalCode: "",
-  floor: "",
-};
-
 function getSubmitCreateUserFormErrorMessage(
   createUserForm: CreateUserForm
-): string | null {
+): string {
   if (!createUserForm.email) {
     return "Email is required.";
   }
@@ -286,7 +270,7 @@ function getSubmitCreateUserFormErrorMessage(
     return "Floor is required.";
   }
 
-  return null;
+  return "";
 }
 
 function FormCreateUser(props: {
@@ -354,6 +338,11 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
   const [createUserForm, setCreateUserForm] = useState({
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    setErrorMessage(getSubmitCreateUserFormErrorMessage(createUserForm));
+  }, [createUserForm]);
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -369,9 +358,20 @@ function ModalCreateUser(props: { isOpen: boolean; onClose: () => void }) {
         </ModalBody>
 
         <ModalFooter>
-          <Button mr="3px" variant="outline" onClick={props.onClose}>
-            Create
-          </Button>
+          <Box display="flex" flexDirection="column" width="100%" gap="24px">
+            <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
+              <AlertIcon />
+              <AlertDescription size="xs">{errorMessage}</AlertDescription>
+            </Alert>
+            <Button
+              mr="3px"
+              variant="outline"
+              onClick={props.onClose}
+              isDisabled={errorMessage !== ""}
+            >
+              Create
+            </Button>
+          </Box>
         </ModalFooter>
       </ModalContent>
     </Modal>
