@@ -16,6 +16,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -25,9 +26,11 @@ import { useNavigate } from "react-router-dom";
 import { DEFAULT_ADMIN_CREDENTIALS } from "../../api/constants";
 import {
   DashboardResponse,
+  Gender,
   getAdminDashboardResponse,
   getAdminLoginResponse,
   MoodValue,
+  Race,
 } from "../../api/user";
 
 const MOOD_VALUE_TO_EMOJI = {
@@ -41,97 +44,85 @@ const CREATE_USER_FORM_FIELDS = {
     formLabel: "Email",
     isRequired: true,
     type: "email",
+    options: [],
   },
   password: {
     formLabel: "Password",
     isRequired: true,
     type: "password",
+    options: [],
   },
   confirmPassword: {
     formLabel: "Confirm Password",
     isRequired: true,
     type: "password",
+    options: [],
   },
   contactNumber: {
     formLabel: "Contact Number",
     isRequired: true,
     type: "tel",
+    options: [],
   },
   name: {
     formLabel: "Name",
     isRequired: true,
     type: "text",
+    options: [],
   },
   alias: {
     formLabel: "Alias",
     isRequired: false,
     type: "text",
+    options: [],
   },
   race: {
     formLabel: "Race",
     isRequired: false,
-    type: "text",
+    type: "select",
+    options: [Race.CHINESE, Race.INDIAN, Race.MALAY, Race.OTHERS],
   },
   gender: {
     formLabel: "Gender",
     isRequired: false,
-    type: "text",
+    type: "select",
+    options: [Gender.MALE, Gender.FEMALE],
   },
   postalCode: {
     formLabel: "Postal Code",
     isRequired: true,
     type: "text",
+    options: [],
   },
   floor: {
     formLabel: "Floor",
     isRequired: false,
     type: "text",
+    options: [],
   },
 };
-// function FormCreateUser() {
-//   const [formValues, setFormValues] = useState({
-//     email: "",
-//     password: "",
-//     confirmPassword: "",
-//     contactNumber: "",
-//     name: "",
-//     alias: "",
-//     race: "",
-//     gender: "",
-//     postalCode: "",
-//     floor: "",
-//   });
 
-//   const handleChange = (e, field) => {
-//     setFormValues({
-//       ...formValues,
-//       [field]: e.target.value,
-//     });
-//   };
-
-//   return (
-//     <>
-//       {Object.keys(CREATE_USER_FORM_FIELDS).map((field) => {
-//         const { formLabel, isRequired, type } = CREATE_USER_FORM_FIELDS[field];
-
-//         return (
-//           <FormControl key={field} isRequired={isRequired} mb="16px">
-//             <FormLabel>{formLabel}</FormLabel>
-//             <Input
-//               type={type}
-//               value={formValues[field]}
-//               onChange={(e) => handleChange(e, field)}
-//               placeholder={formLabel}
-//               size="xs"
-//               borderColor="slate.300"
-//               _placeholder={{ color: "gray.500" }}
-//             />
-//           </FormControl>
-//         );
-//       })}
-//     </>
-//   );
-// }
+function FormSelect(props: {
+  field: string;
+  isRequired: boolean;
+  formLabel: string;
+  type: string;
+  value: string;
+  onChange: (e: any, field: any) => void;
+  placeholder: string;
+  options: string[];
+}) {
+  return (
+    <FormControl key={props.field} isRequired={props.isRequired} mb="16px">
+      <FormLabel>{props.formLabel}</FormLabel>
+      <Select variant="outline">
+        {props.options.map((option) => {
+          return <option value={option}>{option}</option>;
+        })}
+      </Select>
+    </FormControl>
+  );
+}
 
 function FormInput(props: {
   field: string;
@@ -182,7 +173,23 @@ function FormCreateUser() {
   return (
     <>
       {Object.keys(CREATE_USER_FORM_FIELDS).map((field) => {
-        const { formLabel, isRequired, type } = CREATE_USER_FORM_FIELDS[field];
+        const { formLabel, isRequired, type, options } =
+          CREATE_USER_FORM_FIELDS[field];
+
+        if (type === "select") {
+          return (
+            <FormSelect
+              field={field}
+              isRequired={isRequired}
+              formLabel={formLabel}
+              type={type}
+              value={formValues[field]}
+              onChange={(e) => handleChange(e, field)}
+              placeholder={formLabel}
+              options={options}
+            ></FormSelect>
+          );
+        }
 
         return (
           <FormInput

@@ -14,14 +14,14 @@ export enum TreeDisplayState {
   ADULT_TREE_WITH_FLOWERS_AND_GIFTS = 5,
 }
 
-enum Race {
+export enum Race {
   CHINESE = "Chinese",
   MALAY = "Malay",
   INDIAN = "Indian",
   OTHERS = "Others",
 }
 
-enum Gender {
+export enum Gender {
   MALE = "Male",
   FEMALE = "Female",
 }
