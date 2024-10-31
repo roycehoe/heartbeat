@@ -20,7 +20,6 @@ import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreate
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
 import {
   CREATE_USER_FORM_FIELDS_PROPS,
-  UPDATE_USER_FORM_FIELDS_PROPS,
 } from "../constants";
 import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
