@@ -18,10 +18,8 @@ import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import {
-  CREATE_USER_FORM_FIELDS_PROPS,
-} from "../constants";
-import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
+import { CREATE_USER_FORM_FIELDS_PROPS } from "../constants";
+import { getSubmitCreateUserFormErrorMessage } from "../utils";
 
 const MODAL_HEADER = "Create user";
 const MODAL_BODY_BANNER = "User created successfully!";
@@ -64,7 +62,7 @@ function ModalCreateUser(props: {
   }
 
   useEffect(() => {
-    setErrorMessage(getSubmitCreateUpdateUserFormErrorMessage(createUserForm));
+    setErrorMessage(getSubmitCreateUserFormErrorMessage(createUserForm));
   }, [createUserForm]);
 
   async function handleCreateUser() {

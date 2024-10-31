@@ -11,7 +11,13 @@ function FormCheckboxTermsAndConditions(props: {
   placeholder: string;
 }) {
   return (
-    <FormControl key={props.field} isRequired={props.isRequired}>
+    <FormControl
+      key={props.field}
+      isRequired={props.isRequired}
+      display="flex"
+      flexDirection="column"
+      gap="12px"
+    >
       <Text>
         By checking the box below, I acknoledge that I have read and agreed to
         heartbeat's&nbsp;
@@ -26,7 +32,9 @@ function FormCheckboxTermsAndConditions(props: {
           terms of use.
         </Link>
       </Text>
-      <Checkbox isChecked={props.value} onChange={props.onChange}></Checkbox>
+      <Checkbox isChecked={props.value} onChange={props.onChange}>
+        Accept terms and conditions
+      </Checkbox>
     </FormControl>
   );
 }

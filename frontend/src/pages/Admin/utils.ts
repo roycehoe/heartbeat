@@ -1,63 +1,77 @@
 import { CreateUserForm } from "./CreateUser";
+import { UpdateUserForm } from "./UpdateUser";
 
-export function getSubmitCreateUpdateUserFormErrorMessage(
-  createUserForm: CreateUserForm
+export function getSubmitUpdateUserFormErrorMessage(
+  userForm: UpdateUserForm
 ): string {
-  if (!createUserForm.email) {
+  if (!userForm.email) {
     return "Email is required.";
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(createUserForm.email)) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userForm.email)) {
     return "Invalid email format.";
   }
 
-  if (!createUserForm.password) {
+  if (!userForm.password) {
     return "Password is required.";
   }
-  if (createUserForm.password.length < 8) {
+  if (userForm.password.length < 8) {
     return "Password must be at least 8 characters long.";
   }
 
-  if (!createUserForm.confirmPassword) {
+  if (!userForm.confirmPassword) {
     return "Please confirm your password.";
   }
-  if (createUserForm.password !== createUserForm.confirmPassword) {
+  if (userForm.password !== userForm.confirmPassword) {
     return "Passwords do not match.";
   }
 
-  if (!createUserForm.contactNumber) {
+  if (!userForm.contactNumber) {
     return "Contact number is required.";
   }
-  if (!/^\d+$/.test(createUserForm.contactNumber)) {
+  if (!/^\d+$/.test(userForm.contactNumber)) {
     return "Contact number must contain only digits.";
   }
-  if (createUserForm.contactNumber.length !== 8) {
+  if (userForm.contactNumber.length !== 8) {
     return "Contact number must contain exactly eight digits.";
   }
 
-  if (!createUserForm.name) {
+  if (!userForm.name) {
     return "Name is required.";
   }
 
-  if (!createUserForm.age) {
+  if (!userForm.age) {
     return "Age is required.";
   }
 
-  if (!createUserForm.alias) {
+  if (!userForm.alias) {
     return "Alias is required.";
   }
-  if (createUserForm.alias.length > 12) {
+  if (userForm.alias.length > 12) {
     return "Alias must be less than 12 characters.";
   }
 
-  if (!createUserForm.postalCode) {
+  if (!userForm.postalCode) {
     return "Postal code is required.";
-  } else if (!/^\d{6}$/.test(createUserForm.postalCode)) {
+  } else if (!/^\d{6}$/.test(userForm.postalCode)) {
     return "Postal code must be 6 digits.";
   }
 
-  if (!createUserForm.floor) {
+  if (!userForm.floor) {
     return "Floor is required.";
   }
 
+  return "";
+}
+
+export function getSubmitCreateUserFormErrorMessage(
+  userForm: CreateUserForm
+): string {
+  const errorMessage = getSubmitUpdateUserFormErrorMessage(userForm);
+  if (errorMessage !== "") {
+    return errorMessage;
+  }
+  if (!userForm.hasAgreedToTermsAndConditions) {
+    return "You must agree to the terms and conditions.";
+  }
   return "";
 }

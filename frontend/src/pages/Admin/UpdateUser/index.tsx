@@ -19,7 +19,7 @@ import { DashboardResponse } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
 import { UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
-import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
+import { getSubmitUpdateUserFormErrorMessage } from "../utils";
 
 const MODAL_HEADER = "Update user";
 const MODAL_BODY_BANNER = "User updated successfully!";
@@ -62,7 +62,7 @@ function ModalUpdateUser(props: {
   }, []);
 
   useEffect(() => {
-    setErrorMessage(getSubmitCreateUpdateUserFormErrorMessage(updateUserForm));
+    setErrorMessage(getSubmitUpdateUserFormErrorMessage(updateUserForm));
   }, [updateUserForm]);
 
   async function handleCreateUser() {
