@@ -1,5 +1,6 @@
 import { Gender, Race } from "../../api/user";
 import { CreateUserForm } from "./CreateUser";
+import { UpdateUserForm } from "./UpdateUser";
 
 export interface CreateUpdateUserFormFieldProps {
   formLabel: string;
@@ -8,8 +9,8 @@ export interface CreateUpdateUserFormFieldProps {
   options: string[];
 }
 
-export const CREATE_UPDATE_USER_FORM_FIELDS_PROPS: Record<
-  keyof CreateUserForm,
+export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
+  keyof UpdateUserForm,
   CreateUpdateUserFormFieldProps
 > = {
   email: {
@@ -76,6 +77,19 @@ export const CREATE_UPDATE_USER_FORM_FIELDS_PROPS: Record<
     formLabel: "Floor",
     isRequired: true,
     type: "text",
+    options: [],
+  },
+};
+
+export const CREATE_USER_FORM_FIELDS_PROPS: Record<
+  keyof CreateUserForm,
+  CreateUpdateUserFormFieldProps
+> = {
+  ...UPDATE_USER_FORM_FIELDS_PROPS,
+  hasAgreedToTermsAndConditions: {
+    formLabel: "Terms and Conditions",
+    isRequired: true,
+    type: "checkbox",
     options: [],
   },
 };

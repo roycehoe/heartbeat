@@ -18,13 +18,18 @@ import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import { CREATE_UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
+import {
+  CREATE_USER_FORM_FIELDS_PROPS,
+  UPDATE_USER_FORM_FIELDS_PROPS,
+} from "../constants";
 import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
 const MODAL_HEADER = "Create user";
 const MODAL_BODY_BANNER = "User created successfully!";
 
-export interface CreateUserForm extends CreateUserRequest {}
+export interface CreateUserForm extends CreateUserRequest {
+  hasAgreedToTermsAndConditions: boolean;
+}
 
 const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   email: "",
@@ -38,6 +43,7 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   gender: Gender.MALE,
   postalCode: "",
   floor: "",
+  hasAgreedToTermsAndConditions: false,
 };
 
 function ModalCreateUser(props: {
@@ -99,9 +105,7 @@ function ModalCreateUser(props: {
               <FormFieldsUserCreateUpdate
                 createUserForm={createUserForm}
                 setCreateUserForm={setCreateUserForm}
-                createUpdateUserFormFields={
-                  CREATE_UPDATE_USER_FORM_FIELDS_PROPS
-                }
+                createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
               ></FormFieldsUserCreateUpdate>
             </ModalBody>
 

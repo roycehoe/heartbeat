@@ -14,15 +14,11 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
-import {
-  CreateUserRequest,
-  getCreateUserResponse,
-  getUpdateUserResponse,
-} from "../../../api/admin";
+import { CreateUserRequest, getUpdateUserResponse } from "../../../api/admin";
 import { DashboardResponse } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import { CREATE_UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
+import { UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
 import { getSubmitCreateUpdateUserFormErrorMessage } from "../utils";
 
 const MODAL_HEADER = "Update user";
@@ -105,9 +101,7 @@ function ModalUpdateUser(props: {
               <FormFieldsUserCreateUpdate
                 createUserForm={updateUserForm}
                 setCreateUserForm={setCreateUserForm}
-                createUpdateUserFormFields={
-                  CREATE_UPDATE_USER_FORM_FIELDS_PROPS
-                }
+                createUpdateUserFormFields={UPDATE_USER_FORM_FIELDS_PROPS}
               ></FormFieldsUserCreateUpdate>
             </ModalBody>
 
