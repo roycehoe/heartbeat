@@ -25,6 +25,7 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
     user = CRUDUser(db).get(user_id)
     return DashboardOut(
         user_id=user_id,
+        email=user.email,
         name=user.name,
         alias=user.alias,
         age=user.age,

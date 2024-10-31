@@ -19,6 +19,20 @@ class MoodIn(MoodRequest):
         from_attributes = True
 
 
+class MoodOut(BaseModel):
+    user_id: int
+    moods: list[MoodIn]
+    can_record_mood: bool
+    coins: int
+    tree_display_state: TreeDisplayState
+    claimable_gifts: int
+    consecutive_checkins: int
+    mood_message: str
+
+    class Config:
+        use_enum_values = True
+
+
 class DashboardOut(BaseModel):
     user_id: int
     email: str
@@ -40,10 +54,6 @@ class DashboardOut(BaseModel):
 
     class Config:
         use_enum_values = True
-
-
-class MoodOut(DashboardOut):
-    mood_message: str
 
 
 class LogInRequest(BaseModel):
