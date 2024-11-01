@@ -34,10 +34,11 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
     try:
         if not _is_valid_password(request.password, request.confirm_password):
             raise DifferentPasswordAndConfirmPasswordException
-        admin_in_model = AdminIn(**request.model_dump())
+        admin_in_model = AdminIn(**request.model_dump(by_alias=True))
         db_admin_model = Admin(
             email=admin_in_model.email,
             password=hash_password(admin_in_model.password),
+            name=admin_in_model.name,
             created_at=admin_in_model.created_at,
             contact_number=admin_in_model.contact_number,
         )
@@ -140,7 +141,9 @@ def get_update_user_response(
         if request.password != request.confirm_password:
             raise DifferentPasswordAndConfirmPasswordException
 
-        for key, value in request.model_dump(exclude={"confirm_password"}).items():
+        for key, value in request.model_dump(
+            by_alias=True, exclude={"confirm_password"}
+        ).items():
             CRUDUser(db).update(user_id, key, value)
         return
 

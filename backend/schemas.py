@@ -64,6 +64,7 @@ class LogInRequest(BaseModel):
 class AccountCreateRequestBase(BaseModel):
     email: str  # Doubles as username
     password: str
+    name: str
     confirm_password: str = Field(..., alias="confirmPassword")
     contact_number: int = Field(..., alias="contactNumber")
 
@@ -73,13 +74,15 @@ class AdminCreateRequest(AccountCreateRequestBase):
 
 
 class UserCreateRequest(AccountCreateRequestBase):
-    name: str
     alias: str
     age: int
-    race: str
-    gender: str
+    race: Race
+    gender: Gender
     postal_code: int = Field(..., alias="postalCode")
     floor: int
+
+    class Config:
+        use_enum_values = True
 
 
 class UserUpdateRequest(UserCreateRequest):
