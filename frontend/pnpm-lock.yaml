@@ -32,6 +32,9 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      es-toolkit:
+        specifier: ^1.26.1
+        version: 1.26.1
       inter-ui:
         specifier: ^4.0.2
         version: 4.0.2
@@ -1496,6 +1499,9 @@ packages:
 
   error-ex@1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
+
+  es-toolkit@1.26.1:
+    resolution: {integrity: sha512-E3H14lHWk8JpupVpIRA1gfNF4r953abHTFW+X1Rp7zl7eG37ksuthfEA4FinyVF/Y807vzzfQS1nubeZk2LTVA==}
 
   esbuild@0.17.19:
     resolution: {integrity: sha512-XQ0jAPFkK/u3LcVRcvVHQcTIqD6E2H1fvZMA5dQPSOWb3suUbWbfbRf94pjc0bNzRYLfIrDRQXr7X+LHIm5oHw==}
@@ -3946,6 +3952,8 @@ snapshots:
   error-ex@1.3.2:
     dependencies:
       is-arrayish: 0.2.1
+
+  es-toolkit@1.26.1: {}
 
   esbuild@0.17.19:
     optionalDependencies:

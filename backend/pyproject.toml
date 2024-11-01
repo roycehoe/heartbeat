@@ -23,6 +23,7 @@ python-dotenv = "^1.0.1"
 black = "^24.10.0"
 sqlalchemy-utils = "^0.41.2"
 twilio = "^9.3.6"
+cryptography = "^43.0.3"
 
 
 [build-system]

@@ -28,8 +28,12 @@ from services.claim_gift import get_claim_gift_response
 from services.dashboard import get_admin_dashboard_response, get_user_dashboard_response
 from services.mood import get_create_user_mood_response
 
+from dotenv import dotenv_values
+
+IS_PROD = dotenv_values(".env").get("IS_PROD")
+
 Base.metadata.create_all(bind=engine)
-app = FastAPI()
+app = FastAPI(root_path="/api/" if IS_PROD else "")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*", "http://localhost:8000"],
