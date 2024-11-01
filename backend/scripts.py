@@ -207,8 +207,11 @@ def _update_non_compliant_users_states(db: Session) -> None:
 def _notify_admin_of_non_compliant_users(db: Session) -> None:
     non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
     for user in non_compliant_users:
+        admin = CRUDAdmin(db).get(user.admin_id)
         send_non_compliant_user_notification_message(
-            user.email, datetime.today() - timedelta(days=1)
+            user.name,
+            datetime.today() - timedelta(days=1),
+            f"+65{admin.contact_number}",
         )
 
 
