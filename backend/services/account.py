@@ -141,9 +141,7 @@ def get_update_user_response(
         if request.password != request.confirm_password:
             raise DifferentPasswordAndConfirmPasswordException
 
-        for key, value in request.model_dump(
-            by_alias=True, exclude={"confirm_password"}
-        ).items():
+        for key, value in request.model_dump(exclude={"confirm_password"}).items():
             CRUDUser(db).update(user_id, key, value)
         return
 
