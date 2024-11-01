@@ -47,7 +47,7 @@ app.add_middleware(
 def startup_event():
     db_session = next(get_db())
 
-    if is_db_empty(db_session):
+    if is_db_empty(db_session) and not IS_PROD:
         populate_db(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()
@@ -167,4 +167,5 @@ def claim_gift(token: str = Header(None), db: Session = Depends(get_db)):
 
 @app.get("/reset_db", status_code=status.HTTP_200_OK)
 def reset_db(db: Session = Depends(get_db)):
-    repopulate_db(db)
+    if not IS_PROD:
+        repopulate_db(db)
