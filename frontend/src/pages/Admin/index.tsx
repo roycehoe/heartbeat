@@ -92,10 +92,6 @@ function Admin() {
 
   const loadDashboardData = async () => {
     setIsLoading(true);
-    const loginResponse = await getAdminLoginResponse(
-      DEFAULT_ADMIN_CREDENTIALS
-    );
-    localStorage.setItem("token", loginResponse.access_token);
     const dashboardResponse = await getAdminDashboardResponse();
     setDashboardData(dashboardResponse);
     setIsLoading(false);

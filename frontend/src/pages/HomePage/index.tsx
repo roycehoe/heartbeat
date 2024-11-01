@@ -7,7 +7,6 @@ import {
   DashboardResponse,
   getUserClaimGiftResponse,
   getUserDashboardResponse,
-  getUserLoginResponse,
   getUserMoodResponse,
   MoodValue,
 } from "../../api/user";
@@ -32,12 +31,6 @@ function HomePage() {
 
     const loadDashboard = async () => {
       setIsLoading(true);
-      if (DEFAULT_USER_CREDENTIALS.length > 0) {
-        const loginResponse = await getUserLoginResponse(
-          DEFAULT_USER_CREDENTIALS[currentIndex]
-        );
-        localStorage.setItem("token", loginResponse.access_token);
-      }
       const dashboardResponse = await getUserDashboardResponse();
       setDashboardData(dashboardResponse);
       setIsLoading(false);
