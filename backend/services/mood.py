@@ -3,7 +3,7 @@ import random
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from crud import CRUDMood, CRUDUser
+from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import SelectedMood, TreeDisplayState
 from exceptions import DBException, NoRecordFoundException
 from gateway import send_sad_user_notification_message
@@ -154,7 +154,7 @@ def _update_user(user_id: int, db: Session) -> None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-async def get_create_user_mood_response(
+def get_create_user_mood_response(
     request: MoodRequest, token: str, db: Session
 ) -> MoodOut:
     try:
@@ -176,8 +176,9 @@ async def get_create_user_mood_response(
 
         if _should_alert_admin(user_id, db):
             user = CRUDUser(db).get(user_id)
-            await send_sad_user_notification_message(
-                user.email, SHOULD_ALERT_ADMIN_CRITERION
+            admin = CRUDAdmin(db).get(user.admin_id)
+            send_sad_user_notification_message(
+                user.name, SHOULD_ALERT_ADMIN_CRITERION, f"+65{admin.contact_number}"
             )
 
         updated_user = CRUDUser(db).get(user_id)

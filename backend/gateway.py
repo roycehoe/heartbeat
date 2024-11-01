@@ -1,36 +1,63 @@
-import asyncio
 from datetime import datetime
-
 from dotenv import dotenv_values
-from telegram import Bot
+from twilio.rest import Client
+from dotenv import dotenv_values
 
-TELEGRAM_BOT_TOKEN: str = dotenv_values(".env").get("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID: int = dotenv_values(".env").get("TELEGRAM_CHAT_ID")
-
-
-def _init_telegram_bot_connection_instance(token: str = TELEGRAM_BOT_TOKEN):
-
-    return Bot(token=token)
+TWILIO_ACCOUNT_SID = dotenv_values(".env").get("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = dotenv_values(".env").get("TWILIO_AUTH_TOKEN")
+TWILIO_NUMBER = dotenv_values(".env").get("TWILIO_NUMBER")
 
 
-async def _send_telegram_message(message: str):
-    bot_conn = _init_telegram_bot_connection_instance()
-    await bot_conn.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
+def get_twilio_client(
+    sid: str = TWILIO_ACCOUNT_SID, auth_token: str = TWILIO_AUTH_TOKEN
+) -> Client:
+    return Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 
-async def send_non_compliant_user_notification_message(name: str, date: datetime):
-    await _send_telegram_message(
-        f"""INFO
+def send_SMS(
+    twilio_client: Client, to: str, message: str, twilio_number: str = TWILIO_NUMBER
+) -> None:
+    twilio_client.messages.create(
+        from_=twilio_number,
+        body=message,
+        to=to,
+    )
+
+
+def _get_non_compliant_user_notification_message(name: str, date: datetime):
+    return f"""Message from heart beat sg
+    
+--INFO--
 {name} has not logged their mood on {datetime.strftime(date, '%d/%m/%y')}
+
+Admin dashboard: https://heartbeat.fancybinary.sg/admin
 """
-    )
 
 
-async def send_sad_user_notification_message(
-    name: str, consecutive_sad_moods_count: int
+def _get_sad_user_notification_message(
+    name: str,
+    consecutive_sad_moods_count: int,
 ):
-    await _send_telegram_message(
-        f"""WARNING
+    return f"""Message from heart beat sg
+    
+--WARNING--
 {name} has logged {consecutive_sad_moods_count} consecutive sad moods on their heartbeat device. Perhaps you should pay them a visit?
+
+Admin dashboard: https://heartbeat.fancybinary.sg/admin
 """
-    )
+
+
+def send_non_compliant_user_notification_message(name: str, date: datetime, to: str):
+    twilio_client = get_twilio_client()
+    message = _get_non_compliant_user_notification_message(name, date)
+    return send_SMS(twilio_client, to, message)
+
+
+def send_sad_user_notification_message(
+    name: str,
+    consecutive_sad_moods_count: int,
+    to: str,
+):
+    twilio_client = get_twilio_client()
+    message = _get_sad_user_notification_message(name, consecutive_sad_moods_count)
+    return send_SMS(twilio_client, to, message)

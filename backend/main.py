@@ -148,10 +148,10 @@ def user_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
 
 
 @app.post("/user/mood", status_code=status.HTTP_201_CREATED, response_model=MoodOut)
-async def send_mood(
+def send_mood(
     request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
 ):
-    return await get_create_user_mood_response(request, token, db)
+    return get_create_user_mood_response(request, token, db)
 
 
 @app.get(
