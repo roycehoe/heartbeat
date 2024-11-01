@@ -11,11 +11,10 @@ function Brand(props: { goToNextUser: () => void }) {
       gap={1}
     >
       <Image
-        onClick={props.goToNextUser}
+        // onClick={props.goToNextUser}
         src="/assets/logo-heartbeat.svg"
         width="128px"
       ></Image>
-      <Text onClick={resetDB}>PLACEHOLDER TEXT TO RESET DB</Text>
     </Box>
   );
 }

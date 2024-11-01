@@ -147,9 +147,10 @@ function MoodBtns(props: {
       gap="12px"
       height="100%"
     >
-      {MOOD_BTN_PROPS.map((prop) => {
+      {MOOD_BTN_PROPS.map((prop, index) => {
         return (
           <MoodBtn
+            key={index}
             onClick={() => handleClick(prop.value)}
             icon={prop.icon}
             isDisabledIcon={prop.isDisabledIcon}

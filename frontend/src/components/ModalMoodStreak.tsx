@@ -93,6 +93,7 @@ function ModalMoodStreak({
             >
               {daysOfWeek.map((day, index) => (
                 <Box
+                  key={index}
                   className="streak__table-element"
                   display="flex"
                   flexDirection="column"
@@ -104,6 +105,7 @@ function ModalMoodStreak({
                   </Text>
                   {tickData[index] ? (
                     <Image
+                      key={index}
                       src="/assets/checkbox.svg"
                       width="20px"
                       height="20px"
