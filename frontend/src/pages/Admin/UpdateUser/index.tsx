@@ -50,15 +50,15 @@ function ModalUpdateUser(props: {
   onClose: () => void;
   reloadDashboardData: () => Promise<void>;
 }) {
-  const [updateUserForm, setCreateUserForm] = useState({} as UpdateUserForm);
+  const [updateUserForm, setUpdateUserForm] = useState({} as UpdateUserForm);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isCreateUserButtonLoading, setIsCreateUserButtonLoading] =
+  const [isUpdateUserButtonLoading, setIsUpdateUserButtonLoading] =
     useState(false);
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
 
   useEffect(() => {
-    setCreateUserForm(dashboardDataToUpdateUserFormData(props.dashboardData));
+    setUpdateUserForm(dashboardDataToUpdateUserFormData(props.dashboardData));
   }, []);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ function ModalUpdateUser(props: {
   }, [updateUserForm]);
 
   async function handleCreateUser() {
-    setIsCreateUserButtonLoading(true);
+    setIsUpdateUserButtonLoading(true);
     try {
       await getUpdateUserResponse(props.dashboardData.user_id, updateUserForm);
       setHasCreatedUserSuccessfully(true);
@@ -81,7 +81,7 @@ function ModalUpdateUser(props: {
       }
     }
     props.reloadDashboardData();
-    setIsCreateUserButtonLoading(false);
+    setIsUpdateUserButtonLoading(false);
   }
 
   return (
@@ -100,7 +100,7 @@ function ModalUpdateUser(props: {
             <ModalBody>
               <FormFieldsUserCreateUpdate
                 createUserForm={updateUserForm}
-                setCreateUserForm={setCreateUserForm}
+                setCreateUserForm={setUpdateUserForm}
                 createUpdateUserFormFields={UPDATE_USER_FORM_FIELDS_PROPS}
               ></FormFieldsUserCreateUpdate>
             </ModalBody>
@@ -125,7 +125,7 @@ function ModalUpdateUser(props: {
                   variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
                   onClick={handleCreateUser}
                   isDisabled={errorMessage !== ""}
-                  isLoading={isCreateUserButtonLoading}
+                  isLoading={isUpdateUserButtonLoading}
                 >
                   {hasCreatedUserSuccessfully ? "User updated!" : "Update"}
                 </Button>

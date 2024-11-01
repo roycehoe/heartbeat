@@ -31,7 +31,6 @@ const MAX_MOOD_DISPLAY = 7;
 
 function AccordionItemDashboard(props: {
   dashboardData: DashboardResponse;
-
   reloadDashboardData: () => Promise<void>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -166,6 +165,7 @@ function Admin() {
                   return (
                     <AccordionItemDashboard
                       dashboardData={data}
+                      reloadDashboardData={loadDashboardData}
                     ></AccordionItemDashboard>
                   );
                 })}
