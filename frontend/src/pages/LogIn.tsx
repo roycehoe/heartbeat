@@ -35,7 +35,7 @@ function LogIn() {
     if (role === "user") {
       try {
         const response = await getUserLoginResponse({
-          email: username,
+          username: username,
           password: password,
         });
         setErrorMessage(""); // Clear error message on success
@@ -54,7 +54,7 @@ function LogIn() {
     if (role === "admin") {
       try {
         const response = await getAdminLoginResponse({
-          email: username,
+          username: username,
           password: password,
         });
         setErrorMessage(""); // Clear error message on success
@@ -118,7 +118,7 @@ function LogIn() {
                 <Input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Email"
+                  placeholder="Username"
                   size="lg"
                   borderColor="slate.300"
                   _placeholder={{ color: "gray.500" }}
@@ -146,7 +146,7 @@ function LogIn() {
                 <Input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Email"
+                  placeholder="Username"
                   size="lg"
                   borderColor="slate.300"
                   _placeholder={{ color: "gray.500" }}

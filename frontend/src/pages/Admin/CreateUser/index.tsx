@@ -29,7 +29,7 @@ export interface CreateUserForm extends CreateUserRequest {
 }
 
 const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
-  email: "",
+  username: "",
   password: "",
   confirmPassword: "",
   contactNumber: "",

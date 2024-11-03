@@ -4,11 +4,8 @@ import { UpdateUserForm } from "./UpdateUser";
 export function getSubmitUpdateUserFormErrorMessage(
   userForm: UpdateUserForm
 ): string {
-  if (!userForm.email) {
-    return "Email is required.";
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userForm.email)) {
-    return "Invalid email format.";
+  if (!userForm.username) {
+    return "Username is required.";
   }
 
   if (!userForm.password) {

@@ -13,10 +13,10 @@ export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
   keyof UpdateUserForm,
   CreateUpdateUserFormFieldProps
 > = {
-  email: {
-    formLabel: "Email",
+  username: {
+    formLabel: "Username",
     isRequired: true,
-    type: "email",
+    type: "text",
     options: [],
   },
   password: {

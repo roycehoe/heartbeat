@@ -18,7 +18,7 @@ class DBCreateAccountException(Exception):
     pass
 
 
-class DBCreateAccountWithEmailAlreadyExistsException(Exception):
+class DBCreateAccountWithUsernameAlreadyExistsException(Exception):
     pass
 
 

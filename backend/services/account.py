@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from crud import CRUDAdmin, CRUDUser
 from enums import TreeDisplayState
 from exceptions import (
-    DBCreateAccountWithEmailAlreadyExistsException,
+    DBCreateAccountWithUsernameAlreadyExistsException,
     DBException,
     DifferentPasswordAndConfirmPasswordException,
     NoRecordFoundException,
@@ -36,7 +36,7 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
             raise DifferentPasswordAndConfirmPasswordException
         admin_in_model = AdminIn(**request.model_dump(by_alias=True))
         db_admin_model = Admin(
-            email=admin_in_model.email,
+            username=admin_in_model.username,
             password=hash_password(admin_in_model.password),
             name=admin_in_model.name,
             created_at=admin_in_model.created_at,
@@ -50,10 +50,10 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Password and confirm password must be the same",
         )
-    except DBCreateAccountWithEmailAlreadyExistsException:
+    except DBCreateAccountWithUsernameAlreadyExistsException:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Account with email already exists",
+            detail="Account with username already exists",
         )
     except DBException as e:
         raise HTTPException(
@@ -72,7 +72,7 @@ def get_create_user_response(
         admin_id = get_token_data(token, "admin_id")
         user_in_model = UserIn(**request.model_dump(by_alias=True))
         db_user_model = User(
-            email=user_in_model.email,
+            username=user_in_model.username,
             password=hash_password(user_in_model.password),
             name=user_in_model.name,
             alias=user_in_model.alias,
@@ -98,10 +98,10 @@ def get_create_user_response(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Password and confirm password must be the same",
         )
-    except DBCreateAccountWithEmailAlreadyExistsException:
+    except DBCreateAccountWithUsernameAlreadyExistsException:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Account with email already exists",
+            detail="Account with username already exists",
         )
     except DBException as e:
         raise HTTPException(

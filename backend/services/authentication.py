@@ -14,7 +14,7 @@ from utils.token import create_access_token
 
 def authenticate_user(request: LogInRequest, db: Session) -> Token:
     try:
-        user = CRUDUser(db).get_by({"email": request.email})
+        user = CRUDUser(db).get_by({"username": request.username})
         if not verify_password(request.password, str(user.password)):
             raise InvalidUsernameOrPasswordException
 
@@ -40,7 +40,7 @@ def authenticate_user(request: LogInRequest, db: Session) -> Token:
 
 def authenticate_admin(request: LogInRequest, db: Session) -> Token:
     try:
-        admin = CRUDAdmin(db).get_by({"email": request.email})
+        admin = CRUDAdmin(db).get_by({"username": request.username})
         if not verify_password(request.password, str(admin.password)):
             raise InvalidUsernameOrPasswordException
         access_token = create_access_token({"admin_id": admin.id})

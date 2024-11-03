@@ -85,7 +85,7 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
     return [
         {
             "id": 1,
-            "email": "user1@heartbeatmail.com",
+            "username": "user1@heartbeatmail.com",
             "password": hash_password("user1@heartbeatmail.com"),
             "name": "user1",
             "alias": "alias1",
@@ -105,7 +105,7 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
         },
         {
             "id": 2,
-            "email": "user2@heartbeatmail.com",
+            "username": "user2@heartbeatmail.com",
             "password": hash_password("user2@heartbeatmail.com"),
             "name": "user2",
             "alias": "alias1",
@@ -125,7 +125,7 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
         },
         {
             "id": 3,
-            "email": "user3@heartbeatmail.com",
+            "username": "user3@heartbeatmail.com",
             "password": hash_password("user3@heartbeatmail.com"),
             "name": "user3",
             "alias": "alias1",
@@ -151,7 +151,7 @@ def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
     return [
         {
             "id": 1,
-            "email": "admin@heartbeatmail.com",
+            "username": "admin@heartbeatmail.com",
             "name": "admin1",
             "contact_number": 91348131,
             "password": hash_password("admin@heartbeatmail.com"),

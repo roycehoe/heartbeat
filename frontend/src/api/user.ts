@@ -38,7 +38,7 @@ interface MoodRequest {
 
 export interface DashboardResponse {
   user_id: number;
-  email: string;
+  username: string;
   name: string;
   alias: string;
   age: number;
@@ -61,7 +61,7 @@ interface MoodResponse extends DashboardResponse {
 }
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 

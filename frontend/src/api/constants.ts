@@ -132,12 +132,12 @@ export const MOCK_DASHBOARD_API_RESPONSE: DashboardResponse = {
 };
 
 export const DEFAULT_USER_CREDENTIALS: LoginRequest[] = [
-  { email: "user1@heartbeatmail.com", password: "user1@heartbeatmail.com" },
-  { email: "user2@heartbeatmail.com", password: "user2@heartbeatmail.com" },
-  { email: "user3@heartbeatmail.com", password: "user3@heartbeatmail.com" },
+  { username: "user1@heartbeatmail.com", password: "user1@heartbeatmail.com" },
+  { username: "user2@heartbeatmail.com", password: "user2@heartbeatmail.com" },
+  { username: "user3@heartbeatmail.com", password: "user3@heartbeatmail.com" },
 ];
 
 export const DEFAULT_ADMIN_CREDENTIALS: LoginRequest = {
-  email: "admin@heartbeatmail.com",
+  username: "admin@heartbeatmail.com",
   password: "admin@heartbeatmail.com",
 };

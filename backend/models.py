@@ -22,7 +22,9 @@ class Admin(Base):
 
     id = Column(Integer, primary_key=True, comment="Primary key")
 
-    email = Column(String, nullable=False, comment="User's email; doubles as username")
+    username = Column(
+        String, nullable=False, comment="User's username; doubles as username"
+    )
     name = Column(EncryptedType(String, SECRET), nullable=False)
     password = Column(String, nullable=False)
     contact_number = Column(
@@ -40,7 +42,9 @@ class User(Base):
     id = Column(Integer, primary_key=True)
 
     # USER SIGNUP FIELDS
-    email = Column(String, nullable=False, comment="User's email; doubles as username")
+    username = Column(
+        String, nullable=False, comment="User's username; doubles as username"
+    )
     password = Column(String, nullable=False)
     name = Column(EncryptedType(String, SECRET), nullable=False)
     alias = Column(

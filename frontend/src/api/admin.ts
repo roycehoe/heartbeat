@@ -2,7 +2,7 @@ import { httpClient } from "./httpClient";
 import { Gender, Race } from "./user";
 
 export interface CreateUserRequest {
-  email: string;
+  username: string;
   password: string;
   confirmPassword: string;
   contactNumber: number;

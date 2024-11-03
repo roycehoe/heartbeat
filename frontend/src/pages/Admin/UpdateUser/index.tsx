@@ -30,7 +30,7 @@ function dashboardDataToUpdateUserFormData(
   dashboardData: DashboardResponse
 ): UpdateUserForm {
   return {
-    email: dashboardData.email,
+    username: dashboardData.username,
     password: "",
     confirmPassword: "",
     contactNumber: dashboardData.contact_number,

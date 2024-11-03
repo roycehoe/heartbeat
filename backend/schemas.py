@@ -35,7 +35,7 @@ class MoodOut(BaseModel):
 
 class DashboardOut(BaseModel):
     user_id: int
-    email: str
+    username: str
     name: str
     alias: str
     age: int
@@ -57,12 +57,12 @@ class DashboardOut(BaseModel):
 
 
 class LogInRequest(BaseModel):
-    email: str  # Doubles as username
+    username: str  # Doubles as username
     password: str
 
 
 class AccountCreateRequestBase(BaseModel):
-    email: str  # Doubles as username
+    username: str  # Doubles as username
     password: str
     name: str
     confirm_password: str = Field(..., alias="confirmPassword")

@@ -4,7 +4,7 @@ from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
 from exceptions import (
-    DBCreateAccountWithEmailAlreadyExistsException,
+    DBCreateAccountWithUsernameAlreadyExistsException,
     DBException,
     DBGetAccountException,
     NoRecordFoundException,
@@ -18,13 +18,13 @@ class CRUDUser:
 
     def create(self, account: User) -> User:
         try:
-            if self.session.query(User).filter_by(email=account.email).first():
-                raise DBCreateAccountWithEmailAlreadyExistsException
+            if self.session.query(User).filter_by(username=account.username).first():
+                raise DBCreateAccountWithUsernameAlreadyExistsException
             self.session.add(account)
             self.session.commit()
 
-        except DBCreateAccountWithEmailAlreadyExistsException:
-            raise DBCreateAccountWithEmailAlreadyExistsException
+        except DBCreateAccountWithUsernameAlreadyExistsException:
+            raise DBCreateAccountWithUsernameAlreadyExistsException
         except Exception as e:
             raise DBException(e)
         return account
@@ -119,13 +119,13 @@ class CRUDAdmin:
 
     def create(self, account: Admin) -> Admin:
         try:
-            if self.session.query(Admin).filter_by(email=account.email).first():
-                raise DBCreateAccountWithEmailAlreadyExistsException
+            if self.session.query(Admin).filter_by(username=account.username).first():
+                raise DBCreateAccountWithUsernameAlreadyExistsException
             self.session.add(account)
             self.session.commit()
 
-        except DBCreateAccountWithEmailAlreadyExistsException:
-            raise DBCreateAccountWithEmailAlreadyExistsException
+        except DBCreateAccountWithUsernameAlreadyExistsException:
+            raise DBCreateAccountWithUsernameAlreadyExistsException
         except Exception as e:
             raise DBException(e)
         return account
