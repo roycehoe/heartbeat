@@ -210,7 +210,8 @@ def _notify_admin_of_non_compliant_users(db: Session) -> None:
         admin = CRUDAdmin(db).get(user.admin_id)
         send_non_compliant_user_notification_message(
             user.name,
-            datetime.today() - timedelta(days=1),
+            # datetime.now() - timedelta(days=1),
+            datetime.now(pytz.timezone("Asia/Singapore")),
             f"+65{admin.contact_number}",
         )
 
