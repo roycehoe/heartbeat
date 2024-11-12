@@ -30,6 +30,8 @@ from services.mood import get_create_user_mood_response
 
 from dotenv import dotenv_values
 
+from services.statistics import get_statistics
+
 IS_PROD = dotenv_values(".env").get("IS_PROD")
 
 Base.metadata.create_all(bind=engine)
@@ -64,6 +66,14 @@ def startup_event():
 )
 def healthcheck():
     return "success"
+
+
+@app.get(
+    "/statistics",
+    status_code=status.HTTP_200_OK,
+)
+def statistics(db: Session = Depends(get_db)):
+    return get_statistics(db)
 
 
 @app.post(

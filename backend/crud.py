@@ -1,6 +1,6 @@
 from typing import Any, Generic, Type, TypeVar
 
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, text
 from sqlalchemy.orm import Session
 
 from exceptions import (
@@ -167,20 +167,12 @@ class CRUDAdmin:
     def get_by_all(
         self,
         field: dict[Any, Any],
-        sort: str = "consecutive_checkins",
         sort_direction: int = 0,
     ) -> list[Admin]:
         try:
             if sort_direction == 0:
-                return (
-                    self.session.query(Admin)
-                    .filter_by(**field)
-                    .order_by(desc(sort))
-                    .all()
-                )
-            return (
-                self.session.query(Admin).filter_by(**field).order_by(asc(sort)).all()
-            )
+                return self.session.query(Admin).filter_by(**field).all()
+            return self.session.query(Admin).filter_by(**field).all()
 
         except Exception as e:
             raise DBException(e)
