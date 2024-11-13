@@ -72,8 +72,8 @@ def healthcheck():
     "/statistics",
     status_code=status.HTTP_200_OK,
 )
-def statistics(db: Session = Depends(get_db)):
-    return get_statistics(db)
+def statistics(token: str = Header(None), db: Session = Depends(get_db)):
+    return get_statistics(token, db)
 
 
 @app.post(
