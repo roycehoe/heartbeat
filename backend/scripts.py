@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from random import choice, sample
+import time
 from enums import Gender, Race
 
 import pytz
@@ -204,11 +205,26 @@ def _update_non_compliant_users_states(db: Session) -> None:
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
 
 
+def delay_execution(func, delay_seconds=1):
+    def wrapper(*args, **kwargs):
+        time.sleep(delay_seconds)
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+@delay_execution
+def send_non_compliant_user_notification_message_with_delay(
+    name: str, date: datetime, to: str
+):
+    return send_non_compliant_user_notification_message(name, date, to)
+
+
 def _notify_admin_of_non_compliant_users(db: Session) -> None:
     non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
     for user in non_compliant_users:
         admin = CRUDAdmin(db).get(user.admin_id)
-        send_non_compliant_user_notification_message(
+        send_non_compliant_user_notification_message_with_delay(
             user.name,
             # datetime.now() - timedelta(days=1),
             datetime.now(pytz.timezone("Asia/Singapore")),

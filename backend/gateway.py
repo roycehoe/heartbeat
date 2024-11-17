@@ -47,9 +47,12 @@ Admin dashboard: https://heartbeat.fancybinary.sg/admin
 
 
 def send_non_compliant_user_notification_message(name: str, date: datetime, to: str):
-    twilio_client = get_twilio_client()
-    message = _get_non_compliant_user_notification_message(name, date)
-    return send_SMS(twilio_client, to, message)
+    try:
+        twilio_client = get_twilio_client()
+        message = _get_non_compliant_user_notification_message(name, date)
+        return send_SMS(twilio_client, to, message)
+    except Exception as e:
+        print(f"TwillioRestException: {e}")
 
 
 def send_sad_user_notification_message(
