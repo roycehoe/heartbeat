@@ -114,7 +114,7 @@ def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
-        if user_id not in [user.admin_id for user in users_under_admin]:
+        if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
         return CRUDUser(db).delete(user_id)
 
