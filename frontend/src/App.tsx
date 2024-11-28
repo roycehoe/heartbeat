@@ -1,7 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { ThemeProvider } from "@opengovsg/design-system-react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import OgpFooter from "./components/OgpFooter";
 import Admin from "./pages/Admin";
 import HomePage from "./pages/HomePage";
 import LogIn from "./pages/LogIn";
@@ -16,7 +15,6 @@ const App = () => {
             <Route path="/login" element={<LogIn />}></Route>
             <Route path="/admin" element={<Admin />}></Route>
           </Routes>
-          <OgpFooter></OgpFooter>
         </Box>
       </BrowserRouter>
     </ThemeProvider>
