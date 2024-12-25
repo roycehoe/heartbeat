@@ -24,6 +24,11 @@ export async function getCreateUserResponse(
   return response.data;
 }
 
+export async function getDeleteUserResponse(userId: number): Promise<null> {
+  const response = await httpClient.delete(`/admin/user/${userId}`);
+  return response.data;
+}
+
 export async function getUpdateUserResponse(
   userId: number,
   createUserRequest: CreateUserRequest

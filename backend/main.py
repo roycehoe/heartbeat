@@ -49,8 +49,8 @@ app.add_middleware(
 def startup_event():
     db_session = next(get_db())
 
-    if is_db_empty(db_session) and not IS_PROD:
-        populate_db(db_session)
+    # if is_db_empty(db_session) and not IS_PROD:
+    #     populate_db(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()
 

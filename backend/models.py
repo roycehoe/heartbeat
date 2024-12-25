@@ -14,7 +14,7 @@ from database import Base
 from enums import SelectedMood, TreeDisplayState
 from dotenv import dotenv_values
 
-SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET")
+SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 
 
 class Admin(Base):

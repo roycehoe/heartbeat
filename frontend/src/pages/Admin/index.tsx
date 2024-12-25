@@ -12,15 +12,14 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_ADMIN_CREDENTIALS } from "../../api/constants";
 import {
   DashboardResponse,
   getAdminDashboardResponse,
-  getAdminLoginResponse,
   MoodValue,
 } from "../../api/user";
 import ModalCreateUser from "./CreateUser";
 import ModalUpdateUser from "./UpdateUser";
+import { getDeleteUserResponse } from "../../api/admin";
 
 const MOOD_VALUE_TO_EMOJI = {
   [MoodValue.HAPPY]: "🟩",
@@ -34,6 +33,10 @@ function AccordionItemDashboard(props: {
   reloadDashboardData: () => Promise<void>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteUser = async (userId: number) => {
+    await getDeleteUserResponse(userId);
+    props.reloadDashboardData();
+  };
   return (
     <AccordionItem>
       <Box>
@@ -75,7 +78,11 @@ function AccordionItemDashboard(props: {
             onClose={onClose}
             reloadDashboardData={props.reloadDashboardData}
           ></ModalUpdateUser>
-          <Button colorScheme="critical" variant="solid">
+          <Button
+            colorScheme="critical"
+            variant="solid"
+            onClick={() => deleteUser(props.dashboardData.user_id)}
+          >
             Delete
           </Button>
         </Box>
