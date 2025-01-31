@@ -24,7 +24,6 @@ from services.account import (
     get_update_user_response,
 )
 from services.authentication import authenticate_admin, authenticate_user
-from services.claim_gift import get_claim_gift_response
 from services.dashboard import get_admin_dashboard_response, get_user_dashboard_response
 from services.mood import get_create_user_mood_response
 
@@ -166,10 +165,3 @@ def send_mood(
     request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
 ):
     return get_create_user_mood_response(request, token, db)
-
-
-@app.get(
-    "/user/claim_gift", status_code=status.HTTP_201_CREATED, response_model=DashboardOut
-)
-def claim_gift(token: str = Header(None), db: Session = Depends(get_db)):
-    return get_claim_gift_response(token, db)

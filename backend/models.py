@@ -64,7 +64,6 @@ class User(Base):
     coins = Column(Integer, nullable=False)
     tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
     consecutive_checkins = Column(Integer, nullable=False)
-    claimable_gifts = Column(Integer, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
     admin_id = Column(Integer, ForeignKey("admin.id"))

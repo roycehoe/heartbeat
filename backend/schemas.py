@@ -25,7 +25,6 @@ class MoodOut(BaseModel):
     can_record_mood: bool
     coins: int
     tree_display_state: TreeDisplayState
-    claimable_gifts: int
     consecutive_checkins: int
     mood_message: str
 
@@ -49,7 +48,6 @@ class DashboardOut(BaseModel):
     can_record_mood: bool
     coins: int
     tree_display_state: TreeDisplayState
-    claimable_gifts: int
     consecutive_checkins: int
 
     class Config:

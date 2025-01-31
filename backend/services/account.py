@@ -85,7 +85,6 @@ def get_create_user_response(
             coins=0,
             tree_display_state=TreeDisplayState.SEEDLING,
             consecutive_checkins=0,
-            claimable_gifts=0,
             admin_id=admin_id,
             can_record_mood=True,
             created_at=user_in_model.created_at,
@@ -174,7 +173,6 @@ def get_get_user_response(user_id: int, token: str, db: Session) -> DashboardOut
             coins=user.coins,
             tree_display_state=user.tree_display_state,
             consecutive_checkins=user.consecutive_checkins,
-            claimable_gifts=user.claimable_gifts,
             can_record_mood=user.can_record_mood,
         )
 
