@@ -11,7 +11,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EncryptedType
 
 from database import Base
-from enums import SelectedMood, TreeDisplayState
+from enums import SelectedMood
 from dotenv import dotenv_values
 
 SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""

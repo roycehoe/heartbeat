@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
-from enums import SelectedMood, TreeDisplayState
+from enums import SelectedMood
 from exceptions import DBException, NoRecordFoundException
 from gateway import send_sad_user_notification_message
 from models import Mood

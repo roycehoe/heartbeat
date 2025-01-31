@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from enums import Gender, Race, SelectedMood, TreeDisplayState
+from enums import Gender, Race, SelectedMood
 
 
 class MoodRequest(BaseModel):
