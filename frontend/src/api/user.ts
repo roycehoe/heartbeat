@@ -52,7 +52,6 @@ export interface DashboardResponse {
   can_record_mood: boolean;
   coins: number;
   tree_display_state: TreeDisplayState;
-  claimable_gifts: number;
   consecutive_checkins: number;
 }
 

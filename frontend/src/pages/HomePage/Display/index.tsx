@@ -31,7 +31,6 @@ function Display(props: {
         <Box className="dashboard--top--tree" height="100%" width="100%">
           <Tree
             treeDisplayState={props.dashboardData.tree_display_state}
-            claimableGifts={props.dashboardData.claimable_gifts}
             onClaimGiftBtnClick={props.onClaimGiftBtnClick}
             coinCount={props.dashboardData.coins}
           ></Tree>
