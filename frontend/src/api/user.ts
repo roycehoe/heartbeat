@@ -50,7 +50,6 @@ export interface DashboardResponse {
 
   moods: Mood[];
   can_record_mood: boolean;
-  coins: number;
   tree_display_state: TreeDisplayState;
   consecutive_checkins: number;
 }

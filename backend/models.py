@@ -61,7 +61,6 @@ class User(Base):
         comment="Assumes SG phone number",
     )
 
-    coins = Column(Integer, nullable=False)
     tree_display_state = Column(Enum(TreeDisplayState), nullable=False)
     consecutive_checkins = Column(Integer, nullable=False)
 

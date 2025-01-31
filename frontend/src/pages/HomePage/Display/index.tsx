@@ -1,7 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { DashboardResponse } from "../../../api/user";
 import Brand from "../../../components/Brand";
-import Coins from "../../../components/Coins";
 import Tree from "../../../components/Tree";
 
 function Display(props: {
@@ -25,14 +24,12 @@ function Display(props: {
           justifyContent="space-between"
           margin="12px"
         >
-          <Coins coinCount={props.dashboardData.coins}></Coins>
           <Brand goToNextUser={props.goToNextUser}></Brand>
         </Box>
         <Box className="dashboard--top--tree" height="100%" width="100%">
           <Tree
             treeDisplayState={props.dashboardData.tree_display_state}
             onClaimGiftBtnClick={props.onClaimGiftBtnClick}
-            coinCount={props.dashboardData.coins}
           ></Tree>
         </Box>
       </Box>

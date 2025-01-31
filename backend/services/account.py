@@ -82,7 +82,6 @@ def get_create_user_response(
             postal_code=user_in_model.postal_code,
             floor=user_in_model.floor,
             contact_number=user_in_model.contact_number,
-            coins=0,
             tree_display_state=TreeDisplayState.SEEDLING,
             consecutive_checkins=0,
             admin_id=admin_id,
@@ -170,7 +169,6 @@ def get_get_user_response(user_id: int, token: str, db: Session) -> DashboardOut
                 MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
                 for mood in user.moods
             ],
-            coins=user.coins,
             tree_display_state=user.tree_display_state,
             consecutive_checkins=user.consecutive_checkins,
             can_record_mood=user.can_record_mood,

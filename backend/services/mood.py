@@ -12,8 +12,6 @@ from schemas import MoodIn, MoodOut, MoodRequest
 from utils.token import get_token_data
 
 SHOULD_ALERT_ADMIN_CRITERION = 2
-DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED = 10
-DEFAULT_BONUS_COINS = 250
 DEFAULT_MOOD_MESSAGES = (
     "Every day is a new beginning.",
     "You are stronger than you think.",
@@ -105,24 +103,11 @@ def _should_move_tree_to_next_tree_display_state(consecutive_counter: int) -> bo
     return consecutive_counter % 5 == 0
 
 
-def _should_automatically_disburse_gift(
-    previous_tree_display_state: TreeDisplayState,
-    current_tree_display_state: TreeDisplayState,
-) -> bool:
-    return (
-        previous_tree_display_state == TreeDisplayState.ADULT_TREE_WITH_FLOWERS
-        and current_tree_display_state == TreeDisplayState.SEEDLING
-    )
-
-
 def _update_user(user_id: int, db: Session) -> None:
     try:
         CRUDUser(db).update(user_id, "can_record_mood", False)
 
         user = CRUDUser(db).get(user_id)
-        CRUDUser(db).update(
-            user_id, "coins", user.coins + DEFAULT_COINS_INCREASE_ON_MOOD_RECORDED
-        )
         CRUDUser(db).update(
             user_id,
             "consecutive_checkins",
@@ -134,14 +119,6 @@ def _update_user(user_id: int, db: Session) -> None:
             next_tree_display_state = _get_next_tree_display_state(
                 user.tree_display_state
             )
-            if _should_automatically_disburse_gift(
-                user.tree_display_state, next_tree_display_state
-            ):
-                CRUDUser(db).update(
-                    user_id,
-                    "coins",
-                    user.coins + DEFAULT_BONUS_COINS,
-                )
 
             CRUDUser(db).update(user_id, "tree_display_state", next_tree_display_state)
 
@@ -189,7 +166,6 @@ def get_create_user_mood_response(
                 MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
                 for mood in moods
             ],
-            coins=updated_user.coins,
             tree_display_state=updated_user.tree_display_state,
             consecutive_checkins=updated_user.consecutive_checkins,
             claimable_gifts=updated_user.claimable_gifts,

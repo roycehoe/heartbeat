@@ -14,7 +14,6 @@ const TREE_DISPLAY_STATE_TO_SVG_LINK = {
 function Tree(props: {
   treeDisplayState: TreeDisplayState;
   onClaimGiftBtnClick: () => Promise<void>;
-  coinCount: number;
 }) {
   // PLACEHOLDER UNTIL ALL GIFS ARE AVAILABLE
   const isUsingGif =
