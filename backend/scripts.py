@@ -96,7 +96,6 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "postal_code": 123123,
             "floor": 9,
             "contact_number": 90001111,
-            "tree_display_state": TreeDisplayState.ADULT_TREE_WITH_FLOWERS_AND_GIFTS,
             "consecutive_checkins": 5,
             "created_at": created_at,
             "admin_id": 1,
@@ -114,7 +113,6 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "postal_code": 123123,
             "floor": 9,
             "contact_number": 90001111,
-            "tree_display_state": TreeDisplayState.TEEN_TREE,
             "consecutive_checkins": 5,
             "created_at": created_at,
             "admin_id": 1,
@@ -132,7 +130,6 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
             "postal_code": 123123,
             "floor": 9,
             "contact_number": 90001111,
-            "tree_display_state": TreeDisplayState.SEEDLING,
             "consecutive_checkins": 0,
             "created_at": created_at,
             "admin_id": 1,
@@ -195,7 +192,6 @@ def _reset_all_user_can_record_mood_state(db: Session) -> None:
 def _update_non_compliant_users_states(db: Session) -> None:
     non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
     for user in non_compliant_users:
-        CRUDUser(db).update(user.id, "tree_display_state", TreeDisplayState.SEEDLING)
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
 
 

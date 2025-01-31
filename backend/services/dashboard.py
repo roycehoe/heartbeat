@@ -38,7 +38,6 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
             for mood in moods
         ],
         contact_number=user.contact_number,
-        tree_display_state=user.tree_display_state,
         consecutive_checkins=user.consecutive_checkins,
         can_record_mood=_can_record_mood(user_id, db),
     )
@@ -77,7 +76,6 @@ def get_admin_dashboard_response(
                         )
                         for mood in moods
                     ],
-                    tree_display_state=user.tree_display_state,
                     consecutive_checkins=user.consecutive_checkins,
                     can_record_mood=_can_record_mood(user.id, db),
                 )

@@ -79,28 +79,12 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def _get_next_tree_display_state(
-    tree_display_state: TreeDisplayState,
-) -> TreeDisplayState:
-    if tree_display_state == TreeDisplayState.SEEDLING:
-        return TreeDisplayState.TEEN_TREE
-    if tree_display_state == TreeDisplayState.TEEN_TREE:
-        return TreeDisplayState.ADULT_TREE
-    if tree_display_state == TreeDisplayState.ADULT_TREE:
-        return TreeDisplayState.ADULT_TREE_WITH_FLOWERS
-    return TreeDisplayState.SEEDLING
-
-
 def _get_next_consecutive_checkins(
     consecutive_counter: int,
 ) -> int:
     if consecutive_counter != 1:
         return consecutive_counter - 1
     return 5
-
-
-def _should_move_tree_to_next_tree_display_state(consecutive_counter: int) -> bool:
-    return consecutive_counter % 5 == 0
 
 
 def _update_user(user_id: int, db: Session) -> None:
@@ -115,12 +99,6 @@ def _update_user(user_id: int, db: Session) -> None:
         )
 
         user = CRUDUser(db).get(user_id)
-        if _should_move_tree_to_next_tree_display_state(user.consecutive_checkins):
-            next_tree_display_state = _get_next_tree_display_state(
-                user.tree_display_state
-            )
-
-            CRUDUser(db).update(user_id, "tree_display_state", next_tree_display_state)
 
     except NoRecordFoundException:
         raise HTTPException(
@@ -166,9 +144,7 @@ def get_create_user_mood_response(
                 MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
                 for mood in moods
             ],
-            tree_display_state=updated_user.tree_display_state,
             consecutive_checkins=updated_user.consecutive_checkins,
-            claimable_gifts=updated_user.claimable_gifts,
             can_record_mood=updated_user.can_record_mood,
             mood_message=_get_mood_message(),
         )

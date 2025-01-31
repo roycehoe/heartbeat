@@ -6,14 +6,6 @@ export enum MoodValue {
   SAD = "sad",
 }
 
-export enum TreeDisplayState {
-  SEEDLING = 1,
-  TEEN_TREE = 2,
-  ADULT_TREE = 3,
-  ADULT_TREE_WITH_FLOWERS = 4,
-  ADULT_TREE_WITH_FLOWERS_AND_GIFTS = 5,
-}
-
 export enum Race {
   CHINESE = "Chinese",
   MALAY = "Malay",
@@ -50,7 +42,6 @@ export interface DashboardResponse {
 
   moods: Mood[];
   can_record_mood: boolean;
-  tree_display_state: TreeDisplayState;
   consecutive_checkins: number;
 }
 

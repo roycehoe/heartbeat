@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -23,7 +22,6 @@ class MoodOut(BaseModel):
     user_id: int
     moods: list[MoodIn]
     can_record_mood: bool
-    tree_display_state: TreeDisplayState
     consecutive_checkins: int
     mood_message: str
 
@@ -45,7 +43,6 @@ class DashboardOut(BaseModel):
 
     moods: list[MoodIn]
     can_record_mood: bool
-    tree_display_state: TreeDisplayState
     consecutive_checkins: int
 
     class Config:

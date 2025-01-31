@@ -27,10 +27,7 @@ function Display(props: {
           <Brand goToNextUser={props.goToNextUser}></Brand>
         </Box>
         <Box className="dashboard--top--tree" height="100%" width="100%">
-          <Tree
-            treeDisplayState={props.dashboardData.tree_display_state}
-            onClaimGiftBtnClick={props.onClaimGiftBtnClick}
-          ></Tree>
+          <Tree onClaimGiftBtnClick={props.onClaimGiftBtnClick}></Tree>
         </Box>
       </Box>
     </Box>
