@@ -17,3 +17,8 @@ class Race(str, Enum):
 class Gender(str, Enum):
     MALE = "Male"
     FEMALE = "Female"
+
+
+class AppLanguage(str, Enum):
+    ENGLISH = "English"
+    CHINESE = "Chinese"

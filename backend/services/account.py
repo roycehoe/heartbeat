@@ -75,6 +75,7 @@ def get_create_user_response(
             password=hash_password(user_in_model.password),
             name=user_in_model.name,
             alias=user_in_model.alias,
+            app_language=user_in_model.app_language,
             age=user_in_model.age,
             race=user_in_model.race,
             gender=user_in_model.gender,

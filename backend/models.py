@@ -50,6 +50,7 @@ class User(Base):
     alias = Column(
         String, nullable=False, comment="To prevent data overflow on frontend"
     )
+    app_language = Column(String, nullable=False)
     age = Column(Integer, nullable=False)
     race = Column(String, nullable=False)
     gender = Column(String, nullable=False)
