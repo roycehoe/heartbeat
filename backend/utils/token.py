@@ -17,7 +17,7 @@ def create_access_token(data: dict) -> str:
     return encoded_jwt
 
 
-def get_token_data(token: str, param: str) -> int:
+def get_token_data(token: str, param: str) -> int | str:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         if data := payload.get(param):

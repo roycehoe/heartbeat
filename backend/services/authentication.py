@@ -18,7 +18,9 @@ def authenticate_user(request: LogInRequest, db: Session) -> Token:
         if not verify_password(request.password, str(user.password)):
             raise InvalidUsernameOrPasswordException
 
-        access_token = create_access_token({"user_id": user.id})
+        access_token = create_access_token(
+            {"user_id": user.id, "app_language": user.app_language}
+        )
         return Token(access_token=access_token, token_type="bearer")
 
     except NoRecordFoundException:

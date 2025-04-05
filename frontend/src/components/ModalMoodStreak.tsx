@@ -7,6 +7,60 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
+import { jwtDecode } from "jwt-decode";
+import { AppLanguage } from "../api/user";
+
+interface decodedTokenData {
+  user_id: string;
+  app_language: AppLanguage;
+  exp: number;
+}
+
+function StreakCountDisplay(props: {
+  streakCount: number;
+  appLanguage: AppLanguage;
+}) {
+  if (props.appLanguage === AppLanguage.ENGLISH) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-evenly"
+        alignItems="center"
+      >
+        <Box>
+          <Text fontWeight="600" fontSize="86px" color="#25AC51" lineHeight="1">
+            {props.streakCount}
+          </Text>
+        </Box>
+        <Box>
+          <Text fontWeight="600" fontSize="32px" color="#25AC51">
+            day streak!
+          </Text>
+        </Box>
+      </Box>
+    );
+  }
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-evenly"
+      alignItems="center"
+    >
+      <Box>
+        <Text fontWeight="600" fontSize="32px" color="#25AC51">
+          连续打卡
+        </Text>
+      </Box>
+      <Box>
+        <Text fontWeight="600" fontSize="86px" color="#25AC51" lineHeight="1">
+          {props.streakCount}天!
+        </Text>
+      </Box>
+    </Box>
+  );
+}
 
 function ModalMoodStreak({
   isOpen,
@@ -19,8 +73,13 @@ function ModalMoodStreak({
   handleClose: () => void;
   daysOfWeek: string[];
   tickData: boolean[];
-  streak: number[];
+  streak: number;
 }) {
+  const tokenData = localStorage.getItem("token");
+  if (!tokenData) {
+    return;
+  }
+  const { app_language } = jwtDecode(tokenData) as decodedTokenData;
   return (
     <Modal
       isOpen={isOpen}
@@ -57,28 +116,7 @@ function ModalMoodStreak({
               }}
             />
           </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="space-evenly"
-            alignItems="center"
-          >
-            <Box>
-              <Text
-                fontWeight="600"
-                fontSize="86px"
-                color="#25AC51"
-                lineHeight="1"
-              >
-                {streak}
-              </Text>
-            </Box>
-            <Box>
-              <Text fontWeight="600" fontSize="32px" color="#25AC51">
-                day streak!
-              </Text>
-            </Box>
-          </Box>
+          <StreakCountDisplay streakCount={streak} appLanguage={app_language} />
 
           <Box>
             <Box
@@ -118,7 +156,9 @@ function ModalMoodStreak({
             </Box>
             <Box marginBottom="18px" mt="12px">
               <Text textAlign="center">
-                Keep your streak going by checking in tomorrow!
+                {app_language === AppLanguage.ENGLISH
+                  ? "Keep your streak going by checking in tomorrow!"
+                  : "记得明天打卡，继续保持连续哦"}
               </Text>
             </Box>
           </Box>
