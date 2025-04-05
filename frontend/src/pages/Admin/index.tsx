@@ -1,6 +1,12 @@
 import {
   Box,
+  Card,
+  CardBody,
+  CardFooter,
   Fade,
+  Grid,
+  Heading,
+  Stack,
   TableContainer,
   Tbody,
   Td,
@@ -17,7 +23,14 @@ import { DashboardResponse, getAdminDashboardResponse } from "../../api/user";
 
 import { Table } from "@chakra-ui/react";
 
-const Demo = () => {
+const COLOR_TAG = {
+  BAD: "#FF3B30",
+  UNRESPONSIVE: "#AF52DE",
+  EMPTY_STATE: "#30B0C7",
+  GOOD: "#34C759",
+};
+
+const DashboardTable = () => {
   return (
     <TableContainer>
       <Table size="sm">
@@ -127,10 +140,27 @@ function Admin() {
             <Box bg="red">Cross</Box>
           </Box>
           <Box>
-            <Text>Persons I care for</Text>
+            <Heading size="md">Persons I care for</Heading>
           </Box>
-          <Box>Some Table</Box>
-          <Demo></Demo>
+
+          <Grid templateColumns="repeat(2, 1fr)" gap="12px">
+            <Card borderLeft="12px solid" borderLeftColor={COLOR_TAG.BAD}>
+              <Box my="12px" mx="8px">
+                <Heading size="md">2</Heading>
+                <Text fontSize="12px">In poor mental state</Text>
+              </Box>
+            </Card>
+            <Card
+              borderLeft="12px solid"
+              borderLeftColor={COLOR_TAG.UNRESPONSIVE}
+            >
+              <Box my="12px" mx="8px">
+                <Heading size="md">1</Heading>
+                <Text fontSize="12px">Unresponsive</Text>
+              </Box>
+            </Card>
+          </Grid>
+          <DashboardTable></DashboardTable>
           <Button size="xs">Add another person</Button>
         </Box>
       </Fade>
