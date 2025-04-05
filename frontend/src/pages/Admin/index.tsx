@@ -1,100 +1,82 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Fade,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
-  useDisclosure,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  DashboardResponse,
-  getAdminDashboardResponse,
-  MoodValue,
-} from "../../api/user";
-import ModalCreateUser from "./CreateUser";
-import ModalUpdateUser from "./UpdateUser";
-import { getDeleteUserResponse } from "../../api/admin";
+import { DashboardResponse, getAdminDashboardResponse } from "../../api/user";
 
-const MOOD_VALUE_TO_EMOJI = {
-  [MoodValue.HAPPY]: "🟩",
-  [MoodValue.OK]: "🟨",
-  [MoodValue.SAD]: "🟥",
-};
-const MAX_MOOD_DISPLAY = 7;
+import { Table } from "@chakra-ui/react";
 
-function AccordionItemDashboard(props: {
-  dashboardData: DashboardResponse;
-  reloadDashboardData: () => Promise<void>;
-}) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const deleteUser = async (userId: number) => {
-    await getDeleteUserResponse(userId);
-    props.reloadDashboardData();
-  };
+const Demo = () => {
   return (
-    <AccordionItem>
-      <Box>
-        <AccordionButton display="flex" justifyContent="space-between">
-          <Box display="flex" gap="8px">
-            <Text>{props.dashboardData.can_record_mood ? "⌛" : "🟩"}</Text>
-            <Text>{props.dashboardData.alias}</Text>
-          </Box>
-          <AccordionIcon></AccordionIcon>
-        </AccordionButton>
-      </Box>
-      <AccordionPanel pb="4" display="flex" flexDirection="column" gap="12px">
-        <Box className="accordion-details-text">
-          <Text>Name: {props.dashboardData.name}</Text>
-          <Text>Age: {props.dashboardData.age}</Text>
-          <Text>Race: {props.dashboardData.race}</Text>
-          <Text>Contact no: {props.dashboardData.contact_number}</Text>
-          <Text>Postal code: {props.dashboardData.postal_code}</Text>
-          <Text>
-            Mood:{" "}
-            {props.dashboardData.moods
-              .map((mood) => MOOD_VALUE_TO_EMOJI[mood.mood])
-              .slice(0)
-              .slice(-MAX_MOOD_DISPLAY)}
-          </Text>
-        </Box>
-        <Box
-          className="accordion-details-buttons"
-          display="flex"
-          justifyContent="flex-end"
-          gap="8px"
-        >
-          <Button colorScheme="success" variant="solid" onClick={onOpen}>
-            Update
-          </Button>
-          <ModalUpdateUser
-            dashboardData={props.dashboardData}
-            isOpen={isOpen}
-            onClose={onClose}
-            reloadDashboardData={props.reloadDashboardData}
-          ></ModalUpdateUser>
-          <Button
-            colorScheme="critical"
-            variant="solid"
-            onClick={() => deleteUser(props.dashboardData.user_id)}
-          >
-            Delete
-          </Button>
-        </Box>
-      </AccordionPanel>
-    </AccordionItem>
+    <TableContainer>
+      <Table size="sm">
+        <Thead>
+          <Tr>
+            <Th>Name</Th>
+            <Th colSpan={5} textAlign="center">
+              Mood snapshot
+            </Th>
+          </Tr>
+          <Tr>
+            <Th py="1px"></Th>
+            <Th py="1px" fontSize={8}>
+              Today
+            </Th>
+            <Th py="1px" fontSize={8}>
+              1d ago
+            </Th>
+            <Th py="1px" fontSize={8}>
+              2d ago
+            </Th>
+            <Th py="1px" fontSize={8}>
+              3d ago
+            </Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          <Tr>
+            <Td>Tony</Td>
+            <Td>
+              <Box display="flex" justifyContent="center">
+                -
+              </Box>
+            </Td>
+            <Td>
+              <Box display="flex" justifyContent="center">
+                <img src="/assets/icon/happy.svg" />
+              </Box>
+            </Td>
+            <Td>
+              <Box display="flex" justifyContent="center">
+                <img src="/assets/icon/ok.svg" />
+              </Box>
+            </Td>
+            <Td>
+              <Box display="flex" justifyContent="center">
+                <img src="/assets/icon/sad.svg" />
+              </Box>
+            </Td>
+          </Tr>
+        </Tbody>
+      </Table>
+    </TableContainer>
   );
-}
+};
 
 function Admin() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
   const loadDashboardData = async () => {
@@ -134,47 +116,22 @@ function Admin() {
     >
       <Fade in={!isLoading} style={{ width: "100%", height: "100%" }}>
         <Box
+          className="page"
+          margin="18px"
           display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
-          height="100%"
-          className="page--group"
+          flexDir="column"
+          gap="12px"
         >
-          <Box
-            height="100%"
-            margin="36px"
-            display="flex"
-            flexDirection="column"
-            gap="8px"
-          >
-            <Box
-              display="flex"
-              width="100%"
-              justifyContent="flex-end"
-              gap="8px"
-            >
-              <Button variant="outline" onClick={onOpen}>
-                Create user
-              </Button>
-              <ModalCreateUser
-                isOpen={isOpen}
-                onClose={onClose}
-                reloadDashboardData={loadDashboardData}
-              ></ModalCreateUser>
-            </Box>
-            <Box height="100%" borderWidth="1px" borderRadius="lg">
-              <Accordion allowMultiple>
-                {dashboardData.map((data) => {
-                  return (
-                    <AccordionItemDashboard
-                      dashboardData={data}
-                      reloadDashboardData={loadDashboardData}
-                    ></AccordionItemDashboard>
-                  );
-                })}
-              </Accordion>
-            </Box>
+          <Box display="flex" justifyContent="space-between">
+            <Box bg="red.200">Heartbeat</Box>
+            <Box bg="red">Cross</Box>
           </Box>
+          <Box>
+            <Text>Persons I care for</Text>
+          </Box>
+          <Box>Some Table</Box>
+          <Demo></Demo>
+          <Button size="xs">Add another person</Button>
         </Box>
       </Fade>
     </Box>
