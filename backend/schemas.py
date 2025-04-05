@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from enums import Gender, Race, SelectedMood
+from enums import Gender, AppLanguage, Race, SelectedMood
 
 
 class MoodRequest(BaseModel):
@@ -71,6 +71,7 @@ class UserCreateRequest(AccountCreateRequestBase):
     age: int
     race: Race
     gender: Gender
+    app_language: AppLanguage = Field(..., alias="appLanguage")
     postal_code: int = Field(..., alias="postalCode")
     floor: int
 
