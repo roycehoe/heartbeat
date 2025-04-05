@@ -1,17 +1,15 @@
 import {
   Box,
   Card,
-  CardBody,
-  CardFooter,
   Fade,
+  Flex,
   Grid,
   Heading,
-  Stack,
+  Image,
   TableContainer,
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
@@ -33,33 +31,41 @@ const COLOR_TAG = {
 const DashboardTable = () => {
   return (
     <TableContainer>
-      <Table size="sm">
+      <Table size="sm" variant="simple">
         <Thead>
           <Tr>
-            <Th>Name</Th>
-            <Th colSpan={5} textAlign="center">
+            <Th textTransform="none">Name</Th>
+            <Th textTransform="none" colSpan={5} textAlign="center">
               Mood snapshot
             </Th>
           </Tr>
           <Tr>
-            <Th py="1px"></Th>
-            <Th py="1px" fontSize={8}>
+            <Th textTransform="none" py="1px"></Th>
+            <Th textTransform="none" py="1px" fontSize={8}>
               Today
             </Th>
-            <Th py="1px" fontSize={8}>
+            <Th textTransform="none" py="1px" fontSize={8}>
               1d ago
             </Th>
-            <Th py="1px" fontSize={8}>
+            <Th textTransform="none" py="1px" fontSize={8}>
               2d ago
             </Th>
-            <Th py="1px" fontSize={8}>
+            <Th textTransform="none" py="1px" fontSize={8}>
               3d ago
             </Th>
           </Tr>
         </Thead>
         <Tbody>
           <Tr>
-            <Td>Tony</Td>
+            <Td p={0}>
+              <Flex>
+                <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
+                <Box p={3} width="100%">
+                  <Text>Tony</Text>
+                </Box>
+              </Flex>
+            </Td>
+
             <Td>
               <Box display="flex" justifyContent="center">
                 -
@@ -133,11 +139,13 @@ function Admin() {
           margin="18px"
           display="flex"
           flexDir="column"
-          gap="12px"
+          gap="24px"
         >
-          <Box display="flex" justifyContent="space-between">
-            <Box bg="red.200">Heartbeat</Box>
-            <Box bg="red">Cross</Box>
+          <Box display="flex" gap="8px" alignItems="center">
+            <Image src="/assets/icon/heart.svg"></Image>
+            <Heading size="md" color="#007AFF">
+              HeartBeat
+            </Heading>
           </Box>
           <Box>
             <Heading size="md">Persons I care for</Heading>
