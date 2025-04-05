@@ -18,6 +18,11 @@ export enum Gender {
   FEMALE = "Female",
 }
 
+export enum AppLanguage {
+  ENGLISH = "English",
+  CHINESE = "Chinese",
+}
+
 interface Mood {
   mood: MoodValue;
   user_id: number;

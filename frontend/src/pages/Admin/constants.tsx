@@ -1,4 +1,4 @@
-import { Gender, Race } from "../../api/user";
+import { AppLanguage, Gender, Race } from "../../api/user";
 import { CreateUserForm } from "./CreateUser";
 import { UpdateUserForm } from "./UpdateUser";
 
@@ -66,6 +66,12 @@ export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
     isRequired: true,
     type: "select",
     options: [Gender.MALE, Gender.FEMALE],
+  },
+  appLanguage: {
+    formLabel: "Application Language",
+    isRequired: true,
+    type: "select",
+    options: [AppLanguage.ENGLISH, AppLanguage.CHINESE],
   },
   postalCode: {
     formLabel: "Postal Code",

@@ -15,7 +15,7 @@ import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
 import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
-import { Gender, Race } from "../../../api/user";
+import { AppLanguage, Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
 import { CREATE_USER_FORM_FIELDS_PROPS } from "../constants";
@@ -38,6 +38,7 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   alias: "",
   race: Race.CHINESE,
   gender: Gender.MALE,
+  appLanguage: AppLanguage.ENGLISH,
   postalCode: "",
   floor: "",
   hasAgreedToTermsAndConditions: false,
