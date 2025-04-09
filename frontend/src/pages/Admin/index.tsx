@@ -1,29 +1,9 @@
-import {
-  Box,
-  Card,
-  Fade,
-  Flex,
-  Grid,
-  Heading,
-  Image,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import { Box, Card, Fade, Grid, Heading, Image, Text } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  DashboardResponse,
-  getAdminDashboardResponse,
-  MoodValue,
-} from "../../api/user";
+import { DashboardResponse, getAdminDashboardResponse } from "../../api/user";
 
-import { Table } from "@chakra-ui/react";
 import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
 import { getLastFourDaysMood, UserMoodDate } from "./utils";
 
@@ -84,6 +64,39 @@ function getUnresponsiveCount(allUserMoodDates: UserMoodDate[][]): number {
   return unresponsiveCount;
 }
 
+function AdminDashboardSummaryCards(props: {
+  dashboardData: DashboardResponse[];
+}) {
+  return (
+    <Grid templateColumns="repeat(2, 1fr)" gap="12px">
+      <Card borderLeft="12px solid" borderLeftColor={ColorTag.BAD}>
+        <Box my="12px" mx="8px">
+          <Heading size="md">
+            {getPoorMentalStateCount(
+              props.dashboardData.map((userMoodDate) =>
+                getLastFourDaysMood(userMoodDate)
+              )
+            )}
+          </Heading>
+          <Text fontSize="12px">In poor mental state</Text>
+        </Box>
+      </Card>
+      <Card borderLeft="12px solid" borderLeftColor={ColorTag.UNRESPONSIVE}>
+        <Box my="12px" mx="8px">
+          <Heading size="md">
+            {getUnresponsiveCount(
+              props.dashboardData.map((userMoodDate) =>
+                getLastFourDaysMood(userMoodDate)
+              )
+            )}
+          </Heading>
+          <Text fontSize="12px">Unresponsive</Text>
+        </Box>
+      </Card>
+    </Grid>
+  );
+}
+
 function Admin() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -94,6 +107,9 @@ function Admin() {
     const dashboardResponse = await getAdminDashboardResponse();
     setDashboardData(dashboardResponse);
     setIsLoading(false);
+  };
+  const handleUserClick = (userName: string) => {
+    navigate(`/admin/${userName}`);
   };
 
   useEffect(() => {
@@ -142,39 +158,13 @@ function Admin() {
             <Heading size="sm">Persons I care for</Heading>
           </Box>
 
-          <Grid templateColumns="repeat(2, 1fr)" gap="12px">
-            <Card borderLeft="12px solid" borderLeftColor={ColorTag.BAD}>
-              <Box my="12px" mx="8px">
-                <Heading size="md">
-                  {getPoorMentalStateCount(
-                    dashboardData.map((userMoodDate) =>
-                      getLastFourDaysMood(userMoodDate)
-                    )
-                  )}
-                </Heading>
-                <Text fontSize="12px">In poor mental state</Text>
-              </Box>
-            </Card>
-            <Card
-              borderLeft="12px solid"
-              borderLeftColor={ColorTag.UNRESPONSIVE}
-            >
-              <Box my="12px" mx="8px">
-                <Heading size="md">
-                  {getUnresponsiveCount(
-                    dashboardData.map((userMoodDate) =>
-                      getLastFourDaysMood(userMoodDate)
-                    )
-                  )}
-                </Heading>
-                <Text fontSize="12px">Unresponsive</Text>
-              </Box>
-            </Card>
-          </Grid>
+          <AdminDashboardSummaryCards dashboardData={dashboardData} />
+
           <TableMoodSnapshot
             dashboardData={dashboardData}
             getColorTag={getColorTag}
             getLastFourDaysMood={getLastFourDaysMood}
+            handleUserClick={handleUserClick}
           />
           <Button size="xs">Add another person</Button>
         </Box>

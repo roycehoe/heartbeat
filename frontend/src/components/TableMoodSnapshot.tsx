@@ -56,6 +56,7 @@ const TableMoodSnapshotRow = (props: {
   colorTag: string;
   username: string;
   lastFourDaysMoods: UserMoodDate[];
+  handleUserClick: (userName: string) => void;
 }) => {
   const today = new Date();
 
@@ -65,7 +66,9 @@ const TableMoodSnapshotRow = (props: {
         <Flex>
           <Box width="12px" bg={props.colorTag} />
           <Box p={3} width="100%">
-            <Text>{props.username}</Text>
+            <Text onClick={() => props.handleUserClick(props.username)}>
+              {props.username}
+            </Text>
           </Box>
         </Flex>
       </Td>
@@ -91,6 +94,7 @@ export const TableMoodSnapshot = (props: {
   dashboardData: DashboardResponse[];
   getColorTag: (user: DashboardResponse) => string;
   getLastFourDaysMood: (user: DashboardResponse) => UserMoodDate[];
+  handleUserClick: (userName: string) => void;
 }) => {
   return (
     <TableContainer>
@@ -125,6 +129,7 @@ export const TableMoodSnapshot = (props: {
                 colorTag={props.getColorTag(user)}
                 username={user.username}
                 lastFourDaysMoods={props.getLastFourDaysMood(user)}
+                handleUserClick={props.handleUserClick}
               />
             );
           })}
