@@ -33,78 +33,6 @@ const COLOR_TAG = {
   EMPTY_STATE: "#30B0C7",
   GOOD: "#34C759",
 };
-// const _DashboardTable = () => {
-//   return (
-//     <TableContainer>
-//       <Table size="sm" variant="simple">
-//         <Thead>
-//           <Tr>
-//             <Th textTransform="none">Name</Th>
-//             <Th textTransform="none" colSpan={5} textAlign="center">
-//               Mood snapshot
-//             </Th>
-//           </Tr>
-//           <Tr>
-//             <Th textTransform="none" py="1px"></Th>
-//             <Th textTransform="none" py="1px" fontSize={8}>
-//               Today
-//             </Th>
-//             <Th textTransform="none" py="1px" fontSize={8}>
-//               1d ago
-//             </Th>
-//             <Th textTransform="none" py="1px" fontSize={8}>
-//               2d ago
-//             </Th>
-//             <Th textTransform="none" py="1px" fontSize={8}>
-//               3d ago
-//             </Th>
-//           </Tr>
-//         </Thead>
-//         <Tbody>
-//           <Tr>
-//             <Td p={0}>
-//               <Flex>
-//                 <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
-//                 <Box p={3} width="100%">
-//                   <Text>Tony</Text>
-//                 </Box>
-//               </Flex>
-//             </Td>
-
-//             <Td>
-//               <Box display="flex" justifyContent="center">
-//                 -
-//               </Box>
-//             </Td>
-//             <Td>
-//               <Box display="flex" justifyContent="center">
-//                 <img src="/assets/icon/happy.svg" />
-//               </Box>
-//             </Td>
-//             <Td>
-//               <Box display="flex" justifyContent="center">
-//                 <img src="/assets/icon/ok.svg" />
-//               </Box>
-//             </Td>
-//             <Td>
-//               <Box display="flex" justifyContent="center">
-//                 <img src="/assets/icon/sad.svg" />
-//               </Box>
-//             </Td>
-//           </Tr>
-//         </Tbody>
-//       </Table>
-//     </TableContainer>
-//   );
-// };
-
-enum TableUserMoodDisplayState {
-  DASH,
-  CROSS,
-  HAPPY,
-  OK,
-  SAD,
-}
 
 function isSameDay(firstDate: Date, secondDate: Date) {
   return (
@@ -112,6 +40,42 @@ function isSameDay(firstDate: Date, secondDate: Date) {
     firstDate.getMonth() === secondDate.getMonth() &&
     firstDate.getDate() === secondDate.getDate()
   );
+}
+
+function getColorTag(user: DashboardResponse) {
+  const daysToMoodMap = [0, 1, 2, 3].map((day) => {
+    return { day: getDayBefore(day), mood: undefined };
+  });
+}
+
+function getLastFourDaysMood(dashboardResponse: DashboardResponse) {
+  // Get today's date once (based on local time).
+  const today = new Date();
+  const results = [];
+
+  // Generate results for today and the three previous days.
+  for (let i = 0; i < 4; i++) {
+    // Create a new Date instance for the specific day.
+    const day = new Date(today);
+    day.setDate(today.getDate() - i);
+
+    // Format date as "YYYY-MM-DD"
+    const dateStr = day.toISOString().split("T")[0];
+
+    // Find a mood that has a created_at date matching the day.
+    // Assumes created_at is in a similar ISO string format such that the date portion is at the beginning.
+    const moodRecord = dashboardResponse.moods.find((mood) =>
+      mood.created_at.startsWith(dateStr)
+    );
+
+    // Push the result for this day.
+    results.push({
+      date: dateStr,
+      mood: moodRecord ? moodRecord.mood : undefined,
+    });
+  }
+
+  return results;
 }
 
 const TableUserMoodCellDisplay = (props: {
@@ -220,7 +184,7 @@ const DashboardTable = (props: { dashboardData: DashboardResponse[] }) => {
         </Thead>
         <Tbody>
           {props.dashboardData.map((user) => {
-            return <TableMoodRowDisplay user={user}></TableMoodRowDisplay>;
+            return <TableMoodRowDisplay user={user} />;
           })}
         </Tbody>
       </Table>
@@ -276,6 +240,11 @@ function Admin() {
           flexDir="column"
           gap="24px"
         >
+          <Button
+            onClick={() => console.log(getLastFourDaysMood(dashboardData[0]))}
+          >
+            Click me
+          </Button>
           <Box display="flex" gap="8px" alignItems="center">
             <Image src="/assets/icon/heart.svg"></Image>
             <Heading size="sm" color="#007AFF">
