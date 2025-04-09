@@ -42,12 +42,6 @@ function isSameDay(firstDate: Date, secondDate: Date) {
   );
 }
 
-function getColorTag(user: DashboardResponse) {
-  const daysToMoodMap = [0, 1, 2, 3].map((day) => {
-    return { day: getDayBefore(day), mood: undefined };
-  });
-}
-
 function getLastFourDaysMood(dashboardResponse: DashboardResponse) {
   // Get today's date once (based on local time).
   const today = new Date();
@@ -70,7 +64,7 @@ function getLastFourDaysMood(dashboardResponse: DashboardResponse) {
 
     // Push the result for this day.
     results.push({
-      date: dateStr,
+      date: day,
       mood: moodRecord ? moodRecord.mood : undefined,
     });
   }
@@ -124,6 +118,8 @@ function getDayBefore(daysBefore: number): Date {
 }
 
 const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
+  const today = new Date();
+
   return (
     <Tr>
       <Td p={0}>
@@ -134,7 +130,21 @@ const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
           </Box>
         </Flex>
       </Td>
-      {[0, 1, 2, 3].map((daysBefore) => {
+      {getLastFourDaysMood(props.user).map((lastFourDaysMood) => {
+        return (
+          <Td>
+            <Box display="flex" justifyContent="center">
+              <TableUserMoodCellDisplay
+                mood={lastFourDaysMood.mood}
+                isToday={
+                  lastFourDaysMood.date.toDateString() === today.toDateString()
+                }
+              />
+            </Box>
+          </Td>
+        );
+      })}
+      {/* {[0, 1, 2, 3].map((daysBefore) => {
         const cellDate = getDayBefore(daysBefore);
         const userMood = props.user.moods.find((mood) =>
           isSameDay(new Date(mood.created_at), cellDate)
@@ -150,7 +160,7 @@ const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
             </Box>
           </Td>
         );
-      })}
+      })} */}
     </Tr>
   );
 };
@@ -240,11 +250,6 @@ function Admin() {
           flexDir="column"
           gap="24px"
         >
-          <Button
-            onClick={() => console.log(getLastFourDaysMood(dashboardData[0]))}
-          >
-            Click me
-          </Button>
           <Box display="flex" gap="8px" alignItems="center">
             <Image src="/assets/icon/heart.svg"></Image>
             <Heading size="sm" color="#007AFF">
