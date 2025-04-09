@@ -83,7 +83,7 @@ function getUnresponsiveCount(allUserMoodDates: UserMoodDate[][]): number {
   return unresponsiveCount;
 }
 
-const TableUserMoodCellDisplay = (props: {
+const AdminDashboardTableRowCellMoodIcon = (props: {
   mood: MoodValue | undefined;
   isToday: boolean;
 }) => {
@@ -122,24 +122,28 @@ const TableUserMoodCellDisplay = (props: {
   );
 };
 
-const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
+const AdminDashboardTableRow = (props: {
+  colorTag: string;
+  username: string;
+  lastFourDaysMoods: UserMoodDate[];
+}) => {
   const today = new Date();
 
   return (
     <Tr>
       <Td p={0}>
         <Flex>
-          <Box width="12px" bg={getColorTag(props.user)} />
+          <Box width="12px" bg={props.colorTag} />
           <Box p={3} width="100%">
-            <Text>{props.user.username}</Text>
+            <Text>{props.username}</Text>
           </Box>
         </Flex>
       </Td>
-      {getLastFourDaysMood(props.user).map((lastFourDaysMood) => {
+      {props.lastFourDaysMoods.map((lastFourDaysMood) => {
         return (
           <Td>
             <Box display="flex" justifyContent="center">
-              <TableUserMoodCellDisplay
+              <AdminDashboardTableRowCellMoodIcon
                 mood={lastFourDaysMood.mood}
                 isToday={
                   lastFourDaysMood.date.toDateString() === today.toDateString()
@@ -153,7 +157,7 @@ const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
   );
 };
 
-const DashboardTable = (props: { dashboardData: DashboardResponse[] }) => {
+const AdminDashboardTable = (props: { dashboardData: DashboardResponse[] }) => {
   return (
     <TableContainer>
       <Table size="sm" variant="simple">
@@ -182,7 +186,13 @@ const DashboardTable = (props: { dashboardData: DashboardResponse[] }) => {
         </Thead>
         <Tbody>
           {props.dashboardData.map((user) => {
-            return <TableMoodRowDisplay user={user} />;
+            return (
+              <AdminDashboardTableRow
+                colorTag={getColorTag(user)}
+                username={user.username}
+                lastFourDaysMoods={getLastFourDaysMood(user)}
+              />
+            );
           })}
         </Tbody>
       </Table>
@@ -277,7 +287,9 @@ function Admin() {
               </Box>
             </Card>
           </Grid>
-          <DashboardTable dashboardData={dashboardData}></DashboardTable>
+          <AdminDashboardTable
+            dashboardData={dashboardData}
+          ></AdminDashboardTable>
           <Button size="xs">Add another person</Button>
         </Box>
       </Fade>
