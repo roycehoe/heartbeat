@@ -114,44 +114,44 @@ function isSameDay(firstDate: Date, secondDate: Date) {
   );
 }
 
-// function getTableUserMoodDisplayState(
-//   mood: Mood,
-//   dateOfColumn: Date
-// ): TableUserMoodDisplayState {
-//   if (dateOfColumn.getDate()) {
-//     return TableUserMoodDisplayState.DASH;
-//   }
-//   return TableUserMoodDisplayState.DASH;
-// }
-
-// const TableUserMoodCellDisplay = (props: { mood: Mood }) => {
-//   if (props.mood.mood === MoodValue.HAPPY) {
-//     return (
-//       <Box display="flex" justifyContent="center">
-//         <img src="/assets/icon/happy.svg" />
-//       </Box>
-//     );
-//   }
-//   if (props.mood.mood === MoodValue.OK) {
-//     return (
-//       <Box display="flex" justifyContent="center">
-//         <img src="/assets/icon/ok.svg" />
-//       </Box>
-//     );
-//   }
-//   if (props.mood.mood === MoodValue.SAD) {
-//     return (
-//       <Box display="flex" justifyContent="center">
-//         <img src="/assets/icon/sad.svg" />
-//       </Box>
-//     );
-//   }
-//   return (
-//     <Box display="flex" justifyContent="center">
-//       -
-//     </Box>
-//   );
-// };
+const TableUserMoodCellDisplay = (props: {
+  mood: MoodValue | undefined;
+  isToday: boolean;
+}) => {
+  if (props.mood === MoodValue.HAPPY) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <img src="/assets/icon/happy.svg" />
+      </Box>
+    );
+  }
+  if (props.mood === MoodValue.OK) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <img src="/assets/icon/ok.svg" />
+      </Box>
+    );
+  }
+  if (props.mood === MoodValue.SAD) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <img src="/assets/icon/sad.svg" />
+      </Box>
+    );
+  }
+  if (!props.isToday) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <img src="/assets/icon/cross.svg" />
+      </Box>
+    );
+  }
+  return (
+    <Box display="flex" justifyContent="center">
+      -
+    </Box>
+  );
+};
 
 function getDayBefore(daysBefore: number): Date {
   const date = new Date();
@@ -160,49 +160,34 @@ function getDayBefore(daysBefore: number): Date {
 }
 
 const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
-  const today = getDayBefore(0);
-  const yesterday = getDayBefore(1);
-  const dayBeforeYesterday = getDayBefore(2);
-
   return (
-    <div>
-      <Tr>
-        <Td p={0}>
-          <Flex>
-            <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
-            <Box p={3} width="100%">
-              <Text>{props.user.username}</Text>
-            </Box>
-          </Flex>
-        </Td>
+    <Tr>
+      <Td p={0}>
+        <Flex>
+          <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
+          <Box p={3} width="100%">
+            <Text>{props.user.username}</Text>
+          </Box>
+        </Flex>
+      </Td>
+      {[0, 1, 2, 3].map((daysBefore) => {
+        const cellDate = getDayBefore(daysBefore);
+        const userMood = props.user.moods.find((mood) =>
+          isSameDay(new Date(mood.created_at), cellDate)
+        );
 
-        <Td>
-          {/* <Box display="flex" justifyContent="center">
-            -
-          </Box> */}
-          <Box display="flex" justifyContent="center">
-            {Date.parse(props.user.moods[0].created_at)}
-            {String(today)}
-          </Box>
-        </Td>
-        <Td>
-          <Box display="flex" justifyContent="center">
-            {/* <img src="/assets/icon/happy.svg" /> */}
-            {/* {yesterday} */}
-          </Box>
-        </Td>
-        <Td>
-          <Box display="flex" justifyContent="center">
-            <img src="/assets/icon/ok.svg" />
-          </Box>
-        </Td>
-        <Td>
-          <Box display="flex" justifyContent="center">
-            <img src="/assets/icon/sad.svg" />
-          </Box>
-        </Td>
-      </Tr>
-    </div>
+        return (
+          <Td>
+            <Box display="flex" justifyContent="center">
+              <TableUserMoodCellDisplay
+                mood={userMood?.mood}
+                isToday={daysBefore === 0}
+              />
+            </Box>
+          </Td>
+        );
+      })}
+    </Tr>
   );
 };
 
