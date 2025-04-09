@@ -23,7 +23,7 @@ export enum AppLanguage {
   CHINESE = "Chinese",
 }
 
-interface Mood {
+export interface Mood {
   mood: MoodValue;
   user_id: number;
   created_at: string;

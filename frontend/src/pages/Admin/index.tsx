@@ -17,7 +17,13 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DashboardResponse, getAdminDashboardResponse } from "../../api/user";
+import {
+  DashboardResponse,
+  getAdminDashboardResponse,
+  getUserMoodResponse,
+  Mood,
+  MoodValue,
+} from "../../api/user";
 
 import { Table } from "@chakra-ui/react";
 
@@ -27,8 +33,119 @@ const COLOR_TAG = {
   EMPTY_STATE: "#30B0C7",
   GOOD: "#34C759",
 };
+// const _DashboardTable = () => {
+//   return (
+//     <TableContainer>
+//       <Table size="sm" variant="simple">
+//         <Thead>
+//           <Tr>
+//             <Th textTransform="none">Name</Th>
+//             <Th textTransform="none" colSpan={5} textAlign="center">
+//               Mood snapshot
+//             </Th>
+//           </Tr>
+//           <Tr>
+//             <Th textTransform="none" py="1px"></Th>
+//             <Th textTransform="none" py="1px" fontSize={8}>
+//               Today
+//             </Th>
+//             <Th textTransform="none" py="1px" fontSize={8}>
+//               1d ago
+//             </Th>
+//             <Th textTransform="none" py="1px" fontSize={8}>
+//               2d ago
+//             </Th>
+//             <Th textTransform="none" py="1px" fontSize={8}>
+//               3d ago
+//             </Th>
+//           </Tr>
+//         </Thead>
+//         <Tbody>
+//           <Tr>
+//             <Td p={0}>
+//               <Flex>
+//                 <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
+//                 <Box p={3} width="100%">
+//                   <Text>Tony</Text>
+//                 </Box>
+//               </Flex>
+//             </Td>
 
-const DashboardTable = () => {
+//             <Td>
+//               <Box display="flex" justifyContent="center">
+//                 -
+//               </Box>
+//             </Td>
+//             <Td>
+//               <Box display="flex" justifyContent="center">
+//                 <img src="/assets/icon/happy.svg" />
+//               </Box>
+//             </Td>
+//             <Td>
+//               <Box display="flex" justifyContent="center">
+//                 <img src="/assets/icon/ok.svg" />
+//               </Box>
+//             </Td>
+//             <Td>
+//               <Box display="flex" justifyContent="center">
+//                 <img src="/assets/icon/sad.svg" />
+//               </Box>
+//             </Td>
+//           </Tr>
+//         </Tbody>
+//       </Table>
+//     </TableContainer>
+//   );
+// };
+
+enum TableUserMoodDisplayState {
+  DASH,
+  CROSS,
+  HAPPY,
+  OK,
+  SAD,
+}
+
+function getTableUserMoodDisplayState(
+  mood: Mood,
+  dateOfColumn: Date
+): TableUserMoodDisplayState {
+  if (dateOfColumn.getDate()) {
+    return TableUserMoodDisplayState.DASH;
+  }
+  return TableUserMoodDisplayState.DASH;
+}
+
+const TableUserMoodCellDisplay = (props: { mood: Mood }) => {
+  if (props.mood.mood === MoodValue.HAPPY) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <img src="/assets/icon/happy.svg" />
+      </Box>
+    );
+  }
+  if (props.mood.mood === MoodValue.OK) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <img src="/assets/icon/ok.svg" />
+      </Box>
+    );
+  }
+  if (props.mood.mood === MoodValue.SAD) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <img src="/assets/icon/sad.svg" />
+      </Box>
+    );
+  }
+  return (
+    <Box display="flex" justifyContent="center">
+      -
+    </Box>
+  );
+};
+
+const DashboardTable = (props: { dashboardData: DashboardResponse[] }) => {
   return (
     <TableContainer>
       <Table size="sm" variant="simple">
@@ -56,37 +173,41 @@ const DashboardTable = () => {
           </Tr>
         </Thead>
         <Tbody>
-          <Tr>
-            <Td p={0}>
-              <Flex>
-                <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
-                <Box p={3} width="100%">
-                  <Text>Tony</Text>
-                </Box>
-              </Flex>
-            </Td>
+          {props.dashboardData.map((user) => {
+            return (
+              <Tr>
+                <Td p={0}>
+                  <Flex>
+                    <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
+                    <Box p={3} width="100%">
+                      <Text>{user.username}</Text>
+                    </Box>
+                  </Flex>
+                </Td>
 
-            <Td>
-              <Box display="flex" justifyContent="center">
-                -
-              </Box>
-            </Td>
-            <Td>
-              <Box display="flex" justifyContent="center">
-                <img src="/assets/icon/happy.svg" />
-              </Box>
-            </Td>
-            <Td>
-              <Box display="flex" justifyContent="center">
-                <img src="/assets/icon/ok.svg" />
-              </Box>
-            </Td>
-            <Td>
-              <Box display="flex" justifyContent="center">
-                <img src="/assets/icon/sad.svg" />
-              </Box>
-            </Td>
-          </Tr>
+                <Td>
+                  <Box display="flex" justifyContent="center">
+                    -
+                  </Box>
+                </Td>
+                <Td>
+                  <Box display="flex" justifyContent="center">
+                    <img src="/assets/icon/happy.svg" />
+                  </Box>
+                </Td>
+                <Td>
+                  <Box display="flex" justifyContent="center">
+                    <img src="/assets/icon/ok.svg" />
+                  </Box>
+                </Td>
+                <Td>
+                  <Box display="flex" justifyContent="center">
+                    <img src="/assets/icon/sad.svg" />
+                  </Box>
+                </Td>
+              </Tr>
+            );
+          })}
         </Tbody>
       </Table>
     </TableContainer>
@@ -143,12 +264,12 @@ function Admin() {
         >
           <Box display="flex" gap="8px" alignItems="center">
             <Image src="/assets/icon/heart.svg"></Image>
-            <Heading size="md" color="#007AFF">
+            <Heading size="sm" color="#007AFF">
               HeartBeat
             </Heading>
           </Box>
           <Box>
-            <Heading size="md">Persons I care for</Heading>
+            <Heading size="sm">Persons I care for</Heading>
           </Box>
 
           <Grid templateColumns="repeat(2, 1fr)" gap="12px">
@@ -168,7 +289,7 @@ function Admin() {
               </Box>
             </Card>
           </Grid>
-          <DashboardTable></DashboardTable>
+          <DashboardTable dashboardData={dashboardData}></DashboardTable>
           <Button size="xs">Add another person</Button>
         </Box>
       </Fade>
