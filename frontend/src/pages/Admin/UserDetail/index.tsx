@@ -1,11 +1,31 @@
-import { ViewIcon } from "@chakra-ui/icons";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Heading, IconButton, Text } from "@chakra-ui/react";
 import { Banner, BxChevronLeft } from "@opengovsg/design-system-react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 
+const ToggleShowHidePersonalInformation = (props: {
+  isShowInformation: boolean;
+  setIsShowInformation: (isShowInformation: boolean) => void;
+}) => {
+  return (
+    <Button
+      onClick={() => props.setIsShowInformation(!props.isShowInformation)}
+      display="flex"
+      gap="6px"
+    >
+      {props.isShowInformation ? <ViewIcon /> : <ViewOffIcon />}
+      <Text>
+        {props.isShowInformation ? "Show information" : "Hide information"}
+      </Text>
+    </Button>
+  );
+};
+
 const UserDetail = () => {
   const { userName } = useParams();
+  const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
 
   return (
     <Box
@@ -48,10 +68,10 @@ const UserDetail = () => {
           <Heading size="sm">Personal Information</Heading>
           <img height="18px" width="18px" src="/assets/icon/edit.svg" />
         </Box>
-        <Button display="flex" gap="6px">
-          <ViewIcon />
-          <Text>Show information</Text>
-        </Button>
+        <ToggleShowHidePersonalInformation
+          isShowInformation={isShowInformation}
+          setIsShowInformation={setIsShowInformation}
+        />
       </Box>
     </Box>
   );
