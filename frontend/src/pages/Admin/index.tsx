@@ -24,6 +24,7 @@ import {
 } from "../../api/user";
 
 import { Table } from "@chakra-ui/react";
+import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
 import { getLastFourDaysMood, UserMoodDate } from "./utils";
 
 const POOR_MENTAL_HEALTH_STREAK_THRESHOLD = 2;
@@ -82,123 +83,6 @@ function getUnresponsiveCount(allUserMoodDates: UserMoodDate[][]): number {
   }
   return unresponsiveCount;
 }
-
-const AdminDashboardTableRowCellMoodIcon = (props: {
-  mood: MoodValue | undefined;
-  isToday: boolean;
-}) => {
-  if (props.mood === MoodValue.HAPPY) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/happy.svg" />
-      </Box>
-    );
-  }
-  if (props.mood === MoodValue.OK) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/ok.svg" />
-      </Box>
-    );
-  }
-  if (props.mood === MoodValue.SAD) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/sad.svg" />
-      </Box>
-    );
-  }
-  if (!props.isToday) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/cross.svg" />
-      </Box>
-    );
-  }
-  return (
-    <Box display="flex" justifyContent="center">
-      -
-    </Box>
-  );
-};
-
-const AdminDashboardTableRow = (props: {
-  colorTag: string;
-  username: string;
-  lastFourDaysMoods: UserMoodDate[];
-}) => {
-  const today = new Date();
-
-  return (
-    <Tr>
-      <Td p={0}>
-        <Flex>
-          <Box width="12px" bg={props.colorTag} />
-          <Box p={3} width="100%">
-            <Text>{props.username}</Text>
-          </Box>
-        </Flex>
-      </Td>
-      {props.lastFourDaysMoods.map((lastFourDaysMood) => {
-        return (
-          <Td>
-            <Box display="flex" justifyContent="center">
-              <AdminDashboardTableRowCellMoodIcon
-                mood={lastFourDaysMood.mood}
-                isToday={
-                  lastFourDaysMood.date.toDateString() === today.toDateString()
-                }
-              />
-            </Box>
-          </Td>
-        );
-      })}
-    </Tr>
-  );
-};
-
-const AdminDashboardTable = (props: { dashboardData: DashboardResponse[] }) => {
-  return (
-    <TableContainer>
-      <Table size="sm" variant="simple">
-        <Thead>
-          <Tr>
-            <Th textTransform="none">Name</Th>
-            <Th textTransform="none" colSpan={5} textAlign="center">
-              Mood snapshot
-            </Th>
-          </Tr>
-          <Tr>
-            <Th textTransform="none" py="1px"></Th>
-            <Th textTransform="none" py="1px" fontSize={8}>
-              Today
-            </Th>
-            <Th textTransform="none" py="1px" fontSize={8}>
-              1d ago
-            </Th>
-            <Th textTransform="none" py="1px" fontSize={8}>
-              2d ago
-            </Th>
-            <Th textTransform="none" py="1px" fontSize={8}>
-              3d ago
-            </Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {props.dashboardData.map((user) => {
-            return (
-              <AdminDashboardTableRow
-                colorTag={getColorTag(user)}
-                username={user.username}
-                lastFourDaysMoods={getLastFourDaysMood(user)}
-              />
-            );
-          })}
-        </Tbody>
-      </Table>
-    </TableContainer>
-  );
-};
 
 function Admin() {
   const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
@@ -287,9 +171,11 @@ function Admin() {
               </Box>
             </Card>
           </Grid>
-          <AdminDashboardTable
+          <TableMoodSnapshot
             dashboardData={dashboardData}
-          ></AdminDashboardTable>
+            getColorTag={getColorTag}
+            getLastFourDaysMood={getLastFourDaysMood}
+          />
           <Button size="xs">Add another person</Button>
         </Box>
       </Fade>
