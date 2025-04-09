@@ -24,51 +24,37 @@ import {
 } from "../../api/user";
 
 import { Table } from "@chakra-ui/react";
+import { getLastFourDaysMood, UserMoodDate } from "./utils";
 
 const POOR_MENTAL_HEALTH_STREAK_THRESHOLD = 2;
 
-const COLOR_TAG = {
-  BAD: "#FF3B30",
-  UNRESPONSIVE: "#AF52DE",
-  EMPTY_STATE: "#30B0C7",
-  GOOD: "#34C759",
-};
-
-interface UserMoodDate {
-  date: Date;
-  mood: MoodValue | undefined;
+enum ColorTag {
+  BAD = "#FF3B30",
+  UNRESPONSIVE = "#AF52DE",
+  EMPTY_STATE = "#30B0C7",
+  GOOD = "#34C759",
 }
 
-function getLastFourDaysMood(
-  dashboardResponse: DashboardResponse
-): UserMoodDate[] {
-  // Get today's date once (based on local time).
-  const today = new Date();
-  const results = [];
-
-  // Generate results for today and the three previous days.
-  for (let i = 0; i < 4; i++) {
-    // Create a new Date instance for the specific day.
-    const day = new Date(today);
-    day.setDate(today.getDate() - i);
-
-    // Format date as "YYYY-MM-DD"
-    const dateStr = day.toISOString().split("T")[0];
-
-    // Find a mood that has a created_at date matching the day.
-    // Assumes created_at is in a similar ISO string format such that the date portion is at the beginning.
-    const moodRecord = dashboardResponse.moods.find((mood) =>
-      mood.created_at.startsWith(dateStr)
-    );
-
-    // Push the result for this day.
-    results.push({
-      date: day,
-      mood: moodRecord ? moodRecord.mood : undefined,
-    });
+function getColorTag(user: DashboardResponse): ColorTag {
+  const lastFourDaysMood = getLastFourDaysMood(user);
+  if (hasPoorMentalState(lastFourDaysMood)) {
+    return ColorTag.BAD;
   }
+  if (isUnresponsive(lastFourDaysMood)) {
+    return ColorTag.UNRESPONSIVE;
+  }
+  return ColorTag.GOOD;
+}
 
-  return results;
+function hasPoorMentalState(
+  moodDates: UserMoodDate[],
+  threshold: number = POOR_MENTAL_HEALTH_STREAK_THRESHOLD
+): boolean {
+  let consecutiveSadCount = 0;
+  return moodDates.some((day) => {
+    consecutiveSadCount = day.mood === "sad" ? consecutiveSadCount + 1 : 0;
+    return consecutiveSadCount > threshold;
+  });
 }
 
 function getPoorMentalStateCount(
@@ -76,23 +62,21 @@ function getPoorMentalStateCount(
   threshold: number = POOR_MENTAL_HEALTH_STREAK_THRESHOLD
 ): number {
   return userMoodDatesArray.filter((moodDates) => {
-    let consecutiveSadCount = 0;
-    return moodDates.some((day) => {
-      consecutiveSadCount = day.mood === "sad" ? consecutiveSadCount + 1 : 0;
-      return consecutiveSadCount > threshold;
-    });
+    hasPoorMentalState(moodDates, threshold);
   }).length;
+}
+
+function isUnresponsive(userMoodDates: UserMoodDate[]): boolean {
+  return userMoodDates
+    .map((userMoodDate) => userMoodDate.mood)
+    .every((mood) => mood === undefined);
 }
 
 function getUnresponsiveCount(allUserMoodDates: UserMoodDate[][]): number {
   let unresponsiveCount = 0;
 
   for (const userMoodDates of allUserMoodDates) {
-    const isUnresponsive = userMoodDates
-      .map((userMoodDate) => userMoodDate.mood)
-      .every((mood) => mood === undefined);
-
-    if (isUnresponsive) {
+    if (isUnresponsive(userMoodDates)) {
       unresponsiveCount += 1;
     }
   }
@@ -145,7 +129,7 @@ const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
     <Tr>
       <Td p={0}>
         <Flex>
-          <Box width="12px" bg={COLOR_TAG.UNRESPONSIVE} />
+          <Box width="12px" bg={getColorTag(props.user)} />
           <Box p={3} width="100%">
             <Text>{props.user.username}</Text>
           </Box>
@@ -265,7 +249,7 @@ function Admin() {
           </Box>
 
           <Grid templateColumns="repeat(2, 1fr)" gap="12px">
-            <Card borderLeft="12px solid" borderLeftColor={COLOR_TAG.BAD}>
+            <Card borderLeft="12px solid" borderLeftColor={ColorTag.BAD}>
               <Box my="12px" mx="8px">
                 <Heading size="md">
                   {getPoorMentalStateCount(
@@ -279,7 +263,7 @@ function Admin() {
             </Card>
             <Card
               borderLeft="12px solid"
-              borderLeftColor={COLOR_TAG.UNRESPONSIVE}
+              borderLeftColor={ColorTag.UNRESPONSIVE}
             >
               <Box my="12px" mx="8px">
                 <Heading size="md">
