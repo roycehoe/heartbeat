@@ -20,12 +20,12 @@ import { useNavigate } from "react-router-dom";
 import {
   DashboardResponse,
   getAdminDashboardResponse,
-  getUserMoodResponse,
-  Mood,
   MoodValue,
 } from "../../api/user";
 
 import { Table } from "@chakra-ui/react";
+
+const POOR_MENTAL_HEALTH_STREAK_THRESHOLD = 2;
 
 const COLOR_TAG = {
   BAD: "#FF3B30",
@@ -34,15 +34,14 @@ const COLOR_TAG = {
   GOOD: "#34C759",
 };
 
-function isSameDay(firstDate: Date, secondDate: Date) {
-  return (
-    firstDate.getFullYear() === secondDate.getFullYear() &&
-    firstDate.getMonth() === secondDate.getMonth() &&
-    firstDate.getDate() === secondDate.getDate()
-  );
+interface UserMoodDate {
+  date: Date;
+  mood: MoodValue | undefined;
 }
 
-function getLastFourDaysMood(dashboardResponse: DashboardResponse) {
+function getLastFourDaysMood(
+  dashboardResponse: DashboardResponse
+): UserMoodDate[] {
   // Get today's date once (based on local time).
   const today = new Date();
   const results = [];
@@ -70,6 +69,34 @@ function getLastFourDaysMood(dashboardResponse: DashboardResponse) {
   }
 
   return results;
+}
+
+function getPoorMentalStateCount(
+  userMoodDatesArray: UserMoodDate[][],
+  threshold: number = POOR_MENTAL_HEALTH_STREAK_THRESHOLD
+): number {
+  return userMoodDatesArray.filter((moodDates) => {
+    let consecutiveSadCount = 0;
+    return moodDates.some((day) => {
+      consecutiveSadCount = day.mood === "sad" ? consecutiveSadCount + 1 : 0;
+      return consecutiveSadCount > threshold;
+    });
+  }).length;
+}
+
+function getUnresponsiveCount(allUserMoodDates: UserMoodDate[][]): number {
+  let unresponsiveCount = 0;
+
+  for (const userMoodDates of allUserMoodDates) {
+    const isUnresponsive = userMoodDates
+      .map((userMoodDate) => userMoodDate.mood)
+      .every((mood) => mood === undefined);
+
+    if (isUnresponsive) {
+      unresponsiveCount += 1;
+    }
+  }
+  return unresponsiveCount;
 }
 
 const TableUserMoodCellDisplay = (props: {
@@ -111,12 +138,6 @@ const TableUserMoodCellDisplay = (props: {
   );
 };
 
-function getDayBefore(daysBefore: number): Date {
-  const date = new Date();
-  date.setDate(date.getDate() - daysBefore);
-  return date;
-}
-
 const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
   const today = new Date();
 
@@ -144,23 +165,6 @@ const TableMoodRowDisplay = (props: { user: DashboardResponse }) => {
           </Td>
         );
       })}
-      {/* {[0, 1, 2, 3].map((daysBefore) => {
-        const cellDate = getDayBefore(daysBefore);
-        const userMood = props.user.moods.find((mood) =>
-          isSameDay(new Date(mood.created_at), cellDate)
-        );
-
-        return (
-          <Td>
-            <Box display="flex" justifyContent="center">
-              <TableUserMoodCellDisplay
-                mood={userMood?.mood}
-                isToday={daysBefore === 0}
-              />
-            </Box>
-          </Td>
-        );
-      })} */}
     </Tr>
   );
 };
@@ -263,7 +267,13 @@ function Admin() {
           <Grid templateColumns="repeat(2, 1fr)" gap="12px">
             <Card borderLeft="12px solid" borderLeftColor={COLOR_TAG.BAD}>
               <Box my="12px" mx="8px">
-                <Heading size="md">2</Heading>
+                <Heading size="md">
+                  {getPoorMentalStateCount(
+                    dashboardData.map((userMoodDate) =>
+                      getLastFourDaysMood(userMoodDate)
+                    )
+                  )}
+                </Heading>
                 <Text fontSize="12px">In poor mental state</Text>
               </Box>
             </Card>
@@ -272,7 +282,13 @@ function Admin() {
               borderLeftColor={COLOR_TAG.UNRESPONSIVE}
             >
               <Box my="12px" mx="8px">
-                <Heading size="md">1</Heading>
+                <Heading size="md">
+                  {getUnresponsiveCount(
+                    dashboardData.map((userMoodDate) =>
+                      getLastFourDaysMood(userMoodDate)
+                    )
+                  )}
+                </Heading>
                 <Text fontSize="12px">Unresponsive</Text>
               </Box>
             </Card>
