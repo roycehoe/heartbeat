@@ -2,7 +2,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Heading, IconButton, Text } from "@chakra-ui/react";
 import { Banner, BxChevronLeft } from "@opengovsg/design-system-react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 
 const ToggleShowHidePersonalInformation = (props: {
@@ -26,6 +26,14 @@ const ToggleShowHidePersonalInformation = (props: {
 const UserDetail = () => {
   const { userName } = useParams();
   const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const handleGearIconClick = (userName: string) => {
+    navigate(`/admin/${userName}/settings`);
+  };
+  const handleBackIconClick = () => {
+    navigate(`/admin`);
+  };
 
   return (
     <Box
@@ -44,13 +52,18 @@ const UserDetail = () => {
       >
         <Box display="flex" gap="8px" justifyContent="space-between">
           <IconButton
+            onClick={handleBackIconClick}
             isRound={true}
             variant="solid"
             aria-label="Done"
             icon={<IconArrowLeft />}
           />
 
-          <Box display="flex" justifyContent="center">
+          <Box
+            display="flex"
+            justifyContent="center"
+            onClick={() => handleGearIconClick(userName)}
+          >
             <img src="/assets/icon/gear.svg" />
           </Box>
         </Box>

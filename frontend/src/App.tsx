@@ -3,6 +3,7 @@ import { ThemeProvider } from "@opengovsg/design-system-react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Admin from "./pages/Admin";
 import UserDetail from "./pages/Admin/UserDetail";
+import UserSettings from "./pages/Admin/UserSettings";
 import HomePage from "./pages/HomePage";
 import LogIn from "./pages/LogIn";
 
@@ -16,6 +17,10 @@ const App = () => {
             <Route path="/login" element={<LogIn />}></Route>
             <Route path="/admin" element={<Admin />}></Route>
             <Route path="/admin/:userName" element={<UserDetail />}></Route>
+            <Route
+              path="/admin/:userName/settings"
+              element={<UserSettings />}
+            ></Route>
           </Routes>
         </Box>
       </BrowserRouter>
