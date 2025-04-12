@@ -63,7 +63,7 @@ class LogInRequest(BaseModel):
     password: str
 
 
-class AccountCreateRequestBase(BaseModel):
+class AdminCreateRequest(BaseModel):
     username: str  # Doubles as username
     password: str
     name: str
@@ -71,11 +71,20 @@ class AccountCreateRequestBase(BaseModel):
     contact_number: int = Field(..., alias="contactNumber")
 
 
-class AdminCreateRequest(AccountCreateRequestBase):
-    pass
+class AdminIn(AdminCreateRequest):
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    class Config:
+        use_enum_values = True
+        from_attributes = True
 
 
-class UserCreateRequest(AccountCreateRequestBase):
+class UserCreateRequest(BaseModel):
+    username: str  # Doubles as username
+    password: str
+    name: str
+    confirm_password: str = Field(..., alias="confirmPassword")
+    contact_number: int = Field(..., alias="contactNumber")
     alias: str
     age: int
     race: Race
@@ -90,14 +99,6 @@ class UserCreateRequest(AccountCreateRequestBase):
 
 class UserUpdateRequest(UserCreateRequest):
     pass
-
-
-class AdminIn(AdminCreateRequest):
-    created_at: datetime = Field(default_factory=datetime.now)
-
-    class Config:
-        use_enum_values = True
-        from_attributes = True
 
 
 class UserIn(UserCreateRequest):

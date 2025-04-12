@@ -1,5 +1,3 @@
-from typing import Any
-
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -15,7 +13,7 @@ from schemas import (
     UserCreateRequest,
     UserUpdateRequest,
 )
-from scripts import get_scheduler, is_db_empty, populate_db, repopulate_db
+from scripts import get_scheduler
 from services.account import (
     get_create_admin_response,
     get_create_user_response,
