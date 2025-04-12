@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from datetime import datetime, time, timedelta
 
 from crud import CRUDMood
-from models import Mood
 
 from schemas.crud import CRUDMoodOut, CRUDUserOut
 from utils.token import get_token_data
@@ -24,7 +23,6 @@ from schemas.admin import (
     AdminToken,
     AdminDashboardMoodOut,
     AdminDashboardOut,
-    AdminMoodIn,
 )
 
 from utils.hashing import hash_password, verify_password
