@@ -7,7 +7,7 @@ from schemas import (
     UserCreateRequest,
     UserUpdateRequest,
 )
-from services.account import (
+from services.admin_user import (
     get_create_user_response,
     get_delete_user_response,
     get_get_user_response,
