@@ -17,7 +17,7 @@ from services.dashboard import get_admin_dashboard_response
 
 router = APIRouter(
     prefix="/admin",
-    tags=["admin"],
+    tags=["Admin"],
 )
 
 
