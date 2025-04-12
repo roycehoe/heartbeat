@@ -94,7 +94,7 @@ def authenticate_admin(request: AdminLogInRequest, db: Session) -> AdminToken:
 
 def _can_record_mood(user_id: int, db: Session) -> bool:
     try:
-        return CRUDUser(db).get(user_id).can_record_mood
+        return CRUDUserOut.model_validate(CRUDUser(db).get(user_id)).can_record_mood
     except NoRecordFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -105,33 +105,36 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
 
 
 def get_user_dashboard_response(token: str, db: Session) -> AdminDashboardOut:
-    user_id = get_token_data(token, "user_id")
+    user_id: int = get_token_data(token, "user_id")
     mood_models = CRUDMood(db).get_by({"user_id": user_id})
-    user_models = CRUDUser(db).get(user_id)
+    user_model = CRUDUser(db).get(user_id)
+
+    crud_mood_out = [
+        CRUDMoodOut.model_validate(mood_model) for mood_model in mood_models
+    ]
+    crud_user_out = CRUDUserOut.model_validate(user_model)
 
     return AdminDashboardOut(
         user_id=user_id,
-        username=user_models.username,
-        name=user_models.name,
-        alias=user_models.alias,
-        age=user_models.age,
-        race=user_models.race,
-        gender=user_models.gender,
-        postal_code=user_models.postal_code,
-        floor=user_models.floor,
+        username=crud_user_out.username,
+        name=crud_user_out.name,
+        alias=crud_user_out.alias,
+        age=crud_user_out.age,
+        race=crud_user_out.race,
+        gender=crud_user_out.gender,
+        postal_code=crud_user_out.postal_code,
+        floor=crud_user_out.floor,
         moods=[
-            AdminMoodIn(
-                mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at
-            )
-            for mood in mood_models
+            AdminDashboardMoodOut(mood=mood.mood, created_at=mood.created_at)
+            for mood in crud_mood_out
         ],
-        contact_number=user_models.contact_number,
-        consecutive_checkins=user_models.consecutive_checkins,
+        contact_number=crud_user_out.contact_number,
+        consecutive_checkins=crud_user_out.consecutive_checkins,
         can_record_mood=_can_record_mood(user_id, db),
     )
 
 
-def _get_dashboard_moods_out(
+def _get_admin_dashboard_moods_out(
     moods_in: list[CRUDMoodOut], start_date: datetime, end_date: datetime
 ) -> list[AdminDashboardMoodOut]:
     result: list[AdminDashboardMoodOut] = []
@@ -184,7 +187,7 @@ def get_admin_dashboard_response(
             ]
             crud_user_out = CRUDUserOut.model_validate(user_model)
 
-            dashboard_moods_out = _get_dashboard_moods_out(
+            dashboard_moods_out = _get_admin_dashboard_moods_out(
                 crud_moods_out, crud_user_out.created_at, datetime.today()
             )
 

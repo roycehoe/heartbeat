@@ -34,8 +34,9 @@ class CRUDUserOut(BaseModel):
     contact_number: int
     consecutive_checkins: int
     created_at: datetime
-    admin_id: Optional[int] = None
+    admin_id: int
     can_record_mood: bool
+    moods: list["CRUDMoodOut"]
 
     class Config:
         orm_mode = True

@@ -12,11 +12,11 @@ from exceptions import (
 from models import User
 from schemas.admin_user import (
     AdminDashboardOut,
-    AdminMoodIn,
     UserCreateRequest,
     UserIn,
     UserUpdateRequest,
 )
+from schemas.crud import CRUDUserOut
 from utils.hashing import hash_password
 from utils.token import get_token_data
 
@@ -118,6 +118,18 @@ def get_update_user_response(
         )
 
 
+def _can_record_mood(user_id: int, db: Session) -> bool:
+    try:
+        return CRUDUserOut.model_validate(CRUDUser(db).get(user_id)).can_record_mood
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No user record found",
+        )
+    except DBException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+
+
 def get_get_user_response(user_id: int, token: str, db: Session) -> AdminDashboardOut:
     try:
         admin_id = get_token_data(token, "admin_id")
@@ -125,17 +137,23 @@ def get_get_user_response(user_id: int, token: str, db: Session) -> AdminDashboa
         if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
 
-        user = CRUDUser(db).get(user_id)
+        user_model = CRUDUser(db).get(user_id)
+        crud_user_out = CRUDUserOut.model_validate(user_model)
+
         return AdminDashboardOut(
-            user_id=user.id,
-            moods=[
-                AdminMoodIn(
-                    mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at
-                )
-                for mood in user.moods
-            ],
-            consecutive_checkins=user.consecutive_checkins,
-            can_record_mood=user.can_record_mood,
+            user_id=crud_user_out.id,
+            username=crud_user_out.username,
+            contact_number=crud_user_out.contact_number,
+            name=crud_user_out.name,
+            alias=crud_user_out.alias,
+            age=crud_user_out.age,
+            race=crud_user_out.race,
+            gender=crud_user_out.gender,
+            postal_code=crud_user_out.postal_code,
+            floor=crud_user_out.floor,
+            moods=user_model.moods,
+            consecutive_checkins=crud_user_out.consecutive_checkins,
+            can_record_mood=_can_record_mood(crud_user_out.id, db),
         )
 
     except UserNotUnderCurrentAdminException:

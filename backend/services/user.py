@@ -12,7 +12,9 @@ from exceptions import (
 )
 from gateway import send_sad_user_notification_message
 from models import Mood
+from schemas.crud import CRUDMoodOut, CRUDUserOut
 from schemas.user import (
+    UserDashboardMoodOut,
     UserDashboardOut,
     UserLogInRequest,
     UserMoodIn,
@@ -121,7 +123,7 @@ def authenticate_user(request: UserLogInRequest, db: Session) -> UserToken:
 
 def _can_record_mood(user_id: int, db: Session) -> bool:
     try:
-        return CRUDUser(db).get(user_id).can_record_mood
+        return CRUDUserOut.model_validate(CRUDUser(db).get(user_id)).can_record_mood
     except NoRecordFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -132,25 +134,29 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
 
 
 def get_user_dashboard_response(token: str, db: Session) -> UserDashboardOut:
-    user_id = get_token_data(token, "user_id")
-    moods = CRUDMood(db).get_by({"user_id": user_id})
-    user = CRUDUser(db).get(user_id)
+    user_id: int = get_token_data(token, "user_id")
+    mood_models = CRUDMood(db).get_by({"user_id": user_id})
+    crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
+
+    user_model = CRUDUser(db).get(user_id)
+    crud_user_out = CRUDUserOut.model_validate(user_model)
+
     return UserDashboardOut(
         user_id=user_id,
-        username=user.username,
-        name=user.name,
-        alias=user.alias,
-        age=user.age,
-        race=user.race,
-        gender=user.gender,
-        postal_code=user.postal_code,
-        floor=user.floor,
+        username=crud_user_out.username,
+        name=crud_user_out.name,
+        alias=crud_user_out.alias,
+        age=crud_user_out.age,
+        race=crud_user_out.race,
+        gender=crud_user_out.gender,
+        postal_code=crud_user_out.postal_code,
+        floor=crud_user_out.floor,
         moods=[
-            UserMoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
-            for mood in moods
+            UserDashboardMoodOut(mood=mood.mood, created_at=mood.created_at)
+            for mood in crud_moods_out
         ],
-        contact_number=user.contact_number,
-        consecutive_checkins=user.consecutive_checkins,
+        contact_number=crud_user_out.contact_number,
+        consecutive_checkins=crud_user_out.consecutive_checkins,
         can_record_mood=_can_record_mood(user_id, db),
     )
 
@@ -167,10 +173,15 @@ def _get_mood_message(
 
 def _should_alert_admin(user_id: int, db: Session) -> bool:
     try:
-        previous_moods = CRUDMood(db).get_latest(user_id, SHOULD_ALERT_ADMIN_CRITERION)
-        if len(previous_moods) < SHOULD_ALERT_ADMIN_CRITERION:
+        previous_mood_models = CRUDMood(db).get_latest(
+            user_id, SHOULD_ALERT_ADMIN_CRITERION
+        )
+        previous_moods_crud_mood_out = [
+            CRUDMoodOut.model_validate(i) for i in previous_mood_models
+        ]
+        if len(previous_moods_crud_mood_out) < SHOULD_ALERT_ADMIN_CRITERION:
             return False
-        for previous_mood in previous_moods:
+        for previous_mood in previous_moods_crud_mood_out:
             if previous_mood.mood != SelectedMood.SAD:
                 return False
         return True
@@ -208,7 +219,7 @@ def get_create_user_mood_response(
     request: UserMoodRequest, token: str, db: Session
 ) -> UserMoodOut:
     try:
-        user_id = get_token_data(token, "user_id")
+        user_id: int = get_token_data(token, "user_id")
         if not _can_record_mood(user_id, db):
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -226,15 +237,21 @@ def get_create_user_mood_response(
 
         if _should_alert_admin(user_id, db):
             user = CRUDUser(db).get(user_id)
-            admin = CRUDAdmin(db).get(user.admin_id)
+            crud_user_out = CRUDUserOut.model_validate(user)
+            admin = CRUDAdmin(db).get(crud_user_out.admin_id)
             send_sad_user_notification_message(
-                user.name, SHOULD_ALERT_ADMIN_CRITERION, f"+65{admin.contact_number}"
+                crud_user_out.name,
+                SHOULD_ALERT_ADMIN_CRITERION,
+                f"+65{admin.contact_number}",
             )
 
         updated_user = CRUDUser(db).get(user_id)
-        moods = CRUDMood(db).get_by({"user_id": user_id})
+        crud_updated_user_out = CRUDUserOut.model_validate(updated_user)
 
-        app_language = get_token_data(token, "app_language")
+        mood_models = CRUDMood(db).get_by({"user_id": user_id})
+        crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
+
+        app_language: AppLanguage = get_token_data(token, "app_language")
 
         return UserMoodOut(
             user_id=user_id,
@@ -242,10 +259,10 @@ def get_create_user_mood_response(
                 UserMoodIn(
                     mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at
                 )
-                for mood in moods
+                for mood in crud_moods_out
             ],
-            consecutive_checkins=updated_user.consecutive_checkins,
-            can_record_mood=updated_user.can_record_mood,
+            consecutive_checkins=crud_updated_user_out.consecutive_checkins,
+            can_record_mood=crud_updated_user_out.can_record_mood,
             mood_message=_get_mood_message(app_language),
         )
 
