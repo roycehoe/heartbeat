@@ -4,7 +4,7 @@ from datetime import datetime, time, timedelta
 
 from crud import CRUDMood
 from models import Mood
-from schemas_archive import DashboardMoodOut, DashboardOut, MoodIn
+
 from utils.token import get_token_data
 
 from crud import CRUDAdmin, CRUDUser
@@ -21,7 +21,11 @@ from schemas.admin import (
     AdminIn,
     AdminLogInRequest,
     AdminToken,
+    AdminDashboardMoodOut,
+    AdminDashboardOut,
+    AdminMoodIn,
 )
+
 from utils.hashing import hash_password, verify_password
 from utils.token import create_access_token
 
@@ -99,11 +103,11 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
+def get_user_dashboard_response(token: str, db: Session) -> AdminDashboardOut:
     user_id = get_token_data(token, "user_id")
     moods = CRUDMood(db).get_by({"user_id": user_id})
     user = CRUDUser(db).get(user_id)
-    return DashboardOut(
+    return AdminDashboardOut(
         user_id=user_id,
         username=user.username,
         name=user.name,
@@ -114,7 +118,9 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
         postal_code=user.postal_code,
         floor=user.floor,
         moods=[
-            MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+            AdminMoodIn(
+                mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at
+            )
             for mood in moods
         ],
         contact_number=user.contact_number,
@@ -125,9 +131,11 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
 
 def _get_dashboard_moods_out(
     moods_in: list[Mood], start_date: datetime, end_date: datetime
-) -> list[DashboardMoodOut]:
-    result: list[DashboardMoodOut] = []
-    parsed_moods_in = [DashboardMoodOut.model_validate(mood_in) for mood_in in moods_in]
+) -> list[AdminDashboardMoodOut]:
+    result: list[AdminDashboardMoodOut] = []
+    parsed_moods_in = [
+        AdminDashboardMoodOut.model_validate(mood_in) for mood_in in moods_in
+    ]
 
     current_date = start_date.date()
     end_date_only = end_date.date()
@@ -139,18 +147,18 @@ def _get_dashboard_moods_out(
             if current_date > end_date_only:
                 break
             missing_datetime = datetime.combine(current_date, time(23, 59))
-            result.append(DashboardMoodOut(mood=None, created_at=missing_datetime))
+            result.append(AdminDashboardMoodOut(mood=None, created_at=missing_datetime))
             current_date += timedelta(days=1)
 
         if current_date <= end_date_only:
             result.append(
-                DashboardMoodOut(mood=mood_in.mood, created_at=mood_in.created_at)
+                AdminDashboardMoodOut(mood=mood_in.mood, created_at=mood_in.created_at)
             )
         current_date = mood_in_date + timedelta(days=1)
 
     while current_date <= end_date_only:
         missing_datetime = datetime.combine(current_date, time(23, 59))
-        result.append(DashboardMoodOut(mood=None, created_at=missing_datetime))
+        result.append(AdminDashboardMoodOut(mood=None, created_at=missing_datetime))
         current_date += timedelta(days=1)
 
     return result
@@ -158,9 +166,9 @@ def _get_dashboard_moods_out(
 
 def get_admin_dashboard_response(
     token: str, db: Session, sort: str, sort_direction: int
-) -> list[DashboardOut]:
+) -> list[AdminDashboardOut]:
     try:
-        response: list[DashboardOut] = []
+        response: list[AdminDashboardOut] = []
 
         admin_id = get_token_data(token, "admin_id")
         users = CRUDUser(db).get_by_all({"admin_id": admin_id}, sort, sort_direction)
@@ -170,7 +178,7 @@ def get_admin_dashboard_response(
         for user in users:
             moods = CRUDMood(db).get_by({"user_id": user.id})
             response.append(
-                DashboardOut(
+                AdminDashboardOut(
                     user_id=user.id,
                     username=user.username,
                     contact_number=user.contact_number,

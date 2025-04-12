@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, Header, status
 from sqlalchemy.orm import Session
 
 from database import get_db
-from schemas_archive import (
-    DashboardOut,
+from schemas.admin_user import (
+    AdminDashboardOut,
     UserCreateRequest,
     UserUpdateRequest,
 )
@@ -31,7 +31,9 @@ def create_user(
 
 
 @router.post(
-    "/admin/user/{user_id}", status_code=status.HTTP_200_OK, response_model=DashboardOut
+    "/admin/user/{user_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=AdminDashboardOut,
 )
 def get_user(user_id: int, token: str = Header(None), db: Session = Depends(get_db)):
     return get_get_user_response(user_id, token, db)
