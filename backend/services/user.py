@@ -14,10 +14,10 @@ from gateway import send_sad_user_notification_message
 from models import Mood
 from schemas.user import (
     UserDashboardOut,
-    LogInRequest,
-    MoodIn,
-    MoodOut,
-    MoodRequest,
+    UserLogInRequest,
+    UserMoodIn,
+    UserMoodOut,
+    UserMoodRequest,
     UserToken,
 )
 from utils.hashing import verify_password
@@ -91,7 +91,7 @@ DEFAULT_MOOD_MESSAGES_CHINESE = (
 )
 
 
-def authenticate_user(request: LogInRequest, db: Session) -> UserToken:
+def authenticate_user(request: UserLogInRequest, db: Session) -> UserToken:
     try:
         user = CRUDUser(db).get_by({"username": request.username})
         if not verify_password(request.password, str(user.password)):
@@ -146,7 +146,7 @@ def get_user_dashboard_response(token: str, db: Session) -> UserDashboardOut:
         postal_code=user.postal_code,
         floor=user.floor,
         moods=[
-            MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+            UserMoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
             for mood in moods
         ],
         contact_number=user.contact_number,
@@ -205,8 +205,8 @@ def _update_user(user_id: int, db: Session) -> None:
 
 
 def get_create_user_mood_response(
-    request: MoodRequest, token: str, db: Session
-) -> MoodOut:
+    request: UserMoodRequest, token: str, db: Session
+) -> UserMoodOut:
     try:
         user_id = get_token_data(token, "user_id")
         if not _can_record_mood(user_id, db):
@@ -215,7 +215,7 @@ def get_create_user_mood_response(
                 detail="Mood for today has already been recorded. Please try again tomorrow",
             )
 
-        mood_in_model = MoodIn(mood=request.mood, user_id=user_id)
+        mood_in_model = UserMoodIn(mood=request.mood, user_id=user_id)
         db_mood_model = Mood(
             user_id=mood_in_model.user_id,
             mood=mood_in_model.mood,
@@ -236,10 +236,12 @@ def get_create_user_mood_response(
 
         app_language = get_token_data(token, "app_language")
 
-        return MoodOut(
+        return UserMoodOut(
             user_id=user_id,
             moods=[
-                MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+                UserMoodIn(
+                    mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at
+                )
                 for mood in moods
             ],
             consecutive_checkins=updated_user.consecutive_checkins,

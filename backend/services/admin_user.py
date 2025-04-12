@@ -10,9 +10,9 @@ from exceptions import (
     UserNotUnderCurrentAdminException,
 )
 from models import User
-from schemas_archive import (
-    DashboardOut,
-    MoodIn,
+from schemas.admin_user import (
+    AdminDashboardOut,
+    AdminMoodIn,
     UserCreateRequest,
     UserIn,
     UserUpdateRequest,
@@ -118,7 +118,7 @@ def get_update_user_response(
         )
 
 
-def get_get_user_response(user_id: int, token: str, db: Session) -> DashboardOut:
+def get_get_user_response(user_id: int, token: str, db: Session) -> AdminDashboardOut:
     try:
         admin_id = get_token_data(token, "admin_id")
         users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
@@ -126,10 +126,12 @@ def get_get_user_response(user_id: int, token: str, db: Session) -> DashboardOut
             raise UserNotUnderCurrentAdminException
 
         user = CRUDUser(db).get(user_id)
-        return DashboardOut(
+        return AdminDashboardOut(
             user_id=user.id,
             moods=[
-                MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+                AdminMoodIn(
+                    mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at
+                )
                 for mood in user.moods
             ],
             consecutive_checkins=user.consecutive_checkins,

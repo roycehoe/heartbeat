@@ -6,11 +6,11 @@ from pydantic import BaseModel, Field
 from enums import Gender, Race, SelectedMood
 
 
-class MoodRequest(BaseModel):
+class UserMoodRequest(BaseModel):
     mood: SelectedMood
 
 
-class MoodIn(MoodRequest):
+class UserMoodIn(UserMoodRequest):
     user_id: int
     created_at: datetime = Field(default_factory=datetime.now)
 
@@ -19,9 +19,9 @@ class MoodIn(MoodRequest):
         from_attributes = True
 
 
-class MoodOut(BaseModel):
+class UserMoodOut(BaseModel):
     user_id: int
-    moods: list[MoodIn]
+    moods: list[UserMoodIn]
     can_record_mood: bool
     consecutive_checkins: int
     mood_message: str
@@ -58,7 +58,7 @@ class UserDashboardOut(BaseModel):
         use_enum_values = True
 
 
-class LogInRequest(BaseModel):
+class UserLogInRequest(BaseModel):
     username: str  # Doubles as username
     password: str
 
