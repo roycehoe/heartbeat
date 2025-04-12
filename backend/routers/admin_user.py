@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Header, status
 from sqlalchemy.orm import Session
 
 from database import get_db
-from schemas import (
+from schemas_archive import (
     DashboardOut,
     UserCreateRequest,
     UserUpdateRequest,

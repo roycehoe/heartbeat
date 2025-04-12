@@ -15,7 +15,7 @@ from exceptions import (
     NoRecordFoundException,
 )
 from models import Calendar
-from schemas import MedicineLabel
+from schemas_archive import MedicineLabel
 from utils.label_reader import get_medicine_label
 from utils.medicine_calendar import get_medicine_calendar
 

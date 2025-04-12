@@ -12,7 +12,14 @@ from exceptions import (
 )
 from gateway import send_sad_user_notification_message
 from models import Mood
-from schemas import DashboardOut, LogInRequest, MoodIn, MoodOut, MoodRequest, Token
+from schemas.user import (
+    UserDashboardOut,
+    LogInRequest,
+    MoodIn,
+    MoodOut,
+    MoodRequest,
+    UserToken,
+)
 from utils.hashing import verify_password
 from utils.token import create_access_token, get_token_data
 
@@ -84,7 +91,7 @@ DEFAULT_MOOD_MESSAGES_CHINESE = (
 )
 
 
-def authenticate_user(request: LogInRequest, db: Session) -> Token:
+def authenticate_user(request: LogInRequest, db: Session) -> UserToken:
     try:
         user = CRUDUser(db).get_by({"username": request.username})
         if not verify_password(request.password, str(user.password)):
@@ -93,7 +100,7 @@ def authenticate_user(request: LogInRequest, db: Session) -> Token:
         access_token = create_access_token(
             {"user_id": user.id, "app_language": user.app_language}
         )
-        return Token(access_token=access_token, token_type="bearer")
+        return UserToken(access_token=access_token, token_type="bearer")
 
     except NoRecordFoundException:
         raise HTTPException(
@@ -124,11 +131,11 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
+def get_user_dashboard_response(token: str, db: Session) -> UserDashboardOut:
     user_id = get_token_data(token, "user_id")
     moods = CRUDMood(db).get_by({"user_id": user_id})
     user = CRUDUser(db).get(user_id)
-    return DashboardOut(
+    return UserDashboardOut(
         user_id=user_id,
         username=user.username,
         name=user.name,

@@ -4,7 +4,7 @@ from datetime import datetime, time, timedelta
 
 from crud import CRUDMood
 from models import Mood
-from schemas import DashboardMoodOut, DashboardOut, MoodIn
+from schemas_archive import DashboardMoodOut, DashboardOut, MoodIn
 from utils.token import get_token_data
 
 from crud import CRUDAdmin, CRUDUser
@@ -16,11 +16,11 @@ from exceptions import (
     NoRecordFoundException,
 )
 from models import Admin
-from schemas import (
+from schemas.admin import (
     AdminCreateRequest,
     AdminIn,
-    LogInRequest,
-    Token,
+    AdminLogInRequest,
+    AdminToken,
 )
 from utils.hashing import hash_password, verify_password
 from utils.token import create_access_token
@@ -62,13 +62,13 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         )
 
 
-def authenticate_admin(request: LogInRequest, db: Session) -> Token:
+def authenticate_admin(request: AdminLogInRequest, db: Session) -> AdminToken:
     try:
         admin = CRUDAdmin(db).get_by({"username": request.username})
         if not verify_password(request.password, str(admin.password)):
             raise InvalidUsernameOrPasswordException
         access_token = create_access_token({"admin_id": admin.id})
-        return Token(access_token=access_token, token_type="bearer")
+        return AdminToken(access_token=access_token, token_type="bearer")
 
     except NoRecordFoundException:
         raise HTTPException(

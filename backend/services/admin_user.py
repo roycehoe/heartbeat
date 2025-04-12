@@ -10,7 +10,7 @@ from exceptions import (
     UserNotUnderCurrentAdminException,
 )
 from models import User
-from schemas import (
+from schemas_archive import (
     DashboardOut,
     MoodIn,
     UserCreateRequest,
