@@ -1,0 +1,48 @@
+from fastapi import APIRouter, Depends, Header
+from fastapi import Depends, status
+from sqlalchemy.orm import Session
+
+from database import get_db
+from schemas import (
+    AdminCreateRequest,
+    DashboardOut,
+    LogInRequest,
+    Token,
+)
+from services.account import (
+    get_create_admin_response,
+)
+from services.authentication import authenticate_admin
+from services.dashboard import get_admin_dashboard_response
+
+router = APIRouter(
+    prefix="/admin",
+    tags=["admin"],
+)
+
+
+@router.post(
+    "/admin/sign-up",
+    status_code=status.HTTP_201_CREATED,
+)
+def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
+    return get_create_admin_response(request, db)
+
+
+@router.post("/admin/login", status_code=status.HTTP_200_OK, response_model=Token)
+def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
+    return authenticate_admin(request, db)
+
+
+@router.get(
+    "/admin/dashboard",
+    status_code=status.HTTP_200_OK,
+    response_model=list[DashboardOut],
+)
+def admin_dashboard(
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+    sort: str = "consecutive_checkins",
+    sort_direction: int = 0,
+):
+    return get_admin_dashboard_response(token, db, sort, sort_direction)

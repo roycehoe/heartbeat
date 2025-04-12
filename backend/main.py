@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from routers import admin
 
 from database import Base, engine, get_db
 from schemas import (
@@ -52,11 +53,6 @@ def startup_event():
     scheduler.start()
 
 
-###################################
-# ADMIN
-###################################
-
-
 @app.get(
     "/healthcheck",
     status_code=status.HTTP_200_OK,
@@ -73,17 +69,22 @@ def statistics(token: str = Header(None), db: Session = Depends(get_db)):
     return get_statistics(token, db)
 
 
-@app.post(
-    "/admin/sign-up",
-    status_code=status.HTTP_201_CREATED,
-)
-def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
-    return get_create_admin_response(request, db)
+###################################
+# ADMIN
+###################################
 
 
-@app.post("/admin/login", status_code=status.HTTP_200_OK, response_model=Token)
-def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
-    return authenticate_admin(request, db)
+# @app.post(
+#     "/admin/sign-up",
+#     status_code=status.HTTP_201_CREATED,
+# )
+# def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
+#     return get_create_admin_response(request, db)
+
+
+# @app.post("/admin/login", status_code=status.HTTP_200_OK, response_model=Token)
+# def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
+#     return authenticate_admin(request, db)
 
 
 ###################################
@@ -163,3 +164,6 @@ def send_mood(
     request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
 ):
     return get_create_user_mood_response(request, token, db)
+
+
+app.include_router(admin.router)
