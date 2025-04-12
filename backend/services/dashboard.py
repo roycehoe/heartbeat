@@ -1,9 +1,11 @@
+from datetime import datetime, time, timedelta
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from models import Mood
 from crud import CRUDMood, CRUDUser
 from exceptions import DBException, NoRecordFoundException
-from schemas import DashboardOut, MoodIn
+from schemas import DashboardMoodOut, DashboardOut, MoodIn, MoodOut
 from utils.token import get_token_data
 
 
@@ -43,6 +45,39 @@ def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
     )
 
 
+def _get_dashboard_moods_out(
+    moods_in: list[Mood], start_date: datetime, end_date: datetime
+) -> list[DashboardMoodOut]:
+    result: list[DashboardMoodOut] = []
+    parsed_moods_in = [DashboardMoodOut.model_validate(mood_in) for mood_in in moods_in]
+
+    current_date = start_date.date()
+    end_date_only = end_date.date()
+
+    for mood_in in parsed_moods_in:
+        mood_in_date = mood_in.created_at.date()
+
+        while current_date < mood_in_date:
+            if current_date > end_date_only:
+                break
+            missing_datetime = datetime.combine(current_date, time(23, 59))
+            result.append(DashboardMoodOut(mood=None, created_at=missing_datetime))
+            current_date += timedelta(days=1)
+
+        if current_date <= end_date_only:
+            result.append(
+                DashboardMoodOut(mood=mood_in.mood, created_at=mood_in.created_at)
+            )
+        current_date = mood_in_date + timedelta(days=1)
+
+    while current_date <= end_date_only:
+        missing_datetime = datetime.combine(current_date, time(23, 59))
+        result.append(DashboardMoodOut(mood=None, created_at=missing_datetime))
+        current_date += timedelta(days=1)
+
+    return result
+
+
 def get_admin_dashboard_response(
     token: str, db: Session, sort: str, sort_direction: int
 ) -> list[DashboardOut]:
@@ -68,14 +103,9 @@ def get_admin_dashboard_response(
                     gender=user.gender,
                     postal_code=user.postal_code,
                     floor=user.floor,
-                    moods=[
-                        MoodIn(
-                            mood=mood.mood,
-                            user_id=mood.user_id,
-                            created_at=mood.created_at,
-                        )
-                        for mood in moods
-                    ],
+                    moods=_get_dashboard_moods_out(
+                        moods, user.created_at, datetime.today()
+                    ),
                     consecutive_checkins=user.consecutive_checkins,
                     can_record_mood=_can_record_mood(user.id, db),
                 )

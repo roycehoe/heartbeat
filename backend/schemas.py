@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -29,6 +30,14 @@ class MoodOut(BaseModel):
         use_enum_values = True
 
 
+class DashboardMoodOut(BaseModel):
+    mood: Optional[SelectedMood]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class DashboardOut(BaseModel):
     user_id: int
     username: str
@@ -41,7 +50,7 @@ class DashboardOut(BaseModel):
     floor: int
     contact_number: int
 
-    moods: list[MoodIn]
+    moods: list[DashboardMoodOut]
     can_record_mood: bool
     consecutive_checkins: int
 
