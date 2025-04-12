@@ -9,11 +9,11 @@ from schemas import (
     LogInRequest,
     Token,
 )
-from services.account import (
+from services.admin import (
+    authenticate_admin,
+    get_admin_dashboard_response,
     get_create_admin_response,
 )
-from services.authentication import authenticate_admin
-from services.dashboard import get_admin_dashboard_response
 
 router = APIRouter(
     prefix="/admin",
