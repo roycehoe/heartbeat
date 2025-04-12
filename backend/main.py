@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from routers import admin
+from routers import admin, user
 
 from database import Base, engine, get_db
 from schemas import (
@@ -144,26 +144,5 @@ def admin_dashboard(
     return get_admin_dashboard_response(token, db, sort, sort_direction)
 
 
-###################################
-# USER
-###################################
-
-
-@app.post("/user/login", status_code=status.HTTP_200_OK, response_model=Token)
-def user_log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
-    return authenticate_user(user_log_in_request, db)
-
-
-@app.get("/user/dashboard", status_code=status.HTTP_200_OK, response_model=DashboardOut)
-def user_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
-    return get_user_dashboard_response(token, db)
-
-
-@app.post("/user/mood", status_code=status.HTTP_201_CREATED, response_model=MoodOut)
-def send_mood(
-    request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
-):
-    return get_create_user_mood_response(request, token, db)
-
-
 app.include_router(admin.router)
+app.include_router(user.router)

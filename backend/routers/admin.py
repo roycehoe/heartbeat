@@ -22,20 +22,20 @@ router = APIRouter(
 
 
 @router.post(
-    "/admin/sign-up",
+    "/sign-up",
     status_code=status.HTTP_201_CREATED,
 )
 def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
     return get_create_admin_response(request, db)
 
 
-@router.post("/admin/login", status_code=status.HTTP_200_OK, response_model=Token)
+@router.post("/login", status_code=status.HTTP_200_OK, response_model=Token)
 def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
     return authenticate_admin(request, db)
 
 
 @router.get(
-    "/admin/dashboard",
+    "/dashboard",
     status_code=status.HTTP_200_OK,
     response_model=list[DashboardOut],
 )
