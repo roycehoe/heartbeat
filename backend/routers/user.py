@@ -9,9 +9,11 @@ from schemas import (
     MoodRequest,
     Token,
 )
-from services.authentication import authenticate_user
-from services.dashboard import get_user_dashboard_response
-from services.mood import get_create_user_mood_response
+from services.user import (
+    authenticate_user,
+    get_user_dashboard_response,
+    get_create_user_mood_response,
+)
 
 router = APIRouter(
     prefix="/user",
