@@ -5,98 +5,16 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import AppLanguage, SelectedMood
-from exceptions import DBException, NoRecordFoundException
-from gateway import send_sad_user_notification_message
-from models import Mood
-from schemas import MoodIn, MoodOut, MoodRequest
-from utils.token import get_token_data
-
-from datetime import datetime, time, timedelta
-from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
-
-from models import Mood
-from crud import CRUDMood, CRUDUser
-from exceptions import DBException, NoRecordFoundException
-from schemas import DashboardMoodOut, DashboardOut, MoodIn, MoodOut
-from utils.token import get_token_data
-from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
-
-from crud import CRUDAdmin, CRUDUser
 from exceptions import (
     DBException,
     InvalidUsernameOrPasswordException,
     NoRecordFoundException,
 )
-from schemas import LogInRequest, Token
+from gateway import send_sad_user_notification_message
+from models import Mood
+from schemas import DashboardOut, LogInRequest, MoodIn, MoodOut, MoodRequest, Token
 from utils.hashing import verify_password
-from utils.token import create_access_token
-
-
-def authenticate_user(request: LogInRequest, db: Session) -> Token:
-    try:
-        user = CRUDUser(db).get_by({"username": request.username})
-        if not verify_password(request.password, str(user.password)):
-            raise InvalidUsernameOrPasswordException
-
-        access_token = create_access_token(
-            {"user_id": user.id, "app_language": user.app_language}
-        )
-        return Token(access_token=access_token, token_type="bearer")
-
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password and confirm password must be the same",
-        )
-    except InvalidUsernameOrPasswordException:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
-        )
-    except DBException as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
-        )
-
-
-def _can_record_mood(user_id: int, db: Session) -> bool:
-    try:
-        return CRUDUser(db).get(user_id).can_record_mood
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No user record found",
-        )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
-
-
-def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
-    user_id = get_token_data(token, "user_id")
-    moods = CRUDMood(db).get_by({"user_id": user_id})
-    user = CRUDUser(db).get(user_id)
-    return DashboardOut(
-        user_id=user_id,
-        username=user.username,
-        name=user.name,
-        alias=user.alias,
-        age=user.age,
-        race=user.race,
-        gender=user.gender,
-        postal_code=user.postal_code,
-        floor=user.floor,
-        moods=[
-            MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
-            for mood in moods
-        ],
-        contact_number=user.contact_number,
-        consecutive_checkins=user.consecutive_checkins,
-        can_record_mood=_can_record_mood(user_id, db),
-    )
-
+from utils.token import create_access_token, get_token_data
 
 SHOULD_ALERT_ADMIN_CRITERION = 2
 DEFAULT_MOOD_MESSAGES_ENGLISH = (
@@ -164,6 +82,70 @@ DEFAULT_MOOD_MESSAGES_CHINESE = (
     "你的坚韧就是你的力量。",
     "珍惜每一天，把它当作新的冒险。",
 )
+
+
+def authenticate_user(request: LogInRequest, db: Session) -> Token:
+    try:
+        user = CRUDUser(db).get_by({"username": request.username})
+        if not verify_password(request.password, str(user.password)):
+            raise InvalidUsernameOrPasswordException
+
+        access_token = create_access_token(
+            {"user_id": user.id, "app_language": user.app_language}
+        )
+        return Token(access_token=access_token, token_type="bearer")
+
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password and confirm password must be the same",
+        )
+    except InvalidUsernameOrPasswordException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password",
+        )
+    except DBException as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=e,
+        )
+
+
+def _can_record_mood(user_id: int, db: Session) -> bool:
+    try:
+        return CRUDUser(db).get(user_id).can_record_mood
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No user record found",
+        )
+    except DBException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+
+
+def get_user_dashboard_response(token: str, db: Session) -> DashboardOut:
+    user_id = get_token_data(token, "user_id")
+    moods = CRUDMood(db).get_by({"user_id": user_id})
+    user = CRUDUser(db).get(user_id)
+    return DashboardOut(
+        user_id=user_id,
+        username=user.username,
+        name=user.name,
+        alias=user.alias,
+        age=user.age,
+        race=user.race,
+        gender=user.gender,
+        postal_code=user.postal_code,
+        floor=user.floor,
+        moods=[
+            MoodIn(mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at)
+            for mood in moods
+        ],
+        contact_number=user.contact_number,
+        consecutive_checkins=user.consecutive_checkins,
+        can_record_mood=_can_record_mood(user_id, db),
+    )
 
 
 def _get_mood_message(

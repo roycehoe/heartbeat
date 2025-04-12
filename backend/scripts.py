@@ -1,13 +1,13 @@
+import time
 from datetime import datetime, timedelta
 from random import choice, sample
-import time
-from enums import Gender, Race
 
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
+from enums import Gender, Race
 from gateway import send_non_compliant_user_notification_message
 from models import Admin, Mood, User
 from utils.hashing import hash_password

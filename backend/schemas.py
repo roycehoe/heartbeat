@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from enums import Gender, AppLanguage, Race, SelectedMood
+from enums import AppLanguage, Gender, Race, SelectedMood
 
 
 class MoodRequest(BaseModel):

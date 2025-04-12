@@ -1,6 +1,6 @@
-from typing import Any, Generic, Type, TypeVar
+from typing import Any
 
-from sqlalchemy import asc, desc, text
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
 from exceptions import (

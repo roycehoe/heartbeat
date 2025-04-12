@@ -1,13 +1,11 @@
+from dotenv import dotenv_values
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from routers import admin, admin_user, user
 
 from database import Base, engine, get_db
+from routers import admin, admin_user, user
 from scripts import get_scheduler
-
-from dotenv import dotenv_values
-
 from services.statistics import get_statistics
 
 IS_PROD = dotenv_values(".env").get("IS_PROD")

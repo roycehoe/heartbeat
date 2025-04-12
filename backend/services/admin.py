@@ -1,32 +1,29 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+from datetime import datetime, time, timedelta
 
-from crud import CRUDAdmin, CRUDUser
-from exceptions import (
-    DBException,
-    InvalidUsernameOrPasswordException,
-    NoRecordFoundException,
-)
-from schemas import LogInRequest, Token
-from utils.hashing import verify_password
-from utils.token import create_access_token
-from typing import Any
-
-from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from crud import CRUDMood
+from models import Mood
+from schemas import DashboardMoodOut, DashboardOut, MoodIn
+from utils.token import get_token_data
 
 from crud import CRUDAdmin, CRUDUser
 from exceptions import (
     DBCreateAccountWithUsernameAlreadyExistsException,
     DBException,
     DifferentPasswordAndConfirmPasswordException,
+    InvalidUsernameOrPasswordException,
+    NoRecordFoundException,
 )
 from models import Admin
 from schemas import (
     AdminCreateRequest,
     AdminIn,
+    LogInRequest,
+    Token,
 )
-from utils.hashing import hash_password
+from utils.hashing import hash_password, verify_password
+from utils.token import create_access_token
 
 
 def _is_valid_password(password: str, confirm_password: str) -> bool:
@@ -88,17 +85,6 @@ def authenticate_admin(request: LogInRequest, db: Session) -> Token:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=e,
         )
-
-
-from datetime import datetime, time, timedelta
-from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
-
-from models import Mood
-from crud import CRUDMood, CRUDUser
-from exceptions import DBException, NoRecordFoundException
-from schemas import DashboardMoodOut, DashboardOut, MoodIn, MoodOut
-from utils.token import get_token_data
 
 
 def _can_record_mood(user_id: int, db: Session) -> bool:
