@@ -2,7 +2,12 @@ import { Box, Card, Fade, Grid, Heading, Image, Text } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DashboardResponse, getAdminDashboardResponse } from "../../api/user";
+import {
+  DashboardResponse,
+  getAdminDashboardResponse,
+  Mood,
+  MoodValue,
+} from "../../api/user";
 
 import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
 import { getLastFourDaysMood, UserMoodDate } from "./utils";
@@ -17,46 +22,34 @@ enum ColorTag {
 }
 
 function getColorTag(user: DashboardResponse): ColorTag {
-  const lastFourDaysMood = getLastFourDaysMood(user);
-  if (hasPoorMentalState(lastFourDaysMood)) {
+  if (hasPoorMentalState(user.moods.slice(0, 4))) {
     return ColorTag.BAD;
   }
-  if (isUnresponsive(lastFourDaysMood)) {
+  if (isUnresponsive(user.moods.slice(0, 4))) {
     return ColorTag.UNRESPONSIVE;
   }
   return ColorTag.GOOD;
 }
 
-function hasPoorMentalState(
-  moodDates: UserMoodDate[],
-  threshold: number = POOR_MENTAL_HEALTH_STREAK_THRESHOLD
-): boolean {
-  let consecutiveSadCount = 0;
-  return moodDates.some((day) => {
-    consecutiveSadCount = day.mood === "sad" ? consecutiveSadCount + 1 : 0;
-    return consecutiveSadCount > threshold;
-  });
+function hasPoorMentalState(moods: Mood[]): boolean {
+  return moods.filter((mood) => mood.mood === "sad").length >= 2;
 }
 
-function getPoorMentalStateCount(
-  userMoodDatesArray: UserMoodDate[][],
-  threshold: number = POOR_MENTAL_HEALTH_STREAK_THRESHOLD
-): number {
-  return userMoodDatesArray.filter((moodDates) => {
-    hasPoorMentalState(moodDates, threshold);
-  }).length;
+function getPoorMentalStateCount(users: DashboardResponse[]): number {
+  return users.filter(
+    (user) =>
+      user.moods.slice(0, 4).filter((mood) => mood.mood === "sad").length >= 2
+  ).length;
 }
 
-function isUnresponsive(userMoodDates: UserMoodDate[]): boolean {
+function isUnresponsive(userMoodDates: Mood[]): boolean {
   return userMoodDates
     .map((userMoodDate) => userMoodDate.mood)
-    .every((mood) => mood === undefined);
+    .every((mood) => mood === null);
 }
 
 function getUnresponsiveCount(users: DashboardResponse[]): number {
-  return users.filter((user) =>
-    user.moods.slice(0, 4).every((mood) => mood.mood === null)
-  ).length;
+  return users.filter((user) => isUnresponsive(user.moods.slice(0, 4))).length;
 }
 
 function AdminDashboardSummaryCards(props: {
@@ -67,11 +60,7 @@ function AdminDashboardSummaryCards(props: {
       <Card borderLeft="12px solid" borderLeftColor={ColorTag.BAD}>
         <Box my="12px" mx="8px">
           <Heading size="md">
-            {getPoorMentalStateCount(
-              props.dashboardData.map((userMoodDate) =>
-                getLastFourDaysMood(userMoodDate)
-              )
-            )}
+            {getPoorMentalStateCount(props.dashboardData)}
           </Heading>
           <Text fontSize="12px">In poor mental state</Text>
         </Box>
