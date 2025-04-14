@@ -87,6 +87,72 @@ export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
   },
 };
 
+export const VIEW_USER_FORM_FIELDS_PROPS: Record<
+  keyof UpdateUserForm,
+  CreateUpdateUserFormFieldProps
+> = {
+  username: {
+    formLabel: "Username",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+  contactNumber: {
+    formLabel: "Contact Number",
+    isRequired: true,
+    type: "tel",
+    options: [],
+  },
+  name: {
+    formLabel: "Name",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+  age: {
+    formLabel: "Age",
+    isRequired: true,
+    type: "number",
+    options: [],
+  },
+  alias: {
+    formLabel: "Alias",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+  race: {
+    formLabel: "Race",
+    isRequired: true,
+    type: "select",
+    options: [Race.CHINESE, Race.INDIAN, Race.MALAY, Race.OTHERS],
+  },
+  gender: {
+    formLabel: "Gender",
+    isRequired: true,
+    type: "select",
+    options: [Gender.MALE, Gender.FEMALE],
+  },
+  appLanguage: {
+    formLabel: "Application Language",
+    isRequired: true,
+    type: "select",
+    options: [AppLanguage.ENGLISH, AppLanguage.CHINESE],
+  },
+  postalCode: {
+    formLabel: "Postal Code",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+  floor: {
+    formLabel: "Floor",
+    isRequired: true,
+    type: "text",
+    options: [],
+  },
+};
+
 export const CREATE_USER_FORM_FIELDS_PROPS: Record<
   keyof CreateUserForm,
   CreateUpdateUserFormFieldProps

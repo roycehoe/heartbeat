@@ -21,6 +21,7 @@ import { getAdminUserResponse } from "../../../api/admin";
 import { DashboardResponse, Mood, MoodValue } from "../../../api/user";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import { IconMood } from "../../../components/IconMood";
+import ModalUpdateUser from "../UpdateUser";
 
 const getDayAbbreviation = (date: Date) => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -178,6 +179,7 @@ const UserDetail = () => {
       <Box
         className="page"
         margin="18px"
+        paddingBottom="24px"
         display="flex"
         flexDir="column"
         gap="24px"
@@ -217,6 +219,7 @@ const UserDetail = () => {
           <Heading size="sm">Personal Information</Heading>
           <img height="18px" width="18px" src="/assets/icon/edit.svg" />
         </Box>
+        <ModalUpdateUser dashboardData={adminUserData} />
         <ToggleShowHidePersonalInformation
           isShowInformation={isShowInformation}
           setIsShowInformation={setIsShowInformation}
