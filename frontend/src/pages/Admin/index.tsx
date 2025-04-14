@@ -53,15 +53,10 @@ function isUnresponsive(userMoodDates: UserMoodDate[]): boolean {
     .every((mood) => mood === undefined);
 }
 
-function getUnresponsiveCount(allUserMoodDates: UserMoodDate[][]): number {
-  let unresponsiveCount = 0;
-
-  for (const userMoodDates of allUserMoodDates) {
-    if (isUnresponsive(userMoodDates)) {
-      unresponsiveCount += 1;
-    }
-  }
-  return unresponsiveCount;
+function getUnresponsiveCount(users: DashboardResponse[]): number {
+  return users.filter((user) =>
+    user.moods.slice(0, 4).every((mood) => mood.mood === null)
+  ).length;
 }
 
 function AdminDashboardSummaryCards(props: {
@@ -84,11 +79,7 @@ function AdminDashboardSummaryCards(props: {
       <Card borderLeft="12px solid" borderLeftColor={ColorTag.UNRESPONSIVE}>
         <Box my="12px" mx="8px">
           <Heading size="md">
-            {getUnresponsiveCount(
-              props.dashboardData.map((userMoodDate) =>
-                getLastFourDaysMood(userMoodDate)
-              )
-            )}
+            {getUnresponsiveCount(props.dashboardData)}
           </Heading>
           <Text fontSize="12px">Unresponsive</Text>
         </Box>
