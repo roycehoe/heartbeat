@@ -5,6 +5,7 @@ from datetime import datetime, time, timedelta
 from crud import CRUDMood
 
 from schemas.crud import CRUDMoodOut, CRUDUserOut
+from utils.mood import get_admin_dashboard_moods_out
 from utils.token import get_token_data
 
 from crud import CRUDAdmin, CRUDUser
@@ -132,37 +133,6 @@ def get_user_dashboard_response(token: str, db: Session) -> AdminDashboardOut:
     )
 
 
-def _get_admin_dashboard_moods_out(
-    moods_in: list[CRUDMoodOut], start_date: datetime, end_date: datetime
-) -> list[AdminDashboardMoodOut]:
-    result: list[AdminDashboardMoodOut] = []
-    current_date = start_date.date()
-    end_date_only = end_date.date()
-
-    for mood_in in moods_in:
-        mood_in_date = mood_in.created_at.date()
-
-        while current_date < mood_in_date:
-            if current_date > end_date_only:
-                break
-            missing_datetime = datetime.combine(current_date, time(23, 59))
-            result.append(AdminDashboardMoodOut(mood=None, created_at=missing_datetime))
-            current_date += timedelta(days=1)
-
-        if current_date <= end_date_only:
-            result.append(
-                AdminDashboardMoodOut(mood=mood_in.mood, created_at=mood_in.created_at)
-            )
-        current_date = mood_in_date + timedelta(days=1)
-
-    while current_date <= end_date_only:
-        missing_datetime = datetime.combine(current_date, time(23, 59))
-        result.append(AdminDashboardMoodOut(mood=None, created_at=missing_datetime))
-        current_date += timedelta(days=1)
-
-    return result[::-1]  # TODO: Refactor this
-
-
 def get_admin_dashboard_response(
     token: str, db: Session, sort: str, sort_direction: int
 ) -> list[AdminDashboardOut]:
@@ -185,7 +155,7 @@ def get_admin_dashboard_response(
             ]
             crud_user_out = CRUDUserOut.model_validate(user_model)
 
-            dashboard_moods_out = _get_admin_dashboard_moods_out(
+            dashboard_moods_out = get_admin_dashboard_moods_out(
                 crud_moods_out, crud_user_out.created_at, datetime.today()
             )
 

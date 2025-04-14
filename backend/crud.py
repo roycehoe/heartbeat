@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Any
 
 from sqlalchemy import asc, desc
@@ -202,6 +203,7 @@ class CRUDAdmin:
 class CRUDMood:
     def __init__(self, session: Session):
         self.session = session
+        self.DEFAULT_DATE_FILTER = datetime.today()
 
     def create(self, mood: Mood) -> Mood:
         try:
@@ -212,17 +214,14 @@ class CRUDMood:
             raise DBException(e)
         return mood
 
-    def get(self, id: int) -> Mood:
+    def get_by(self, field: dict[Any, Any], day_range: int = 30) -> list[Mood]:
         try:
-            if user := self.session.query(Mood).filter_by(id=id).first():
-                return user
-            raise NoRecordFoundException
-        except Exception:
-            raise DBGetAccountException
-
-    def get_by(self, field: dict[Any, Any]) -> list[Mood]:
-        try:
-            return self.session.query(Mood).filter_by(**field).all()
+            return (
+                self.session.query(Mood)
+                .filter_by(**field)
+                .filter(Mood.created_at > datetime.today() - timedelta(days=day_range))
+                .all()
+            )
         except Exception as e:
             raise DBException(e)
 
