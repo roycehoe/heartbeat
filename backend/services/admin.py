@@ -160,7 +160,7 @@ def _get_admin_dashboard_moods_out(
         result.append(AdminDashboardMoodOut(mood=None, created_at=missing_datetime))
         current_date += timedelta(days=1)
 
-    return result
+    return result[::-1]  # TODO: Refactor this
 
 
 def get_admin_dashboard_response(

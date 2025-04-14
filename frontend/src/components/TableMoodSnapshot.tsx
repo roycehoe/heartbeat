@@ -10,7 +10,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { DashboardResponse, MoodValue } from "../api/user";
+import { DashboardResponse, Mood, MoodValue } from "../api/user";
 import { UserMoodDate } from "../pages/Admin/utils";
 
 const TableMoodSnapshotCellMoodIcon = (props: {
@@ -55,7 +55,7 @@ const TableMoodSnapshotCellMoodIcon = (props: {
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
   username: string;
-  lastFourDaysMoods: UserMoodDate[];
+  moods: Mood[];
   handleUserClick: (userName: string) => void;
 }) => {
   const today = new Date();
@@ -72,14 +72,15 @@ const TableMoodSnapshotRow = (props: {
           </Box>
         </Flex>
       </Td>
-      {props.lastFourDaysMoods.map((lastFourDaysMood) => {
+      {props.moods.slice(0, 4).map((mood) => {
         return (
           <Td>
             <Box display="flex" justifyContent="center">
               <TableMoodSnapshotCellMoodIcon
-                mood={lastFourDaysMood.mood}
+                mood={mood.mood}
                 isToday={
-                  lastFourDaysMood.date.toDateString() === today.toDateString()
+                  new Date(mood.created_at).toDateString() ===
+                  today.toDateString()
                 }
               />
             </Box>
@@ -93,7 +94,6 @@ const TableMoodSnapshotRow = (props: {
 export const TableMoodSnapshot = (props: {
   dashboardData: DashboardResponse[];
   getColorTag: (user: DashboardResponse) => string;
-  getLastFourDaysMood: (user: DashboardResponse) => UserMoodDate[];
   handleUserClick: (userName: string) => void;
 }) => {
   return (
@@ -128,7 +128,7 @@ export const TableMoodSnapshot = (props: {
               <TableMoodSnapshotRow
                 colorTag={props.getColorTag(user)}
                 username={user.username}
-                lastFourDaysMoods={props.getLastFourDaysMood(user)}
+                moods={user.moods}
                 handleUserClick={props.handleUserClick}
               />
             );

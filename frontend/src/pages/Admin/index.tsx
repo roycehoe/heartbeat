@@ -163,7 +163,6 @@ function Admin() {
           <TableMoodSnapshot
             dashboardData={dashboardData}
             getColorTag={getColorTag}
-            getLastFourDaysMood={getLastFourDaysMood}
             handleUserClick={handleUserClick}
           />
           <Button size="xs">Add another person</Button>

@@ -24,7 +24,7 @@ export enum AppLanguage {
 }
 
 export interface Mood {
-  mood: MoodValue;
+  mood: MoodValue | undefined;
   user_id: number;
   created_at: string;
 }
