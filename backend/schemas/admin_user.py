@@ -19,7 +19,7 @@ class AdminMoodIn(AdminMoodRequest):
         from_attributes = True
 
 
-class AdminDashboardMoodOut(BaseModel):
+class AdminUserDashboardMoodOut(BaseModel):
     mood: Optional[SelectedMood]
     created_at: datetime
 
@@ -27,7 +27,7 @@ class AdminDashboardMoodOut(BaseModel):
         from_attributes = True
 
 
-class AdminDashboardOut(BaseModel):
+class AdminUserDashboardOut(BaseModel):
     user_id: int
     username: str
     name: str
@@ -39,7 +39,7 @@ class AdminDashboardOut(BaseModel):
     floor: int
     contact_number: int
 
-    moods: list[AdminDashboardMoodOut]
+    moods: list[AdminUserDashboardMoodOut]
     can_record_mood: bool
     consecutive_checkins: int
 
