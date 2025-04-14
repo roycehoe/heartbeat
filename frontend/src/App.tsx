@@ -18,7 +18,7 @@ const App = () => {
             <Route path="/admin" element={<Admin />}></Route>
             <Route path="/admin/:userId" element={<UserDetail />}></Route>
             <Route
-              path="/admin/:userName/settings"
+              path="/admin/:userId/settings"
               element={<UserSettings />}
             ></Route>
           </Routes>

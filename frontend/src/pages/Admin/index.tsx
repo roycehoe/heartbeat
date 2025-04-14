@@ -87,6 +87,9 @@ function Admin() {
   const handleUserClick = (userId: number) => {
     navigate(`/admin/${userId}`);
   };
+  const handleAddAnotherPersonClick = () => {
+    navigate(`/admin/sign-up`);
+  };
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
@@ -141,7 +144,9 @@ function Admin() {
             getColorTag={getColorTag}
             handleUserClick={handleUserClick}
           />
-          <Button size="xs">Add another person</Button>
+          <Button size="xs" onClick={handleAddAnotherPersonClick}>
+            Add another person
+          </Button>
         </Box>
       </Fade>
     </Box>
