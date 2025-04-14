@@ -84,8 +84,8 @@ function Admin() {
     setDashboardData(dashboardResponse);
     setIsLoading(false);
   };
-  const handleUserClick = (userName: string) => {
-    navigate(`/admin/${userName}`);
+  const handleUserClick = (userId: number) => {
+    navigate(`/admin/${userId}`);
   };
 
   useEffect(() => {

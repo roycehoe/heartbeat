@@ -21,7 +21,7 @@ router = APIRouter(
 
 
 @router.post(
-    "/admin/user",
+    "",
     status_code=status.HTTP_201_CREATED,
 )
 def create_user(
@@ -30,8 +30,8 @@ def create_user(
     return get_create_user_response(request, token, db)
 
 
-@router.post(
-    "/admin/user/{user_id}",
+@router.get(
+    "/{user_id}",
     status_code=status.HTTP_200_OK,
     response_model=AdminUserDashboardOut,
 )
@@ -40,7 +40,7 @@ def get_user(user_id: int, token: str = Header(None), db: Session = Depends(get_
 
 
 @router.put(
-    "/admin/user/{user_id}",
+    "/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def update_user(
@@ -53,7 +53,7 @@ def update_user(
 
 
 @router.delete(
-    "/admin/user/{user_id}",
+    "/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_user(user_id: int, token: str = Header(None), db: Session = Depends(get_db)):

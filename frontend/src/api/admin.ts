@@ -1,5 +1,5 @@
 import { httpClient } from "./httpClient";
-import { Gender, Race } from "./user";
+import { DashboardResponse, Gender, Race } from "./user";
 
 export interface CreateUserRequest {
   username: string;
@@ -26,6 +26,13 @@ export async function getCreateUserResponse(
 
 export async function getDeleteUserResponse(userId: number): Promise<null> {
   const response = await httpClient.delete(`/admin/user/${userId}`);
+  return response.data;
+}
+
+export async function getAdminUserResponse(
+  userId: number
+): Promise<DashboardResponse> {
+  const response = await httpClient.get(`/admin/user/${userId}`);
   return response.data;
 }
 

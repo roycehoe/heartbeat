@@ -15,8 +15,10 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { Banner, BxChevronLeft } from "@opengovsg/design-system-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getAdminUserResponse } from "../../../api/admin";
+import { DashboardResponse, Mood } from "../../../api/user";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 
 const getDayAbbreviation = (date: Date) => {
@@ -62,7 +64,7 @@ const ToggleShowHidePersonalInformation = (props: {
   );
 };
 
-const UserDetailTable = () => {
+const UserMoodHistoryTable = (props: { moods: Mood[] }) => {
   const lastSevenDays = [...Array(7)].map((_, index) => {
     const date = new Date();
     date.setDate(date.getDate() - index);
@@ -107,9 +109,18 @@ const UserDetailTable = () => {
 };
 
 const UserDetail = () => {
-  const { userName } = useParams();
+  const { userId } = useParams();
   const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [adminUserData, setAdminUserData] = useState<DashboardResponse>();
   const navigate = useNavigate();
+
+  const loadAdminUserData = async () => {
+    setIsLoading(true);
+    const adminUserData = await getAdminUserResponse(userId);
+    setAdminUserData(adminUserData);
+    setIsLoading(false);
+  };
 
   const handleGearIconClick = (userName: string) => {
     navigate(`/admin/${userName}/settings`);
@@ -117,6 +128,28 @@ const UserDetail = () => {
   const handleBackIconClick = () => {
     navigate(`/admin`);
   };
+
+  useEffect(() => {
+    console.log("hello");
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+      return;
+    }
+    loadAdminUserData();
+  }, []);
+
+  if (isLoading || !adminUserData || !userId) {
+    return (
+      <Box
+        width="100vw"
+        height="100vh"
+        display="flex"
+        flexDirection="column"
+        className="page"
+        bg="url('/assets/loading.svg')"
+      ></Box>
+    );
+  }
 
   return (
     <Box
@@ -145,7 +178,7 @@ const UserDetail = () => {
           <Box
             display="flex"
             justifyContent="center"
-            onClick={() => handleGearIconClick(userName)}
+            onClick={() => handleGearIconClick(userId)}
           >
             <img src="/assets/icon/gear.svg" />
           </Box>
@@ -154,13 +187,13 @@ const UserDetail = () => {
           <Heading size="sm" color="#8080808C">
             Profile
           </Heading>
-          <Heading size="sm">{userName}</Heading>
+          <Heading size="sm">{adminUserData?.alias}</Heading>
         </Box>
         <Banner size="sm" variant="error">
           Poor mood reported in the past 3 days
         </Banner>
         <Box>Mood history</Box>
-        <UserDetailTable></UserDetailTable>
+        <UserMoodHistoryTable moods={adminUserData.moods} />
         <Box display="flex" gap="4px">
           <Heading size="sm">Personal Information</Heading>
           <img height="18px" width="18px" src="/assets/icon/edit.svg" />

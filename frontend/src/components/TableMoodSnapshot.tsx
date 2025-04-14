@@ -55,8 +55,9 @@ const TableMoodSnapshotCellMoodIcon = (props: {
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
   username: string;
+  userId: number;
   moods: Mood[];
-  handleUserClick: (userName: string) => void;
+  handleUserClick: (userId: number) => void;
 }) => {
   const today = new Date();
 
@@ -66,7 +67,7 @@ const TableMoodSnapshotRow = (props: {
         <Flex>
           <Box width="12px" bg={props.colorTag} />
           <Box p={3} width="100%">
-            <Text onClick={() => props.handleUserClick(props.username)}>
+            <Text onClick={() => props.handleUserClick(props.userId)}>
               {props.username}
             </Text>
           </Box>
@@ -94,7 +95,7 @@ const TableMoodSnapshotRow = (props: {
 export const TableMoodSnapshot = (props: {
   dashboardData: DashboardResponse[];
   getColorTag: (user: DashboardResponse) => string;
-  handleUserClick: (userName: string) => void;
+  handleUserClick: (userId: number) => void;
 }) => {
   return (
     <TableContainer>
@@ -129,6 +130,7 @@ export const TableMoodSnapshot = (props: {
                 colorTag={props.getColorTag(user)}
                 username={user.username}
                 moods={user.moods}
+                userId={user.user_id}
                 handleUserClick={props.handleUserClick}
               />
             );

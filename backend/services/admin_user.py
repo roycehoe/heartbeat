@@ -20,6 +20,7 @@ from schemas.admin_user import (
 )
 from schemas.crud import CRUDMoodOut, CRUDUserOut
 from utils.hashing import hash_password
+from utils.mood import get_admin_dashboard_moods_out
 from utils.token import get_token_data
 
 
@@ -132,41 +133,6 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def _get_admin_dashboard_moods_out(
-    moods_in: list[CRUDMoodOut], start_date: datetime, end_date: datetime
-) -> list[AdminUserDashboardMoodOut]:
-    result: list[AdminUserDashboardMoodOut] = []
-    current_date = start_date.date()
-    end_date_only = end_date.date()
-
-    for mood_in in moods_in:
-        mood_in_date = mood_in.created_at.date()
-
-        while current_date < mood_in_date:
-            if current_date > end_date_only:
-                break
-            missing_datetime = datetime.combine(current_date, time(23, 59))
-            result.append(
-                AdminUserDashboardMoodOut(mood=None, created_at=missing_datetime)
-            )
-            current_date += timedelta(days=1)
-
-        if current_date <= end_date_only:
-            result.append(
-                AdminUserDashboardMoodOut(
-                    mood=mood_in.mood, created_at=mood_in.created_at
-                )
-            )
-        current_date = mood_in_date + timedelta(days=1)
-
-    while current_date <= end_date_only:
-        missing_datetime = datetime.combine(current_date, time(23, 59))
-        result.append(AdminUserDashboardMoodOut(mood=None, created_at=missing_datetime))
-        current_date += timedelta(days=1)
-
-    return result
-
-
 def get_get_user_response(
     user_id: int, token: str, db: Session
 ) -> AdminUserDashboardOut:
@@ -182,7 +148,7 @@ def get_get_user_response(
         crud_moods_out = [
             CRUDMoodOut.model_validate(mood) for mood in crud_user_out.moods
         ]
-        admin_dashboard_mood_out = _get_admin_dashboard_moods_out(
+        admin_dashboard_mood_out = get_admin_dashboard_moods_out(
             crud_moods_out, crud_user_out.created_at, datetime.today()
         )
 
@@ -197,7 +163,10 @@ def get_get_user_response(
             gender=crud_user_out.gender,
             postal_code=crud_user_out.postal_code,
             floor=crud_user_out.floor,
-            moods=admin_dashboard_mood_out,
+            moods=[
+                AdminUserDashboardMoodOut.model_validate(mood)
+                for mood in admin_dashboard_mood_out
+            ],
             consecutive_checkins=crud_user_out.consecutive_checkins,
             can_record_mood=_can_record_mood(crud_user_out.id, db),
         )
