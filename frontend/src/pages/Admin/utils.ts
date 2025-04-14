@@ -73,32 +73,3 @@ export function getSubmitCreateUserFormErrorMessage(
   }
   return "";
 }
-
-export interface UserMoodDate {
-  date: Date;
-  mood: MoodValue | undefined;
-}
-
-export function getLastFourDaysMood(
-  dashboardResponse: DashboardResponse
-): UserMoodDate[] {
-  const today = new Date();
-  const results = [];
-
-  for (let i = 0; i < 4; i++) {
-    const day = new Date(today);
-    day.setDate(today.getDate() - i);
-
-    const dateStr = day.toISOString().split("T")[0];
-    const moodRecord = dashboardResponse.moods.find((mood) =>
-      mood.created_at.startsWith(dateStr)
-    );
-
-    results.push({
-      date: day,
-      mood: moodRecord ? moodRecord.mood : undefined,
-    });
-  }
-
-  return results;
-}

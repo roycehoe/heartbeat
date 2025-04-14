@@ -6,13 +6,9 @@ import {
   DashboardResponse,
   getAdminDashboardResponse,
   Mood,
-  MoodValue,
 } from "../../api/user";
 
 import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
-import { getLastFourDaysMood, UserMoodDate } from "./utils";
-
-const POOR_MENTAL_HEALTH_STREAK_THRESHOLD = 2;
 
 enum ColorTag {
   BAD = "#FF3B30",

@@ -1,9 +1,48 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { Box, Button, Heading, IconButton, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import { Banner, BxChevronLeft } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
+
+const getDayAbbreviation = (date: Date) => {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return days[date.getDay()];
+};
+
+const getMonthDayAbbreviation = (date: Date) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const mmm = months[date.getMonth()];
+  const dd = ("0" + date.getDate()).slice(-2);
+  return `${dd} ${mmm}`;
+};
 
 const ToggleShowHidePersonalInformation = (props: {
   isShowInformation: boolean;
@@ -20,6 +59,50 @@ const ToggleShowHidePersonalInformation = (props: {
         {props.isShowInformation ? "Show information" : "Hide information"}
       </Text>
     </Button>
+  );
+};
+
+const UserDetailTable = () => {
+  const lastSevenDays = [...Array(7)].map((_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - index);
+    return date;
+  });
+
+  return (
+    <TableContainer>
+      <Table size="sm" variant="simple">
+        <Thead>
+          <Tr>
+            <Th textTransform="none" colSpan={7} textAlign="center">
+              Mood History
+            </Th>
+          </Tr>
+          <Tr>
+            {lastSevenDays.map((day) => {
+              return (
+                <Th fontSize="8px" p="1px" textTransform="none">
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                  >
+                    <p>{getDayAbbreviation(day)}</p>
+                    <p>{getMonthDayAbbreviation(day)}</p>
+                  </Box>
+                </Th>
+              );
+            })}
+          </Tr>
+        </Thead>
+        <Tbody>
+          <Tr>
+            <Td p={0}></Td>
+            <Td p={0}>One</Td>
+          </Tr>
+        </Tbody>
+      </Table>
+    </TableContainer>
   );
 };
 
@@ -77,6 +160,7 @@ const UserDetail = () => {
           Poor mood reported in the past 3 days
         </Banner>
         <Box>Mood history</Box>
+        <UserDetailTable></UserDetailTable>
         <Box display="flex" gap="4px">
           <Heading size="sm">Personal Information</Heading>
           <img height="18px" width="18px" src="/assets/icon/edit.svg" />
