@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { CreateUserRequest } from "../../../api/admin";
 import { DashboardResponse } from "../../../api/user";
 import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
-import {
-  VIEW_USER_FORM_FIELDS_PROPS,
-} from "../constants";
+import { VIEW_USER_FORM_FIELDS_PROPS } from "../constants";
 
 export interface UpdateUserForm extends CreateUserRequest {}
 
@@ -24,7 +22,10 @@ function dashboardDataToUpdateUserFormData(
   };
 }
 
-function ModalUpdateUser(props: { dashboardData: DashboardResponse }) {
+function ModalUpdateUser(props: {
+  dashboardData: DashboardResponse;
+  isShowPersonalInformation: boolean;
+}) {
   const [updateUserForm, setUpdateUserForm] = useState({} as UpdateUserForm);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ function ModalUpdateUser(props: { dashboardData: DashboardResponse }) {
       createUserForm={updateUserForm}
       setCreateUserForm={setUpdateUserForm}
       createUpdateUserFormFields={VIEW_USER_FORM_FIELDS_PROPS}
+      isShowPersonalInformation={props.isShowPersonalInformation}
     />
   );
 }

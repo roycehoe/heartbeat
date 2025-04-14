@@ -11,15 +11,8 @@ export function FormFieldsViewUser(props: {
     CreateUpdateUserFormFieldProps
   >;
   createUserForm: CreateUserForm;
-  setCreateUserForm: React.Dispatch<React.SetStateAction<CreateUserForm>>;
+  isShowPersonalInformation: boolean;
 }) {
-  const handleChange = (e, field) => {
-    props.setCreateUserForm({
-      ...props.createUserForm,
-      [field]: e.target.value,
-    });
-  };
-
   return (
     <Box display="flex" flexDirection="column" gap="16px">
       {Object.keys(props.createUpdateUserFormFields).map((field) => {
@@ -31,9 +24,9 @@ export function FormFieldsViewUser(props: {
             <FormSelectUser
               field={field}
               isRequired={isRequired}
-              isDisabled={false}
+              isDisabled={true}
               formLabel={formLabel}
-              type={type}
+              type={props.isShowPersonalInformation ? "password" : type}
               value={props.createUserForm[field]}
               onChange={(e) => handleChange(e, field)}
               placeholder={formLabel}
@@ -45,9 +38,9 @@ export function FormFieldsViewUser(props: {
           <FormInputUser
             field={field}
             isRequired={isRequired}
-            isDisabled={false}
+            isDisabled={true}
             formLabel={formLabel}
-            type={type}
+            type={props.isShowPersonalInformation ? "password" : type}
             value={props.createUserForm[field]}
             onChange={(e) => handleChange(e, field)}
             placeholder={formLabel}

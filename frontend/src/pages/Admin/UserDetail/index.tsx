@@ -49,18 +49,22 @@ const getMonthDayAbbreviation = (date: Date) => {
 };
 
 const ToggleShowHidePersonalInformation = (props: {
-  isShowInformation: boolean;
+  isShowPersonalInformation: boolean;
   setIsShowInformation: (isShowInformation: boolean) => void;
 }) => {
   return (
     <Button
-      onClick={() => props.setIsShowInformation(!props.isShowInformation)}
+      onClick={() =>
+        props.setIsShowInformation(!props.isShowPersonalInformation)
+      }
       display="flex"
       gap="6px"
     >
-      {props.isShowInformation ? <ViewIcon /> : <ViewOffIcon />}
+      {props.isShowPersonalInformation ? <ViewIcon /> : <ViewOffIcon />}
       <Text>
-        {props.isShowInformation ? "Show information" : "Hide information"}
+        {props.isShowPersonalInformation
+          ? "Show information"
+          : "Hide information"}
       </Text>
     </Button>
   );
@@ -127,7 +131,8 @@ const UserMoodHistoryTable = (props: { moods: Mood[] }) => {
 
 const UserDetail = () => {
   const { userId } = useParams();
-  const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
+  const [isShowPersonalInformation, setIsShowInformation] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [adminUserData, setAdminUserData] = useState<DashboardResponse>();
   const navigate = useNavigate();
@@ -219,9 +224,12 @@ const UserDetail = () => {
           <Heading size="sm">Personal Information</Heading>
           <img height="18px" width="18px" src="/assets/icon/edit.svg" />
         </Box>
-        <ModalUpdateUser dashboardData={adminUserData} />
+        <ModalUpdateUser
+          dashboardData={adminUserData}
+          isShowPersonalInformation={isShowPersonalInformation}
+        />
         <ToggleShowHidePersonalInformation
-          isShowInformation={isShowInformation}
+          isShowPersonalInformation={isShowPersonalInformation}
           setIsShowInformation={setIsShowInformation}
         />
       </Box>
