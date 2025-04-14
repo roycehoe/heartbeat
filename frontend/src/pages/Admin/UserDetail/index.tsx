@@ -18,8 +18,9 @@ import { Banner, BxChevronLeft } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAdminUserResponse } from "../../../api/admin";
-import { DashboardResponse, Mood } from "../../../api/user";
+import { DashboardResponse, Mood, MoodValue } from "../../../api/user";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
+import { IconMood } from "../../../components/IconMood";
 
 const getDayAbbreviation = (date: Date) => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -64,6 +65,10 @@ const ToggleShowHidePersonalInformation = (props: {
   );
 };
 
+const getSadDaysCount = (moods: Mood[]) => {
+  return moods.slice(0, 7).filter((mood) => mood.mood === MoodValue.SAD).length;
+};
+
 const UserMoodHistoryTable = (props: { moods: Mood[] }) => {
   const lastSevenDays = [...Array(7)].map((_, index) => {
     const date = new Date();
@@ -99,8 +104,19 @@ const UserMoodHistoryTable = (props: { moods: Mood[] }) => {
         </Thead>
         <Tbody>
           <Tr>
-            <Td p={0}></Td>
-            <Td p={0}>One</Td>
+            {props.moods.slice(0, 7).map((mood) => {
+              return (
+                <Td>
+                  <IconMood
+                    mood={mood.mood}
+                    isToday={
+                      new Date(mood.created_at).toDateString() ===
+                      new Date().toDateString()
+                    }
+                  ></IconMood>
+                </Td>
+              );
+            })}
           </Tr>
         </Tbody>
       </Table>
@@ -189,10 +205,13 @@ const UserDetail = () => {
           </Heading>
           <Heading size="sm">{adminUserData?.alias}</Heading>
         </Box>
-        <Banner size="sm" variant="error">
-          Poor mood reported in the past 3 days
-        </Banner>
-        <Box>Mood history</Box>
+        {getSadDaysCount(adminUserData.moods.slice(0, 7)) > 2 && (
+          <Banner size="sm" variant="error">
+            Poor mood reported in the past{" "}
+            {getSadDaysCount(adminUserData.moods.slice(0, 7))} days
+          </Banner>
+        )}
+
         <UserMoodHistoryTable moods={adminUserData.moods} />
         <Box display="flex" gap="4px">
           <Heading size="sm">Personal Information</Heading>

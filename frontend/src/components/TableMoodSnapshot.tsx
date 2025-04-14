@@ -10,47 +10,8 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { DashboardResponse, Mood, MoodValue } from "../api/user";
-import { UserMoodDate } from "../pages/Admin/utils";
-
-const TableMoodSnapshotCellMoodIcon = (props: {
-  mood: MoodValue | undefined;
-  isToday: boolean;
-}) => {
-  if (props.mood === MoodValue.HAPPY) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/happy.svg" />
-      </Box>
-    );
-  }
-  if (props.mood === MoodValue.OK) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/ok.svg" />
-      </Box>
-    );
-  }
-  if (props.mood === MoodValue.SAD) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/sad.svg" />
-      </Box>
-    );
-  }
-  if (!props.isToday) {
-    return (
-      <Box display="flex" justifyContent="center">
-        <img src="/assets/icon/cross.svg" />
-      </Box>
-    );
-  }
-  return (
-    <Box display="flex" justifyContent="center">
-      -
-    </Box>
-  );
-};
+import { DashboardResponse, Mood } from "../api/user";
+import { IconMood } from "./IconMood";
 
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
@@ -77,7 +38,7 @@ const TableMoodSnapshotRow = (props: {
         return (
           <Td>
             <Box display="flex" justifyContent="center">
-              <TableMoodSnapshotCellMoodIcon
+              <IconMood
                 mood={mood.mood}
                 isToday={
                   new Date(mood.created_at).toDateString() ===
