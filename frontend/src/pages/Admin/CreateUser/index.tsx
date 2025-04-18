@@ -94,7 +94,7 @@ function ModalCreateUser() {
   }
 
   function handleHowDoesItWorkLinkClick() {
-    navigate(`/admin/how-does-it-work`);
+    navigate(`/admin/about`);
   }
 
   return (

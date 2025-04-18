@@ -21,7 +21,7 @@ const App = () => {
             <Route path="/admin/:userId" element={<UserDetail />} />
             <Route path="/admin/:userId/settings" element={<UserSettings />} />
             <Route path="/admin/create-user" element={<ModalCreateUser />} />
-            <Route path="/admin/how-does-it-work" element={<HowDoesItWork />} />
+            <Route path="/admin/about" element={<HowDoesItWork />} />
           </Routes>
         </Box>
       </BrowserRouter>
