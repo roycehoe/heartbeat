@@ -17,10 +17,15 @@ import { useEffect, useState } from "react";
 import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { AppLanguage, Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
-import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import { CREATE_USER_FORM_FIELDS_PROPS } from "../constants";
-import { getSubmitCreateUserFormErrorMessage } from "../utils";
+import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 
+import { useNavigate } from "react-router-dom";
+import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
+import {
+  CREATE_USER_FORM_FIELDS_PROPS,
+  VIEW_USER_FORM_FIELDS_PROPS,
+} from "../constants";
+import { getSubmitCreateUserFormErrorMessage } from "../utils";
 const MODAL_HEADER = "Create user";
 const MODAL_BODY_BANNER = "User created successfully!";
 
@@ -53,6 +58,7 @@ function ModalCreateUser() {
     useState(false);
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
+  const navigate = useNavigate();
 
   function resetCreateUserForm() {
     setCreateUserForm({ ...DEFAULT_CREATE_USER_FORM });
@@ -69,6 +75,7 @@ function ModalCreateUser() {
       resetCreateUserForm();
       setHasCreatedUserSuccessfully(true);
       setErrorMessage("");
+      navigate(`/admin`);
     } catch (error) {
       if (error?.response) {
         setErrorMessage("Something went wrong. Please try again later.");
@@ -78,50 +85,26 @@ function ModalCreateUser() {
   }
 
   return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        {hasCreatedUserSuccessfully ? (
-          <ModalContentWithBannerSuccess
-            header={MODAL_HEADER}
-            banner={MODAL_BODY_BANNER}
-          ></ModalContentWithBannerSuccess>
-        ) : (
-          <>
-            <ModalHeader>Create user</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody></ModalBody>
-
-            <ModalFooter>
-              <Box
-                display="flex"
-                flexDirection="column"
-                width="100%"
-                gap="24px"
-              >
-                <Alert
-                  status="error"
-                  variant="subtle"
-                  hidden={errorMessage === ""}
-                >
-                  <AlertIcon />
-                  <AlertDescription>{errorMessage}</AlertDescription>
-                </Alert>
-                <Button
-                  mr="3px"
-                  variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
-                  onClick={handleCreateUser}
-                  isDisabled={errorMessage !== ""}
-                  isLoading={isCreateUserButtonLoading}
-                >
-                  {hasCreatedUserSuccessfully ? "User created!" : "Create"}
-                </Button>
-              </Box>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+    <Box display="flex" flexDirection="column" width="100%" gap="24px">
+      <FormFieldsUserCreateUpdate
+        createUserForm={createUserForm}
+        setCreateUserForm={setCreateUserForm}
+        createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
+      />
+      <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
+        <AlertIcon />
+        <AlertDescription>{errorMessage}</AlertDescription>
+      </Alert>
+      <Button
+        mr="3px"
+        variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
+        onClick={handleCreateUser}
+        isDisabled={errorMessage !== ""}
+        isLoading={isCreateUserButtonLoading}
+      >
+        {hasCreatedUserSuccessfully ? "User created!" : "Create"}
+      </Button>
+    </Box>
   );
 }
 
