@@ -93,6 +93,10 @@ function ModalCreateUser() {
     navigate(`/admin`);
   }
 
+  function handleHowDoesItWorkLinkClick() {
+    navigate(`/admin/how-does-it-work`);
+  }
+
   return (
     <Box
       width="100%"
@@ -126,7 +130,7 @@ function ModalCreateUser() {
             Set up an account for your loved one to keep tabs on their mental
             well-being
           </Text>
-          <Link>How does it work?</Link>
+          <Link onClick={handleHowDoesItWorkLinkClick}>How does it work?</Link>
         </Box>
 
         <Box display="flex" flexDirection="column" width="100%" gap="24px">

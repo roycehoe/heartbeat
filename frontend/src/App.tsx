@@ -3,6 +3,7 @@ import { ThemeProvider } from "@opengovsg/design-system-react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Admin from "./pages/Admin";
 import ModalCreateUser from "./pages/Admin/CreateUser";
+import { HowDoesItWork } from "./pages/Admin/HowDoesItWork";
 import UserDetail from "./pages/Admin/UserDetail";
 import UserSettings from "./pages/Admin/UserSettings";
 import HomePage from "./pages/HomePage";
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/admin/:userId" element={<UserDetail />} />
             <Route path="/admin/:userId/settings" element={<UserSettings />} />
             <Route path="/admin/sign-up" element={<ModalCreateUser />} />
+            <Route path="/admin/how-does-it-work" element={<HowDoesItWork />} />
           </Routes>
         </Box>
       </BrowserRouter>
