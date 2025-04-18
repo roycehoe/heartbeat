@@ -152,7 +152,6 @@ const UserDetail = () => {
   };
 
   useEffect(() => {
-    console.log("hello");
     if (!localStorage.getItem("token")) {
       navigate("/login");
       return;

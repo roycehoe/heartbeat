@@ -1,5 +1,5 @@
 import { httpClient } from "./httpClient";
-import { DashboardResponse, Gender, Race } from "./user";
+import { AppLanguage, DashboardResponse, Gender, Race } from "./user";
 
 export interface CreateUserRequest {
   username: string;
@@ -10,6 +10,7 @@ export interface CreateUserRequest {
   age: number;
   alias: string;
   race: Race;
+  appLanguage: AppLanguage;
   gender: Gender;
   postalCode: number;
   floor: number;

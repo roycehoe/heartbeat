@@ -18,7 +18,7 @@ function FormSelectUser(props: {
       isDisabled={props.isDisabled}
     >
       <FormLabel>{props.formLabel}</FormLabel>
-      <Select variant="outline">
+      <Select variant="outline" onChange={props.onChange}>
         {props.options.map((option) => {
           return <option value={option}>{option}</option>;
         })}
