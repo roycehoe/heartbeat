@@ -96,6 +96,20 @@ class CRUDUser:
         except Exception as e:
             raise DBException(e)
 
+    def reset_password(self, id: int, new_password: str) -> None:
+        try:
+            if account := self.session.query(User).filter_by(id=id).first():
+                setattr(account, "password", new_password)
+                self.session.commit()
+                self.session.refresh(account)
+                return
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
     def delete_all(self) -> None:
         try:
             self.session.query(User).delete()
