@@ -3,6 +3,9 @@ import {
   AlertDescription,
   AlertIcon,
   Box,
+  Heading,
+  IconButton,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
@@ -20,6 +24,7 @@ import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreate
 import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 
 import { useNavigate } from "react-router-dom";
+import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
 import {
   CREATE_USER_FORM_FIELDS_PROPS,
@@ -84,26 +89,67 @@ function ModalCreateUser() {
     setIsCreateUserButtonLoading(false);
   }
 
+  function handleBackIconClick() {
+    navigate(`/admin`);
+  }
+
   return (
-    <Box display="flex" flexDirection="column" width="100%" gap="24px">
-      <FormFieldsUserCreateUpdate
-        createUserForm={createUserForm}
-        setCreateUserForm={setCreateUserForm}
-        createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
-      />
-      <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
-        <AlertIcon />
-        <AlertDescription>{errorMessage}</AlertDescription>
-      </Alert>
-      <Button
-        mr="3px"
-        variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
-        onClick={handleCreateUser}
-        isDisabled={errorMessage !== ""}
-        isLoading={isCreateUserButtonLoading}
+    <Box
+      width="100%"
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      className="page"
+    >
+      <Box
+        className="page"
+        margin="18px"
+        paddingBottom="24px"
+        display="flex"
+        flexDir="column"
+        gap="24px"
       >
-        {hasCreatedUserSuccessfully ? "User created!" : "Create"}
-      </Button>
+        <Box display="flex" gap="8px" justifyContent="space-between">
+          <IconButton
+            onClick={handleBackIconClick}
+            isRound={true}
+            variant="solid"
+            aria-label="Done"
+            icon={<IconArrowLeft />}
+          />
+
+          <Box display="flex" justifyContent="center"></Box>
+        </Box>
+        <Box display="flex" gap="16px" flexDirection="column">
+          <Heading size="sm">Welcome to HeartBeat</Heading>
+          <Text size="sm">
+            Set up an account for your loved one to keep tabs on their mental
+            well-being
+          </Text>
+          <Link>How does it work?</Link>
+        </Box>
+
+        <Box display="flex" flexDirection="column" width="100%" gap="24px">
+          <FormFieldsUserCreateUpdate
+            createUserForm={createUserForm}
+            setCreateUserForm={setCreateUserForm}
+            createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
+          />
+          <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
+            <AlertIcon />
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+          <Button
+            mr="3px"
+            variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
+            onClick={handleCreateUser}
+            isDisabled={errorMessage !== ""}
+            isLoading={isCreateUserButtonLoading}
+          >
+            {hasCreatedUserSuccessfully ? "User created!" : "Create account"}
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 }
