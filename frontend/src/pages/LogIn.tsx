@@ -89,7 +89,7 @@ function LogIn() {
       >
         <Box mb="24px" gap="12px" display="flex" flexDirection="column">
           <Box display="flex" justifyContent="center">
-            <Image src="public/bfg.png"></Image>
+            <Image src="/assets/logo-circle-heartbeat.png"></Image>
           </Box>
           <Box>
             <Heading fontSize="2xl">HeartBeat</Heading>

@@ -14,7 +14,6 @@ class CRUDAdminOut(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
         from_attributes = True
 
 
@@ -38,7 +37,6 @@ class CRUDUserOut(BaseModel):
     moods: list["CRUDMoodOut"]
 
     class Config:
-        orm_mode = True
         from_attributes = True
 
 
@@ -49,5 +47,4 @@ class CRUDMoodOut(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
         from_attributes = True
