@@ -132,7 +132,7 @@ const UserMoodHistoryTable = (props: { moods: Mood[] }) => {
 const UserDetail = () => {
   const { userId } = useParams();
   const [isShowPersonalInformation, setIsShowInformation] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [adminUserData, setAdminUserData] = useState<DashboardResponse>();
   const navigate = useNavigate();

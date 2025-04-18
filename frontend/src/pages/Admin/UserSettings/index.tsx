@@ -9,6 +9,7 @@ import {
 import { Banner } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getDeleteUserResponse } from "../../../api/admin";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteUser from "../../../components/ModalDeleteUser";
 import ModalResetUserPassword from "../../../components/ModalResetUserPassword";
@@ -37,7 +38,8 @@ const UserSettings = () => {
     });
   };
 
-  const handleOnConfirmModalDeleteUser = () => {
+  const handleOnConfirmModalDeleteUser = async (userId: number) => {
+    await getDeleteUserResponse(userId);
     setIsDeleteUserModalOpen(false);
     toast({
       title: "User Deleted Successfully",
@@ -98,7 +100,7 @@ const UserSettings = () => {
           <ModalDeleteUser
             isOpen={isDeleteUserModalOpen}
             onClose={() => setIsDeleteUserModalOpen(false)}
-            onConfirm={handleOnConfirmModalDeleteUser}
+            onConfirm={() => handleOnConfirmModalDeleteUser(userId)}
           />
           <ModalResetUserPassword
             isOpen={isResetUserPasswordModalOpen}
