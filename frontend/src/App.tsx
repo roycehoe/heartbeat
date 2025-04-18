@@ -20,7 +20,7 @@ const App = () => {
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/:userId" element={<UserDetail />} />
             <Route path="/admin/:userId/settings" element={<UserSettings />} />
-            <Route path="/admin/sign-up" element={<ModalCreateUser />} />
+            <Route path="/admin/create-user" element={<ModalCreateUser />} />
             <Route path="/admin/how-does-it-work" element={<HowDoesItWork />} />
           </Routes>
         </Box>

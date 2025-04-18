@@ -6,7 +6,7 @@ export function HowDoesItWork() {
   const navigate = useNavigate();
 
   const handleBackIconClick = () => {
-    navigate(`/admin/sign-up`);
+    navigate(`/admin/create-user`);
   };
   return (
     <Box

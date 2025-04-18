@@ -88,7 +88,7 @@ function Admin() {
     navigate(`/admin/${userId}`);
   };
   const handleAddAnotherPersonClick = () => {
-    navigate(`/admin/sign-up`);
+    navigate(`/admin/create-user`);
   };
 
   useEffect(() => {
