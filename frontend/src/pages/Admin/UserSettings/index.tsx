@@ -9,7 +9,11 @@ import {
 import { Banner } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getDeleteUserResponse } from "../../../api/admin";
+import {
+  getDeleteUserResponse,
+  getResetUserPasswordResponse,
+  ResetUserPasswordRequest,
+} from "../../../api/admin";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteUser from "../../../components/ModalDeleteUser";
 import ModalResetUserPassword from "../../../components/ModalResetUserPassword";
@@ -27,7 +31,10 @@ const UserSettings = () => {
     navigate(`/admin/${userName}`);
   };
 
-  const handleOnConfirmModalResetUserPassword = () => {
+  const handleOnConfirmModalResetUserPassword = async (
+    resetUserPasswordRequest: ResetUserPasswordRequest
+  ) => {
+    await getResetUserPasswordResponse(resetUserPasswordRequest);
     setIsResetUserPasswordModalOpen(false);
     toast({
       title: "Password Reset Complete",
@@ -100,12 +107,16 @@ const UserSettings = () => {
           <ModalDeleteUser
             isOpen={isDeleteUserModalOpen}
             onClose={() => setIsDeleteUserModalOpen(false)}
-            onConfirm={() => handleOnConfirmModalDeleteUser(userId)}
+            onConfirm={() => handleOnConfirmModalDeleteUser(Number(userId))}
           />
           <ModalResetUserPassword
             isOpen={isResetUserPasswordModalOpen}
             onClose={() => setIsResetUserPasswordModalOpen(false)}
-            onConfirm={handleOnConfirmModalResetUserPassword}
+            onConfirm={() =>
+              handleOnConfirmModalResetUserPassword({
+                user_id: Number(userId),
+              })
+            }
           />
         </Box>
       </Box>

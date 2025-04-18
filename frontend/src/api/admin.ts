@@ -15,6 +15,10 @@ export interface CreateUserRequest {
   floor: number;
 }
 
+export interface ResetUserPasswordRequest {
+  user_id: number;
+}
+
 export interface UpdateUserRequest extends CreateUserRequest {}
 
 export async function getCreateUserResponse(
@@ -26,6 +30,16 @@ export async function getCreateUserResponse(
 
 export async function getDeleteUserResponse(userId: number): Promise<null> {
   const response = await httpClient.delete(`/admin/user/${userId}`);
+  return response.data;
+}
+
+export async function getResetUserPasswordResponse(
+  resetUserPasswordRequest: ResetUserPasswordRequest
+): Promise<null> {
+  const response = await httpClient.post(
+    `/admin/user/reset-password`,
+    resetUserPasswordRequest
+  );
   return response.data;
 }
 
