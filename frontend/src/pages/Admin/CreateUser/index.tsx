@@ -44,11 +44,7 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   hasAgreedToTermsAndConditions: false,
 };
 
-function ModalCreateUser(props: {
-  isOpen: boolean;
-  onClose: () => void;
-  reloadDashboardData: () => Promise<void>;
-}) {
+function ModalCreateUser() {
   const [createUserForm, setCreateUserForm] = useState({
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
@@ -73,16 +69,11 @@ function ModalCreateUser(props: {
       resetCreateUserForm();
       setHasCreatedUserSuccessfully(true);
       setErrorMessage("");
-      const closeModalWithDebounce = debounce(() => {
-        props.onClose();
-      }, 1000);
-      closeModalWithDebounce();
     } catch (error) {
       if (error?.response) {
         setErrorMessage("Something went wrong. Please try again later.");
       }
     }
-    props.reloadDashboardData();
     setIsCreateUserButtonLoading(false);
   }
 
@@ -99,13 +90,7 @@ function ModalCreateUser(props: {
           <>
             <ModalHeader>Create user</ModalHeader>
             <ModalCloseButton />
-            <ModalBody>
-              <FormFieldsUserCreateUpdate
-                createUserForm={createUserForm}
-                setCreateUserForm={setCreateUserForm}
-                createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
-              ></FormFieldsUserCreateUpdate>
-            </ModalBody>
+            <ModalBody></ModalBody>
 
             <ModalFooter>
               <Box
