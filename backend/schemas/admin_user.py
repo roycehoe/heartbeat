@@ -1,15 +1,16 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from enums import Gender, AppLanguage, Race, SelectedMood
+from enums import AppLanguage, Gender, Race, SelectedMood
 
 
-class MoodRequest(BaseModel):
+class AdminMoodRequest(BaseModel):
     mood: SelectedMood
 
 
-class MoodIn(MoodRequest):
+class AdminMoodIn(AdminMoodRequest):
     user_id: int
     created_at: datetime = Field(default_factory=datetime.now)
 
@@ -18,18 +19,15 @@ class MoodIn(MoodRequest):
         from_attributes = True
 
 
-class MoodOut(BaseModel):
-    user_id: int
-    moods: list[MoodIn]
-    can_record_mood: bool
-    consecutive_checkins: int
-    mood_message: str
+class AdminUserDashboardMoodOut(BaseModel):
+    mood: Optional[SelectedMood]
+    created_at: datetime
 
     class Config:
-        use_enum_values = True
+        from_attributes = True
 
 
-class DashboardOut(BaseModel):
+class AdminUserDashboardOut(BaseModel):
     user_id: int
     username: str
     name: str
@@ -41,7 +39,7 @@ class DashboardOut(BaseModel):
     floor: int
     contact_number: int
 
-    moods: list[MoodIn]
+    moods: list[AdminUserDashboardMoodOut]
     can_record_mood: bool
     consecutive_checkins: int
 
@@ -49,24 +47,12 @@ class DashboardOut(BaseModel):
         use_enum_values = True
 
 
-class LogInRequest(BaseModel):
-    username: str  # Doubles as username
-    password: str
-
-
-class AccountCreateRequestBase(BaseModel):
+class UserCreateRequest(BaseModel):
     username: str  # Doubles as username
     password: str
     name: str
     confirm_password: str = Field(..., alias="confirmPassword")
     contact_number: int = Field(..., alias="contactNumber")
-
-
-class AdminCreateRequest(AccountCreateRequestBase):
-    pass
-
-
-class UserCreateRequest(AccountCreateRequestBase):
     alias: str
     age: int
     race: Race
@@ -79,16 +65,12 @@ class UserCreateRequest(AccountCreateRequestBase):
         use_enum_values = True
 
 
+class UserResetPasswordRequest(BaseModel):
+    user_id: int
+
+
 class UserUpdateRequest(UserCreateRequest):
     pass
-
-
-class AdminIn(AdminCreateRequest):
-    created_at: datetime = Field(default_factory=datetime.now)
-
-    class Config:
-        use_enum_values = True
-        from_attributes = True
 
 
 class UserIn(UserCreateRequest):
@@ -98,8 +80,3 @@ class UserIn(UserCreateRequest):
     class Config:
         use_enum_values = True
         from_attributes = True
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str

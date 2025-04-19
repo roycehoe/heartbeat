@@ -1,34 +1,11 @@
-from typing import Any
-
+from dotenv import dotenv_values
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from database import Base, engine, get_db
-from schemas import (
-    AdminCreateRequest,
-    DashboardOut,
-    LogInRequest,
-    MoodOut,
-    MoodRequest,
-    Token,
-    UserCreateRequest,
-    UserUpdateRequest,
-)
-from scripts import get_scheduler, is_db_empty, populate_db, repopulate_db
-from services.account import (
-    get_create_admin_response,
-    get_create_user_response,
-    get_delete_user_response,
-    get_get_user_response,
-    get_update_user_response,
-)
-from services.authentication import authenticate_admin, authenticate_user
-from services.dashboard import get_admin_dashboard_response, get_user_dashboard_response
-from services.mood import get_create_user_mood_response
-
-from dotenv import dotenv_values
-
+from routers import admin, admin_user, user
+from scripts import get_scheduler
 from services.statistics import get_statistics
 
 IS_PROD = dotenv_values(".env").get("IS_PROD")
@@ -54,11 +31,6 @@ def startup_event():
     scheduler.start()
 
 
-###################################
-# ADMIN
-###################################
-
-
 @app.get(
     "/healthcheck",
     status_code=status.HTTP_200_OK,
@@ -75,93 +47,6 @@ def statistics(token: str = Header(None), db: Session = Depends(get_db)):
     return get_statistics(token, db)
 
 
-@app.post(
-    "/admin/sign-up",
-    status_code=status.HTTP_201_CREATED,
-)
-def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
-    return get_create_admin_response(request, db)
-
-
-@app.post("/admin/login", status_code=status.HTTP_200_OK, response_model=Token)
-def admin_log_in(request: LogInRequest, db: Session = Depends(get_db)):
-    return authenticate_admin(request, db)
-
-
-###################################
-# ADMIN USER ACTIONS
-###################################
-
-
-@app.post(
-    "/admin/user",
-    status_code=status.HTTP_201_CREATED,
-)
-def create_user(
-    request: UserCreateRequest, token: str = Header(None), db: Session = Depends(get_db)
-):
-    return get_create_user_response(request, token, db)
-
-
-@app.post(
-    "/admin/user/{user_id}", status_code=status.HTTP_200_OK, response_model=DashboardOut
-)
-def get_user(user_id: int, token: str = Header(None), db: Session = Depends(get_db)):
-    return get_get_user_response(user_id, token, db)
-
-
-@app.put(
-    "/admin/user/{user_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-)
-def update_user(
-    user_id: int,
-    request: UserUpdateRequest,
-    token: str = Header(None),
-    db: Session = Depends(get_db),
-):
-    return get_update_user_response(user_id, request, token, db)
-
-
-@app.delete(
-    "/admin/user/{user_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-)
-def delete_user(user_id: int, token: str = Header(None), db: Session = Depends(get_db)):
-    return get_delete_user_response(user_id, token, db)
-
-
-@app.get(
-    "/admin/dashboard",
-    status_code=status.HTTP_200_OK,
-    response_model=list[DashboardOut],
-)
-def admin_dashboard(
-    token: str = Header(None),
-    db: Session = Depends(get_db),
-    sort: str = "consecutive_checkins",
-    sort_direction: int = 0,
-):
-    return get_admin_dashboard_response(token, db, sort, sort_direction)
-
-
-###################################
-# USER
-###################################
-
-
-@app.post("/user/login", status_code=status.HTTP_200_OK, response_model=Token)
-def user_log_in(user_log_in_request: LogInRequest, db: Session = Depends(get_db)):
-    return authenticate_user(user_log_in_request, db)
-
-
-@app.get("/user/dashboard", status_code=status.HTTP_200_OK, response_model=DashboardOut)
-def user_dashboard(token: str = Header(None), db: Session = Depends(get_db)):
-    return get_user_dashboard_response(token, db)
-
-
-@app.post("/user/mood", status_code=status.HTTP_201_CREATED, response_model=MoodOut)
-def send_mood(
-    request: MoodRequest, token: str = Header(None), db: Session = Depends(get_db)
-):
-    return get_create_user_mood_response(request, token, db)
+app.include_router(admin.router)
+app.include_router(user.router)
+app.include_router(admin_user.router)

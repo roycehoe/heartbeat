@@ -3,6 +3,9 @@ import {
   AlertDescription,
   AlertIcon,
   Box,
+  Heading,
+  IconButton,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
@@ -17,10 +21,16 @@ import { useEffect, useState } from "react";
 import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
 import { AppLanguage, Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
-import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import { CREATE_USER_FORM_FIELDS_PROPS } from "../constants";
-import { getSubmitCreateUserFormErrorMessage } from "../utils";
+import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 
+import { useNavigate } from "react-router-dom";
+import { IconArrowLeft } from "../../../components/IconArrowLeft";
+import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
+import {
+  CREATE_USER_FORM_FIELDS_PROPS,
+  VIEW_USER_FORM_FIELDS_PROPS,
+} from "../constants";
+import { getSubmitCreateUserFormErrorMessage } from "../utils";
 const MODAL_HEADER = "Create user";
 const MODAL_BODY_BANNER = "User created successfully!";
 
@@ -44,11 +54,7 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   hasAgreedToTermsAndConditions: false,
 };
 
-function ModalCreateUser(props: {
-  isOpen: boolean;
-  onClose: () => void;
-  reloadDashboardData: () => Promise<void>;
-}) {
+function ModalCreateUser() {
   const [createUserForm, setCreateUserForm] = useState({
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
@@ -57,6 +63,7 @@ function ModalCreateUser(props: {
     useState(false);
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
+  const navigate = useNavigate();
 
   function resetCreateUserForm() {
     setCreateUserForm({ ...DEFAULT_CREATE_USER_FORM });
@@ -73,70 +80,81 @@ function ModalCreateUser(props: {
       resetCreateUserForm();
       setHasCreatedUserSuccessfully(true);
       setErrorMessage("");
-      const closeModalWithDebounce = debounce(() => {
-        props.onClose();
-      }, 1000);
-      closeModalWithDebounce();
+      navigate(`/admin`);
     } catch (error) {
       if (error?.response) {
         setErrorMessage("Something went wrong. Please try again later.");
       }
     }
-    props.reloadDashboardData();
     setIsCreateUserButtonLoading(false);
   }
 
-  return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        {hasCreatedUserSuccessfully ? (
-          <ModalContentWithBannerSuccess
-            header={MODAL_HEADER}
-            banner={MODAL_BODY_BANNER}
-          ></ModalContentWithBannerSuccess>
-        ) : (
-          <>
-            <ModalHeader>Create user</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormFieldsUserCreateUpdate
-                createUserForm={createUserForm}
-                setCreateUserForm={setCreateUserForm}
-                createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
-              ></FormFieldsUserCreateUpdate>
-            </ModalBody>
+  function handleBackIconClick() {
+    navigate(`/admin`);
+  }
 
-            <ModalFooter>
-              <Box
-                display="flex"
-                flexDirection="column"
-                width="100%"
-                gap="24px"
-              >
-                <Alert
-                  status="error"
-                  variant="subtle"
-                  hidden={errorMessage === ""}
-                >
-                  <AlertIcon />
-                  <AlertDescription>{errorMessage}</AlertDescription>
-                </Alert>
-                <Button
-                  mr="3px"
-                  variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
-                  onClick={handleCreateUser}
-                  isDisabled={errorMessage !== ""}
-                  isLoading={isCreateUserButtonLoading}
-                >
-                  {hasCreatedUserSuccessfully ? "User created!" : "Create"}
-                </Button>
-              </Box>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+  function handleHowDoesItWorkLinkClick() {
+    navigate(`/admin/about`);
+  }
+
+  return (
+    <Box
+      width="100%"
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      className="page"
+    >
+      <Box
+        className="page"
+        margin="18px"
+        paddingBottom="24px"
+        display="flex"
+        flexDir="column"
+        gap="24px"
+      >
+        <Box display="flex" gap="8px" justifyContent="space-between">
+          <IconButton
+            onClick={handleBackIconClick}
+            isRound={true}
+            variant="solid"
+            aria-label="Done"
+            icon={<IconArrowLeft />}
+          />
+
+          <Box display="flex" justifyContent="center"></Box>
+        </Box>
+        <Box display="flex" gap="16px" flexDirection="column">
+          <Heading size="sm">Welcome to HeartBeat</Heading>
+          <Text size="sm">
+            Set up an account for your loved one to keep tabs on their mental
+            well-being
+          </Text>
+          <Link onClick={handleHowDoesItWorkLinkClick}>How does it work?</Link>
+        </Box>
+
+        <Box display="flex" flexDirection="column" width="100%" gap="24px">
+          <FormFieldsUserCreateUpdate
+            createUserForm={createUserForm}
+            setCreateUserForm={setCreateUserForm}
+            createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
+          />
+          <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
+            <AlertIcon />
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+          <Button
+            mr="3px"
+            variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
+            onClick={handleCreateUser}
+            isDisabled={errorMessage !== ""}
+            isLoading={isCreateUserButtonLoading}
+          >
+            {hasCreatedUserSuccessfully ? "User created!" : "Create account"}
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

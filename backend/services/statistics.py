@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from utils.token import get_token_data
 from crud import CRUDAdmin, CRUDMood, CRUDUser
+from utils.token import get_token_data
 
 SUPER_ADMIN_NAME = "admin"
 
