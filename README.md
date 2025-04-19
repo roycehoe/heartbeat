@@ -18,7 +18,7 @@ This application aims to alleviate 3 problems:
 
 Care recipients will be tagged to a caregiver. Each day, care recipients would indicate if they are feeling happy, ok, or sad.
 
-- If care recipients do not check in, their caregiver will be informed via Whatsapp lest care recipients are in danger. This tackles problem 1.
+- If care recipients do not check in, their caregiver will be informed via Whatsapp lest care recipients are in any physical danger. This tackles problem 1.
 - If care recipients log more than a pre-configured number of sad moods in a row, the caregiver will be notified via Whatsapp. This tackles problem 2.
 - Through this application, there is no upper limit to the number of care recipients that can be tagged to a caregiver. Caregivers, through an administrator's account, can view all their care receipient's moods in a single dashboard. This tackles problem 3.
 
@@ -40,8 +40,8 @@ to install dependencies required to run postgres
 
 - Install [poetry](https://python-poetry.org/docs/1.3#installing-with-the-official-installer) on your machine
 - Go into the backend directory
-- Create a ` .env` file and populate it with the variables defined in `Annex A`
-- Create a ` docker-compose.yml` file and populate it with the markup defined in `Annex A`
+- Create a `.env` file and populate it with the variables defined in `Annex A`
+- Create a `docker-compose.yml` file and populate it with the markup defined in `Annex A`
 - Install all project dependencies with `poetry install`
 - Activate the project virtual environment by running the command `poetry shell`
 - Run the command `fastapi run` to start the backend server on your machine. The server should be running on localhost:8000
