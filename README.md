@@ -1,30 +1,26 @@
-<a href="https://www.build.gov.sg/bfg2024/heart-beat"><img src="frontend/public/assets/logo-heartbeat.svg" title="Heart Beat" alt="https://isomer-user-content.by.gov.sg/43/e09ddd2c-f666-4887-9d98-5a62c52d80c0/BFG_Logo.png"></a>
-
 <!-- <a href="https://www.build.gov.sg/bfg2024/heart-beat"><img src="https://isomer-user-content.by.gov.sg/43/e09ddd2c-f666-4887-9d98-5a62c52d80c0/BFG_Logo.png" title="Heart Beat" alt="https://isomer-user-content.by.gov.sg/43/e09ddd2c-f666-4887-9d98-5a62c52d80c0/BFG_Logo.png"></a> -->
 
 # HeartBeat
 
-## Introduction
+A mood monitoring web application for caregivers and care recipients, built as part of BFG 2024.
 
-A mood monitoring web application, built as part of BFG 2024.
+## Background
 
-## Problem statement
+### Problems targeted
 
-Target audience: Caregivers and care receipients (typically elderly, but includes people who may be physically impaired)
+This application aims to alleviate 3 problems:
 
-Primary problems to tackle:
+1.  Physical wellbeing of care recipients
+2.  Emotional wellbeing of care recipients
+3.  Imbalance between the number of caregivers and care recipients
 
-1.  Pysical wellbeing of care receipeients
-2.  Emotional wellbeing of care receipients
-3.  Imbalance between the number of caregivers and care receipients
+### How it works
 
-## Features
+Care recipients will be tagged to a caregiver. Each day, care recipients would indicate if they are feeling happy, ok, or sad.
 
-Care receipients will be tagged to a caregiver. Each day, care receipients would indicate if they are feeling happy, ok, or sad for that day.
-
-- If care receipients do not check in, the caregiver will be informed via Whatsapp. This tackled problem 1.
-- If care receipients log more than a pre-configured amount of sad moods in a row, the caregiver will be notified via Whatsapp. This tackles problem 2.
-- Through this application, there is no upper limit to the number of care receipients that can be tagged to a caregiver. Caregivers, through an administrator's account, be able to view all their care receipient's moods in a single dashboard. This tackles problem 3.
+- If care recipients do not check in, their caregiver will be informed via Whatsapp lest care recipients are in danger. This tackles problem 1.
+- If care recipients log more than a pre-configured number of sad moods in a row, the caregiver will be notified via Whatsapp. This tackles problem 2.
+- Through this application, there is no upper limit to the number of care recipients that can be tagged to a caregiver. Caregivers, through an administrator's account, can view all their care receipient's moods in a single dashboard. This tackles problem 3.
 
 # Technical documentation
 
