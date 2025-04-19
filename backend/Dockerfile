@@ -8,6 +8,8 @@ RUN apt update -y && apt install -y \
     build-essential \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    python3-dev \
+    libpq-dev \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
