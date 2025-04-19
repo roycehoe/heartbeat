@@ -1,3 +1,4 @@
+from dotenv import dotenv_values
 from sqlalchemy import (
     TIMESTAMP,
     Boolean,
@@ -12,7 +13,6 @@ from sqlalchemy_utils import EncryptedType
 
 from database import Base
 from enums import SelectedMood
-from dotenv import dotenv_values
 
 SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 

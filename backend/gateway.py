@@ -1,6 +1,7 @@
 from datetime import datetime
-from twilio.rest import Client
+
 from dotenv import dotenv_values
+from twilio.rest import Client
 
 TWILIO_ACCOUNT_SID = dotenv_values(".env").get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = dotenv_values(".env").get("TWILIO_AUTH_TOKEN")
@@ -27,7 +28,7 @@ def _get_non_compliant_user_notification_message(name: str, date: datetime):
     return f"""Message from heart beat sg
     
 --INFO--
-{name} has not logged their mood on {datetime.strftime(date, '%d/%m/%y')}
+{name} has not logged their mood on {datetime.strftime(date, "%d/%m/%y")}
 
 Admin dashboard: https://heartbeat.fancybinary.sg/admin
 """

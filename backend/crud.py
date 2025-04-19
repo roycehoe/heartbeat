@@ -1,6 +1,7 @@
-from typing import Any, Generic, Type, TypeVar
+from datetime import datetime, timedelta
+from typing import Any
 
-from sqlalchemy import asc, desc, text
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
 from exceptions import (
@@ -87,6 +88,20 @@ class CRUDUser:
             if account := self.session.query(User).filter_by(id=id).first():
                 self.session.delete(account)
                 self.session.commit()
+                return
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
+    def reset_password(self, id: int, new_password: str) -> None:
+        try:
+            if account := self.session.query(User).filter_by(id=id).first():
+                setattr(account, "password", new_password)
+                self.session.commit()
+                self.session.refresh(account)
                 return
             raise NoRecordFoundException
 
@@ -202,6 +217,7 @@ class CRUDAdmin:
 class CRUDMood:
     def __init__(self, session: Session):
         self.session = session
+        self.DEFAULT_DATE_FILTER = datetime.today()
 
     def create(self, mood: Mood) -> Mood:
         try:
@@ -212,17 +228,14 @@ class CRUDMood:
             raise DBException(e)
         return mood
 
-    def get(self, id: int) -> Mood:
+    def get_by(self, field: dict[Any, Any], day_range: int = 30) -> list[Mood]:
         try:
-            if user := self.session.query(Mood).filter_by(id=id).first():
-                return user
-            raise NoRecordFoundException
-        except Exception:
-            raise DBGetAccountException
-
-    def get_by(self, field: dict[Any, Any]) -> list[Mood]:
-        try:
-            return self.session.query(Mood).filter_by(**field).all()
+            return (
+                self.session.query(Mood)
+                .filter_by(**field)
+                .filter(Mood.created_at > datetime.today() - timedelta(days=day_range))
+                .all()
+            )
         except Exception as e:
             raise DBException(e)
 

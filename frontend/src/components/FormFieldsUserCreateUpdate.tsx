@@ -40,6 +40,7 @@ function FormFieldsUserCreateUpdate(props: {
             <FormSelectUser
               field={field}
               isRequired={isRequired}
+              isDisabled={false}
               formLabel={formLabel}
               type={type}
               value={props.createUserForm[field]}
@@ -54,6 +55,7 @@ function FormFieldsUserCreateUpdate(props: {
             <FormInputUserPassword
               field={field}
               isRequired={isRequired}
+              isDisabled={false}
               formLabel={formLabel}
               type={type}
               value={props.createUserForm[field]}

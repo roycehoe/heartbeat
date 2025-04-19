@@ -3,6 +3,7 @@ import {
   Flex,
   FormControl,
   Heading,
+  Image,
   Tab,
   TabList,
   TabPanel,
@@ -86,19 +87,16 @@ function LogIn() {
         borderRadius="8px"
         textAlign="center"
       >
-        <Box mb="24px">
-          <Box
-            mb="16px"
-            width="60px"
-            height="60px"
-            borderRadius="full"
-            bgGradient="radial(circle, red.300, red.600)"
-            mx="auto"
-          />
-          <Heading fontSize="2xl">HeartBeat</Heading>
-          <Text fontSize="sm" color="slate.600">
-            Press daily, stay connected
-          </Text>
+        <Box mb="24px" gap="12px" display="flex" flexDirection="column">
+          <Box display="flex" justifyContent="center">
+            <Image src="/assets/logo-circle-heartbeat.png"></Image>
+          </Box>
+          <Box>
+            <Heading fontSize="2xl">HeartBeat</Heading>
+            <Text fontSize="sm" color="slate.600">
+              Press daily, stay connected
+            </Text>
+          </Box>
         </Box>
 
         <Tabs

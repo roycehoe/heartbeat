@@ -4,6 +4,7 @@ import { Checkbox } from "@opengovsg/design-system-react";
 function FormCheckboxTermsAndConditions(props: {
   field: string;
   isRequired: boolean;
+  isDisabled: boolean;
   formLabel: string;
   type: string;
   value: boolean;
@@ -14,6 +15,7 @@ function FormCheckboxTermsAndConditions(props: {
     <FormControl
       key={props.field}
       isRequired={props.isRequired}
+      isDisabled={props.isDisabled}
       display="flex"
       flexDirection="column"
       gap="12px"

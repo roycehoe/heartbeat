@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Union
 
 import jwt
 from dotenv import dotenv_values
@@ -17,7 +18,7 @@ def create_access_token(data: dict) -> str:
     return encoded_jwt
 
 
-def get_token_data(token: str, param: str) -> int | str:
+def get_token_data(token: str, param: str) -> Union[int, str]:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         if data := payload.get(param):

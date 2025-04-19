@@ -11,6 +11,7 @@ import { useState } from "react";
 function FormInputUserPassword(props: {
   field: string;
   isRequired: boolean;
+  isDisabled: boolean;
   formLabel: string;
   type: string;
   value: string;
@@ -21,7 +22,11 @@ function FormInputUserPassword(props: {
   const handleClick = () => setIsShow(!isShow);
 
   return (
-    <FormControl key={props.field} isRequired={props.isRequired}>
+    <FormControl
+      key={props.field}
+      isRequired={props.isRequired}
+      isDisabled={props.isDisabled}
+    >
       <FormLabel>{props.formLabel}</FormLabel>
       <InputGroup>
         <Input
