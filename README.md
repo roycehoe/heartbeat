@@ -1,4 +1,6 @@
-<a href="https://www.build.gov.sg/bfg2024/heart-beat"><img src="frontend/src/assets/img/brand/app-logo.svg" title="Heart Beat" alt="https://isomer-user-content.by.gov.sg/43/e09ddd2c-f666-4887-9d98-5a62c52d80c0/BFG_Logo.png"></a>
+<a href="https://www.build.gov.sg/bfg2024/heart-beat"><img src="frontend/public/assets/logo-heartbeat.svg" title="Heart Beat" alt="https://isomer-user-content.by.gov.sg/43/e09ddd2c-f666-4887-9d98-5a62c52d80c0/BFG_Logo.png"></a>
+
+<!-- <a href="https://www.build.gov.sg/bfg2024/heart-beat"><img src="https://isomer-user-content.by.gov.sg/43/e09ddd2c-f666-4887-9d98-5a62c52d80c0/BFG_Logo.png" title="Heart Beat" alt="https://isomer-user-content.by.gov.sg/43/e09ddd2c-f666-4887-9d98-5a62c52d80c0/BFG_Logo.png"></a> -->
 
 # HeartBeat
 
