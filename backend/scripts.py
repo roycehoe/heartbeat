@@ -7,7 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
-from enums import Gender, Race
+from enums import Gender, Race, AppLanguage
 from gateway import send_non_compliant_user_notification_message
 from models import Admin, Mood, User
 from utils.hashing import hash_password
@@ -85,13 +85,14 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
     return [
         {
             "id": 1,
-            "username": "user1@heartbeatmail.com",
-            "password": hash_password("user1@heartbeatmail.com"),
+            "username": "user1",
+            "password": hash_password("user1"),
             "name": "user1",
             "alias": "alias1",
             "age": 69,
             "race": Race.CHINESE,
             "gender": Gender.MALE,
+            "app_language": AppLanguage.ENGLISH,
             "postal_code": 123123,
             "floor": 9,
             "contact_number": 90001111,
@@ -102,13 +103,14 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
         },
         {
             "id": 2,
-            "username": "user2@heartbeatmail.com",
-            "password": hash_password("user2@heartbeatmail.com"),
+            "username": "user2",
+            "password": hash_password("user2"),
             "name": "user2",
             "alias": "alias1",
             "age": 69,
             "race": Race.CHINESE,
             "gender": Gender.MALE,
+            "app_language": AppLanguage.CHINESE,
             "postal_code": 123123,
             "floor": 9,
             "contact_number": 90001111,
@@ -119,13 +121,14 @@ def _generate_user_data(created_at_days_offset=24) -> list[dict]:
         },
         {
             "id": 3,
-            "username": "user3@heartbeatmail.com",
-            "password": hash_password("user3@heartbeatmail.com"),
+            "username": "user3",
+            "password": hash_password("user3"),
             "name": "user3",
-            "alias": "alias1",
+            "alias": "user3",
             "age": 69,
             "race": Race.CHINESE,
             "gender": Gender.MALE,
+            "app_language": AppLanguage.CHINESE,
             "postal_code": 123123,
             "floor": 9,
             "contact_number": 90001111,
@@ -142,10 +145,10 @@ def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
     return [
         {
             "id": 1,
-            "username": "admin@heartbeatmail.com",
-            "name": "admin1",
+            "username": "admin",
+            "name": "admin",
             "contact_number": 91348131,
-            "password": hash_password("admin@heartbeatmail.com"),
+            "password": hash_password("admin"),
             "created_at": created_at,
         }
     ]
@@ -158,17 +161,17 @@ def is_db_empty(db: Session) -> bool:
 
 
 def populate_db(db: Session) -> None:
-    mood_data = _generate_mood_data()
-    for data in mood_data:
-        CRUDMood(db).create(Mood(**data))
+    admin_data = _generate_admin_data()
+    for data in admin_data:
+        CRUDAdmin(db).create(Admin(**data))
 
     user_data = _generate_user_data()
     for data in user_data:
         CRUDUser(db).create(User(**data))
 
-    admin_data = _generate_admin_data()
-    for data in admin_data:
-        CRUDAdmin(db).create(Admin(**data))
+    mood_data = _generate_mood_data()
+    for data in mood_data:
+        CRUDMood(db).create(Mood(**data))
 
 
 def delete_all_db_data(db: Session) -> None:

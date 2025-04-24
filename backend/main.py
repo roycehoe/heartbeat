@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from database import Base, engine, get_db
 from routers import admin, admin_user, user
-from scripts import get_scheduler
+from scripts import delete_all_db_data, get_scheduler, is_db_empty, populate_db
 from services.statistics import get_statistics
 
 IS_PROD = dotenv_values(".env").get("IS_PROD")
@@ -25,8 +25,10 @@ app.add_middleware(
 def startup_event():
     db_session = next(get_db())
 
-    # if is_db_empty(db_session) and not IS_PROD:
-    #     populate_db(db_session)
+    # delete_all_db_data(db_session)
+
+    if is_db_empty(db_session):
+        populate_db(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()
 
