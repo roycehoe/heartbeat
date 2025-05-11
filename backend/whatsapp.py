@@ -1,7 +1,14 @@
+from datetime import datetime
 from typing import Literal, Optional
 from dotenv import dotenv_values
 from pydantic import BaseModel
 import requests
+
+from schemas.whatsapp import SendWhatsappMessageRequestData
+from utils.whatsapp import (
+    get_consecutive_sad_moods_whatsapp_message_data,
+    get_non_compliant_whatsapp_message_data,
+)
 
 WHATSAPP_API_BASE_URL = "https://graph.facebook.com/v22.0"
 PHONE_NUMBER_ID = dotenv_values(".env").get("PHONE_NUMBER_ID") or ""
@@ -48,7 +55,7 @@ def get_whatsapp_api_message_url(
 
 
 def send_whatsapp_message(
-    message: WhatsappMessageData,
+    message: SendWhatsappMessageRequestData,
     access_token=WHATSAPP_API_ACCESS_TOKEN,
     base_url: str = WHATSAPP_API_BASE_URL,
     phone_number_id: str = PHONE_NUMBER_ID,
@@ -65,40 +72,11 @@ def send_whatsapp_message(
     response.json()
 
 
-def get_consecutive_sad_moods_whatsapp_message_data(
-    to: str, name: str, sad_mood_count: int
-) -> WhatsappMessageData:
-    return WhatsappMessageData(
-        to=to,
-        template=WhatsappMessageDataTemplate(
-            name="consecutive_sad_moods",
-            language=WhatsappMessageDataLanguage(),
-            components=[
-                Component(
-                    parameters=[
-                        ComponentParameterText(parameter_name="name", text=name),
-                        ComponentParameterText(
-                            parameter_name="sad_mood_count", text=f"{sad_mood_count}"
-                        ),
-                    ]
-                )
-            ],
-        ),
-    )
-
-
-def get_test_whatsapp_message_data(to: str) -> WhatsappMessageData:
-    return WhatsappMessageData(
-        to=to,
-        template=WhatsappMessageDataTemplate(
-            name="hello_world",
-            language=WhatsappMessageDataLanguage(),
-        ),
-    )
-
-
 message = get_consecutive_sad_moods_whatsapp_message_data(
     "6591348131", "Lim Swee Swee", 2
+)
+message = get_non_compliant_whatsapp_message_data(
+    "6591348131", "Lim Swee Swee", datetime(2025, 3, 23)
 )
 
 # message = get_test_whatsapp_message_data("6591348131")
