@@ -19,36 +19,7 @@ class WhatsappMessageException(Exception):
     pass
 
 
-class ComponentParameterText(BaseModel):
-    type: str = "text"
-    parameter_name: str
-    text: str
-
-
-class Component(BaseModel):
-    type: str = "body"
-    parameters: list[ComponentParameterText]
-
-
-class WhatsappMessageDataLanguage(BaseModel):
-    code: str = "en"
-
-
-class WhatsappMessageDataTemplate(BaseModel):
-    name: str
-    language: WhatsappMessageDataLanguage
-    components: Optional[list[Component]] = []
-
-
-class WhatsappMessageData(BaseModel):
-    messaging_product: str = "whatsapp"
-    recipient_type: str = "individual"
-    type: str = "template"
-    to: str
-    template: WhatsappMessageDataTemplate
-
-
-def get_whatsapp_api_message_url(
+def _get_whatsapp_api_message_url(
     base_url: str = WHATSAPP_API_BASE_URL, phone_number_id: str = PHONE_NUMBER_ID
 ):
     return f"{base_url}/{phone_number_id}/messages"

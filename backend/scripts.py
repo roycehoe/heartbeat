@@ -11,6 +11,8 @@ from enums import Gender, Race, AppLanguage
 from gateway import send_non_compliant_user_notification_message
 from models import Admin, Mood, User
 from utils.hashing import hash_password
+from utils.whatsapp import get_non_compliant_whatsapp_message_data
+from whatsapp import send_whatsapp_message
 
 
 def _generate_mood_data_compliant_user(
@@ -197,31 +199,17 @@ def _update_non_compliant_users_states(db: Session) -> None:
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
 
 
-def delay_execution(func, delay_seconds=1):
-    def wrapper(*args, **kwargs):
-        time.sleep(delay_seconds)
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-@delay_execution
-def send_non_compliant_user_notification_message_with_delay(
-    name: str, date: datetime, to: str
-):
-    return send_non_compliant_user_notification_message(name, date, to)
-
 
 def _notify_admin_of_non_compliant_users(db: Session) -> None:
     non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
     for user in non_compliant_users:
         admin = CRUDAdmin(db).get(user.admin_id)
-        send_non_compliant_user_notification_message_with_delay(
+        whatsapp_message_data = get_non_compliant_whatsapp_message_data(
+            f"65{admin.contact_number}",
             user.name,
-            # datetime.now() - timedelta(days=1),
             datetime.now(pytz.timezone("Asia/Singapore")),
-            f"+65{admin.contact_number}",
         )
+        send_whatsapp_message(whatsapp_message_data)
 
 
 def _run_end_of_day_cron_job(db: Session) -> None:

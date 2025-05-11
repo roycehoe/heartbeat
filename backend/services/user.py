@@ -24,6 +24,8 @@ from schemas.user import (
 )
 from utils.hashing import verify_password
 from utils.token import create_access_token, get_token_data
+from utils.whatsapp import get_consecutive_sad_moods_whatsapp_message_data
+from whatsapp import send_whatsapp_message
 
 SHOULD_ALERT_ADMIN_CRITERION = 2
 DEFAULT_MOOD_MESSAGES_ENGLISH = (
@@ -239,11 +241,12 @@ def get_create_user_mood_response(
             user = CRUDUser(db).get(user_id)
             crud_user_out = CRUDUserOut.model_validate(user)
             admin = CRUDAdmin(db).get(crud_user_out.admin_id)
-            send_sad_user_notification_message(
+            whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
+                f"+65{admin.contact_number}",
                 crud_user_out.name,
                 SHOULD_ALERT_ADMIN_CRITERION,
-                f"+65{admin.contact_number}",
             )
+            send_whatsapp_message(whatsapp_message)
 
         updated_user = CRUDUser(db).get(user_id)
         crud_updated_user_out = CRUDUserOut.model_validate(updated_user)
