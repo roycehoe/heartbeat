@@ -1,66 +1,47 @@
-from datetime import datetime
-
 from dotenv import dotenv_values
-from twilio.rest import Client
+import requests
 
-TWILIO_ACCOUNT_SID = dotenv_values(".env").get("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = dotenv_values(".env").get("TWILIO_AUTH_TOKEN")
-TWILIO_NUMBER = dotenv_values(".env").get("TWILIO_NUMBER")
+from schemas.whatsapp import SendWhatsappMessageRequestData
 
-
-def get_twilio_client(
-    sid: str = TWILIO_ACCOUNT_SID, auth_token: str = TWILIO_AUTH_TOKEN
-) -> Client:
-    return Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+WHATSAPP_API_BASE_URL = "https://graph.facebook.com/v22.0"
+PHONE_NUMBER_ID = dotenv_values(".env").get("PHONE_NUMBER_ID") or ""
+WHATSAPP_API_ACCESS_TOKEN = dotenv_values(".env").get("WHATSAPP_API_ACCESS_TOKEN") or ""
 
 
-def send_SMS(
-    twilio_client: Client, to: str, message: str, twilio_number: str = TWILIO_NUMBER
-) -> None:
-    twilio_client.messages.create(
-        from_=twilio_number,
-        body=message,
-        to=to,
+class WhatsappMessageException(Exception):
+    pass
+
+
+def send_whatsapp_message(
+    message: SendWhatsappMessageRequestData,
+    access_token=WHATSAPP_API_ACCESS_TOKEN,
+    base_url: str = WHATSAPP_API_BASE_URL,
+    phone_number_id: str = PHONE_NUMBER_ID,
+):
+    whatsapp_api_message_url = f"{base_url}/{phone_number_id}/messages"
+    response = requests.post(
+        whatsapp_api_message_url,
+        message.model_dump_json(),
+        headers={"Authorization": access_token, "Content-Type": "application/json"},
     )
+    if not response.ok:
+        raise WhatsappMessageException(response.json())
 
+    response.json()
 
-def _get_non_compliant_user_notification_message(name: str, date: datetime):
-    return f"""Message from heart beat sg
-    
---INFO--
-{name} has not logged their mood on {datetime.strftime(date, "%d/%m/%y")}
-
-Admin dashboard: https://heartbeat.fancybinary.sg/admin
-"""
-
-
-def _get_sad_user_notification_message(
-    name: str,
-    consecutive_sad_moods_count: int,
+def get_whatsapp_business_info(
+    message: SendWhatsappMessageRequestData,
+    access_token=WHATSAPP_API_ACCESS_TOKEN,
+    base_url: str = WHATSAPP_API_BASE_URL,
+    phone_number_id: str = PHONE_NUMBER_ID,
 ):
-    return f"""Message from heart beat sg
-    
---WARNING--
-{name} has logged {consecutive_sad_moods_count} consecutive sad moods on their heartbeat device. Perhaps you should pay them a visit?
+    whatsapp_api_message_url = f"{base_url}/{phone_number_id}/messages"
+    response = requests.post(
+        whatsapp_api_message_url,
+        message.model_dump_json(),
+        headers={"Authorization": access_token, "Content-Type": "application/json"},
+    )
+    if not response.ok:
+        raise WhatsappMessageException(response.json())
 
-Admin dashboard: https://heartbeat.fancybinary.sg/admin
-"""
-
-
-def send_non_compliant_user_notification_message(name: str, date: datetime, to: str):
-    try:
-        twilio_client = get_twilio_client()
-        message = _get_non_compliant_user_notification_message(name, date)
-        return send_SMS(twilio_client, to, message)
-    except Exception as e:
-        print(f"TwillioRestException: {e}")
-
-
-def send_sad_user_notification_message(
-    name: str,
-    consecutive_sad_moods_count: int,
-    to: str,
-):
-    twilio_client = get_twilio_client()
-    message = _get_sad_user_notification_message(name, consecutive_sad_moods_count)
-    return send_SMS(twilio_client, to, message)
+    response.json()
