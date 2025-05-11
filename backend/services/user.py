@@ -10,7 +10,6 @@ from exceptions import (
     InvalidUsernameOrPasswordException,
     NoRecordFoundException,
 )
-from gateway import send_sad_user_notification_message
 from models import Mood
 from schemas.crud import CRUDMoodOut, CRUDUserOut
 from schemas.user import (
@@ -25,7 +24,7 @@ from schemas.user import (
 from utils.hashing import verify_password
 from utils.token import create_access_token, get_token_data
 from utils.whatsapp import get_consecutive_sad_moods_whatsapp_message_data
-from whatsapp import send_whatsapp_message
+from gateway import send_whatsapp_message
 
 SHOULD_ALERT_ADMIN_CRITERION = 2
 DEFAULT_MOOD_MESSAGES_ENGLISH = (

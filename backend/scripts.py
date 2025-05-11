@@ -8,11 +8,10 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import Gender, Race, AppLanguage
-from gateway import send_non_compliant_user_notification_message
 from models import Admin, Mood, User
 from utils.hashing import hash_password
 from utils.whatsapp import get_non_compliant_whatsapp_message_data
-from whatsapp import send_whatsapp_message
+from gateway import send_whatsapp_message
 
 
 def _generate_mood_data_compliant_user(
@@ -197,7 +196,6 @@ def _update_non_compliant_users_states(db: Session) -> None:
     non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
     for user in non_compliant_users:
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
-
 
 
 def _notify_admin_of_non_compliant_users(db: Session) -> None:

@@ -5,7 +5,12 @@ from sqlalchemy.orm import Session
 
 from database import Base, engine, get_db
 from routers import admin, admin_user, user
-from scripts import delete_all_db_data, get_scheduler, is_db_empty, populate_db
+from scripts import (
+    delete_all_db_data,
+    get_scheduler,
+    is_db_empty,
+    populate_db,
+)
 from services.statistics import get_statistics
 
 IS_PROD = dotenv_values(".env").get("IS_PROD")
