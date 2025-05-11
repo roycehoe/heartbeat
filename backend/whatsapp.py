@@ -1,3 +1,4 @@
+from typing import Literal, Optional
 from dotenv import dotenv_values
 from pydantic import BaseModel
 import requests
@@ -11,19 +12,32 @@ class WhatsappMessageException(Exception):
     pass
 
 
+class ComponentParameterText(BaseModel):
+    type: str = "text"
+    parameter_name: str
+    text: str
+
+
+class Component(BaseModel):
+    type: str = "body"
+    parameters: list[ComponentParameterText]
+
+
 class WhatsappMessageDataLanguage(BaseModel):
-    code: str = "en_US"
+    code: str = "en"
 
 
 class WhatsappMessageDataTemplate(BaseModel):
-    name: str = "hello_world"
+    name: str
     language: WhatsappMessageDataLanguage
+    components: Optional[list[Component]] = []
 
 
 class WhatsappMessageData(BaseModel):
     messaging_product: str = "whatsapp"
-    to: str
+    recipient_type: str = "individual"
     type: str = "template"
+    to: str
     template: WhatsappMessageDataTemplate
 
 
@@ -51,8 +65,41 @@ def send_whatsapp_message(
     response.json()
 
 
-message = WhatsappMessageData(
-    to="6591348131",
-    template=WhatsappMessageDataTemplate(language=WhatsappMessageDataLanguage()),
+def get_consecutive_sad_moods_whatsapp_message_data(
+    to: str, name: str, sad_mood_count: int
+) -> WhatsappMessageData:
+    return WhatsappMessageData(
+        to=to,
+        template=WhatsappMessageDataTemplate(
+            name="consecutive_sad_moods",
+            language=WhatsappMessageDataLanguage(),
+            components=[
+                Component(
+                    parameters=[
+                        ComponentParameterText(parameter_name="name", text=name),
+                        ComponentParameterText(
+                            parameter_name="sad_mood_count", text=f"{sad_mood_count}"
+                        ),
+                    ]
+                )
+            ],
+        ),
+    )
+
+
+def get_test_whatsapp_message_data(to: str) -> WhatsappMessageData:
+    return WhatsappMessageData(
+        to=to,
+        template=WhatsappMessageDataTemplate(
+            name="hello_world",
+            language=WhatsappMessageDataLanguage(),
+        ),
+    )
+
+
+message = get_consecutive_sad_moods_whatsapp_message_data(
+    "6591348131", "Lim Swee Swee", 2
 )
+
+# message = get_test_whatsapp_message_data("6591348131")
 send_whatsapp_message(message)
