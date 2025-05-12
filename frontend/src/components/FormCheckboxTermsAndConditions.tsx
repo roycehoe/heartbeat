@@ -24,13 +24,13 @@ function FormCheckboxTermsAndConditions(props: {
         By checking the box below, I acknoledge that I have read and agreed to
         heartbeat's&nbsp;
         <Link
-          href="src/assets/HeartBeat-Data-Protection-Notice.pdf"
+          href="/assets/HeartBeat-Data-Protection-Notice.pdf"
           target="_blank"
         >
           data protection notice
         </Link>
         &nbsp;and&nbsp;
-        <Link href="src/assets/HeartBeat-TOU.pdf" target="_blank">
+        <Link href="/assets/HeartBeat-TOU.pdf" target="_blank">
           terms of use.
         </Link>
       </Text>
