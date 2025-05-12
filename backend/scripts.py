@@ -152,7 +152,7 @@ def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
             "username": "admin",
             "name": "admin",
             "contact_number": 91348131,
-            "password": hash_password("admin"),
+            "password": hash_password(ADMIN_PASSWORD),
             "created_at": created_at,
         }
     ]
