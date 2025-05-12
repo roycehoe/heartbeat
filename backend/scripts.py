@@ -2,6 +2,7 @@ import time
 from datetime import datetime, timedelta
 from random import choice, sample
 
+from dotenv import dotenv_values
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy.orm import Session
@@ -12,6 +13,8 @@ from models import Admin, Mood, User
 from utils.hashing import hash_password
 from utils.whatsapp import get_non_compliant_whatsapp_message_data
 from gateway import send_whatsapp_message
+
+ADMIN_PASSWORD = dotenv_values(".env").get("ADMIN_PASSWORD") or "admin"
 
 
 def _generate_mood_data_compliant_user(
