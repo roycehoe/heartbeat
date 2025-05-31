@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StringConstraints, constr
 
 from enums import AppLanguage, Gender, Race, SelectedMood
 
@@ -48,7 +48,7 @@ class AdminUserDashboardOut(BaseModel):
 
 
 class UserCreateRequest(BaseModel):
-    username: str  # Doubles as username
+    username: Annotated[str, StringConstraints(to_lower=True)]
     password: str
     name: str
     confirm_password: str = Field(..., alias="confirmPassword")
