@@ -18,7 +18,11 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
-import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
+import {
+  CreateUserRequest,
+  getCreateUserResponse,
+  useGetCreateNewUser,
+} from "../../../api/admin";
 import { AppLanguage, Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
@@ -65,6 +69,8 @@ function ModalCreateUser() {
     useState(false);
   const navigate = useNavigate();
 
+  const { mutate, isPending } = useGetCreateNewUser();
+
   function resetCreateUserForm() {
     setCreateUserForm({ ...DEFAULT_CREATE_USER_FORM });
   }
@@ -89,13 +95,6 @@ function ModalCreateUser() {
     setIsCreateUserButtonLoading(false);
   }
 
-  function handleBackIconClick() {
-    navigate(`/admin`);
-  }
-
-  function handleHowDoesItWorkLinkClick() {
-    navigate(`/admin/about`);
-  }
 
   return (
     <Box
@@ -115,7 +114,7 @@ function ModalCreateUser() {
       >
         <Box display="flex" gap="8px" justifyContent="space-between">
           <IconButton
-            onClick={handleBackIconClick}
+            onClick={() => navigate(`/admin`)}
             isRound={true}
             variant="solid"
             aria-label="Done"
@@ -130,7 +129,9 @@ function ModalCreateUser() {
             Set up an account for your loved one to keep tabs on their mental
             well-being
           </Text>
-          <Link onClick={handleHowDoesItWorkLinkClick}>How does it work?</Link>
+          <Link onClick={() => navigate(`/admin/about`)}>
+            How does it work?
+          </Link>
         </Box>
 
         <Box display="flex" flexDirection="column" width="100%" gap="24px">
