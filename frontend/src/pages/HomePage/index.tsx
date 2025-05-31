@@ -86,18 +86,18 @@ function HomePage() {
         >
           <Box height="50%">
             <Display
-              dashboardData={dashboardData}
+              dashboardData={dashboardData.data}
               goToNextUser={incrementIndex}
               onClaimGiftBtnClick={onClaimGiftBtnClick}
             />
           </Box>
           <Box height="50%">
             <MoodBtns
-              isDisabled={!dashboardData.can_record_mood}
-              moodsCreatedAt={dashboardData.moods.map((mood) =>
+              isDisabled={!dashboardData.data.can_record_mood}
+              moodsCreatedAt={dashboardData.data.moods.map((mood) =>
                 moment(mood.created_at)
               )}
-              streak={dashboardData.consecutive_checkins}
+              streak={dashboardData.data.consecutive_checkins}
               onClick={onMoodButtonClick}
               moodMessage={moodMessage}
             />

@@ -82,10 +82,9 @@ export function useGetUserDashboardResponse() {
 }
 
 export async function getAdminDashboardResponse(): Promise<
-  DashboardResponse[]
+  AxiosResponse<DashboardResponse[]>
 > {
-  const response = await httpClient.get("/admin/dashboard");
-  return response.data;
+  return await httpClient.get("/admin/dashboard");
 }
 
 export function useGetAdminDashboardResponse() {

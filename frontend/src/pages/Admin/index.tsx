@@ -136,10 +136,10 @@ function Admin() {
               <Heading size="sm">Persons I care for</Heading>
             </Box>
 
-            <AdminDashboardSummaryCards dashboardData={data} />
+            <AdminDashboardSummaryCards dashboardData={data.data} />
 
             <TableMoodSnapshot
-              dashboardData={data}
+              dashboardData={data.data}
               getColorTag={getColorTag}
               handleUserClick={handleUserClick}
             />
