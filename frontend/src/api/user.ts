@@ -88,6 +88,13 @@ export async function getAdminDashboardResponse(): Promise<
   return response.data;
 }
 
+export function useGetAdminDashboardResponse() {
+  return useQuery({
+    queryKey: ["getAdminDashboardResponse"],
+    queryFn: () => getAdminDashboardResponse(),
+  });
+}
+
 export async function getUserMoodResponse(
   moodRequest: MoodRequest
 ): Promise<MoodResponse> {

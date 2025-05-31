@@ -1,11 +1,10 @@
 import { Box, Card, Fade, Grid, Heading, Image, Text } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DashboardResponse,
-  getAdminDashboardResponse,
   Mood,
+  useGetAdminDashboardResponse,
 } from "../../api/user";
 
 import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
@@ -74,16 +73,10 @@ function AdminDashboardSummaryCards(props: {
 }
 
 function Admin() {
-  const [dashboardData, setDashboardData] = useState<DashboardResponse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const loadDashboardData = async () => {
-    setIsLoading(true);
-    const dashboardResponse = await getAdminDashboardResponse();
-    setDashboardData(dashboardResponse);
-    setIsLoading(false);
-  };
+  const { data, isLoading } = useGetAdminDashboardResponse();
+
   const handleUserClick = (userId: number) => {
     navigate(`/admin/${userId}`);
   };
@@ -91,15 +84,11 @@ function Admin() {
     navigate(`/admin/create-user`);
   };
 
-  useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      navigate("/login");
-      return;
-    }
-    loadDashboardData();
-  }, []);
-
-  if (isLoading || !dashboardData) {
+  if (!localStorage.getItem("token")) {
+    navigate("/login");
+    return;
+  }
+  if (isLoading || !data) {
     return (
       <Box
         width="100vw"
@@ -137,10 +126,10 @@ function Admin() {
             <Heading size="sm">Persons I care for</Heading>
           </Box>
 
-          <AdminDashboardSummaryCards dashboardData={dashboardData} />
+          <AdminDashboardSummaryCards dashboardData={data} />
 
           <TableMoodSnapshot
-            dashboardData={dashboardData}
+            dashboardData={data}
             getColorTag={getColorTag}
             handleUserClick={handleUserClick}
           />
