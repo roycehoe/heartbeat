@@ -6,38 +6,20 @@ import {
   Heading,
   IconButton,
   Link,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
-import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
-import {
-  CreateUserRequest,
-  getCreateUserResponse,
-  useGetCreateNewUser,
-} from "../../../api/admin";
+import { CreateUserRequest, useGetCreateNewUser } from "../../../api/admin";
 import { AppLanguage, Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
-import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import {
-  CREATE_USER_FORM_FIELDS_PROPS,
-  VIEW_USER_FORM_FIELDS_PROPS,
-} from "../constants";
+import { CREATE_USER_FORM_FIELDS_PROPS } from "../constants";
 import { getSubmitCreateUserFormErrorMessage } from "../utils";
-const MODAL_HEADER = "Create user";
-const MODAL_BODY_BANNER = "User created successfully!";
 
 export interface CreateUserForm extends CreateUserRequest {
   hasAgreedToTermsAndConditions: boolean;
@@ -67,7 +49,7 @@ function ModalCreateUser() {
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
   const navigate = useNavigate();
-
+  const toast = useToast();
   const { mutate, isPending } = useGetCreateNewUser();
 
   function resetCreateUserForm() {
@@ -89,6 +71,13 @@ function ModalCreateUser() {
           setHasCreatedUserSuccessfully(true);
           setErrorMessage("");
           navigate(`/admin`);
+          toast({
+            title: "User created",
+            description: "Your user has been created successfully",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
         },
         onError: (error) => {
           if (axios.isAxiosError(error) && error.response?.status === 400) {
