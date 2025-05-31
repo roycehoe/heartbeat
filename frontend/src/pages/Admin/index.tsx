@@ -1,4 +1,13 @@
-import { Box, Card, Fade, Grid, Heading, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  Fade,
+  Grid,
+  Heading,
+  Image,
+  Link,
+  Text,
+} from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -110,32 +119,40 @@ function Admin() {
     >
       <Fade in={!isLoading} style={{ width: "100%", height: "100%" }}>
         <Box
-          className="page"
-          margin="18px"
           display="flex"
           flexDir="column"
-          gap="24px"
+          justifyContent="space-between"
+          style={{ width: "100%", height: "100%" }}
+          padding="18px"
         >
-          <Box display="flex" gap="8px" alignItems="center">
-            <Image src="/assets/icon/heart.svg"></Image>
-            <Heading size="sm" color="#007AFF">
-              HeartBeat
-            </Heading>
+          <Box className="page" display="flex" flexDir="column" gap="24px">
+            <Box display="flex" gap="8px" alignItems="center">
+              <Image src="/assets/icon/heart.svg"></Image>
+              <Heading size="sm" color="#007AFF">
+                HeartBeat
+              </Heading>
+            </Box>
+            <Box>
+              <Heading size="sm">Persons I care for</Heading>
+            </Box>
+
+            <AdminDashboardSummaryCards dashboardData={data} />
+
+            <TableMoodSnapshot
+              dashboardData={data}
+              getColorTag={getColorTag}
+              handleUserClick={handleUserClick}
+            />
+            <Button size="xs" onClick={handleAddAnotherPersonClick}>
+              Add another person
+            </Button>
           </Box>
           <Box>
-            <Heading size="sm">Persons I care for</Heading>
+            <Text fontSize="12px">
+              Enjoying this app? Check out&nbsp;
+              <Link href="https://my.carecompass.sg/">CareCompass</Link>
+            </Text>
           </Box>
-
-          <AdminDashboardSummaryCards dashboardData={data} />
-
-          <TableMoodSnapshot
-            dashboardData={data}
-            getColorTag={getColorTag}
-            handleUserClick={handleUserClick}
-          />
-          <Button size="xs" onClick={handleAddAnotherPersonClick}>
-            Add another person
-          </Button>
         </Box>
       </Fade>
     </Box>
