@@ -27,6 +27,7 @@ import { AppLanguage, Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
@@ -63,8 +64,6 @@ function ModalCreateUser() {
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isCreateUserButtonLoading, setIsCreateUserButtonLoading] =
-    useState(false);
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
   const navigate = useNavigate();
@@ -80,21 +79,37 @@ function ModalCreateUser() {
   }, [createUserForm]);
 
   async function handleCreateUser() {
-    setIsCreateUserButtonLoading(true);
-    try {
-      await getCreateUserResponse(createUserForm);
-      resetCreateUserForm();
-      setHasCreatedUserSuccessfully(true);
-      setErrorMessage("");
-      navigate(`/admin`);
-    } catch (error) {
-      if (error?.response) {
-        setErrorMessage("Something went wrong. Please try again later.");
+    mutate(
+      {
+        ...createUserForm,
+      },
+      {
+        onSuccess: () => {
+          resetCreateUserForm();
+          setHasCreatedUserSuccessfully(true);
+          setErrorMessage("");
+          navigate(`/admin`);
+        },
+        onError: (error) => {
+          if (axios.isAxiosError(error) && error.response?.status === 400) {
+            return setErrorMessage("This username has already been taken");
+          }
+          setErrorMessage("Something went wrong. Please try again later.");
+        },
       }
-    }
-    setIsCreateUserButtonLoading(false);
+    );
+    // try {
+    //   await getCreateUserResponse(createUserForm);
+    //   resetCreateUserForm();
+    //   setHasCreatedUserSuccessfully(true);
+    //   setErrorMessage("");
+    //   navigate(`/admin`);
+    // } catch (error) {
+    //   if (error?.response) {
+    //     setErrorMessage("Something went wrong. Please try again later.");
+    //   }
+    // }
   }
-
 
   return (
     <Box
@@ -148,8 +163,7 @@ function ModalCreateUser() {
             mr="3px"
             variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
             onClick={handleCreateUser}
-            isDisabled={errorMessage !== ""}
-            isLoading={isCreateUserButtonLoading}
+            isLoading={isPending}
           >
             {hasCreatedUserSuccessfully ? "User created!" : "Create account"}
           </Button>
