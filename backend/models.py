@@ -63,6 +63,7 @@ class User(Base):
     )
 
     consecutive_checkins = Column(Integer, nullable=False)
+    is_suspended = Column(Boolean, nullable=False, default=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
     admin_id = Column(Integer, ForeignKey("admin.id"))

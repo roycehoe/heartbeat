@@ -13,6 +13,8 @@ from services.admin_user import (
     get_delete_user_response,
     get_get_user_response,
     get_reset_user_password_response,
+    get_suspend_user_response,
+    get_unsuspend_user_response,
     get_update_user_response,
 )
 
@@ -72,11 +74,10 @@ def update_user(
 )
 def suspend_user(
     user_id: int,
-    request: UserUpdateRequest,
     token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_update_user_response(user_id, request, token, db)
+    return get_suspend_user_response(user_id, token, db)
 
 
 @router.put(
@@ -85,11 +86,10 @@ def suspend_user(
 )
 def unsuspend_user(
     user_id: int,
-    request: UserUpdateRequest,
     token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_update_user_response(user_id, request, token, db)
+    return get_unsuspend_user_response(user_id, token, db)
 
 
 @router.delete(
