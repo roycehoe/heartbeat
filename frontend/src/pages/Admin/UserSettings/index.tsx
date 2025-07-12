@@ -1,8 +1,11 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Heading,
   IconButton,
+  Switch,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -13,6 +16,7 @@ import {
   getDeleteUserResponse,
   getResetUserPasswordResponse,
   ResetUserPasswordRequest,
+  useGetAdminUserResponse,
 } from "../../../api/admin";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteUser from "../../../components/ModalDeleteUser";
@@ -26,6 +30,7 @@ const UserSettings = () => {
     useState<boolean>(false);
   const navigate = useNavigate();
   const toast = useToast();
+  const { data, isLoading } = useGetAdminUserResponse(userId);
 
   const handleBackIconClick = (userName: string) => {
     navigate(`/admin/${userName}`);
@@ -58,6 +63,13 @@ const UserSettings = () => {
     navigate(`/admin`);
   };
 
+  if (isLoading) {
+    return;
+  }
+  if (!data) {
+    return;
+  }
+
   return (
     <Box
       width="100%"
@@ -75,7 +87,7 @@ const UserSettings = () => {
       >
         <Box display="flex" gap="8px" justifyContent="space-between">
           <IconButton
-            onClick={() => handleBackIconClick(userId)}
+            onClick={() => handleBackIconClick(data.user_id)}
             isRound={true}
             variant="solid"
             aria-label="Done"
@@ -91,6 +103,10 @@ const UserSettings = () => {
         </Banner>
 
         <Box display="flex" gap="12px" flexDirection="column">
+          <FormControl display="flex" alignItems="center">
+            <FormLabel mb="0">Suspend user?</FormLabel>
+            <Switch isChecked={data.is_suspended} />
+          </FormControl>
           <Button
             width="100%"
             onClick={() => setIsResetUserPasswordModalOpen(true)}
