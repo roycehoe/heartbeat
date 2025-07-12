@@ -1,3 +1,5 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 import { httpClient } from "./httpClient";
 import { AppLanguage, DashboardResponse, Gender, Race } from "./user";
 
@@ -24,9 +26,14 @@ export interface UpdateUserRequest extends CreateUserRequest {}
 
 export async function getCreateUserResponse(
   createUserRequest: CreateUserRequest
-): Promise<null> {
-  const response = await httpClient.post("/admin/user", createUserRequest);
-  return response.data;
+): Promise<AxiosResponse<null>> {
+  return await httpClient.post("/admin/user", createUserRequest);
+}
+
+export function useGetCreateNewUser() {
+  return useMutation({
+    mutationFn: (request: CreateUserRequest) => getCreateUserResponse(request),
+  });
 }
 
 export async function getDeleteUserResponse(userId: number): Promise<null> {

@@ -1,3 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
+import { useNavigate } from "react-router-dom";
 import { httpClient } from "./httpClient";
 
 export enum MoodValue {
@@ -64,16 +67,31 @@ interface LoginResponse {
   token_type: string;
 }
 
-export async function getUserDashboardResponse(): Promise<DashboardResponse> {
-  const response = await httpClient.get("/user/dashboard");
-  return response.data;
+export async function getUserDashboardResponse(): Promise<
+  AxiosResponse<DashboardResponse>
+> {
+  return await httpClient.get("/user/dashboard");
+}
+
+export function useGetUserDashboardResponse() {
+  return useQuery({
+    queryKey: ["getUserDashboardResponse"],
+    queryFn: () => getUserDashboardResponse(),
+    refetchInterval: 60 * 60 * 1000, // auto-refetch every hour
+  });
 }
 
 export async function getAdminDashboardResponse(): Promise<
-  DashboardResponse[]
+  AxiosResponse<DashboardResponse[]>
 > {
-  const response = await httpClient.get("/admin/dashboard");
-  return response.data;
+  return await httpClient.get("/admin/dashboard");
+}
+
+export function useGetAdminDashboardResponse() {
+  return useQuery({
+    queryKey: ["getAdminDashboardResponse"],
+    queryFn: () => getAdminDashboardResponse(),
+  });
 }
 
 export async function getUserMoodResponse(
