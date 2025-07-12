@@ -29,6 +29,9 @@ importers:
       '@rollup/rollup-linux-x64-gnu':
         specifier: ^4.21.2
         version: 4.21.2
+      '@tanstack/react-query':
+        specifier: ^5.77.2
+        version: 5.77.2(react@18.3.1)
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -1185,6 +1188,14 @@ packages:
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
+
+  '@tanstack/query-core@5.77.2':
+    resolution: {integrity: sha512-1lqJwPsR6GX6nZFw06erRt518O19tWU6Q+x0fJUygl4lxHCYF2nhzBPwLKk2NPjYOrpR0K567hxPc5K++xDe9Q==}
+
+  '@tanstack/react-query@5.77.2':
+    resolution: {integrity: sha512-BRHxWdy1mHmgAcYA/qy2IPLylT81oebLgkm9K85viN2Qol/Vq48t1dzDFeDIVQjTWDV96AmqsLNPlH5HjyKCxA==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -3592,6 +3603,13 @@ snapshots:
 
   '@swc/core-linux-x64-gnu@1.7.23':
     optional: true
+
+  '@tanstack/query-core@5.77.2': {}
+
+  '@tanstack/react-query@5.77.2(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.77.2
+      react: 18.3.1
 
   '@types/babel__core@7.20.5':
     dependencies:

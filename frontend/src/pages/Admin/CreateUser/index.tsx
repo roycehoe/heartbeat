@@ -6,33 +6,20 @@ import {
   Heading,
   IconButton,
   Link,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
-import { debounce } from "es-toolkit";
 import { useEffect, useState } from "react";
-import { CreateUserRequest, getCreateUserResponse } from "../../../api/admin";
+import { CreateUserRequest, useGetCreateNewUser } from "../../../api/admin";
 import { AppLanguage, Gender, Race } from "../../../api/user";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
-import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import ModalContentWithBannerSuccess from "../../../components/ModalContentWithBannerSuccess";
-import {
-  CREATE_USER_FORM_FIELDS_PROPS,
-  VIEW_USER_FORM_FIELDS_PROPS,
-} from "../constants";
+import { CREATE_USER_FORM_FIELDS_PROPS } from "../constants";
 import { getSubmitCreateUserFormErrorMessage } from "../utils";
-const MODAL_HEADER = "Create user";
-const MODAL_BODY_BANNER = "User created successfully!";
 
 export interface CreateUserForm extends CreateUserRequest {
   hasAgreedToTermsAndConditions: boolean;
@@ -59,11 +46,11 @@ function ModalCreateUser() {
     ...DEFAULT_CREATE_USER_FORM,
   } as CreateUserForm);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isCreateUserButtonLoading, setIsCreateUserButtonLoading] =
-    useState(false);
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
+  const { mutate, isPending } = useGetCreateNewUser();
 
   function resetCreateUserForm() {
     setCreateUserForm({ ...DEFAULT_CREATE_USER_FORM });
@@ -74,27 +61,43 @@ function ModalCreateUser() {
   }, [createUserForm]);
 
   async function handleCreateUser() {
-    setIsCreateUserButtonLoading(true);
-    try {
-      await getCreateUserResponse(createUserForm);
-      resetCreateUserForm();
-      setHasCreatedUserSuccessfully(true);
-      setErrorMessage("");
-      navigate(`/admin`);
-    } catch (error) {
-      if (error?.response) {
-        setErrorMessage("Something went wrong. Please try again later.");
+    mutate(
+      {
+        ...createUserForm,
+      },
+      {
+        onSuccess: () => {
+          resetCreateUserForm();
+          setHasCreatedUserSuccessfully(true);
+          setErrorMessage("");
+          navigate(`/admin`);
+          toast({
+            title: "User created",
+            description: "Your user has been created successfully",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+        },
+        onError: (error) => {
+          if (axios.isAxiosError(error) && error.response?.status === 400) {
+            return setErrorMessage("This username has already been taken");
+          }
+          setErrorMessage("Something went wrong. Please try again later.");
+        },
       }
-    }
-    setIsCreateUserButtonLoading(false);
-  }
-
-  function handleBackIconClick() {
-    navigate(`/admin`);
-  }
-
-  function handleHowDoesItWorkLinkClick() {
-    navigate(`/admin/about`);
+    );
+    // try {
+    //   await getCreateUserResponse(createUserForm);
+    //   resetCreateUserForm();
+    //   setHasCreatedUserSuccessfully(true);
+    //   setErrorMessage("");
+    //   navigate(`/admin`);
+    // } catch (error) {
+    //   if (error?.response) {
+    //     setErrorMessage("Something went wrong. Please try again later.");
+    //   }
+    // }
   }
 
   return (
@@ -115,7 +118,7 @@ function ModalCreateUser() {
       >
         <Box display="flex" gap="8px" justifyContent="space-between">
           <IconButton
-            onClick={handleBackIconClick}
+            onClick={() => navigate(`/admin`)}
             isRound={true}
             variant="solid"
             aria-label="Done"
@@ -130,7 +133,9 @@ function ModalCreateUser() {
             Set up an account for your loved one to keep tabs on their mental
             well-being
           </Text>
-          <Link onClick={handleHowDoesItWorkLinkClick}>How does it work?</Link>
+          <Link onClick={() => navigate(`/admin/about`)}>
+            How does it work?
+          </Link>
         </Box>
 
         <Box display="flex" flexDirection="column" width="100%" gap="24px">
@@ -147,8 +152,7 @@ function ModalCreateUser() {
             mr="3px"
             variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
             onClick={handleCreateUser}
-            isDisabled={errorMessage !== ""}
-            isLoading={isCreateUserButtonLoading}
+            isLoading={isPending}
           >
             {hasCreatedUserSuccessfully ? "User created!" : "Create account"}
           </Button>

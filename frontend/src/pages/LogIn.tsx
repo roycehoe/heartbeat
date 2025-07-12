@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminLoginResponse, getUserLoginResponse } from "../api/user";
 
-const DEFAULT_ROLES: string[] = ["user", "admin"];
+const DEFAULT_ROLES: string[] = ["user", "caregiver"];
 
 function LogIn() {
   const [username, setUsername] = useState("");
@@ -52,7 +52,7 @@ function LogIn() {
         );
       }
     }
-    if (role === "admin") {
+    if (role === "caregiver") {
       try {
         const response = await getAdminLoginResponse({
           username: username,

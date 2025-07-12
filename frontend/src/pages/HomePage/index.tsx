@@ -1,15 +1,14 @@
 import { Box, Fade } from "@chakra-ui/react";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
 import {
-  DashboardResponse,
   getUserClaimGiftResponse,
-  getUserDashboardResponse,
   getUserMoodResponse,
   MoodValue,
-} from "../../api/user";
+  useGetUserDashboardResponse,
+} from "../../api/user"; // ← Make sure this is the correct path
 import Display from "./Display";
 import MoodBtns from "./MoodBtns";
 
@@ -18,40 +17,26 @@ function HomePage() {
     const storedIndex = localStorage.getItem("currentIndex");
     return storedIndex !== null ? Number(storedIndex) : 0;
   });
-  const [dashboardData, setDashboardData] = useState<DashboardResponse>();
+
   const [moodMessage, setMoodMessage] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      navigate("/login");
-      return;
-    }
-
-    const loadDashboard = async () => {
-      setIsLoading(true);
-      const dashboardResponse = await getUserDashboardResponse();
-      setDashboardData(dashboardResponse);
-      setIsLoading(false);
-    };
-    loadDashboard();
-
-    const intervalId = setInterval(() => {
-      loadDashboard();
-    }, 60 * 60 * 1000);
-    return () => clearInterval(intervalId);
-  }, [currentIndex]);
+  const {
+    data: dashboardData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetUserDashboardResponse();
 
   const onMoodButtonClick = async (mood: MoodValue) => {
-    const userMoodResponse = await getUserMoodResponse({ mood: mood });
+    const userMoodResponse = await getUserMoodResponse({ mood });
     setMoodMessage(userMoodResponse.mood_message);
-    setDashboardData(userMoodResponse);
+    refetch(); // Refresh dashboard after mood update
   };
 
   const onClaimGiftBtnClick = async () => {
-    const userClaimGiftResponse = await getUserClaimGiftResponse();
-    setDashboardData(userClaimGiftResponse);
+    await getUserClaimGiftResponse();
+    refetch(); // Refresh dashboard after claiming gift
   };
 
   const incrementIndex = () => {
@@ -63,6 +48,13 @@ function HomePage() {
     localStorage.setItem("currentIndex", nextIndex.toString());
   };
 
+  if (error) {
+    navigate("/login");
+    return;
+  }
+  if (!localStorage.getItem("token")) {
+    return navigate("/login");
+  }
   if (isLoading || !dashboardData) {
     return (
       <Box
@@ -72,9 +64,10 @@ function HomePage() {
         flexDirection="column"
         className="page"
         bg="url('/assets/loading.svg')"
-      ></Box>
+      />
     );
   }
+
   return (
     <Box
       width="100%"
@@ -93,21 +86,21 @@ function HomePage() {
         >
           <Box height="50%">
             <Display
-              dashboardData={dashboardData}
+              dashboardData={dashboardData.data}
               goToNextUser={incrementIndex}
               onClaimGiftBtnClick={onClaimGiftBtnClick}
-            ></Display>
+            />
           </Box>
           <Box height="50%">
             <MoodBtns
-              isDisabled={!dashboardData.can_record_mood}
-              moodsCreatedAt={dashboardData.moods.map((mood) =>
+              isDisabled={!dashboardData.data.can_record_mood}
+              moodsCreatedAt={dashboardData.data.moods.map((mood) =>
                 moment(mood.created_at)
               )}
-              streak={dashboardData.consecutive_checkins}
+              streak={dashboardData.data.consecutive_checkins}
               onClick={onMoodButtonClick}
               moodMessage={moodMessage}
-            ></MoodBtns>
+            />
           </Box>
         </Box>
       </Fade>
