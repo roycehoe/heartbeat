@@ -77,63 +77,70 @@ const UserSettings = () => {
       display="flex"
       flexDirection="column"
       className="page"
+      justifyContent="space-between"
     >
       <Box
         className="page"
-        margin="18px"
+        height="100%"
+        margin="24px"
         display="flex"
         flexDir="column"
+        justifyContent="space-between"
         gap="24px"
       >
-        <Box display="flex" gap="8px" justifyContent="space-between">
-          <IconButton
-            onClick={() => handleBackIconClick(data.user_id)}
-            isRound={true}
-            variant="solid"
-            aria-label="Done"
-            icon={<IconArrowLeft />}
-          />
-        </Box>
-        <Box display="flex" gap="4px">
-          <Heading size="sm">Auto-reminders</Heading>
-          <img height="18px" width="18px" src="/assets/icon/edit.svg" />
-        </Box>
-        <Banner size="sm" variant="warn">
-          1:00PM daily if no user input
-        </Banner>
-
-        <Box display="flex" gap="12px" flexDirection="column">
+        <Box display="flex" flexDir="column" gap="12px">
+          <Box display="flex" gap="8px">
+            <IconButton
+              onClick={() => handleBackIconClick(data.user_id)}
+              isRound={true}
+              variant="solid"
+              aria-label="Done"
+              icon={<IconArrowLeft />}
+            />
+          </Box>
+          <Box display="flex" gap="4px">
+            <Heading size="sm">Auto-reminders</Heading>
+            <img height="18px" width="18px" src="/assets/icon/edit.svg" />
+          </Box>
+          <Banner size="sm" variant="warn">
+            1:00PM daily if no user input
+          </Banner>
           <FormControl display="flex" alignItems="center">
             <FormLabel mb="0">Suspend user?</FormLabel>
             <Switch isChecked={data.is_suspended} />
           </FormControl>
-          <Button
-            width="100%"
-            onClick={() => setIsResetUserPasswordModalOpen(true)}
-          >
-            <Text>Reset user's password</Text>
-          </Button>
-          <Button
-            width="100%"
-            colorScheme="critical"
-            onClick={() => setIsDeleteUserModalOpen(true)}
-          >
-            <Text>Delete user</Text>
-          </Button>
-          <ModalDeleteUser
-            isOpen={isDeleteUserModalOpen}
-            onClose={() => setIsDeleteUserModalOpen(false)}
-            onConfirm={() => handleOnConfirmModalDeleteUser(Number(userId))}
-          />
-          <ModalResetUserPassword
-            isOpen={isResetUserPasswordModalOpen}
-            onClose={() => setIsResetUserPasswordModalOpen(false)}
-            onConfirm={() =>
-              handleOnConfirmModalResetUserPassword({
-                user_id: Number(userId),
-              })
-            }
-          />
+        </Box>
+
+        <Box>
+          <Box display="flex" gap="16px" flexDirection="column">
+            <Button
+              width="100%"
+              onClick={() => setIsResetUserPasswordModalOpen(true)}
+            >
+              <Text>Reset user's password</Text>
+            </Button>
+            <Button
+              width="100%"
+              colorScheme="critical"
+              onClick={() => setIsDeleteUserModalOpen(true)}
+            >
+              <Text>Delete user</Text>
+            </Button>
+            <ModalDeleteUser
+              isOpen={isDeleteUserModalOpen}
+              onClose={() => setIsDeleteUserModalOpen(false)}
+              onConfirm={() => handleOnConfirmModalDeleteUser(Number(userId))}
+            />
+            <ModalResetUserPassword
+              isOpen={isResetUserPasswordModalOpen}
+              onClose={() => setIsResetUserPasswordModalOpen(false)}
+              onConfirm={() =>
+                handleOnConfirmModalResetUserPassword({
+                  user_id: Number(userId),
+                })
+              }
+            />
+          </Box>
         </Box>
       </Box>
     </Box>
