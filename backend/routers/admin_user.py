@@ -66,6 +66,32 @@ def update_user(
     return get_update_user_response(user_id, request, token, db)
 
 
+@router.put(
+    "/{user_id}/suspend",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def suspend_user(
+    user_id: int,
+    request: UserUpdateRequest,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    return get_update_user_response(user_id, request, token, db)
+
+
+@router.put(
+    "/{user_id}/unsuspend",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def unsuspend_user(
+    user_id: int,
+    request: UserUpdateRequest,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    return get_update_user_response(user_id, request, token, db)
+
+
 @router.delete(
     "/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
