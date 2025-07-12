@@ -240,6 +240,7 @@ def get_get_user_response(
             ],
             consecutive_checkins=crud_user_out.consecutive_checkins,
             can_record_mood=_can_record_mood(crud_user_out.id, db),
+            is_suspended=crud_user_out.is_suspended,
         )
 
     except UserNotUnderCurrentAdminException:
