@@ -15,6 +15,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getDeleteUserResponse,
   getResetUserPasswordResponse,
+  getSuspendUserResponse,
+  getUnsuspendUserResponse,
   ResetUserPasswordRequest,
   useGetAdminUserResponse,
 } from "../../../api/admin";
@@ -24,13 +26,17 @@ import ModalResetUserPassword from "../../../components/ModalResetUserPassword";
 
 const UserSettings = () => {
   const { userId } = useParams();
+  const navigate = useNavigate();
+  const toast = useToast();
+  const { data, isLoading } = useGetAdminUserResponse(userId);
+
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] =
     useState<boolean>(false);
   const [isResetUserPasswordModalOpen, setIsResetUserPasswordModalOpen] =
     useState<boolean>(false);
-  const navigate = useNavigate();
-  const toast = useToast();
-  const { data, isLoading } = useGetAdminUserResponse(userId);
+  const [isSuspended, setIsSuspended] = useState<boolean>(
+    data?.is_suspended || true
+  );
 
   const handleBackIconClick = (userName: string) => {
     navigate(`/admin/${userName}`);
@@ -61,6 +67,16 @@ const UserSettings = () => {
       isClosable: true,
     });
     navigate(`/admin`);
+  };
+
+  const handleSuspendUserSwitchClick = async (userId: number) => {
+    if (isSuspended) {
+      await getUnsuspendUserResponse(userId);
+      setIsSuspended(false);
+    } else {
+      await getSuspendUserResponse(userId);
+      setIsSuspended(true);
+    }
   };
 
   if (isLoading) {
@@ -107,7 +123,10 @@ const UserSettings = () => {
           </Banner>
           <FormControl display="flex" alignItems="center">
             <FormLabel mb="0">Suspend user?</FormLabel>
-            <Switch isChecked={data.is_suspended} />
+            <Switch
+              onChange={() => handleSuspendUserSwitchClick(data.user_id)}
+              isChecked={isSuspended}
+            />
           </FormControl>
         </Box>
 

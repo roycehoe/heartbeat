@@ -75,3 +75,13 @@ export async function getUpdateUserResponse(
   );
   return response.data;
 }
+
+export async function getSuspendUserResponse(userId: number): Promise<null> {
+  const response = await httpClient.put(`/admin/user/${userId}/suspend`);
+  return response.data;
+}
+
+export async function getUnsuspendUserResponse(userId: number): Promise<null> {
+  const response = await httpClient.put(`/admin/user/${userId}/unsuspend`);
+  return response.data;
+}
