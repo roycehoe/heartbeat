@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import Gender, Race, AppLanguage
 from models import Admin, Mood, User
+from schemas.crud import CRUDUserOut
 from utils.hashing import hash_password
 from utils.whatsapp import get_non_compliant_whatsapp_message_data
 from gateway import send_whatsapp_message
@@ -190,20 +191,30 @@ def repopulate_db(db: Session) -> None:
 
 
 def _reset_all_user_can_record_mood_state(db: Session) -> None:
-    all_users = CRUDUser(db).get_by_all({})
+    all_users = [
+        CRUDUserOut.model_validate(user) for user in CRUDUser(db).get_by_all({})
+    ]
     for user in all_users:
         CRUDUser(db).update(user.id, "can_record_mood", True)
 
 
 def _update_non_compliant_users_states(db: Session) -> None:
-    non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
+    non_compliant_users = [
+        CRUDUserOut.model_validate(user)
+        for user in CRUDUser(db).get_by_all({"can_record_mood": True})
+    ]
     for user in non_compliant_users:
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
 
 
 def _notify_admin_of_non_compliant_users(db: Session) -> None:
-    non_compliant_users = CRUDUser(db).get_by_all({"can_record_mood": True})
+    non_compliant_users = [
+        CRUDUserOut.model_validate(user)
+        for user in CRUDUser(db).get_by_all({"can_record_mood": True})
+    ]
     for user in non_compliant_users:
+        if user.is_suspended:
+            continue
         admin = CRUDAdmin(db).get(user.admin_id)
         whatsapp_message_data = get_non_compliant_whatsapp_message_data(
             f"65{admin.contact_number}",

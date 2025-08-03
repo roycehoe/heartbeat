@@ -150,6 +150,48 @@ def get_update_user_response(
         )
 
 
+def get_suspend_user_response(user_id: int, token: str, db: Session) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        if user_id not in [user.id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+        CRUDUser(db).update(user_id, "is_suspended", True)
+        return
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot update user that is not under current admin",
+        )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
+
+
+def get_unsuspend_user_response(user_id: int, token: str, db: Session) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        if user_id not in [user.id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+        CRUDUser(db).update(user_id, "is_suspended", False)
+        return
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot update user that is not under current admin",
+        )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
+
+
 def _can_record_mood(user_id: int, db: Session) -> bool:
     try:
         return CRUDUserOut.model_validate(CRUDUser(db).get(user_id)).can_record_mood
@@ -198,6 +240,7 @@ def get_get_user_response(
             ],
             consecutive_checkins=crud_user_out.consecutive_checkins,
             can_record_mood=_can_record_mood(crud_user_out.id, db),
+            is_suspended=crud_user_out.is_suspended,
         )
 
     except UserNotUnderCurrentAdminException:
