@@ -47,6 +47,7 @@ export interface DashboardResponse {
   postal_code: number;
   floor: number;
   contact_number: number;
+  is_suspended: boolean;
 
   moods: Mood[];
   can_record_mood: boolean;

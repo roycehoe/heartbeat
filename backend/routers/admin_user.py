@@ -13,6 +13,8 @@ from services.admin_user import (
     get_delete_user_response,
     get_get_user_response,
     get_reset_user_password_response,
+    get_suspend_user_response,
+    get_unsuspend_user_response,
     get_update_user_response,
 )
 
@@ -64,6 +66,30 @@ def update_user(
     db: Session = Depends(get_db),
 ):
     return get_update_user_response(user_id, request, token, db)
+
+
+@router.put(
+    "/{user_id}/suspend",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def suspend_user(
+    user_id: int,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    return get_suspend_user_response(user_id, token, db)
+
+
+@router.put(
+    "/{user_id}/unsuspend",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def unsuspend_user(
+    user_id: int,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    return get_unsuspend_user_response(user_id, token, db)
 
 
 @router.delete(

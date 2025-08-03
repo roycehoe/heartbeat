@@ -34,6 +34,7 @@ class CRUDUserOut(BaseModel):
     created_at: datetime
     admin_id: int
     can_record_mood: bool
+    is_suspended: bool
     moods: list["CRUDMoodOut"]
 
     class Config:

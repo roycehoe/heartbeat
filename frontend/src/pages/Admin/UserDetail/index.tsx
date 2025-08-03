@@ -15,6 +15,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { Banner, BxChevronLeft } from "@opengovsg/design-system-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAdminUserResponse } from "../../../api/admin";
@@ -136,6 +137,7 @@ const UserDetail = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [adminUserData, setAdminUserData] = useState<DashboardResponse>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const loadAdminUserData = async () => {
     setIsLoading(true);
@@ -148,6 +150,9 @@ const UserDetail = () => {
     navigate(`/admin/${userName}/settings`);
   };
   const handleBackIconClick = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["getAdminDashboardResponse"],
+    });
     navigate(`/admin`);
   };
 

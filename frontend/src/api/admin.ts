@@ -58,6 +58,13 @@ export async function getAdminUserResponse(
   return response.data;
 }
 
+export function useGetAdminUserResponse(userId: number) {
+  return useQuery({
+    queryKey: ["getAdminDashboardResponse"],
+    queryFn: () => getAdminUserResponse(userId),
+  });
+}
+
 export async function getUpdateUserResponse(
   userId: number,
   createUserRequest: CreateUserRequest
@@ -66,5 +73,15 @@ export async function getUpdateUserResponse(
     `/admin/user/${userId}`,
     createUserRequest
   );
+  return response.data;
+}
+
+export async function getSuspendUserResponse(userId: number): Promise<null> {
+  const response = await httpClient.put(`/admin/user/${userId}/suspend`);
+  return response.data;
+}
+
+export async function getUnsuspendUserResponse(userId: number): Promise<null> {
+  const response = await httpClient.put(`/admin/user/${userId}/unsuspend`);
   return response.data;
 }

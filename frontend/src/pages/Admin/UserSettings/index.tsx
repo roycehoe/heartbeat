@@ -1,8 +1,11 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Heading,
   IconButton,
+  Switch,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -12,7 +15,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getDeleteUserResponse,
   getResetUserPasswordResponse,
+  getSuspendUserResponse,
+  getUnsuspendUserResponse,
   ResetUserPasswordRequest,
+  useGetAdminUserResponse,
 } from "../../../api/admin";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteUser from "../../../components/ModalDeleteUser";
@@ -20,12 +26,17 @@ import ModalResetUserPassword from "../../../components/ModalResetUserPassword";
 
 const UserSettings = () => {
   const { userId } = useParams();
+  const navigate = useNavigate();
+  const toast = useToast();
+  const { data, isLoading } = useGetAdminUserResponse(userId);
+
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] =
     useState<boolean>(false);
   const [isResetUserPasswordModalOpen, setIsResetUserPasswordModalOpen] =
     useState<boolean>(false);
-  const navigate = useNavigate();
-  const toast = useToast();
+  const [isSuspended, setIsSuspended] = useState<boolean>(
+    data?.is_suspended || true
+  );
 
   const handleBackIconClick = (userName: string) => {
     navigate(`/admin/${userName}`);
@@ -58,6 +69,23 @@ const UserSettings = () => {
     navigate(`/admin`);
   };
 
+  const handleSuspendUserSwitchClick = async (userId: number) => {
+    if (isSuspended) {
+      await getUnsuspendUserResponse(userId);
+      setIsSuspended(false);
+    } else {
+      await getSuspendUserResponse(userId);
+      setIsSuspended(true);
+    }
+  };
+
+  if (isLoading) {
+    return;
+  }
+  if (!data) {
+    return;
+  }
+
   return (
     <Box
       width="100%"
@@ -65,59 +93,73 @@ const UserSettings = () => {
       display="flex"
       flexDirection="column"
       className="page"
+      justifyContent="space-between"
     >
       <Box
         className="page"
-        margin="18px"
+        height="100%"
+        margin="24px"
         display="flex"
         flexDir="column"
+        justifyContent="space-between"
         gap="24px"
       >
-        <Box display="flex" gap="8px" justifyContent="space-between">
-          <IconButton
-            onClick={() => handleBackIconClick(userId)}
-            isRound={true}
-            variant="solid"
-            aria-label="Done"
-            icon={<IconArrowLeft />}
-          />
+        <Box display="flex" flexDir="column" gap="12px">
+          <Box display="flex" gap="8px">
+            <IconButton
+              onClick={() => handleBackIconClick(data.user_id)}
+              isRound={true}
+              variant="solid"
+              aria-label="Done"
+              icon={<IconArrowLeft />}
+            />
+          </Box>
+          <Box display="flex" gap="4px">
+            <Heading size="sm">Auto-reminders</Heading>
+            <img height="18px" width="18px" src="/assets/icon/edit.svg" />
+          </Box>
+          <Banner size="sm" variant="warn">
+            1:00PM daily if no user input
+          </Banner>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel mb="0">Suspend user?</FormLabel>
+            <Switch
+              onChange={() => handleSuspendUserSwitchClick(data.user_id)}
+              isChecked={isSuspended}
+            />
+          </FormControl>
         </Box>
-        <Box display="flex" gap="4px">
-          <Heading size="sm">Auto-reminders</Heading>
-          <img height="18px" width="18px" src="/assets/icon/edit.svg" />
-        </Box>
-        <Banner size="sm" variant="warn">
-          1:00PM daily if no user input
-        </Banner>
 
-        <Box display="flex" gap="12px" flexDirection="column">
-          <Button
-            width="100%"
-            onClick={() => setIsResetUserPasswordModalOpen(true)}
-          >
-            <Text>Reset user's password</Text>
-          </Button>
-          <Button
-            width="100%"
-            colorScheme="critical"
-            onClick={() => setIsDeleteUserModalOpen(true)}
-          >
-            <Text>Delete user</Text>
-          </Button>
-          <ModalDeleteUser
-            isOpen={isDeleteUserModalOpen}
-            onClose={() => setIsDeleteUserModalOpen(false)}
-            onConfirm={() => handleOnConfirmModalDeleteUser(Number(userId))}
-          />
-          <ModalResetUserPassword
-            isOpen={isResetUserPasswordModalOpen}
-            onClose={() => setIsResetUserPasswordModalOpen(false)}
-            onConfirm={() =>
-              handleOnConfirmModalResetUserPassword({
-                user_id: Number(userId),
-              })
-            }
-          />
+        <Box>
+          <Box display="flex" gap="16px" flexDirection="column">
+            <Button
+              width="100%"
+              onClick={() => setIsResetUserPasswordModalOpen(true)}
+            >
+              <Text>Reset user's password</Text>
+            </Button>
+            <Button
+              width="100%"
+              colorScheme="critical"
+              onClick={() => setIsDeleteUserModalOpen(true)}
+            >
+              <Text>Delete user</Text>
+            </Button>
+            <ModalDeleteUser
+              isOpen={isDeleteUserModalOpen}
+              onClose={() => setIsDeleteUserModalOpen(false)}
+              onConfirm={() => handleOnConfirmModalDeleteUser(Number(userId))}
+            />
+            <ModalResetUserPassword
+              isOpen={isResetUserPasswordModalOpen}
+              onClose={() => setIsResetUserPasswordModalOpen(false)}
+              onConfirm={() =>
+                handleOnConfirmModalResetUserPassword({
+                  user_id: Number(userId),
+                })
+              }
+            />
+          </Box>
         </Box>
       </Box>
     </Box>

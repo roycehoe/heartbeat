@@ -38,6 +38,7 @@ class AdminUserDashboardOut(BaseModel):
     postal_code: int
     floor: int
     contact_number: int
+    is_suspended: bool
 
     moods: list[AdminUserDashboardMoodOut]
     can_record_mood: bool
