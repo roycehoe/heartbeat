@@ -27,7 +27,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-multi-date-picker": "^4.5.2",
-    "react-router-dom": "^6.26.2"
+    "react-router-dom": "^6.26.2",
+    "vite-plugin-pwa": "^1.0.2"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^2.4.1",
