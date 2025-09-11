@@ -21,4 +21,3 @@ def get_active_users_last_7_days(db: Session):
 
 
 db = SessionLocal()
-get_active_users_last_7_days(db)
