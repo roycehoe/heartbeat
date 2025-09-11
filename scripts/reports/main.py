@@ -11,8 +11,6 @@ def start():
     scheduler.add_job(
         report,
         trigger=CronTrigger(day_of_week="mon", hour=9, minute=0), # adjust as needed
-        # id=str(uuid4()),
-        # replace_existing=True
         )
     
     scheduler.start()
