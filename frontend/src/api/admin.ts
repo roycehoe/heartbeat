@@ -22,7 +22,28 @@ export interface ResetUserPasswordRequest {
   user_id: number;
 }
 
+export interface SignUpAdminRequest {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  name: string;
+  contactNumber: number;
+}
+
 export interface UpdateUserRequest extends CreateUserRequest {}
+
+export async function getSignUpAdminResponse(
+  signUpAdminRequest: SignUpAdminRequest
+): Promise<AxiosResponse<null>> {
+  return await httpClient.post("/admin/sign-up", signUpAdminRequest);
+}
+
+export function useGetSignUpAdminResponse() {
+  return useMutation({
+    mutationFn: (request: SignUpAdminRequest) =>
+      getSignUpAdminResponse(request),
+  });
+}
 
 export async function getCreateUserResponse(
   createUserRequest: CreateUserRequest
@@ -33,6 +54,19 @@ export async function getCreateUserResponse(
 export function useGetCreateNewUser() {
   return useMutation({
     mutationFn: (request: CreateUserRequest) => getCreateUserResponse(request),
+  });
+}
+export async function getAdminUserResponse(
+  userId: number
+): Promise<DashboardResponse> {
+  const response = await httpClient.get(`/admin/user/${userId}`);
+  return response.data;
+}
+
+export function useGetAdminUserResponse(userId: number) {
+  return useQuery({
+    queryKey: ["getAdminDashboardResponse"],
+    queryFn: () => getAdminUserResponse(userId),
   });
 }
 
@@ -49,20 +83,6 @@ export async function getResetUserPasswordResponse(
     resetUserPasswordRequest
   );
   return response.data;
-}
-
-export async function getAdminUserResponse(
-  userId: number
-): Promise<DashboardResponse> {
-  const response = await httpClient.get(`/admin/user/${userId}`);
-  return response.data;
-}
-
-export function useGetAdminUserResponse(userId: number) {
-  return useQuery({
-    queryKey: ["getAdminDashboardResponse"],
-    queryFn: () => getAdminUserResponse(userId),
-  });
 }
 
 export async function getUpdateUserResponse(
