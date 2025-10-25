@@ -1,8 +1,8 @@
-import { Box, FormControl, Link, Text } from "@chakra-ui/react";
+import { Box, FormControl, Link, Text, useToast } from "@chakra-ui/react";
 import { Button, Input } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAdminLoginResponse } from "../../api/user";
+import { useGetSignUpAdminResponse } from "../../api/admin";
 
 function CaregiverSignupForm({
   setIsSigningUpAsCaregiver,
@@ -15,9 +15,12 @@ function CaregiverSignupForm({
   const [name, setName] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
+  const [hasCreatedAdminSuccessfully, sethasCreatedAdminSuccessfully] =
+    useState(false);
+  const toast = useToast();
+  const { mutate } = useGetSignUpAdminResponse();
 
-  const handleLogInBtnClick = async () => {
+  async function handleLogInBtnClick() {
     if (username === "") {
       setErrorMessage("Please input your username");
       return;
@@ -42,23 +45,54 @@ function CaregiverSignupForm({
       setErrorMessage("Password and confirm password must be the same");
       return;
     }
-
-    try {
-      const response = await getAdminLoginResponse({
+    mutate(
+      {
         username: username,
         password: password,
-      });
-      setErrorMessage(""); // Clear error message on success
-      localStorage.setItem("token", response.access_token);
-      navigate("/admin");
-    } catch (error) {
-      if (error?.response && error.response.status === 400) {
-        setErrorMessage("Username or password incorrect. Please try again.");
-        return;
+        confirmPassword: confirmPassword,
+        name: name,
+        contactNumber: Number(contactNumber),
+      },
+      {
+        onSuccess: () => {
+          setErrorMessage("");
+          toast({
+            title: "Account created",
+            description: "Your account has been created successfully",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+          sethasCreatedAdminSuccessfully(true);
+        },
+        onError: (error) => {
+          if (axios.isAxiosError(error) && error.response?.status === 400) {
+            return setErrorMessage("This username has already been taken");
+          }
+          setErrorMessage("Something went wrong. Please try again later.");
+        },
       }
-      setErrorMessage("An unexpected error occurred. Please try again later.");
-    }
-  };
+    );
+  }
+
+  if (hasCreatedAdminSuccessfully) {
+    return (
+      <Box display="flex" flexDirection="column" gap="12px">
+        <Text fontWeight="600" fontSize="18px">
+          Account created!
+        </Text>
+        <Button
+          width="100%"
+          onClick={() => {
+            setIsSigningUpAsCaregiver(false);
+            sethasCreatedAdminSuccessfully(false);
+          }}
+        >
+          <Text>Go back</Text>
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <div>
