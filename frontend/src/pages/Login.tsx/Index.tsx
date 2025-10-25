@@ -12,12 +12,14 @@ import {
 import { Link, Tabs } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import CaregiverLogInForm from "./CaregiverLoginForm";
+import CaregiverSignupForm from "./CaregiverSignupForm";
 import UserLogInForm from "./UserLoginForm";
 
 const DEFAULT_ROLES: string[] = ["user", "caregiver"];
 
 function LogIn() {
   const [role, setRole] = useState("user");
+  const [isSigningUpAsCaregiver, setIsSigningUpAsCaregiver] = useState(true);
 
   return (
     <Flex justifyContent="center" alignItems="center" height="100%">
@@ -45,28 +47,38 @@ function LogIn() {
           </Box>
         </Box>
 
-        <Tabs
-          onChange={(index) => {
-            setRole(DEFAULT_ROLES[index]);
-          }}
-        >
-          <TabList mb="16px">
-            {DEFAULT_ROLES.map((role) => {
-              return <Tab>{role}</Tab>;
-            })}
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <UserLogInForm></UserLogInForm>
-            </TabPanel>
-            <TabPanel>
-              <CaregiverLogInForm></CaregiverLogInForm>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-        <Link mt="16px" display="block" fontSize="sm" color="blue.500">
-          Forgot password?
-        </Link>
+        {isSigningUpAsCaregiver ? (
+          <CaregiverSignupForm
+            setIsSigningUpAsCaregiver={setIsSigningUpAsCaregiver}
+          ></CaregiverSignupForm>
+        ) : (
+          <div>
+            <Tabs
+              onChange={(index) => {
+                setRole(DEFAULT_ROLES[index]);
+              }}
+            >
+              <TabList mb="16px">
+                {DEFAULT_ROLES.map((role) => {
+                  return <Tab>{role}</Tab>;
+                })}
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <UserLogInForm></UserLogInForm>
+                </TabPanel>
+                <TabPanel>
+                  <CaregiverLogInForm
+                    setIsSigningUpAsCaregiver={setIsSigningUpAsCaregiver}
+                  ></CaregiverLogInForm>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+            <Link mt="16px" display="block" fontSize="sm" color="blue.500">
+              Forgot password?
+            </Link>
+          </div>
+        )}
       </Box>
     </Flex>
   );
