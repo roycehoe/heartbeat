@@ -14,7 +14,7 @@ import { HowDoesItWork } from "./pages/Admin/HowDoesItWork";
 import UserDetail from "./pages/Admin/UserDetail";
 import UserSettings from "./pages/Admin/UserSettings";
 import HomePage from "./pages/HomePage";
-import LogIn from "./pages/LogIn";
+import LogIn from "./pages/Login.tsx/Index";
 const queryClient = new QueryClient();
 
 const App = () => {
