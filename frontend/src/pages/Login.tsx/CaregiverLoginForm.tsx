@@ -1,10 +1,14 @@
-import { FormControl, Text } from "@chakra-ui/react";
+import { FormControl, Link, Text } from "@chakra-ui/react";
 import { Button, Input } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminLoginResponse } from "../../api/user";
 
-function CaregiverLogInForm() {
+function CaregiverLogInForm({
+  setIsSigningUpAsCaregiver,
+}: {
+  setIsSigningUpAsCaregiver: (isSigningUpAsCaregiver: boolean) => void;
+}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -60,6 +64,16 @@ function CaregiverLogInForm() {
           _placeholder={{ color: "gray.500" }}
         />
       </FormControl>
+
+      <Link
+        onClick={() => setIsSigningUpAsCaregiver(true)}
+        my="16px"
+        display="block"
+        fontSize="sm"
+        color="blue.500"
+      >
+        Sign up
+      </Link>
 
       <Button width="100%" onClick={handleLogInBtnClick}>
         <Text>Log In as Caregiver</Text>
