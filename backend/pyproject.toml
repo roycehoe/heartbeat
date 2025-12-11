@@ -7,7 +7,7 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.10"
 fastapi = {extras = ["standard"], version = "^0.112.2"}
 sqlmodel = "^0.0.22"
 pyjwt = "^2.9.0"
@@ -19,6 +19,7 @@ black = "^24.10.0"
 sqlalchemy-utils = "^0.41.2"
 twilio = "^9.3.6"
 cryptography = "^43.0.3"
+alembic = "^1.17.2"
 
 
 [tool.poetry.group.dev.dependencies]
