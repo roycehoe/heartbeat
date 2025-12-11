@@ -37,6 +37,8 @@ class AdminUserDashboardOut(BaseModel):
     gender: Gender
     postal_code: int
     floor: int
+    block: str
+    unit: str
     contact_number: int
     is_suspended: bool
 
@@ -61,6 +63,8 @@ class UserCreateRequest(BaseModel):
     app_language: AppLanguage = Field(..., alias="appLanguage")
     postal_code: int = Field(..., alias="postalCode")
     floor: int
+    block: str
+    unit: str
 
     class Config:
         use_enum_values = True

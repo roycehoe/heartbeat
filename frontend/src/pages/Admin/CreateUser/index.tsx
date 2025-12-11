@@ -38,6 +38,8 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   appLanguage: AppLanguage.ENGLISH,
   postalCode: "",
   floor: "",
+  block: "",
+  unit: "",
   hasAgreedToTermsAndConditions: false,
 };
 

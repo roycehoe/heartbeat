@@ -29,6 +29,8 @@ class CRUDUserOut(BaseModel):
     gender: Gender
     postal_code: int
     floor: int
+    block: str
+    unit: str
     contact_number: int
     consecutive_checkins: int
     created_at: datetime
