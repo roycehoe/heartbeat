@@ -130,7 +130,7 @@ export const VIEW_USER_FORM_FIELDS_PROPS: Record<
     isRequired: true,
     type: "tel",
     options: [],
-    placeholder: "eg. 91234567",
+    placeholder: "91234567",
   },
   name: {
     formLabel: "Name",
@@ -179,7 +179,7 @@ export const VIEW_USER_FORM_FIELDS_PROPS: Record<
     isRequired: true,
     type: "text",
     options: [],
-    placeholder: "eg. 189554",
+    placeholder: "189554",
   },
   floor: {
     formLabel: "Floor",
