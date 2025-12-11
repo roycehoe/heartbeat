@@ -4,10 +4,6 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModalLogOut from "./ModalLogout";
 
-function RapidClickDetector() {
-  return <button onClick={handleClick}>Click Me</button>;
-}
-
 function Brand(props: { goToNextUser: () => void }) {
   const [_, setClickCount] = useState(0);
   const timerRef = useRef<number | null>(null);
