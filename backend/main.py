@@ -15,7 +15,6 @@ from services.statistics import get_statistics
 
 IS_PROD = dotenv_values(".env").get("IS_PROD")
 
-Base.metadata.create_all(bind=engine)
 app = FastAPI(
     # root_path="/api/" if IS_PROD else "",
     root_path="/api",
