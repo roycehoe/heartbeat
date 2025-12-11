@@ -16,6 +16,8 @@ export interface CreateUserRequest {
   gender: Gender;
   postalCode: number;
   floor: number;
+  block: string;
+  unit: string;
 }
 
 export interface ResetUserPasswordRequest {

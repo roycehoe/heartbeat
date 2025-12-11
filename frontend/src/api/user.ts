@@ -46,6 +46,8 @@ export interface DashboardResponse {
   gender: Gender;
   postal_code: number;
   floor: number;
+  block: string;
+  unit: string;
   contact_number: number;
   is_suspended: boolean;
 
