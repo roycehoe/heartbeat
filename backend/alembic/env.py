@@ -4,14 +4,15 @@ from dotenv import dotenv_values
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
+from database import Base
+import models
 from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 SQLALCHEMY_DATABASE_URL = (
-    dotenv_values(".env").get("SQLALCHEMY_DATABASE_URL_STAGING")
-    or "postgresql://postgres:password@localhost:5432/postgres"
+    dotenv_values(".env").get("SQLALCHEMY_DATABASE_URL_STAGING") or ""
 )
 config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
@@ -24,7 +25,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
