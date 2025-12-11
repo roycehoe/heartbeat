@@ -19,7 +19,7 @@ const DEFAULT_ROLES: string[] = ["user", "caregiver"];
 
 function LogIn() {
   const [role, setRole] = useState("user");
-  const [isSigningUpAsCaregiver, setIsSigningUpAsCaregiver] = useState(true);
+  const [isSigningUpAsCaregiver, setIsSigningUpAsCaregiver] = useState(false);
 
   return (
     <Flex justifyContent="center" alignItems="center" height="100%">

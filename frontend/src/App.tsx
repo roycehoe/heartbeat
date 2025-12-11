@@ -11,6 +11,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Admin from "./pages/Admin";
 import ModalCreateUser from "./pages/Admin/CreateUser";
 import { HowDoesItWork } from "./pages/Admin/HowDoesItWork";
+import { Settings } from "./pages/Admin/Settings";
 import UserDetail from "./pages/Admin/UserDetail";
 import UserSettings from "./pages/Admin/UserSettings";
 import HomePage from "./pages/HomePage";
@@ -39,6 +40,7 @@ const App = () => {
               />
               <Route path="/admin/create-user" element={<ModalCreateUser />} />
               <Route path="/admin/about" element={<HowDoesItWork />} />
+              <Route path="/admin/settings" element={<Settings />} />
             </Routes>
           </Box>
         </BrowserRouter>

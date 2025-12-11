@@ -92,6 +92,9 @@ function Admin() {
   const handleAddAnotherPersonClick = () => {
     navigate(`/admin/create-user`);
   };
+  const handleGearIconClick = () => {
+    navigate(`/admin/settings`);
+  };
 
   if (!localStorage.getItem("token")) {
     navigate("/login");
@@ -126,11 +129,16 @@ function Admin() {
           padding="18px"
         >
           <Box className="page" display="flex" flexDir="column" gap="24px">
-            <Box display="flex" gap="8px" alignItems="center">
-              <Image src="/assets/icon/heart.svg"></Image>
-              <Heading size="sm" color="#007AFF">
-                HeartBeat
-              </Heading>
+            <Box display="flex" gap="8px" justifyContent="space-between">
+              <Box display="flex" gap="8px" alignItems="center">
+                <Image src="/assets/icon/heart.svg"></Image>
+                <Heading size="sm" color="#007AFF">
+                  HeartBeat
+                </Heading>
+              </Box>
+              <Box onClick={handleGearIconClick}>
+                <img src="/assets/icon/gear.svg" />
+              </Box>
             </Box>
             <Box>
               <Heading size="sm">Persons I care for</Heading>
