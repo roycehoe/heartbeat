@@ -32,7 +32,7 @@ function FormFieldsUserCreateUpdate(props: {
   return (
     <Box display="flex" flexDirection="column" gap="16px">
       {Object.keys(props.createUpdateUserFormFields).map((field) => {
-        const { formLabel, isRequired, type, options } =
+        const { formLabel, isRequired, type, options, placeholder } =
           props.createUpdateUserFormFields[field];
 
         if (type === "select") {
@@ -45,7 +45,7 @@ function FormFieldsUserCreateUpdate(props: {
               type={type}
               value={props.createUserForm[field]}
               onChange={(e) => handleChange(e, field)}
-              placeholder={formLabel}
+              placeholder={placeholder}
               options={options}
             ></FormSelectUser>
           );
@@ -86,7 +86,7 @@ function FormFieldsUserCreateUpdate(props: {
             type={type}
             value={props.createUserForm[field]}
             onChange={(e) => handleChange(e, field)}
-            placeholder={formLabel}
+            placeholder={placeholder}
           ></FormInputUser>
         );
       })}

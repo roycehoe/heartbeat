@@ -19,6 +19,8 @@ function dashboardDataToUpdateUserFormData(
     gender: dashboardData.gender,
     postalCode: dashboardData.postal_code,
     floor: dashboardData.floor,
+    unit: dashboardData.unit,
+    block: dashboardData.block,
   };
 }
 

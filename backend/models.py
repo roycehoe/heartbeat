@@ -56,6 +56,8 @@ class User(Base):
     gender = Column(String, nullable=False)
     postal_code = Column(Integer, nullable=False)
     floor = Column(Integer, nullable=False)
+    block = Column(String, nullable=False)
+    unit = Column(String, nullable=False)
     contact_number = Column(
         EncryptedType(Integer, SECRET),
         nullable=False,

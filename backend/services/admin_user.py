@@ -49,6 +49,8 @@ def get_create_user_response(
             gender=user_in_model.gender,
             postal_code=user_in_model.postal_code,
             floor=user_in_model.floor,
+            block=user_in_model.block,
+            unit=user_in_model.unit,
             contact_number=user_in_model.contact_number,
             consecutive_checkins=0,
             admin_id=admin_id,
@@ -234,6 +236,8 @@ def get_get_user_response(
             gender=crud_user_out.gender,
             postal_code=crud_user_out.postal_code,
             floor=crud_user_out.floor,
+            block=crud_user_out.block,
+            unit=crud_user_out.unit,
             moods=[
                 AdminUserDashboardMoodOut.model_validate(mood)
                 for mood in admin_dashboard_mood_out
