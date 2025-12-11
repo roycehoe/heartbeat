@@ -49,6 +49,8 @@ def get_create_user_response(
             gender=user_in_model.gender,
             postal_code=user_in_model.postal_code,
             floor=user_in_model.floor,
+            block=user_in_model.block,
+            unit=user_in_model.unit,
             contact_number=user_in_model.contact_number,
             consecutive_checkins=0,
             admin_id=admin_id,
