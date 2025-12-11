@@ -236,6 +236,8 @@ def get_get_user_response(
             gender=crud_user_out.gender,
             postal_code=crud_user_out.postal_code,
             floor=crud_user_out.floor,
+            block=crud_user_out.block,
+            unit=crud_user_out.unit,
             moods=[
                 AdminUserDashboardMoodOut.model_validate(mood)
                 for mood in admin_dashboard_mood_out
