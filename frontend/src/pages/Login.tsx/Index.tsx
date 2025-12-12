@@ -1,6 +1,8 @@
 import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { useState } from "react";
+import CaregiverCreationSuccess from "./CaregiverCreationSuccess";
 import CaregiverLogInForm from "./CaregiverLoginForm";
+import CaregiverOrCareReceipientSelection from "./CaregiverOrCareReceipientSelection";
 import CaregiverSignupForm from "./CaregiverSignupForm";
 
 export enum LogInFormState {
@@ -26,13 +28,23 @@ const RenderForm = (props: {
       );
 
     case LogInFormState.CaregiverOrCareReceipientSelection:
-      return <div>Select caregiver or care recipient</div>;
+      return (
+        <CaregiverOrCareReceipientSelection
+          setLogInFormState={props.setLogInFormState}
+        ></CaregiverOrCareReceipientSelection>
+      );
 
     case LogInFormState.CareReceipientSelection:
       return <div>Care recipient selection screen</div>;
 
     case LogInFormState.CareReceipientSelectionAreYouSure:
       return <div>Are you sure?</div>;
+    case LogInFormState.CaregiverCreationSuccess:
+      return (
+        <CaregiverCreationSuccess
+          setLogInFormState={props.setLogInFormState}
+        ></CaregiverCreationSuccess>
+      );
 
     default:
       return null;
@@ -41,7 +53,7 @@ const RenderForm = (props: {
 
 function LogIn() {
   const [logInFormState, setLogInFormState] = useState(
-    LogInFormState.CaregiverAuthenticate
+    LogInFormState.CaregiverOrCareReceipientSelection
   );
 
   return (
