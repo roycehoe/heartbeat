@@ -40,7 +40,6 @@ class UserDashboardMoodOut(BaseModel):
 
 class UserDashboardOut(BaseModel):
     user_id: int
-    username: str
     name: str
     alias: str
     age: int
@@ -59,8 +58,7 @@ class UserDashboardOut(BaseModel):
 
 
 class UserLogInRequest(BaseModel):
-    username: Annotated[str, StringConstraints(to_lower=True)]
-    password: str
+    user_id: int
 
 
 class UserToken(BaseModel):

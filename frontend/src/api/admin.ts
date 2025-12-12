@@ -4,9 +4,6 @@ import { httpClient } from "./httpClient";
 import { AppLanguage, DashboardResponse, Gender, Race } from "./user";
 
 export interface CreateUserRequest {
-  username: string;
-  password: string;
-  confirmPassword: string;
   contactNumber: number;
   name: string;
   age: number;

@@ -1,18 +1,17 @@
 import { FormControl, Link, Text } from "@chakra-ui/react";
 import { Button, Input } from "@opengovsg/design-system-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getAdminLoginResponse } from "../../api/user";
+import { LogInFormState } from "./Index";
 
 function CaregiverLogInForm({
-  setIsSigningUpAsCaregiver,
+  setLogInFormState,
 }: {
-  setIsSigningUpAsCaregiver: (isSigningUpAsCaregiver: boolean) => void;
+  setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
 
   const handleLogInBtnClick = async () => {
     if (username === "") {
@@ -30,9 +29,9 @@ function CaregiverLogInForm({
       });
       setErrorMessage(""); // Clear error message on success
       localStorage.setItem("token", response.access_token);
-      navigate("/admin");
+      setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
     } catch (error) {
-      if (error?.response && error.response.status === 400) {
+      if (error?.response && error.response.status === 401) {
         setErrorMessage("Username or password incorrect. Please try again.");
         return;
       }
@@ -66,7 +65,7 @@ function CaregiverLogInForm({
       </FormControl>
 
       <Link
-        onClick={() => setIsSigningUpAsCaregiver(true)}
+        onClick={() => setLogInFormState(LogInFormState.CaregiverSignUp)}
         my="16px"
         display="block"
         fontSize="sm"
@@ -76,7 +75,7 @@ function CaregiverLogInForm({
       </Link>
 
       <Button width="100%" onClick={handleLogInBtnClick}>
-        <Text>Log In as Caregiver</Text>
+        <Text>Log In</Text>
       </Button>
 
       {errorMessage && (

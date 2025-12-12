@@ -26,9 +26,6 @@ export interface CreateUserForm extends CreateUserRequest {
 }
 
 const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
-  username: "",
-  password: "",
-  confirmPassword: "",
   contactNumber: "",
   name: "",
   age: "",

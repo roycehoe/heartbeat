@@ -146,8 +146,8 @@ const UserDetail = () => {
     setIsLoading(false);
   };
 
-  const handleGearIconClick = (userName: string) => {
-    navigate(`/admin/${userName}/settings`);
+  const handleGearIconClick = (userId: string) => {
+    navigate(`/admin/${userId}/settings`);
   };
   const handleBackIconClick = () => {
     queryClient.invalidateQueries({

@@ -19,7 +19,7 @@ class CRUDUser:
 
     def create(self, account: User) -> User:
         try:
-            if self.session.query(User).filter_by(username=account.username).first():
+            if self.session.query(User).filter_by(name=account.name).first():
                 raise DBCreateAccountWithUsernameAlreadyExistsException
             self.session.add(account)
             self.session.commit()
