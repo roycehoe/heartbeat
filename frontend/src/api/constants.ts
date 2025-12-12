@@ -1,4 +1,4 @@
-import { DashboardResponse, LoginRequest } from "./user";
+import { AdminLoginRequest, DashboardResponse } from "./user";
 
 export const MOCK_DASHBOARD_API_RESPONSE: DashboardResponse = {
   user_id: 1,
@@ -130,13 +130,13 @@ export const MOCK_DASHBOARD_API_RESPONSE: DashboardResponse = {
   consecutive_checkins: 5,
 };
 
-export const DEFAULT_USER_CREDENTIALS: LoginRequest[] = [
+export const DEFAULT_USER_CREDENTIALS: AdminLoginRequest[] = [
   { username: "user1@heartbeatmail.com", password: "user1@heartbeatmail.com" },
   { username: "user2@heartbeatmail.com", password: "user2@heartbeatmail.com" },
   { username: "user3@heartbeatmail.com", password: "user3@heartbeatmail.com" },
 ];
 
-export const DEFAULT_ADMIN_CREDENTIALS: LoginRequest = {
+export const DEFAULT_ADMIN_CREDENTIALS: AdminLoginRequest = {
   username: "admin@heartbeatmail.com",
   password: "admin@heartbeatmail.com",
 };

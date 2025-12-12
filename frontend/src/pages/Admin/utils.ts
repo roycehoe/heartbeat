@@ -5,24 +5,6 @@ import { UpdateUserForm } from "./UpdateUser";
 export function getSubmitUpdateUserFormErrorMessage(
   userForm: UpdateUserForm
 ): string {
-  if (!userForm.username) {
-    return "Username is required.";
-  }
-
-  if (!userForm.password) {
-    return "Password is required.";
-  }
-  if (userForm.password.length < 8) {
-    return "Password must be at least 8 characters long.";
-  }
-
-  if (!userForm.confirmPassword) {
-    return "Please confirm your password.";
-  }
-  if (userForm.password !== userForm.confirmPassword) {
-    return "Passwords do not match.";
-  }
-
   if (!userForm.contactNumber) {
     return "Contact number is required.";
   }

@@ -10,7 +10,6 @@ function dashboardDataToUpdateUserFormData(
   dashboardData: DashboardResponse
 ): UpdateUserForm {
   return {
-    username: dashboardData.username,
     contactNumber: dashboardData.contact_number,
     name: dashboardData.name,
     age: dashboardData.age,

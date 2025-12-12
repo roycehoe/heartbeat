@@ -15,7 +15,7 @@ import { IconMood } from "./IconMood";
 
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
-  username: string;
+  name: string;
   userId: number;
   moods: Mood[];
   handleUserClick: (userId: number) => void;
@@ -29,7 +29,7 @@ const TableMoodSnapshotRow = (props: {
           <Box width="12px" bg={props.colorTag} />
           <Box p={3} width="100%">
             <Text onClick={() => props.handleUserClick(props.userId)}>
-              {props.username}
+              {props.name}
             </Text>
           </Box>
         </Flex>
@@ -89,7 +89,7 @@ export const TableMoodSnapshot = (props: {
             return (
               <TableMoodSnapshotRow
                 colorTag={props.getColorTag(user)}
-                username={user.username}
+                name={user.name}
                 moods={user.moods}
                 userId={user.user_id}
                 handleUserClick={props.handleUserClick}

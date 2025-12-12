@@ -14,26 +14,12 @@ export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
   keyof UpdateUserForm,
   CreateUpdateUserFormFieldProps
 > = {
-  username: {
-    formLabel: "Username",
+  name: {
+    formLabel: "Name",
     isRequired: true,
     type: "text",
     options: [],
-    placeholder: "",
-  },
-  password: {
-    formLabel: "Password",
-    isRequired: true,
-    type: "password",
-    options: [],
-    placeholder: "",
-  },
-  confirmPassword: {
-    formLabel: "Confirm Password",
-    isRequired: true,
-    type: "password",
-    options: [],
-    placeholder: "",
+    placeholder: "Lin Junjie",
   },
   contactNumber: {
     formLabel: "Contact Number",
@@ -41,13 +27,6 @@ export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
     type: "tel",
     options: [],
     placeholder: "91234567",
-  },
-  name: {
-    formLabel: "Name",
-    isRequired: true,
-    type: "text",
-    options: [],
-    placeholder: "Lin Junjie",
   },
   age: {
     formLabel: "Age",
@@ -118,12 +97,12 @@ export const VIEW_USER_FORM_FIELDS_PROPS: Record<
   keyof UpdateUserForm,
   CreateUpdateUserFormFieldProps
 > = {
-  username: {
-    formLabel: "Username",
+  name: {
+    formLabel: "Name",
     isRequired: true,
     type: "text",
     options: [],
-    placeholder: "",
+    placeholder: "Lin Junjie",
   },
   contactNumber: {
     formLabel: "Contact Number",
@@ -131,13 +110,6 @@ export const VIEW_USER_FORM_FIELDS_PROPS: Record<
     type: "tel",
     options: [],
     placeholder: "91234567",
-  },
-  name: {
-    formLabel: "Name",
-    isRequired: true,
-    type: "text",
-    options: [],
-    placeholder: "Lin Junjie",
   },
   age: {
     formLabel: "Age",
