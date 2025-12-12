@@ -9,8 +9,12 @@ function CaregiverOrCareReceipientSelection({
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const navigate = useNavigate();
+
   const onLogInAsCaregiverButtonClick = () => {
     navigate("/admin");
+  };
+  const onLogInAsCareReceipientButtonClick = () => {
+    setLogInFormState(LogInFormState.CareReceipientSelection);
   };
   const onGoBackButtonClick = () => {
     localStorage.removeItem("token");
@@ -24,7 +28,7 @@ function CaregiverOrCareReceipientSelection({
           <Button width="100%" onClick={onLogInAsCaregiverButtonClick}>
             <Text>Log in as Caregiver</Text>
           </Button>
-          <Button width="100%" onClick={() => console.log("caregiver")}>
+          <Button width="100%" onClick={onLogInAsCareReceipientButtonClick}>
             <Text>Log in as Care Receipient</Text>
           </Button>
         </Box>

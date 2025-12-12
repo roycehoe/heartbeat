@@ -4,6 +4,7 @@ import CaregiverCreationSuccess from "./CaregiverCreationSuccess";
 import CaregiverLogInForm from "./CaregiverLoginForm";
 import CaregiverOrCareReceipientSelection from "./CaregiverOrCareReceipientSelection";
 import CaregiverSignupForm from "./CaregiverSignupForm";
+import CareReceipientSelectionForm from "./CareReceipientSelectionForm";
 
 export enum LogInFormState {
   CaregiverAuthenticate,
@@ -35,7 +36,11 @@ const RenderForm = (props: {
       );
 
     case LogInFormState.CareReceipientSelection:
-      return <div>Care recipient selection screen</div>;
+      return (
+        <CareReceipientSelectionForm
+          setLogInFormState={props.setLogInFormState}
+        ></CareReceipientSelectionForm>
+      );
 
     case LogInFormState.CareReceipientSelectionAreYouSure:
       return <div>Are you sure?</div>;
