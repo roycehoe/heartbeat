@@ -42,11 +42,12 @@ class User(Base):
     id = Column(Integer, primary_key=True)
 
     # USER SIGNUP FIELDS
-    username = Column(
-        String, nullable=False, comment="User's username; doubles as username"
-    )
-    password = Column(String, nullable=False)
     name = Column(EncryptedType(String, SECRET), nullable=False)
+    contact_number = Column(
+        EncryptedType(Integer, SECRET),
+        nullable=False,
+        comment="Assumes SG phone number",
+    )
     alias = Column(
         String, nullable=False, comment="To prevent data overflow on frontend"
     )
@@ -58,11 +59,6 @@ class User(Base):
     floor = Column(Integer, nullable=False)
     block = Column(String, nullable=False)
     unit = Column(String, nullable=False)
-    contact_number = Column(
-        EncryptedType(Integer, SECRET),
-        nullable=False,
-        comment="Assumes SG phone number",
-    )
 
     consecutive_checkins = Column(Integer, nullable=False)
     is_suspended = Column(Boolean, nullable=False, default=False)

@@ -33,25 +33,20 @@ def get_create_user_response(
     request: UserCreateRequest, token: str, db: Session
 ) -> None:
     try:
-        if not _is_valid_password(request.password, request.confirm_password):
-            raise DifferentPasswordAndConfirmPasswordException
-
         admin_id = get_token_data(token, "admin_id")
         user_in_model = UserIn(**request.model_dump(by_alias=True))
         db_user_model = User(
-            username=user_in_model.username,
-            password=hash_password(user_in_model.password),
             name=user_in_model.name,
+            contact_number=user_in_model.contact_number,
+            age=user_in_model.age,
             alias=user_in_model.alias,
             app_language=user_in_model.app_language,
-            age=user_in_model.age,
             race=user_in_model.race,
             gender=user_in_model.gender,
             postal_code=user_in_model.postal_code,
             floor=user_in_model.floor,
             block=user_in_model.block,
             unit=user_in_model.unit,
-            contact_number=user_in_model.contact_number,
             consecutive_checkins=0,
             admin_id=admin_id,
             can_record_mood=True,

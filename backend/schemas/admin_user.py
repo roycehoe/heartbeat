@@ -51,10 +51,7 @@ class AdminUserDashboardOut(BaseModel):
 
 
 class UserCreateRequest(BaseModel):
-    username: Annotated[str, StringConstraints(to_lower=True)]
-    password: str
     name: str
-    confirm_password: str = Field(..., alias="confirmPassword")
     contact_number: int = Field(..., alias="contactNumber")
     alias: str
     age: int
