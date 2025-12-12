@@ -29,8 +29,9 @@ function CaregiverLogInForm({
       });
       setErrorMessage(""); // Clear error message on success
       localStorage.setItem("token", response.access_token);
+      setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
     } catch (error) {
-      if (error?.response && error.response.status === 400) {
+      if (error?.response && error.response.status === 401) {
         setErrorMessage("Username or password incorrect. Please try again.");
         return;
       }
