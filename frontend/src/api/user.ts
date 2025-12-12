@@ -60,7 +60,11 @@ interface MoodResponse extends DashboardResponse {
   mood_message: string;
 }
 
-export interface LoginRequest {
+export interface UserLoginRequest {
+  user_id: number;
+}
+
+export interface AdminLoginRequest {
   username: string;
   password: string;
 }
@@ -110,14 +114,14 @@ export async function getUserClaimGiftResponse(): Promise<DashboardResponse> {
 }
 
 export async function getUserLoginResponse(
-  loginRequest: LoginRequest
+  loginRequest: UserLoginRequest
 ): Promise<LoginResponse> {
   const response = await httpClient.post("/user/login", loginRequest);
   return response.data;
 }
 
 export async function getAdminLoginResponse(
-  loginRequest: LoginRequest
+  loginRequest: AdminLoginRequest
 ): Promise<LoginResponse> {
   const response = await httpClient.post("/admin/login", loginRequest);
   return response.data;

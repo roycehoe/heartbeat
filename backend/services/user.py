@@ -7,7 +7,7 @@ from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import AppLanguage, SelectedMood
 from exceptions import (
     DBException,
-    InvalidUsernameOrPasswordException,
+    InvalidCredentialsToAccessUser,
     NoRecordFoundException,
 )
 from models import Mood
@@ -94,26 +94,24 @@ DEFAULT_MOOD_MESSAGES_CHINESE = (
 )
 
 
-def authenticate_user(request: UserLogInRequest, db: Session) -> UserToken:
+def authenticate_user(request: UserLogInRequest, token: str, db: Session) -> UserToken:
     try:
-        user = CRUDUser(db).get_by({"username": request.username})
-        if not verify_password(request.password, str(user.password)):
-            raise InvalidUsernameOrPasswordException
+        user = CRUDUser(db).get(request.user_id)
+        user_out = CRUDUserOut.model_validate(user)
+        token_admin_id = int(get_token_data(token, "admin_id"))
+
+        if user_out.admin_id != token_admin_id:
+            raise InvalidCredentialsToAccessUser
 
         access_token = create_access_token(
             {"user_id": user.id, "app_language": user.app_language}
         )
         return UserToken(access_token=access_token, token_type="bearer")
 
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password and confirm password must be the same",
-        )
-    except InvalidUsernameOrPasswordException:
+    except InvalidCredentialsToAccessUser:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
+            detail="Invalid credentials to access user",
         )
     except DBException as e:
         raise HTTPException(

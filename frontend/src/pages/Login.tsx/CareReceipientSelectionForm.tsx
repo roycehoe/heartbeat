@@ -1,8 +1,10 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Button, Menu } from "@opengovsg/design-system-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   DashboardResponse,
+  getUserLoginResponse,
   useGetAdminDashboardResponse,
 } from "../../api/user";
 import { LogInFormState } from "./Index";
@@ -17,6 +19,14 @@ function CareReceipientSelectionForm({
   const { data, isLoading } = useGetAdminDashboardResponse();
   const [selectedCareReceipient, setSelectedCareReceipient] =
     useState<DashboardResponse | null>(null);
+  const navigate = useNavigate();
+
+  const onSignInButtonClick = async (userId: number) => {
+    const response = await getUserLoginResponse({ user_id: userId });
+    localStorage.setItem("token", response.access_token);
+    navigate("/");
+    setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
+  };
 
   if (isLoading) {
     return (
@@ -25,8 +35,15 @@ function CareReceipientSelectionForm({
       </Box>
     );
   }
+  if (!!!data?.data) {
+    return (
+      <Box>
+        <Text>Something went wrong</Text>
+      </Box>
+    );
+  }
 
-  const careReceipients = data?.data ?? [];
+  const careReceipients = data.data;
 
   return (
     <Box display="flex" flexDirection="column" gap="24px">
@@ -56,9 +73,8 @@ function CareReceipientSelectionForm({
       <Box display="flex" flexDirection="column" gap="12px">
         <Button
           width="100%"
-          onClick={() =>
-            setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection)
-          }
+          isDisabled={!!!selectedCareReceipient}
+          onClick={() => onSignInButtonClick(selectedCareReceipient?.user_id)}
         >
           <Text>Sign in</Text>
         </Button>

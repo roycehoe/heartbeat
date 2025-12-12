@@ -12,7 +12,6 @@ export enum LogInFormState {
   CaregiverCreationSuccess,
   CaregiverOrCareReceipientSelection,
   CareReceipientSelection,
-  CareReceipientSelectionAreYouSure,
 }
 
 const RenderForm = (props: {
@@ -42,8 +41,6 @@ const RenderForm = (props: {
         ></CareReceipientSelectionForm>
       );
 
-    case LogInFormState.CareReceipientSelectionAreYouSure:
-      return <div>Are you sure?</div>;
     case LogInFormState.CaregiverCreationSuccess:
       return (
         <CaregiverCreationSuccess
@@ -58,7 +55,7 @@ const RenderForm = (props: {
 
 function LogIn() {
   const [logInFormState, setLogInFormState] = useState(
-    LogInFormState.CaregiverOrCareReceipientSelection
+    LogInFormState.CaregiverAuthenticate
   );
 
   return (

@@ -59,8 +59,7 @@ class UserDashboardOut(BaseModel):
 
 
 class UserLogInRequest(BaseModel):
-    username: Annotated[str, StringConstraints(to_lower=True)]
-    password: str
+    user_id: int
 
 
 class UserToken(BaseModel):

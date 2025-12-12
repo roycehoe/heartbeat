@@ -22,8 +22,12 @@ router = APIRouter(
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=UserToken)
-def user_log_in(user_log_in_request: UserLogInRequest, db: Session = Depends(get_db)):
-    return authenticate_user(user_log_in_request, db)
+def user_log_in(
+    user_log_in_request: UserLogInRequest,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    return authenticate_user(user_log_in_request, token, db)
 
 
 @router.get(
