@@ -29,7 +29,6 @@ class AdminUserDashboardMoodOut(BaseModel):
 
 class AdminUserDashboardOut(BaseModel):
     user_id: int
-    username: str
     name: str
     alias: str
     age: int

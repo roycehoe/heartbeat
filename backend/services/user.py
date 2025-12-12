@@ -142,7 +142,6 @@ def get_user_dashboard_response(token: str, db: Session) -> UserDashboardOut:
 
     return UserDashboardOut(
         user_id=user_id,
-        username=crud_user_out.username,
         name=crud_user_out.name,
         alias=crud_user_out.alias,
         age=crud_user_out.age,

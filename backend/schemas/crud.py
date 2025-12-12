@@ -19,8 +19,6 @@ class CRUDAdminOut(BaseModel):
 
 class CRUDUserOut(BaseModel):
     id: int
-    username: str
-    password: str
     name: str
     alias: str
     app_language: str

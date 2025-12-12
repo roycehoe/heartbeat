@@ -25,10 +25,6 @@ from utils.mood import get_admin_dashboard_moods_out
 from utils.token import get_token_data
 
 
-def _is_valid_password(password: str, confirm_password: str) -> bool:
-    return password == confirm_password
-
-
 def get_create_user_response(
     request: UserCreateRequest, token: str, db: Session
 ) -> None:
@@ -222,7 +218,6 @@ def get_get_user_response(
 
         return AdminUserDashboardOut(
             user_id=crud_user_out.id,
-            username=crud_user_out.username,
             contact_number=crud_user_out.contact_number,
             name=crud_user_out.name,
             alias=crud_user_out.alias,

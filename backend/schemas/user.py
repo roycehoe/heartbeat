@@ -40,7 +40,6 @@ class UserDashboardMoodOut(BaseModel):
 
 class UserDashboardOut(BaseModel):
     user_id: int
-    username: str
     name: str
     alias: str
     age: int

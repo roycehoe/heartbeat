@@ -162,7 +162,6 @@ def get_admin_dashboard_response(
             response.append(
                 AdminDashboardOut(
                     user_id=crud_user_out.id,
-                    username=crud_user_out.username,
                     contact_number=crud_user_out.contact_number,
                     name=crud_user_out.name,
                     alias=crud_user_out.alias,
