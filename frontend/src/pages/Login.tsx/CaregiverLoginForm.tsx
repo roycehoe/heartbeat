@@ -3,11 +3,12 @@ import { Button, Input } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminLoginResponse } from "../../api/user";
+import { LogInFormState } from "./Index";
 
 function CaregiverLogInForm({
-  setIsSigningUpAsCaregiver,
+  setLogInFormState,
 }: {
-  setIsSigningUpAsCaregiver: (isSigningUpAsCaregiver: boolean) => void;
+  setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -66,7 +67,7 @@ function CaregiverLogInForm({
       </FormControl>
 
       <Link
-        onClick={() => setIsSigningUpAsCaregiver(true)}
+        onClick={() => setLogInFormState(true)}
         my="16px"
         display="block"
         fontSize="sm"

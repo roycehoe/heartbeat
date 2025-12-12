@@ -3,11 +3,12 @@ import { Button, Input } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetSignUpAdminResponse } from "../../api/admin";
+import { LogInFormState } from "./Index";
 
 function CaregiverSignupForm({
-  setIsSigningUpAsCaregiver,
+  setLogInFormState,
 }: {
-  setIsSigningUpAsCaregiver: (isSigningUpAsCaregiver: boolean) => void;
+  setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -63,7 +64,7 @@ function CaregiverSignupForm({
             duration: 9000,
             isClosable: true,
           });
-          sethasCreatedAdminSuccessfully(true);
+          setLogInFormState(LogInFormState.CaregiverCreationSuccess);
         },
         onError: (error) => {
           if (axios.isAxiosError(error) && error.response?.status === 400) {
@@ -84,7 +85,7 @@ function CaregiverSignupForm({
         <Button
           width="100%"
           onClick={() => {
-            setIsSigningUpAsCaregiver(false);
+            setLogInFormState(LogInFormState.CaregiverAuthenticate);
             sethasCreatedAdminSuccessfully(false);
           }}
         >
@@ -157,7 +158,12 @@ function CaregiverSignupForm({
         <Button width="100%" onClick={handleLogInBtnClick}>
           <Text>Create Account</Text>
         </Button>
-        <Button width="100%" onClick={() => setIsSigningUpAsCaregiver(false)}>
+        <Button
+          width="100%"
+          onClick={() =>
+            setLogInFormState(LogInFormState.CaregiverAuthenticate)
+          }
+        >
           <Text>Go back</Text>
         </Button>
       </Box>

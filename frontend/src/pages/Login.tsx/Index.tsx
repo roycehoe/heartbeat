@@ -1,25 +1,48 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Image,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Text,
-} from "@chakra-ui/react";
-import { Link, Tabs } from "@opengovsg/design-system-react";
+import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import CaregiverLogInForm from "./CaregiverLoginForm";
 import CaregiverSignupForm from "./CaregiverSignupForm";
-import UserLogInForm from "./UserLoginForm";
 
-const DEFAULT_ROLES: string[] = ["user", "caregiver"];
+export enum LogInFormState {
+  CaregiverAuthenticate,
+  CaregiverSignUp,
+  CaregiverCreationSuccess,
+  CaregiverOrCareReceipientSelection,
+  CareReceipientSelection,
+  CareReceipientSelectionAreYouSure,
+}
+
+const RenderForm = (props: {
+  logInFormState: LogInFormState;
+  setLogInFormState: React.Dispatch<React.SetStateAction<LogInFormState>>;
+}) => {
+  switch (props.logInFormState) {
+    case LogInFormState.CaregiverAuthenticate:
+      return <CaregiverLogInForm setLogInFormState={props.setLogInFormState} />;
+
+    case LogInFormState.CaregiverSignUp:
+      return (
+        <CaregiverSignupForm setLogInFormState={props.setLogInFormState} />
+      );
+
+    case LogInFormState.CaregiverOrCareReceipientSelection:
+      return <div>Select caregiver or care recipient</div>;
+
+    case LogInFormState.CareReceipientSelection:
+      return <div>Care recipient selection screen</div>;
+
+    case LogInFormState.CareReceipientSelectionAreYouSure:
+      return <div>Are you sure?</div>;
+
+    default:
+      return null;
+  }
+};
 
 function LogIn() {
-  const [role, setRole] = useState("user");
-  const [isSigningUpAsCaregiver, setIsSigningUpAsCaregiver] = useState(false);
+  const [logInFormState, setLogInFormState] = useState(
+    LogInFormState.CaregiverAuthenticate
+  );
 
   return (
     <Flex justifyContent="center" alignItems="center" height="100%">
@@ -46,39 +69,10 @@ function LogIn() {
             </Text>
           </Box>
         </Box>
-
-        {isSigningUpAsCaregiver ? (
-          <CaregiverSignupForm
-            setIsSigningUpAsCaregiver={setIsSigningUpAsCaregiver}
-          ></CaregiverSignupForm>
-        ) : (
-          <div>
-            <Tabs
-              onChange={(index) => {
-                setRole(DEFAULT_ROLES[index]);
-              }}
-            >
-              <TabList mb="16px">
-                {DEFAULT_ROLES.map((role) => {
-                  return <Tab>{role}</Tab>;
-                })}
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  <UserLogInForm></UserLogInForm>
-                </TabPanel>
-                <TabPanel>
-                  <CaregiverLogInForm
-                    setIsSigningUpAsCaregiver={setIsSigningUpAsCaregiver}
-                  ></CaregiverLogInForm>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-            <Link mt="16px" display="block" fontSize="sm" color="blue.500">
-              Forgot password?
-            </Link>
-          </div>
-        )}
+        <RenderForm
+          logInFormState={logInFormState}
+          setLogInFormState={setLogInFormState}
+        ></RenderForm>
       </Box>
     </Flex>
   );
