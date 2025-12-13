@@ -64,8 +64,7 @@ export interface UserLoginRequest {
 }
 
 export interface AdminLoginRequest {
-  username: string;
-  password: string;
+  clerk_id: string;
 }
 
 interface LoginResponse {
@@ -119,11 +118,19 @@ export async function getUserLoginResponse(
   return response.data;
 }
 
-export async function getAdminLoginResponse(
+async function getAdminLoginResponse(
   loginRequest: AdminLoginRequest
 ): Promise<LoginResponse> {
   const response = await httpClient.post("/admin/login", loginRequest);
   return response.data;
+}
+
+export function useGetAdminLoginRespose(user: { id?: string } | null) {
+  return useQuery({
+    queryKey: ["adminLogin", user?.id],
+    enabled: !!user?.id,
+    queryFn: () => getAdminLoginResponse({ clerk_id: user!.id! }),
+  });
 }
 
 export async function resetDB(): Promise<null> {

@@ -1,8 +1,9 @@
-import { Box, FormControl, Link, Text, useToast } from "@chakra-ui/react";
+import { Box, FormControl, Text, useToast } from "@chakra-ui/react";
+import { useUser } from "@clerk/clerk-react";
 import { Button, Input } from "@opengovsg/design-system-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useGetSignUpAdminResponse } from "../../api/admin";
+import { useGetAdminLoginRespose } from "../../api/user";
 import { LogInFormState } from "./Index";
 
 function CaregiverSignupForm({
@@ -10,48 +11,36 @@ function CaregiverSignupForm({
 }: {
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
+  const { user } = useUser();
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [hasCreatedAdminSuccessfully, sethasCreatedAdminSuccessfully] =
     useState(false);
   const toast = useToast();
   const { mutate } = useGetSignUpAdminResponse();
+  // const adminLoginResponse = useGetAdminLoginRespose(user);
+  const {
+    refetch: refetchGetAdminLoginResponse,
+    data: adminLoginResponseData,
+  } = useGetAdminLoginRespose(user);
 
   async function handleLogInBtnClick() {
     if (username === "") {
       setErrorMessage("Please input your username");
       return;
     }
-    if (password === "") {
-      setErrorMessage("Please input your password");
-      return;
-    }
-    if (confirmPassword === "") {
-      setErrorMessage("Please input your confirm password");
-      return;
-    }
-    if (name === "") {
-      setErrorMessage("Please input your name");
-      return;
-    }
     if (contactNumber === "") {
       setErrorMessage("Please input your contactNumber");
       return;
     }
-    if (password !== confirmPassword) {
-      setErrorMessage("Password and confirm password must be the same");
+    if (!user?.id) {
       return;
     }
     mutate(
       {
+        clerk_id: user?.id,
         username: username,
-        password: password,
-        confirmPassword: confirmPassword,
-        name: name,
         contactNumber: Number(contactNumber),
       },
       {
@@ -64,6 +53,9 @@ function CaregiverSignupForm({
             duration: 9000,
             isClosable: true,
           });
+          setLogInFormState(LogInFormState.CaregiverCreationSuccess);
+          refetchGetAdminLoginResponse();
+          localStorage.setItem("token", adminLoginResponseData.access_token);
           setLogInFormState(LogInFormState.CaregiverCreationSuccess);
         },
         onError: (error) => {
@@ -109,38 +101,6 @@ function CaregiverSignupForm({
       </FormControl>
       <FormControl isRequired mb="16px">
         <Input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          size="lg"
-          borderColor="slate.300"
-          _placeholder={{ color: "gray.500" }}
-        />
-      </FormControl>
-      <FormControl id="admin-password" isRequired mb="16px">
-        <Input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm Password"
-          size="lg"
-          borderColor="slate.300"
-          _placeholder={{ color: "gray.500" }}
-        />
-      </FormControl>
-      <FormControl id="admin-password" isRequired mb="16px">
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
-          size="lg"
-          borderColor="slate.300"
-          _placeholder={{ color: "gray.500" }}
-        />
-      </FormControl>
-      <FormControl isRequired mb="16px">
-        <Input
           value={contactNumber}
           onChange={(e) => setContactNumber(e.target.value)}
           placeholder="Contact Number"
@@ -160,9 +120,9 @@ function CaregiverSignupForm({
         </Button>
         <Button
           width="100%"
-          onClick={() =>
-            setLogInFormState(LogInFormState.CaregiverAuthenticate)
-          }
+          onClick={() => {
+            setLogInFormState(LogInFormState.CaregiverAuthenticate);
+          }}
         >
           <Text>Go back</Text>
         </Button>
