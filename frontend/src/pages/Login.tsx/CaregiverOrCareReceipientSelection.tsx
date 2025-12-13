@@ -21,7 +21,6 @@ function CaregiverOrCareReceipientSelection({
   const onGoBackButtonClick = () => {
     localStorage.removeItem("token");
     signOut({ redirectUrl: "/login" });
-    setLogInFormState(LogInFormState.CaregiverAuthenticate);
   };
 
   return (

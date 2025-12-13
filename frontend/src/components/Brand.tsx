@@ -1,14 +1,14 @@
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 
+import { useClerk } from "@clerk/clerk-react";
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ModalLogOut from "./ModalLogout";
 
 function Brand(props: { goToNextUser: () => void }) {
   const [_, setClickCount] = useState(0);
   const timerRef = useRef<number | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const navigate = useNavigate();
+  const { signOut } = useClerk();
 
   const handleClick = () => {
     if (!timerRef.current) {
@@ -34,7 +34,7 @@ function Brand(props: { goToNextUser: () => void }) {
   };
   const logoutUser = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    signOut({ redirectUrl: "/login" });
   };
 
   return (
