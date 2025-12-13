@@ -7,15 +7,12 @@ from enums import Gender, Race, SelectedMood
 
 
 class AdminLogInRequest(BaseModel):
-    username: Annotated[str, StringConstraints(to_lower=True)]
-    password: str
+    clerk_id: str
 
 
 class AdminCreateRequest(BaseModel):
-    username: Annotated[str, StringConstraints(to_lower=True)]
-    password: str
-    name: str
-    confirm_password: str = Field(..., alias="confirmPassword")
+    clerk_id: str
+    username: str
     contact_number: int = Field(..., alias="contactNumber")
 
 

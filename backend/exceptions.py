@@ -34,9 +34,5 @@ class NoRecordFoundException(Exception):
     pass
 
 
-class InvalidUsernameOrPasswordException(Exception):
-    pass
-
-
 class InvalidCredentialsToAccessUser(Exception):
     pass

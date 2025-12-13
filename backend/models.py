@@ -23,7 +23,7 @@ class Admin(Base):
     id = Column(Integer, primary_key=True)
     clerk_id = Column(String, primary_key=True, nullable=False)
 
-    username = Column(String, nullable=False)
+    username = Column(String, nullable=True)
     contact_number = Column(
         EncryptedType(String, SECRET), nullable=True, comment="Assumes SG phone number"
     )
