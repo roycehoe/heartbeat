@@ -1,7 +1,7 @@
 import { Box, FormControl, Text, useToast } from "@chakra-ui/react";
 import { useUser } from "@clerk/clerk-react";
 import { Button, Input } from "@opengovsg/design-system-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetSignUpAdminResponse } from "../../api/admin";
 import { useGetAdminLoginRespose } from "../../api/user";
 import { LogInFormState } from "./Index";
@@ -19,11 +19,16 @@ function CaregiverSignupForm({
     useState(false);
   const toast = useToast();
   const { mutate } = useGetSignUpAdminResponse();
-  // const adminLoginResponse = useGetAdminLoginRespose(user);
   const {
     refetch: refetchGetAdminLoginResponse,
     data: adminLoginResponseData,
   } = useGetAdminLoginRespose(user);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      setLogInFormState(LogInFormState.CaregiverAuthenticate);
+    }
+  }, []);
 
   async function handleLogInBtnClick() {
     if (username === "") {

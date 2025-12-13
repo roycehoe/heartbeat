@@ -1,4 +1,5 @@
 import { Box, Heading, IconButton, Text } from "@chakra-ui/react";
+import { useClerk } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,13 +8,14 @@ import ModalLogOut from "../../../components/ModalLogout";
 
 export function Settings() {
   const navigate = useNavigate();
+  const { signOut } = useClerk();
 
   const handleBackIconClick = () => {
     navigate(`/admin`);
   };
   const logoutUser = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    signOut({ redirectUrl: "/login" });
   };
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   return (

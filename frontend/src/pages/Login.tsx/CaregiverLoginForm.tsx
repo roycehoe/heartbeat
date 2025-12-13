@@ -1,20 +1,9 @@
-import { FormControl, Link, Text } from "@chakra-ui/react";
-import {
-  SignedIn,
-  SignedOut,
-  SignIn,
-  SignInButton,
-  UserButton,
-  useUser,
-} from "@clerk/clerk-react";
-import { Button, Input } from "@opengovsg/design-system-react";
-import { useEffect, useState } from "react";
+import { Spinner } from "@chakra-ui/react";
+import { SignedOut, SignInButton, useClerk, useUser } from "@clerk/clerk-react";
+import { Button } from "@opengovsg/design-system-react";
+import { useEffect } from "react";
 import { useGetAdminLoginRespose } from "../../api/user";
 import { LogInFormState } from "./Index";
-
-function isAdminAccountCreated(error: Error | null) {
-  return error !== null;
-}
 
 function CaregiverLogInForm({
   setLogInFormState,
@@ -22,23 +11,32 @@ function CaregiverLogInForm({
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const { user } = useUser();
-  const adminLoginResponse = useGetAdminLoginRespose(user);
+  const { data, error, isLoading, isFetching } = useGetAdminLoginRespose(user);
 
   useEffect(() => {
     if (!user) {
-      return setLogInFormState(LogInFormState.CaregiverAuthenticate);
+      setLogInFormState(LogInFormState.CaregiverAuthenticate);
+      return;
+    }
+    if (isLoading || isFetching) {
+      return;
     }
 
-    if (!isAdminAccountCreated(adminLoginResponse.error)) {
+    if (error) {
       return setLogInFormState(LogInFormState.CaregiverSignUp);
     }
-    if (!adminLoginResponse.data) {
-      return setLogInFormState(LogInFormState.CaregiverSignUp);
+    if (!data) {
+      setLogInFormState(LogInFormState.CaregiverSignUp);
+      return;
     }
 
-    localStorage.setItem("token", adminLoginResponse.data.access_token);
+    localStorage.setItem("token", data.access_token);
     setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
-  }, [user]);
+  }, [user, data, error, isLoading, isFetching, setLogInFormState]);
+
+  if (isLoading || isFetching) {
+    <Spinner></Spinner>;
+  }
 
   return (
     <>
