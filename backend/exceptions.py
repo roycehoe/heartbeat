@@ -34,5 +34,9 @@ class NoRecordFoundException(Exception):
     pass
 
 
+class ClerkAuthenticationFailedException(Exception):
+    pass
+
+
 class InvalidCredentialsToAccessUser(Exception):
     pass

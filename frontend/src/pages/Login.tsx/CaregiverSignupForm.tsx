@@ -1,5 +1,5 @@
 import { Box, FormControl, Text, useToast } from "@chakra-ui/react";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { Button, Input } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useGetSignUpAdminResponse } from "../../api/admin";

@@ -130,6 +130,7 @@ export function useGetAdminLoginRespose(user: { id?: string } | null) {
     queryKey: ["adminLogin", user?.id],
     enabled: !!user?.id,
     queryFn: () => getAdminLoginResponse({ clerk_id: user!.id! }),
+    retry: 1,
   });
 }
 

@@ -1,3 +1,5 @@
+from clerk_backend_api import Clerk
+from dotenv import dotenv_values
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, time, timedelta
@@ -10,6 +12,7 @@ from utils.token import get_token_data
 
 from crud import CRUDAdmin, CRUDUser
 from exceptions import (
+    ClerkAuthenticationFailedException,
     DBCreateAccountWithUsernameAlreadyExistsException,
     DBException,
     NoRecordFoundException,
@@ -25,6 +28,8 @@ from schemas.admin import (
 )
 
 from utils.token import create_access_token
+
+CLERK_SECRET_KEY = dotenv_values(".env").get("CLERK_SECRET_KEY")
 
 
 def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
@@ -51,8 +56,18 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         )
 
 
+def _authenticate_with_clerk(clerk_id: str) -> None:
+    try:
+        clerk_client = Clerk(bearer_auth=CLERK_SECRET_KEY)
+        clerk_client.users.get(user_id=clerk_id)
+    except Exception:
+        raise ClerkAuthenticationFailedException
+
+
 def authenticate_admin(request: AdminLogInRequest, db: Session) -> AdminToken:
     try:
+        _authenticate_with_clerk(request.clerk_id)
+
         admin = CRUDAdmin(db).get_by({"clerk_id": request.clerk_id})
         access_token = create_access_token({"admin_id": admin.id})
         return AdminToken(access_token=access_token, token_type="bearer")
@@ -61,6 +76,11 @@ def authenticate_admin(request: AdminLogInRequest, db: Session) -> AdminToken:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
+        )
+    except ClerkAuthenticationFailedException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication with Clerk failed",
         )
     except DBException as e:
         raise HTTPException(

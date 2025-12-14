@@ -18,13 +18,13 @@ function CaregiverLogInForm({
       setLogInFormState(LogInFormState.CaregiverAuthenticate);
       return;
     }
+    if (error) {
+      return setLogInFormState(LogInFormState.CaregiverSignUp);
+    }
     if (isLoading || isFetching) {
       return;
     }
 
-    if (error) {
-      return setLogInFormState(LogInFormState.CaregiverSignUp);
-    }
     if (!data) {
       setLogInFormState(LogInFormState.CaregiverSignUp);
       return;
