@@ -63,10 +63,6 @@ export interface UserLoginRequest {
   user_id: number;
 }
 
-export interface AdminLoginRequest {
-  clerk_id: string;
-}
-
 interface LoginResponse {
   access_token: string;
   token_type: string;
@@ -118,18 +114,16 @@ export async function getUserLoginResponse(
   return response.data;
 }
 
-async function getAdminLoginResponse(
-  loginRequest: AdminLoginRequest
-): Promise<LoginResponse> {
-  const response = await httpClient.post("/admin/login", loginRequest);
+async function getAdminLoginResponse(): Promise<LoginResponse> {
+  const response = await httpClient.post("/admin/login");
   return response.data;
 }
 
-export function useGetAdminLoginRespose(user: { id?: string } | null) {
+export function useGetAdminLoginRespose() {
   return useQuery({
-    queryKey: ["adminLogin", user?.id],
-    enabled: !!user?.id,
-    queryFn: () => getAdminLoginResponse({ clerk_id: user!.id! }),
+    queryKey: ["adminLogin"],
+    queryFn: () => getAdminLoginResponse(),
+    enabled: false,
     retry: 1,
   });
 }

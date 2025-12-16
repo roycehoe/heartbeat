@@ -11,6 +11,9 @@ export const httpClient = axios.create({
 });
 
 httpClient.interceptors.request.use(function (config: AxiosRequestConfig) {
-  config.headers = { token: localStorage.getItem("token") || "" };
+  config.headers = {
+    token: localStorage.getItem("token") || "",
+    clerk_token: localStorage.getItem("clerk_token") || "",
+  };
   return config;
 });

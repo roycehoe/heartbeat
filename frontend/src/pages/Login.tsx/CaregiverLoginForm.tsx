@@ -1,7 +1,13 @@
 import { Spinner } from "@chakra-ui/react";
-import { SignedOut, SignInButton, useClerk, useUser } from "@clerk/clerk-react";
+import {
+  SignedOut,
+  SignInButton,
+  useAuth,
+  useClerk,
+  useUser,
+} from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGetAdminLoginRespose } from "../../api/user";
 import { LogInFormState } from "./Index";
 
@@ -11,9 +17,19 @@ function CaregiverLogInForm({
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const { user } = useUser();
-  const { data, error, isLoading, isFetching } = useGetAdminLoginRespose(user);
+  const { data, error, isLoading, isFetching } = useGetAdminLoginRespose();
+  const { getToken, isSignedIn } = useAuth();
 
   useEffect(() => {
+    const getSetClerkToken = async () => {
+      const token = await getToken();
+      localStorage.setItem("clerk_token", token || "");
+    };
+
+    if (!isSignedIn) {
+      getSetClerkToken();
+    }
+
     if (!user) {
       setLogInFormState(LogInFormState.CaregiverAuthenticate);
       return;
