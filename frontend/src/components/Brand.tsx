@@ -34,6 +34,7 @@ function Brand(props: { goToNextUser: () => void }) {
   };
   const logoutUser = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("clerk_token");
     signOut({ redirectUrl: "/login" });
   };
 

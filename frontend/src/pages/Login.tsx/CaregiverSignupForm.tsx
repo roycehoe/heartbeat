@@ -1,5 +1,5 @@
 import { Box, FormControl, Text, useToast } from "@chakra-ui/react";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import { Button, Input } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useGetSignUpAdminResponse } from "../../api/admin";
@@ -23,12 +23,19 @@ function CaregiverSignupForm({
     refetch: refetchGetAdminLoginResponse,
     data: adminLoginResponseData,
   } = useGetAdminLoginRespose(user);
+  const { signOut } = useClerk();
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setLogInFormState(LogInFormState.CaregiverAuthenticate);
     }
   }, []);
+
+  const logoutUser = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("clerk_token");
+    signOut({ redirectUrl: "/login" });
+  };
 
   async function handleLogInBtnClick() {
     if (username === "") {
@@ -127,6 +134,7 @@ function CaregiverSignupForm({
           width="100%"
           onClick={() => {
             setLogInFormState(LogInFormState.CaregiverAuthenticate);
+            logoutUser();
           }}
         >
           <Text>Go back</Text>

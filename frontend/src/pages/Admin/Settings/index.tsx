@@ -15,6 +15,7 @@ export function Settings() {
   };
   const logoutUser = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("clerk_token");
     signOut({ redirectUrl: "/login" });
   };
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
