@@ -26,19 +26,23 @@ function CaregiverLogInForm({
       token && localStorage.setItem("clerk_token", token);
     };
 
-    if (isSignedIn) {
-      getSetClerkToken();
-      refetch();
-      if (data) {
-        localStorage.setItem("token", data.access_token);
-        setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
-      }
-      if (error) {
-        return setLogInFormState(LogInFormState.CaregiverSignUp);
-      }
+    if (!isSignedIn) {
+      return;
     }
     if (isLoading || isFetching) {
       return;
+    }
+
+    getSetClerkToken();
+    refetch();
+
+    if (data) {
+      localStorage.setItem("token", data.access_token);
+      setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
+    }
+
+    if (error) {
+      return setLogInFormState(LogInFormState.CaregiverSignUp);
     }
   }, [isSignedIn, data, error, isLoading, isFetching, setLogInFormState]);
 

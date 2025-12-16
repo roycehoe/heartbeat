@@ -44,6 +44,7 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
             username=admin_in_model.username,
             created_at=admin_in_model.created_at,
             contact_number=admin_in_model.contact_number,
+            has_created_heartbeat_account=True,
         )
         CRUDAdmin(db).create(db_admin_model)
         return
@@ -65,7 +66,12 @@ def authenticate_admin(token: str, db: Session) -> AdminToken:
         user_clerk_id = get_clerk_id_from_verified_clerk_token(token)
 
         admin = CRUDAdmin(db).get_by({"clerk_id": user_clerk_id})
-        access_token = create_access_token({"admin_id": admin.id})
+        access_token = create_access_token(
+            {
+                "admin_id": admin.id,
+                "has_created_heartbeat_account": admin.has_created_heartbeat_account,
+            }
+        )
         return AdminToken(access_token=access_token, token_type="bearer")
 
     except NoRecordFoundException:
