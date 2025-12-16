@@ -1,6 +1,7 @@
-from clerk_backend_api import Clerk
+from clerk_backend_api import AuthenticateRequestOptions, Clerk, authenticate_request
 from dotenv import dotenv_values
 from fastapi import HTTPException, status
+import httpx
 from sqlalchemy.orm import Session
 from datetime import datetime, time, timedelta
 
@@ -8,7 +9,10 @@ from crud import CRUDMood
 
 from schemas.crud import CRUDMoodOut, CRUDUserOut
 from utils.mood import get_admin_dashboard_moods_out
-from utils.token import get_token_data
+from utils.token import (
+    get_clerk_id_from_verified_clerk_token,
+    get_token_data,
+)
 
 from crud import CRUDAdmin, CRUDUser
 from exceptions import (
@@ -56,19 +60,11 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         )
 
 
-def _authenticate_with_clerk(clerk_id: str) -> None:
+def authenticate_admin(token: str, db: Session) -> AdminToken:
     try:
-        clerk_client = Clerk(bearer_auth=CLERK_SECRET_KEY)
-        clerk_client.users.get(user_id=clerk_id)
-    except Exception:
-        raise ClerkAuthenticationFailedException
+        user_clerk_id = get_clerk_id_from_verified_clerk_token(token)
 
-
-def authenticate_admin(request: AdminLogInRequest, db: Session) -> AdminToken:
-    try:
-        _authenticate_with_clerk(request.clerk_id)
-
-        admin = CRUDAdmin(db).get_by({"clerk_id": request.clerk_id})
+        admin = CRUDAdmin(db).get_by({"clerk_id": user_clerk_id})
         access_token = create_access_token({"admin_id": admin.id})
         return AdminToken(access_token=access_token, token_type="bearer")
 

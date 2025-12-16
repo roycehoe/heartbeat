@@ -22,6 +22,7 @@ function CaregiverOrCareReceipientSelection({
     localStorage.removeItem("token");
     localStorage.removeItem("clerk_token");
     signOut({ redirectUrl: "/login" });
+    setLogInFormState(LogInFormState.CaregiverAuthenticate);
   };
 
   return (

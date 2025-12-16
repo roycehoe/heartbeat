@@ -17,3 +17,19 @@ httpClient.interceptors.request.use(function (config: AxiosRequestConfig) {
   };
   return config;
 });
+
+export const httpClerkClient = axios.create({
+  baseURL: BASE_URL,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
+
+httpClerkClient.interceptors.request.use(function (config: AxiosRequestConfig) {
+  config.headers = {
+    token: `${localStorage.getItem("clerk_token")}` || "",
+  };
+  return config;
+});

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-import { httpClient } from "./httpClient";
+import { httpClerkClient, httpClient } from "./httpClient";
 
 export enum MoodValue {
   HAPPY = "happy",
@@ -115,7 +115,7 @@ export async function getUserLoginResponse(
 }
 
 async function getAdminLoginResponse(): Promise<LoginResponse> {
-  const response = await httpClient.post("/admin/login");
+  const response = await httpClerkClient.post("/admin/login");
   return response.data;
 }
 

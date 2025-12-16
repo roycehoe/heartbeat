@@ -1,7 +1,7 @@
 import { Box, Heading, IconButton, Text } from "@chakra-ui/react";
 import { useClerk } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalLogOut from "../../../components/ModalLogout";
@@ -18,6 +18,7 @@ export function Settings() {
     localStorage.removeItem("clerk_token");
     signOut({ redirectUrl: "/login" });
   };
+
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   return (
     <Box

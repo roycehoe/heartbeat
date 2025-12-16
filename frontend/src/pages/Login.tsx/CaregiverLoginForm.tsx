@@ -16,39 +16,31 @@ function CaregiverLogInForm({
 }: {
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
-  const { user } = useUser();
-  const { data, error, isLoading, isFetching } = useGetAdminLoginRespose();
+  const { data, error, isLoading, isFetching, refetch } =
+    useGetAdminLoginRespose();
   const { getToken, isSignedIn } = useAuth();
 
   useEffect(() => {
     const getSetClerkToken = async () => {
       const token = await getToken();
-      localStorage.setItem("clerk_token", token || "");
+      token && localStorage.setItem("clerk_token", token);
     };
 
-    if (!isSignedIn) {
+    if (isSignedIn) {
       getSetClerkToken();
-    }
-
-    if (!user) {
-      setLogInFormState(LogInFormState.CaregiverAuthenticate);
-      return;
-    }
-    if (error) {
-      return setLogInFormState(LogInFormState.CaregiverSignUp);
+      refetch();
+      if (data) {
+        localStorage.setItem("token", data.access_token);
+        setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
+      }
+      if (error) {
+        return setLogInFormState(LogInFormState.CaregiverSignUp);
+      }
     }
     if (isLoading || isFetching) {
       return;
     }
-
-    if (!data) {
-      setLogInFormState(LogInFormState.CaregiverSignUp);
-      return;
-    }
-
-    localStorage.setItem("token", data.access_token);
-    setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
-  }, [user, data, error, isLoading, isFetching, setLogInFormState]);
+  }, [isSignedIn, data, error, isLoading, isFetching, setLogInFormState]);
 
   if (isLoading || isFetching) {
     <Spinner></Spinner>;

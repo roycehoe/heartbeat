@@ -7,7 +7,7 @@ from enums import Gender, Race, SelectedMood
 
 
 class AdminLogInRequest(BaseModel):
-    clerk_id: str
+    token: str
 
 
 class AdminCreateRequest(BaseModel):
