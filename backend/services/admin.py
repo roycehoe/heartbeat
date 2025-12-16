@@ -69,7 +69,6 @@ def authenticate_admin(token: str, db: Session) -> AdminToken:
         access_token = create_access_token(
             {
                 "admin_id": admin.id,
-                "has_created_heartbeat_account": admin.has_created_heartbeat_account,
             }
         )
         return AdminToken(access_token=access_token, token_type="bearer")
