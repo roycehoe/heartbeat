@@ -66,10 +66,6 @@ class UserCreateRequest(BaseModel):
         use_enum_values = True
 
 
-class UserResetPasswordRequest(BaseModel):
-    user_id: int
-
-
 class UserUpdateRequest(UserCreateRequest):
     pass
 

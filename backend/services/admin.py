@@ -25,7 +25,6 @@ from models import User
 from schemas.admin import (
     AdminCreateRequest,
     AdminIn,
-    AdminLogInRequest,
     AdminToken,
     AdminDashboardMoodOut,
     AdminDashboardOut,
@@ -41,10 +40,8 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         admin_in_model = AdminIn(**request.model_dump(by_alias=True))
         db_admin_model = User(
             clerk_id=admin_in_model.clerk_id,
-            username=admin_in_model.username,
             created_at=admin_in_model.created_at,
             contact_number=admin_in_model.contact_number,
-            has_created_heartbeat_account=True,
         )
         CRUDAdmin(db).create(db_admin_model)
         return
@@ -139,13 +136,13 @@ def get_admin_dashboard_response(
 
         admin_id = get_token_data(token, "admin_id")
         user_models = CRUDUser(db).get_by_all(
-            {"admin_id": admin_id}, sort, sort_direction
+            {"user_id": admin_id}, sort, sort_direction
         )
         if not user_models:
             return []
 
         for user_model in user_models:
-            mood_models = CRUDMood(db).get_by({"user_id": user_model.id})
+            mood_models = CRUDMood(db).get_by({"care_receipient_id": user_model.id})
 
             crud_moods_out = [
                 CRUDMoodOut.model_validate(CRUD_mood_out)

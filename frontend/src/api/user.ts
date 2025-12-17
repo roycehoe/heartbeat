@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import { useNavigate } from "react-router-dom";
 import { httpClerkClient, httpClient } from "./httpClient";
 
 export enum MoodValue {

@@ -12,7 +12,6 @@ class AdminLogInRequest(BaseModel):
 
 class AdminCreateRequest(BaseModel):
     clerk_id: str
-    username: str
     contact_number: int = Field(..., alias="contactNumber")
 
 

@@ -1,16 +1,19 @@
+from dotenv import dotenv_values
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from utils.token import get_token_data
 
-SUPER_ADMIN_NAME = "admin"
+SUPERADMIN_CLERK_ID = dotenv_values(".env").get("SUPERADMIN_CLERK_ID") or ""
 
 
-def is_super_admin(token: str, db: Session, super_admin_name: str = SUPER_ADMIN_NAME):
+def is_super_admin(
+    token: str, db: Session, superadmin_clerk_id: str = SUPERADMIN_CLERK_ID
+):
     admin_id = get_token_data(token, "admin_id")
-    admin = CRUDAdmin(db).get(admin_id)
+    admin = CRUDAdmin(db).get_by(admin_id)
 
-    return str(admin.name) == super_admin_name
+    return str(admin.clerk_id) == superadmin_clerk_id
 
 
 def get_statistics(token: str, db: Session):
@@ -23,11 +26,12 @@ def get_statistics(token: str, db: Session):
         statistics.append(admin)
 
     for admin in statistics:
-        users = [i.__dict__ for i in CRUDUser(db).get_by_all({"admin_id": admin["id"]})]
+        users = [i.__dict__ for i in CRUDUser(db).get_by_all({"user_id": admin["id"]})]
         admin["users"] = users
         for user in users:
             user_mood = [
-                CRUDMood(db).get_by({"user_id": user["id"]}) for user in users
+                CRUDMood(db).get_by({"care_receipient_id": user["id"]})
+                for user in users
             ][0]
             user["mood"] = [i.__dict__ for i in user_mood]
 

@@ -4,7 +4,6 @@ import { CreateUserForm } from "../pages/Admin/CreateUser";
 import { UpdateUserForm } from "../pages/Admin/UpdateUser";
 import FormCheckboxTermsAndConditions from "./FormCheckboxTermsAndConditions";
 import FormInputUser from "./FormInputUser";
-import FormInputUserPassword from "./FormInputUserPassword";
 import FormSelectUser from "./FormSelectUser";
 
 function FormFieldsUserCreateUpdate(props: {
@@ -48,20 +47,6 @@ function FormFieldsUserCreateUpdate(props: {
               placeholder={placeholder}
               options={options}
             ></FormSelectUser>
-          );
-        }
-        if (type === "password") {
-          return (
-            <FormInputUserPassword
-              field={field}
-              isRequired={isRequired}
-              isDisabled={false}
-              formLabel={formLabel}
-              type={type}
-              value={props.createUserForm[field]}
-              onChange={(e) => handleChange(e, field)}
-              placeholder={formLabel}
-            ></FormInputUserPassword>
           );
         }
         if (type === "checkbox") {

@@ -14,15 +14,12 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getDeleteUserResponse,
-  getResetUserPasswordResponse,
   getSuspendUserResponse,
   getUnsuspendUserResponse,
-  ResetUserPasswordRequest,
   useGetAdminUserResponse,
 } from "../../../api/admin";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteUser from "../../../components/ModalDeleteUser";
-import ModalResetUserPassword from "../../../components/ModalResetUserPassword";
 
 const UserSettings = () => {
   const { userId } = useParams();
@@ -32,28 +29,13 @@ const UserSettings = () => {
 
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] =
     useState<boolean>(false);
-  const [isResetUserPasswordModalOpen, setIsResetUserPasswordModalOpen] =
-    useState<boolean>(false);
+  useState<boolean>(false);
   const [isSuspended, setIsSuspended] = useState<boolean>(
     data?.is_suspended || true
   );
 
-  const handleBackIconClick = (userName: string) => {
-    navigate(`/admin/${userName}`);
-  };
-
-  const handleOnConfirmModalResetUserPassword = async (
-    resetUserPasswordRequest: ResetUserPasswordRequest
-  ) => {
-    await getResetUserPasswordResponse(resetUserPasswordRequest);
-    setIsResetUserPasswordModalOpen(false);
-    toast({
-      title: "Password Reset Complete",
-      description: "This user's new password is now the same as their username",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
+  const handleBackIconClick = (userId: string) => {
+    navigate(`/admin/${userId}`);
   };
 
   const handleOnConfirmModalDeleteUser = async (userId: number) => {
@@ -134,12 +116,6 @@ const UserSettings = () => {
           <Box display="flex" gap="16px" flexDirection="column">
             <Button
               width="100%"
-              onClick={() => setIsResetUserPasswordModalOpen(true)}
-            >
-              <Text>Reset user's password</Text>
-            </Button>
-            <Button
-              width="100%"
               colorScheme="critical"
               onClick={() => setIsDeleteUserModalOpen(true)}
             >
@@ -149,15 +125,6 @@ const UserSettings = () => {
               isOpen={isDeleteUserModalOpen}
               onClose={() => setIsDeleteUserModalOpen(false)}
               onConfirm={() => handleOnConfirmModalDeleteUser(Number(userId))}
-            />
-            <ModalResetUserPassword
-              isOpen={isResetUserPasswordModalOpen}
-              onClose={() => setIsResetUserPasswordModalOpen(false)}
-              onConfirm={() =>
-                handleOnConfirmModalResetUserPassword({
-                  user_id: Number(userId),
-                })
-              }
             />
           </Box>
         </Box>

@@ -32,7 +32,7 @@ class CRUDUserOut(BaseModel):
     contact_number: int
     consecutive_checkins: int
     created_at: datetime
-    admin_id: int
+    user_id: int
     can_record_mood: bool
     is_suspended: bool
     moods: list["CRUDMoodOut"]
@@ -43,7 +43,7 @@ class CRUDUserOut(BaseModel):
 
 class CRUDMoodOut(BaseModel):
     id: int
-    user_id: int
+    care_receipient_id: int
     mood: SelectedMood
     created_at: datetime
 

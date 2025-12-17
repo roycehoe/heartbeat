@@ -17,13 +17,8 @@ export interface CreateUserRequest {
   unit: string;
 }
 
-export interface ResetUserPasswordRequest {
-  user_id: number;
-}
-
 export interface SignUpAdminRequest {
   clerk_id: string;
-  username: string;
   contactNumber: number;
 }
 
@@ -69,16 +64,6 @@ export function useGetAdminUserResponse(userId: number) {
 
 export async function getDeleteUserResponse(userId: number): Promise<null> {
   const response = await httpClient.delete(`/admin/user/${userId}`);
-  return response.data;
-}
-
-export async function getResetUserPasswordResponse(
-  resetUserPasswordRequest: ResetUserPasswordRequest
-): Promise<null> {
-  const response = await httpClient.post(
-    `/admin/user/reset-password`,
-    resetUserPasswordRequest
-  );
   return response.data;
 }
 

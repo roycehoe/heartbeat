@@ -1,13 +1,7 @@
 import { Spinner } from "@chakra-ui/react";
-import {
-  SignedOut,
-  SignInButton,
-  useAuth,
-  useClerk,
-  useUser,
-} from "@clerk/clerk-react";
+import { SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useGetAdminLoginRespose } from "../../api/user";
 import { LogInFormState } from "./Index";
 
@@ -18,7 +12,7 @@ function CaregiverLogInForm({
 }) {
   const { data, error, isLoading, isFetching, refetch } =
     useGetAdminLoginRespose();
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, userId: clerkUserId } = useAuth();
 
   useEffect(() => {
     const getSetClerkToken = async () => {
@@ -42,7 +36,11 @@ function CaregiverLogInForm({
     }
 
     if (error) {
-      return setLogInFormState(LogInFormState.CaregiverSignUp);
+      window.open(
+        `https://my.carecompass.sg/onboarding?id=${clerkUserId}`,
+        "_self"
+      );
+      return;
     }
   }, [isSignedIn, data, error, isLoading, isFetching, setLogInFormState]);
 
