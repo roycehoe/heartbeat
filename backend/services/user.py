@@ -256,7 +256,9 @@ def get_create_user_mood_response(
             user_id=user_id,
             moods=[
                 UserMoodIn(
-                    mood=mood.mood, user_id=mood.user_id, created_at=mood.created_at
+                    mood=mood.mood,
+                    user_id=mood.care_receipient_id,
+                    created_at=mood.created_at,
                 )
                 for mood in crud_moods_out
             ],

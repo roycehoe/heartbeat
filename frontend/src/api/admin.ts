@@ -17,7 +17,6 @@ export interface CreateUserRequest {
   unit: string;
 }
 
-
 export interface SignUpAdminRequest {
   clerk_id: string;
   contactNumber: number;
@@ -67,7 +66,6 @@ export async function getDeleteUserResponse(userId: number): Promise<null> {
   const response = await httpClient.delete(`/admin/user/${userId}`);
   return response.data;
 }
-
 
 export async function getUpdateUserResponse(
   userId: number,
