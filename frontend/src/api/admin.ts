@@ -22,10 +22,8 @@ export interface ResetUserPasswordRequest {
 }
 
 export interface SignUpAdminRequest {
+  clerk_id: string;
   username: string;
-  password: string;
-  confirmPassword: string;
-  name: string;
   contactNumber: number;
 }
 

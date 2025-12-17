@@ -18,8 +18,10 @@ python-dotenv = "^1.0.1"
 black = "^24.10.0"
 sqlalchemy-utils = "^0.41.2"
 twilio = "^9.3.6"
-cryptography = "^43.0.3"
+cryptography = ">=45,<46"
 alembic = "^1.17.2"
+clerk-backend-api = "^4.2.0"
+python-jose = {extras = ["cryptography"], version = "^3.5.0"}
 
 
 [tool.poetry.group.dev.dependencies]
