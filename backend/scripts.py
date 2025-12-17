@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import Gender, Race, AppLanguage
-from models import Admin, Mood, User
+from models import User, Mood, CareReceipient
 from schemas.crud import CRUDUserOut
 from utils.hashing import hash_password
 from utils.whatsapp import get_non_compliant_whatsapp_message_data
@@ -168,11 +168,11 @@ def is_db_empty(db: Session) -> bool:
 def populate_db(db: Session) -> None:
     admin_data = _generate_admin_data()
     for data in admin_data:
-        CRUDAdmin(db).create(Admin(**data))
+        CRUDAdmin(db).create(User(**data))
 
     user_data = _generate_user_data()
     for data in user_data:
-        CRUDUser(db).create(User(**data))
+        CRUDUser(db).create(CareReceipient(**data))
 
     mood_data = _generate_mood_data()
     for data in mood_data:

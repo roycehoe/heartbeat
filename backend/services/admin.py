@@ -21,7 +21,7 @@ from exceptions import (
     DBException,
     NoRecordFoundException,
 )
-from models import Admin
+from models import User
 from schemas.admin import (
     AdminCreateRequest,
     AdminIn,
@@ -39,7 +39,7 @@ CLERK_SECRET_KEY = dotenv_values(".env").get("CLERK_SECRET_KEY")
 def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
     try:
         admin_in_model = AdminIn(**request.model_dump(by_alias=True))
-        db_admin_model = Admin(
+        db_admin_model = User(
             clerk_id=admin_in_model.clerk_id,
             username=admin_in_model.username,
             created_at=admin_in_model.created_at,

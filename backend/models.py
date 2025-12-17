@@ -17,29 +17,29 @@ from enums import SelectedMood
 SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 
 
-class Admin(Base):
-    __tablename__ = "admin"
+class User(Base):
+    __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
-    clerk_id = Column(String, unique=True, primary_key=True, nullable=False)
+    clerk_id = Column(String, unique=True, nullable=False)
     contact_number = Column(
         EncryptedType(String, SECRET), nullable=True, comment="Assumes SG phone number"
     )
 
     created_at = Column(TIMESTAMP, nullable=False)
 
-    users = relationship("User", back_populates="admin")  # One-to-Zero/Many
+    care_receipients = relationship("CareReceipient", back_populates="user")
 
 
-class User(Base):
-    __tablename__ = "user"
+class CareReceipient(Base):
+    __tablename__ = "care_receipient"
 
     id = Column(Integer, primary_key=True)
 
     # USER SIGNUP FIELDS
     name = Column(EncryptedType(String, SECRET), nullable=False)
     contact_number = Column(
-        EncryptedType(Integer, SECRET),
+        EncryptedType(String, SECRET),
         nullable=False,
         comment="Assumes SG phone number",
     )
@@ -59,21 +59,19 @@ class User(Base):
     is_suspended = Column(Boolean, nullable=False, default=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
-    admin_id = Column(Integer, ForeignKey("admin.id"))
+    user_id = Column(Integer, ForeignKey("user.id"))
     can_record_mood = Column(Boolean, nullable=False)
 
-    admin = relationship(
-        "Admin", back_populates="users"
-    )  # Many users can belong to one Admin
-    moods = relationship("Mood", back_populates="user")  # One-to-Zero/Many
+    user = relationship("User", back_populates="care_receipients")
+    moods = relationship("Mood", back_populates="care_receipient")
 
 
 class Mood(Base):
     __tablename__ = "mood"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    care_receipient_id = Column(Integer, ForeignKey("care_receipient.id"))
     mood = Column(Enum(SelectedMood))
     created_at = Column(TIMESTAMP, nullable=False)
 
-    user = relationship("User", back_populates="moods")  # Each Mood belongs to one User
+    care_receipient = relationship("CareReceipient", back_populates="moods")
