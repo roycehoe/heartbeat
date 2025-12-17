@@ -37,10 +37,6 @@ app.add_middleware(
 def startup_event():
     db_session = next(get_db())
 
-    # delete_all_db_data(db_session)
-
-    if is_db_empty(db_session):
-        populate_db(db_session)
     scheduler = get_scheduler(db_session)
     scheduler.start()
 

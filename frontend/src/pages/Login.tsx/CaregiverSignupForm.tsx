@@ -12,7 +12,6 @@ function CaregiverSignupForm({
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const { user } = useUser();
-  const [username, setUsername] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [hasCreatedAdminSuccessfully, sethasCreatedAdminSuccessfully] =
@@ -38,10 +37,6 @@ function CaregiverSignupForm({
   };
 
   async function handleLogInBtnClick() {
-    if (username === "") {
-      setErrorMessage("Please input your username");
-      return;
-    }
     if (contactNumber === "") {
       setErrorMessage("Please input your contactNumber");
       return;
@@ -52,7 +47,6 @@ function CaregiverSignupForm({
     mutate(
       {
         clerk_id: user?.id,
-        username: username,
         contactNumber: Number(contactNumber),
       },
       {
@@ -71,9 +65,6 @@ function CaregiverSignupForm({
           setLogInFormState(LogInFormState.CaregiverCreationSuccess);
         },
         onError: (error) => {
-          if (axios.isAxiosError(error) && error.response?.status === 400) {
-            return setErrorMessage("This username has already been taken");
-          }
           setErrorMessage("Something went wrong. Please try again later.");
         },
       }
@@ -101,16 +92,6 @@ function CaregiverSignupForm({
 
   return (
     <div>
-      <FormControl id="admin-username" isRequired mb="16px">
-        <Input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          size="lg"
-          borderColor="slate.300"
-          _placeholder={{ color: "gray.500" }}
-        />
-      </FormControl>
       <FormControl isRequired mb="16px">
         <Input
           value={contactNumber}
