@@ -10,16 +10,136 @@ from exceptions import (
     DBGetAccountException,
     NoRecordFoundException,
 )
-from models import Admin, Mood, User
+from models import User, Mood, CareReceipient
 
 
 class CRUDUser:
     def __init__(self, session: Session):
         self.session = session
 
+    def create(self, account: CareReceipient) -> CareReceipient:
+        try:
+            if self.session.query(CareReceipient).filter_by(name=account.name).first():
+                raise DBCreateAccountWithUsernameAlreadyExistsException
+            self.session.add(account)
+            self.session.commit()
+
+        except DBCreateAccountWithUsernameAlreadyExistsException:
+            raise DBCreateAccountWithUsernameAlreadyExistsException
+        except Exception as e:
+            raise DBException(e)
+        return account
+
+    def update(self, id: int, field: str, value: Any) -> CareReceipient:
+        try:
+            if account := self.session.query(CareReceipient).filter_by(id=id).first():
+                setattr(account, field, value)
+                self.session.commit()
+                self.session.refresh(account)
+                return account
+            raise NoRecordFoundException
+
+        except Exception:
+            raise DBGetAccountException
+
+    def get(self, id: int) -> CareReceipient:
+        try:
+            if account := self.session.query(CareReceipient).filter_by(id=id).first():
+                return account
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception:
+            raise DBGetAccountException
+
+    def get_by(self, field: dict[Any, Any]) -> CareReceipient:
+        try:
+            if account := self.session.query(CareReceipient).filter_by(**field).first():
+                return account
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
+    def get_by_all(
+        self,
+        field: dict[Any, Any],
+        sort: str = "consecutive_checkins",
+        sort_direction: int = 0,
+    ) -> list[CareReceipient]:
+        try:
+            if sort_direction == 0:
+                return (
+                    self.session.query(CareReceipient)
+                    .filter_by(**field)
+                    .order_by(desc(sort))
+                    .all()
+                )
+            return (
+                self.session.query(CareReceipient)
+                .filter_by(**field)
+                .order_by(asc(sort))
+                .all()
+            )
+
+        except Exception as e:
+            raise DBException(e)
+
+    def delete(self, id: int) -> None:
+        try:
+            if account := self.session.query(CareReceipient).filter_by(id=id).first():
+                self.session.delete(account)
+                self.session.commit()
+                return
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
+    def reset_password(self, id: int, new_password: str) -> None:
+        try:
+            if account := self.session.query(CareReceipient).filter_by(id=id).first():
+                setattr(account, "password", new_password)
+                self.session.commit()
+                self.session.refresh(account)
+                return
+            raise NoRecordFoundException
+
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
+    def delete_all(self) -> None:
+        try:
+            self.session.query(CareReceipient).delete()
+            return
+
+        except Exception as e:
+            raise DBException(e)
+
+    def reset_all_can_record_mood(self) -> None:
+        # TODO: Think of a better way to
+        # use this. Here might not be the best place
+
+        for row in self.session.query(CareReceipient):
+            row.update({"can_record_mood": True})
+        self.session.commit()
+        return
+
+
+class CRUDAdmin:
+    def __init__(self, session: Session):
+        self.session = session
+
     def create(self, account: User) -> User:
         try:
-            if self.session.query(User).filter_by(name=account.name).first():
+            if self.session.query(User).filter_by(username=account.username).first():
                 raise DBCreateAccountWithUsernameAlreadyExistsException
             self.session.add(account)
             self.session.commit()
@@ -67,18 +187,12 @@ class CRUDUser:
     def get_by_all(
         self,
         field: dict[Any, Any],
-        sort: str = "consecutive_checkins",
         sort_direction: int = 0,
     ) -> list[User]:
         try:
             if sort_direction == 0:
-                return (
-                    self.session.query(User)
-                    .filter_by(**field)
-                    .order_by(desc(sort))
-                    .all()
-                )
-            return self.session.query(User).filter_by(**field).order_by(asc(sort)).all()
+                return self.session.query(User).filter_by(**field).all()
+            return self.session.query(User).filter_by(**field).all()
 
         except Exception as e:
             raise DBException(e)
@@ -88,20 +202,6 @@ class CRUDUser:
             if account := self.session.query(User).filter_by(id=id).first():
                 self.session.delete(account)
                 self.session.commit()
-                return
-            raise NoRecordFoundException
-
-        except NoRecordFoundException:
-            raise NoRecordFoundException
-        except Exception as e:
-            raise DBException(e)
-
-    def reset_password(self, id: int, new_password: str) -> None:
-        try:
-            if account := self.session.query(User).filter_by(id=id).first():
-                setattr(account, "password", new_password)
-                self.session.commit()
-                self.session.refresh(account)
                 return
             raise NoRecordFoundException
 
@@ -113,101 +213,6 @@ class CRUDUser:
     def delete_all(self) -> None:
         try:
             self.session.query(User).delete()
-            return
-
-        except Exception as e:
-            raise DBException(e)
-
-    def reset_all_can_record_mood(self) -> None:
-        # TODO: Think of a better way to
-        # use this. Here might not be the best place
-
-        for row in self.session.query(User):
-            row.update({"can_record_mood": True})
-        self.session.commit()
-        return
-
-
-class CRUDAdmin:
-    def __init__(self, session: Session):
-        self.session = session
-
-    def create(self, account: Admin) -> Admin:
-        try:
-            if self.session.query(Admin).filter_by(username=account.username).first():
-                raise DBCreateAccountWithUsernameAlreadyExistsException
-            self.session.add(account)
-            self.session.commit()
-
-        except DBCreateAccountWithUsernameAlreadyExistsException:
-            raise DBCreateAccountWithUsernameAlreadyExistsException
-        except Exception as e:
-            raise DBException(e)
-        return account
-
-    def update(self, id: int, field: str, value: Any) -> Admin:
-        try:
-            if account := self.session.query(Admin).filter_by(id=id).first():
-                setattr(account, field, value)
-                self.session.commit()
-                self.session.refresh(account)
-                return account
-            raise NoRecordFoundException
-
-        except Exception:
-            raise DBGetAccountException
-
-    def get(self, id: int) -> Admin:
-        try:
-            if account := self.session.query(Admin).filter_by(id=id).first():
-                return account
-            raise NoRecordFoundException
-
-        except NoRecordFoundException:
-            raise NoRecordFoundException
-        except Exception:
-            raise DBGetAccountException
-
-    def get_by(self, field: dict[Any, Any]) -> Admin:
-        try:
-            if account := self.session.query(Admin).filter_by(**field).first():
-                return account
-            raise NoRecordFoundException
-
-        except NoRecordFoundException:
-            raise NoRecordFoundException
-        except Exception as e:
-            raise DBException(e)
-
-    def get_by_all(
-        self,
-        field: dict[Any, Any],
-        sort_direction: int = 0,
-    ) -> list[Admin]:
-        try:
-            if sort_direction == 0:
-                return self.session.query(Admin).filter_by(**field).all()
-            return self.session.query(Admin).filter_by(**field).all()
-
-        except Exception as e:
-            raise DBException(e)
-
-    def delete(self, id: int) -> None:
-        try:
-            if account := self.session.query(Admin).filter_by(id=id).first():
-                self.session.delete(account)
-                self.session.commit()
-                return
-            raise NoRecordFoundException
-
-        except NoRecordFoundException:
-            raise NoRecordFoundException
-        except Exception as e:
-            raise DBException(e)
-
-    def delete_all(self) -> None:
-        try:
-            self.session.query(Admin).delete()
             return
 
         except Exception as e:
