@@ -79,9 +79,6 @@ function ModalCreateUser() {
           });
         },
         onError: (error) => {
-          if (axios.isAxiosError(error) && error.response?.status === 400) {
-            return setErrorMessage("This username has already been taken");
-          }
           setErrorMessage("Something went wrong. Please try again later.");
         },
       }

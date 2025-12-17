@@ -100,7 +100,7 @@ def authenticate_user(request: UserLogInRequest, token: str, db: Session) -> Use
         user_out = CRUDUserOut.model_validate(user)
         token_admin_id = int(get_token_data(token, "admin_id"))
 
-        if user_out.admin_id != token_admin_id:
+        if user_out.user_id != token_admin_id:
             raise InvalidCredentialsToAccessUser
 
         access_token = create_access_token(
@@ -134,7 +134,7 @@ def _can_record_mood(user_id: int, db: Session) -> bool:
 
 def get_user_dashboard_response(token: str, db: Session) -> UserDashboardOut:
     user_id: int = get_token_data(token, "user_id")
-    mood_models = CRUDMood(db).get_by({"user_id": user_id})
+    mood_models = CRUDMood(db).get_by({"care_receipient_id": user_id})
     crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
 
     user_model = CRUDUser(db).get(user_id)
@@ -226,7 +226,7 @@ def get_create_user_mood_response(
 
         mood_in_model = UserMoodIn(mood=request.mood, user_id=user_id)
         db_mood_model = Mood(
-            user_id=mood_in_model.user_id,
+            care_receipient_id=mood_in_model.user_id,
             mood=mood_in_model.mood,
             created_at=mood_in_model.created_at,
         )
@@ -236,7 +236,7 @@ def get_create_user_mood_response(
         if _should_alert_admin(user_id, db):
             user = CRUDUser(db).get(user_id)
             crud_user_out = CRUDUserOut.model_validate(user)
-            admin = CRUDAdmin(db).get(crud_user_out.admin_id)
+            admin = CRUDAdmin(db).get(crud_user_out.user_id)
             whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
                 f"+65{admin.contact_number}",
                 crud_user_out.name,
@@ -247,7 +247,7 @@ def get_create_user_mood_response(
         updated_user = CRUDUser(db).get(user_id)
         crud_updated_user_out = CRUDUserOut.model_validate(updated_user)
 
-        mood_models = CRUDMood(db).get_by({"user_id": user_id})
+        mood_models = CRUDMood(db).get_by({"care_receipient_id": user_id})
         crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
 
         app_language: AppLanguage = get_token_data(token, "app_language")

@@ -44,7 +44,7 @@ def get_create_user_response(
             block=user_in_model.block,
             unit=user_in_model.unit,
             consecutive_checkins=0,
-            admin_id=admin_id,
+            user_id=admin_id,
             can_record_mood=True,
             created_at=user_in_model.created_at,
         )
@@ -73,7 +73,7 @@ def get_reset_user_password_response(
 ) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
-        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
         if request.user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
         user_model = CRUDUser(db).get(request.user_id)
@@ -99,7 +99,7 @@ def get_reset_user_password_response(
 def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
-        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
         if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
         return CRUDUser(db).delete(user_id)
@@ -121,7 +121,7 @@ def get_update_user_response(
 ) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
-        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
         if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
         if request.password != request.confirm_password:
@@ -146,7 +146,7 @@ def get_update_user_response(
 def get_suspend_user_response(user_id: int, token: str, db: Session) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
-        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
         if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
         CRUDUser(db).update(user_id, "is_suspended", True)
@@ -167,7 +167,7 @@ def get_suspend_user_response(user_id: int, token: str, db: Session) -> None:
 def get_unsuspend_user_response(user_id: int, token: str, db: Session) -> None:
     try:
         admin_id = get_token_data(token, "admin_id")
-        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
         if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
         CRUDUser(db).update(user_id, "is_suspended", False)
@@ -202,7 +202,7 @@ def get_get_user_response(
 ) -> AdminUserDashboardOut:
     try:
         admin_id = get_token_data(token, "admin_id")
-        users_under_admin = CRUDUser(db).get_by_all({"admin_id": admin_id})
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
         if user_id not in [user.id for user in users_under_admin]:
             raise UserNotUnderCurrentAdminException
 

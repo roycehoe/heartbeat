@@ -19,8 +19,6 @@ class CRUDUser:
 
     def create(self, account: CareReceipient) -> CareReceipient:
         try:
-            if self.session.query(CareReceipient).filter_by(name=account.name).first():
-                raise DBCreateAccountWithUsernameAlreadyExistsException
             self.session.add(account)
             self.session.commit()
 
@@ -137,18 +135,18 @@ class CRUDAdmin:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, account: User) -> User:
+    def create(self, user: User) -> User:
         try:
-            if self.session.query(User).filter_by(username=account.username).first():
+            if self.session.query(User).filter_by(clerk_id=user.clerk_id).first():
                 raise DBCreateAccountWithUsernameAlreadyExistsException
-            self.session.add(account)
+            self.session.add(user)
             self.session.commit()
 
         except DBCreateAccountWithUsernameAlreadyExistsException:
             raise DBCreateAccountWithUsernameAlreadyExistsException
         except Exception as e:
             raise DBException(e)
-        return account
+        return user
 
     def update(self, id: int, field: str, value: Any) -> User:
         try:
@@ -248,7 +246,7 @@ class CRUDMood:
         try:
             return (
                 self.session.query(Mood)
-                .filter_by(user_id=user_id)
+                .filter_by(care_receipient_id=user_id)
                 .order_by(Mood.created_at.desc())
                 .limit(limit)
                 .all()

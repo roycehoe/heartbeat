@@ -23,11 +23,12 @@ def get_statistics(token: str, db: Session):
         statistics.append(admin)
 
     for admin in statistics:
-        users = [i.__dict__ for i in CRUDUser(db).get_by_all({"admin_id": admin["id"]})]
+        users = [i.__dict__ for i in CRUDUser(db).get_by_all({"user_id": admin["id"]})]
         admin["users"] = users
         for user in users:
             user_mood = [
-                CRUDMood(db).get_by({"user_id": user["id"]}) for user in users
+                CRUDMood(db).get_by({"care_receipient_id": user["id"]})
+                for user in users
             ][0]
             user["mood"] = [i.__dict__ for i in user_mood]
 

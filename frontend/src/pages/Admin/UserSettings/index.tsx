@@ -38,8 +38,8 @@ const UserSettings = () => {
     data?.is_suspended || true
   );
 
-  const handleBackIconClick = (userName: string) => {
-    navigate(`/admin/${userName}`);
+  const handleBackIconClick = (userId: string) => {
+    navigate(`/admin/${userId}`);
   };
 
   const handleOnConfirmModalResetUserPassword = async (

@@ -215,7 +215,7 @@ def _notify_admin_of_non_compliant_users(db: Session) -> None:
     for user in non_compliant_users:
         if user.is_suspended:
             continue
-        admin = CRUDAdmin(db).get(user.admin_id)
+        admin = CRUDAdmin(db).get(user.user_id)
         whatsapp_message_data = get_non_compliant_whatsapp_message_data(
             f"65{admin.contact_number}",
             user.name,
