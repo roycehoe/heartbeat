@@ -16,6 +16,7 @@
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@chakra-ui/styled-system": "^2.9.2",
+    "@clerk/clerk-react": "^5.58.1",
     "@fontsource/ibm-plex-mono": "^5.0.14",
     "@opengovsg/design-system-react": "^1.23.0",
     "@rollup/rollup-linux-x64-gnu": "^4.21.2",

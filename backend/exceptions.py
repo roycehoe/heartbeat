@@ -34,7 +34,7 @@ class NoRecordFoundException(Exception):
     pass
 
 
-class InvalidUsernameOrPasswordException(Exception):
+class ClerkAuthenticationFailedException(Exception):
     pass
 
 

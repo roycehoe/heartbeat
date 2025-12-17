@@ -20,15 +20,10 @@ SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 class Admin(Base):
     __tablename__ = "admin"
 
-    id = Column(Integer, primary_key=True, comment="Primary key")
-
-    username = Column(
-        String, nullable=False, comment="User's username; doubles as username"
-    )
-    name = Column(EncryptedType(String, SECRET), nullable=False)
-    password = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True)
+    clerk_id = Column(String, unique=True, primary_key=True, nullable=False)
     contact_number = Column(
-        EncryptedType(String, SECRET), nullable=False, comment="Assumes SG phone number"
+        EncryptedType(String, SECRET), nullable=True, comment="Assumes SG phone number"
     )
 
     created_at = Column(TIMESTAMP, nullable=False)

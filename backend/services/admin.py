@@ -1,4 +1,7 @@
+from clerk_backend_api import AuthenticateRequestOptions, Clerk, authenticate_request
+from dotenv import dotenv_values
 from fastapi import HTTPException, status
+import httpx
 from sqlalchemy.orm import Session
 from datetime import datetime, time, timedelta
 
@@ -6,14 +9,16 @@ from crud import CRUDMood
 
 from schemas.crud import CRUDMoodOut, CRUDUserOut
 from utils.mood import get_admin_dashboard_moods_out
-from utils.token import get_token_data
+from utils.token import (
+    get_clerk_id_from_verified_clerk_token,
+    get_token_data,
+)
 
 from crud import CRUDAdmin, CRUDUser
 from exceptions import (
+    ClerkAuthenticationFailedException,
     DBCreateAccountWithUsernameAlreadyExistsException,
     DBException,
-    DifferentPasswordAndConfirmPasswordException,
-    InvalidUsernameOrPasswordException,
     NoRecordFoundException,
 )
 from models import Admin
@@ -26,34 +31,24 @@ from schemas.admin import (
     AdminDashboardOut,
 )
 
-from utils.hashing import hash_password, verify_password
 from utils.token import create_access_token
 
-
-def _is_valid_password(password: str, confirm_password: str) -> bool:
-    return password == confirm_password
+CLERK_SECRET_KEY = dotenv_values(".env").get("CLERK_SECRET_KEY")
 
 
 def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
     try:
-        if not _is_valid_password(request.password, request.confirm_password):
-            raise DifferentPasswordAndConfirmPasswordException
         admin_in_model = AdminIn(**request.model_dump(by_alias=True))
         db_admin_model = Admin(
+            clerk_id=admin_in_model.clerk_id,
             username=admin_in_model.username,
-            password=hash_password(admin_in_model.password),
-            name=admin_in_model.name,
             created_at=admin_in_model.created_at,
             contact_number=admin_in_model.contact_number,
+            has_created_heartbeat_account=True,
         )
         CRUDAdmin(db).create(db_admin_model)
         return
 
-    except DifferentPasswordAndConfirmPasswordException:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password and confirm password must be the same",
-        )
     except DBCreateAccountWithUsernameAlreadyExistsException:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -66,12 +61,16 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         )
 
 
-def authenticate_admin(request: AdminLogInRequest, db: Session) -> AdminToken:
+def authenticate_admin(token: str, db: Session) -> AdminToken:
     try:
-        admin = CRUDAdmin(db).get_by({"username": request.username})
-        if not verify_password(request.password, str(admin.password)):
-            raise InvalidUsernameOrPasswordException
-        access_token = create_access_token({"admin_id": admin.id})
+        user_clerk_id = get_clerk_id_from_verified_clerk_token(token)
+
+        admin = CRUDAdmin(db).get_by({"clerk_id": user_clerk_id})
+        access_token = create_access_token(
+            {
+                "admin_id": admin.id,
+            }
+        )
         return AdminToken(access_token=access_token, token_type="bearer")
 
     except NoRecordFoundException:
@@ -79,10 +78,10 @@ def authenticate_admin(request: AdminLogInRequest, db: Session) -> AdminToken:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
         )
-    except InvalidUsernameOrPasswordException:
+    except ClerkAuthenticationFailedException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
+            detail="Authentication with Clerk failed",
         )
     except DBException as e:
         raise HTTPException(
@@ -115,7 +114,6 @@ def get_user_dashboard_response(token: str, db: Session) -> AdminDashboardOut:
 
     return AdminDashboardOut(
         user_id=user_id,
-        username=crud_user_out.username,
         name=crud_user_out.name,
         alias=crud_user_out.alias,
         age=crud_user_out.age,

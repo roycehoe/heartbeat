@@ -15,7 +15,7 @@ function CaregiverCreationSuccess({
       <Button
         width="100%"
         onClick={() => {
-          setLogInFormState(LogInFormState.CaregiverAuthenticate);
+          setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
         }}
       >
         <Text>Go back</Text>

@@ -16,6 +16,7 @@ import {
   useGetAdminDashboardResponse,
 } from "../../api/user";
 
+import { useEffect } from "react";
 import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
 
 enum ColorTag {
@@ -86,6 +87,13 @@ function Admin() {
 
   const { data, isLoading } = useGetAdminDashboardResponse();
 
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+      return;
+    }
+  }, [data]);
+
   const handleUserClick = (userId: number) => {
     navigate(`/admin/${userId}`);
   };
@@ -96,10 +104,6 @@ function Admin() {
     navigate(`/admin/settings`);
   };
 
-  if (!localStorage.getItem("token")) {
-    navigate("/login");
-    return;
-  }
   if (isLoading || !data) {
     return (
       <Box

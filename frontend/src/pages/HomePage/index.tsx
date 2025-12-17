@@ -1,6 +1,6 @@
 import { Box, Fade } from "@chakra-ui/react";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
 import {
@@ -20,6 +20,13 @@ function HomePage() {
 
   const [moodMessage, setMoodMessage] = useState<string>("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+      return;
+    }
+  }, []);
 
   const {
     data: dashboardData,

@@ -1,4 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
+import { useClerk } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
 import { useNavigate } from "react-router-dom";
 import { LogInFormState } from "./Index";
@@ -9,6 +10,7 @@ function CaregiverOrCareReceipientSelection({
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
   const navigate = useNavigate();
+  const { signOut } = useClerk();
 
   const onLogInAsCaregiverButtonClick = () => {
     navigate("/admin");
@@ -18,6 +20,8 @@ function CaregiverOrCareReceipientSelection({
   };
   const onGoBackButtonClick = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("clerk_token");
+    signOut({ redirectUrl: "/login" });
     setLogInFormState(LogInFormState.CaregiverAuthenticate);
   };
 

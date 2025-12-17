@@ -29,8 +29,8 @@ def sign_up_admin(request: AdminCreateRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=AdminToken)
-def admin_log_in(request: AdminLogInRequest, db: Session = Depends(get_db)):
-    return authenticate_admin(request, db)
+def admin_log_in(db: Session = Depends(get_db), token: str = Header(None)):
+    return authenticate_admin(token, db)
 
 
 @router.get(
