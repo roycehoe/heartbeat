@@ -16,7 +16,6 @@ from schemas.admin_user import (
     AdminUserDashboardOut,
     UserCreateRequest,
     UserIn,
-    UserResetPasswordRequest,
     UserUpdateRequest,
 )
 from schemas.crud import CRUDMoodOut, CRUDUserOut
@@ -65,34 +64,6 @@ def get_create_user_response(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=e,
-        )
-
-
-def get_reset_user_password_response(
-    request: UserResetPasswordRequest, token: str, db: Session
-) -> None:
-    try:
-        admin_id = get_token_data(token, "admin_id")
-        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
-        if request.user_id not in [user.id for user in users_under_admin]:
-            raise UserNotUnderCurrentAdminException
-        user_model = CRUDUser(db).get(request.user_id)
-        crud_user_out = CRUDUserOut.model_validate(user_model)
-
-        # Always reset user password to username
-        new_user_password = hash_password(crud_user_out.username)
-
-        return CRUDUser(db).reset_password(request.user_id, new_user_password)
-
-    except UserNotUnderCurrentAdminException:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Cannot delete user that is not under current admin",
-        )
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No record of user found",
         )
 
 
