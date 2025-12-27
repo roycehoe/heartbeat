@@ -150,9 +150,6 @@ const UserDetail = () => {
     navigate(`/admin/${userId}/settings`);
   };
   const handleBackIconClick = () => {
-    queryClient.invalidateQueries({
-      queryKey: ["getAdminDashboardResponse"],
-    });
     navigate(`/admin`);
   };
 
