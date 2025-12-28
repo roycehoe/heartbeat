@@ -57,7 +57,7 @@ export async function getAdminUserResponse(
 
 export function useGetAdminUserResponse(userId: number) {
   return useQuery({
-    queryKey: ["getAdminDashboardResponse"],
+    queryKey: ["getAdminUserResponse", userId],
     queryFn: () => getAdminUserResponse(userId),
   });
 }
