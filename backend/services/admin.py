@@ -40,7 +40,6 @@ def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
         admin_in_model = AdminIn(**request.model_dump(by_alias=True))
         db_admin_model = User(
             clerk_id=admin_in_model.clerk_id,
-            created_at=admin_in_model.created_at,
             contact_number=admin_in_model.contact_number,
         )
         CRUDAdmin(db).create(db_admin_model)
