@@ -18,7 +18,7 @@ SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     clerk_id = Column(String, unique=True, nullable=False)
@@ -59,7 +59,7 @@ class CareReceipient(Base):
     is_suspended = Column(Boolean, nullable=False, default=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
     can_record_mood = Column(Boolean, nullable=False)
 
     user = relationship("User", back_populates="care_receipients")
