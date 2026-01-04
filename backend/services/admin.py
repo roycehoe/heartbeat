@@ -21,7 +21,7 @@ from exceptions import (
     DBException,
     NoRecordFoundException,
 )
-from models import User
+from models.user import User
 from schemas.admin import (
     AdminCreateRequest,
     AdminIn,

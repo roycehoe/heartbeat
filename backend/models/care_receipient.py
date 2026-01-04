@@ -1,34 +1,10 @@
-from dotenv import dotenv_values
-from sqlalchemy import (
-    TIMESTAMP,
-    Boolean,
-    Column,
-    Enum,
-    ForeignKey,
-    Integer,
-    String,
-)
+import os
+from models.base import Base
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EncryptedType
 
-from enums import SelectedMood
-from models.base import Base
-
-SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True)
-    clerk_id = Column(String, unique=True, nullable=False)
-    contact_number = Column(
-        EncryptedType(String, SECRET), nullable=True, comment="Assumes SG phone number"
-    )
-
-    created_at = Column(TIMESTAMP, nullable=False)
-
-    care_receipients = relationship("CareReceipient", back_populates="user")
+DB_ENCRYPTION_SECRET = os.getenv("DB_ENCRYPTION_SECRET")
 
 
 class CareReceipient(Base):
@@ -37,9 +13,9 @@ class CareReceipient(Base):
     id = Column(Integer, primary_key=True)
 
     # USER SIGNUP FIELDS
-    name = Column(EncryptedType(String, SECRET), nullable=False)
+    name = Column(EncryptedType(String, DB_ENCRYPTION_SECRET), nullable=False)
     contact_number = Column(
-        EncryptedType(String, SECRET),
+        EncryptedType(String, DB_ENCRYPTION_SECRET),
         nullable=False,
         comment="Assumes SG phone number",
     )
@@ -64,14 +40,3 @@ class CareReceipient(Base):
 
     user = relationship("User", back_populates="care_receipients")
     moods = relationship("Mood", back_populates="care_receipient")
-
-
-class Mood(Base):
-    __tablename__ = "mood"
-
-    id = Column(Integer, primary_key=True)
-    care_receipient_id = Column(Integer, ForeignKey("care_receipient.id"))
-    mood = Column(Enum(SelectedMood))
-    created_at = Column(TIMESTAMP, nullable=False)
-
-    care_receipient = relationship("CareReceipient", back_populates="moods")

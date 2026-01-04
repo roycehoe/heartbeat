@@ -10,7 +10,7 @@ from exceptions import (
     InvalidCredentialsToAccessUser,
     NoRecordFoundException,
 )
-from models import Mood
+from models.mood import Mood
 from schemas.crud import CRUDMoodOut, CRUDUserOut
 from schemas.user import (
     UserDashboardMoodOut,

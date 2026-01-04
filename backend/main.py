@@ -1,17 +1,12 @@
-from clerk_backend_api import Clerk
 from dotenv import dotenv_values
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from database import Base, engine, get_db
+from database import get_db
 from routers import admin, admin_user, user
 from scripts import (
-    delete_all_db_data,
     get_scheduler,
-    is_db_empty,
-    populate_db,
 )
 from services.statistics import get_statistics
 
