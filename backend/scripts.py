@@ -9,7 +9,9 @@ from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import Gender, Race, AppLanguage
-from models import User, Mood, CareReceipient
+from models.user import User
+from models.mood import Mood
+from models.care_receipient import CareReceipient
 from schemas.crud import CRUDUserOut
 from utils.hashing import hash_password
 from utils.whatsapp import get_non_compliant_whatsapp_message_data

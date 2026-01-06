@@ -10,7 +10,9 @@ from exceptions import (
     DBGetAccountException,
     NoRecordFoundException,
 )
-from models import User, Mood, CareReceipient
+from models.user import User
+from models.mood import Mood
+from models.care_receipient import CareReceipient
 
 
 class CRUDUser:
