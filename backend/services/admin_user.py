@@ -10,7 +10,7 @@ from exceptions import (
     NoRecordFoundException,
     UserNotUnderCurrentAdminException,
 )
-from models import CareReceipient
+from models.care_receipient import CareReceipient
 from schemas.admin_user import (
     AdminUserDashboardMoodOut,
     AdminUserDashboardOut,
