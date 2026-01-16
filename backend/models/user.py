@@ -1,12 +1,13 @@
 import os
 from enum import Enum
+from dotenv import dotenv_values
 from sqlalchemy import Integer, String, Column
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship
 from models.base import Base
 from sqlalchemy_utils import EncryptedType
 
-DB_ENCRYPTION_SECRET = os.getenv("DB_ENCRYPTION_SECRET")
+DB_ENCRYPTION_SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 
 
 class Citizenship(Enum):

@@ -6,6 +6,8 @@ from dotenv import dotenv_values
 from fastapi import HTTPException, status
 import requests
 
+from exceptions import ClerkAuthenticationFailedException
+
 config = dotenv_values(".env")
 SECRET_KEY = "secret"
 ALGORITHM = "HS256"
@@ -30,8 +32,7 @@ def get_token_data(token: str, param: str) -> Union[int, str]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
-
-    except jwt.DecodeError:
+    except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
@@ -77,11 +78,14 @@ def get_clerk_id_from_verified_clerk_token(clerk_token: str) -> dict:
 
     key = next(k for k in jwks["keys"] if k["kid"] == kid)
 
-    payload = jwt.decode(
-        clerk_token,
-        key,
-        algorithms=["RS256"],
-        options={"verify_aud": False},
-    )
+    try:
+        payload = jwt.decode(
+            clerk_token,
+            key,
+            algorithms=["RS256"],
+            options={"verify_aud": False},
+        )
+    except ExpiredSignatureError:
+        raise ClerkAuthenticationFailedException
 
     return payload.get("sub")
