@@ -1,12 +1,10 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 ENV POETRY_VERSION=1.8.3
 
 RUN apt update -y && apt install -y \
     curl \
-    python3-distutils \
     build-essential \
-    libgl1-mesa-glx \
     libglib2.0-0 \
     python3-dev \
     libpq-dev \

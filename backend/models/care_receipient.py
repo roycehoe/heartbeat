@@ -1,10 +1,12 @@
 import os
+
+from dotenv import dotenv_values
 from models.base import Base
 from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EncryptedType
 
-DB_ENCRYPTION_SECRET = os.getenv("DB_ENCRYPTION_SECRET")
+DB_ENCRYPTION_SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 
 
 class CareReceipient(Base):
