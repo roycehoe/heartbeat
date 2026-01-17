@@ -7,13 +7,13 @@ from fastapi import HTTPException, status
 import requests
 
 from exceptions import ClerkAuthenticationFailedException
+from settings import AppSettings
 
 config = dotenv_values(".env")
 SECRET_KEY = "secret"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES_10_YEARS = 60 * 24 * 365 * 10
 
-CLERK_SECRET_KEY = dotenv_values(".env").get("CLERK_SECRET_KEY") or ""
 CLERK_ALGORITHM = ["RS256"]
 
 
@@ -65,7 +65,8 @@ def _get_jwks():
     global _jwks_cache
     if _jwks_cache is None:
         _jwks_cache = requests.get(
-            CLERK_JWKS_URL, headers={"Authorization": f"Bearer {CLERK_SECRET_KEY}"}
+            CLERK_JWKS_URL,
+            headers={"Authorization": f"Bearer {AppSettings.CLERK_SECRET_KEY}"},
         ).json()
     return _jwks_cache
 
