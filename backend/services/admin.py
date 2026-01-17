@@ -32,7 +32,6 @@ from schemas.admin import (
 
 from utils.token import create_access_token
 
-CLERK_SECRET_KEY = dotenv_values(".env").get("CLERK_SECRET_KEY")
 
 
 def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
