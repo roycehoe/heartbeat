@@ -1,14 +1,14 @@
-from dotenv import dotenv_values
 from sqlalchemy.orm import Session
 
 from crud import CRUDAdmin, CRUDMood, CRUDUser
+from settings import AppSettings
 from utils.token import get_token_data
-
-SUPERADMIN_CLERK_ID = dotenv_values(".env").get("SUPERADMIN_CLERK_ID") or ""
 
 
 def is_super_admin(
-    token: str, db: Session, superadmin_clerk_id: str = SUPERADMIN_CLERK_ID
+    token: str,
+    db: Session,
+    superadmin_clerk_id: str = AppSettings.SUPERADMIN_CLERK_ID,
 ):
     admin_id = get_token_data(token, "admin_id")
     admin = CRUDAdmin(db).get_by(admin_id)

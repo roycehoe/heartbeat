@@ -10,7 +10,6 @@ from scripts import (
 )
 from services.statistics import get_statistics
 
-IS_PROD = dotenv_values(".env").get("IS_PROD")
 
 app = FastAPI(
     # root_path="/api/" if IS_PROD else "",
