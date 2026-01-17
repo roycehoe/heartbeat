@@ -4,12 +4,10 @@ import { useState } from "react";
 import CaregiverCreationSuccess from "./CaregiverCreationSuccess";
 import CaregiverLogInForm from "./CaregiverLoginForm";
 import CaregiverOrCareReceipientSelection from "./CaregiverOrCareReceipientSelection";
-import CaregiverSignupForm from "./CaregiverSignupForm";
 import CareReceipientSelectionForm from "./CareReceipientSelectionForm";
 
 export enum LogInFormState {
   CaregiverAuthenticate,
-  CaregiverSignUp,
   CaregiverCreationSuccess,
   CaregiverOrCareReceipientSelection,
   CareReceipientSelection,
@@ -22,11 +20,6 @@ const RenderForm = (props: {
   switch (props.logInFormState) {
     case LogInFormState.CaregiverAuthenticate:
       return <CaregiverLogInForm setLogInFormState={props.setLogInFormState} />;
-
-    case LogInFormState.CaregiverSignUp:
-      return (
-        <CaregiverSignupForm setLogInFormState={props.setLogInFormState} />
-      );
 
     case LogInFormState.CaregiverOrCareReceipientSelection:
       return (
@@ -56,7 +49,7 @@ const RenderForm = (props: {
 
 function LogIn() {
   const [logInFormState, setLogInFormState] = useState(
-    LogInFormState.CaregiverAuthenticate
+    LogInFormState.CaregiverAuthenticate,
   );
 
   return (
