@@ -199,6 +199,15 @@ def _reset_all_user_can_record_mood_state(db: Session) -> None:
         CRUDUser(db).update(user.id, "can_record_mood", True)
 
 
+def _is_errant_user(
+    user: CRUDUserOut, errant_user_consecutive_non_checkin_criterion: int
+) -> bool:
+    return (
+        user.consecutive_non_checkins % errant_user_consecutive_non_checkin_criterion
+        == 0
+    )
+
+
 def _update_non_compliant_users_states(db: Session) -> None:
     non_compliant_users = [
         CRUDUserOut.model_validate(user)
@@ -206,6 +215,11 @@ def _update_non_compliant_users_states(db: Session) -> None:
     ]
     for user in non_compliant_users:
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
+        if _is_errant_user(
+            user,
+            AppSettings.ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION,
+        ):
+            CRUDUser(db).update(user.id, "is_suspended", True)
 
 
 def _notify_admin_of_non_compliant_users(db: Session) -> None:

@@ -31,6 +31,7 @@ class CRUDUserOut(BaseModel):
     unit: str
     contact_number: int
     consecutive_checkins: int
+    consecutive_non_checkins: int
     created_at: datetime
     user_id: int
     can_record_mood: bool

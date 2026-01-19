@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: str
     CLERK_SECRET_KEY: str
     SUPERADMIN_CLERK_ID: str
+    ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION: int = 3
 
     model_config = SettingsConfigDict(env_file=".env", frozen=True)
 

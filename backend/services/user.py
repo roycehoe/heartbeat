@@ -155,6 +155,7 @@ def get_user_dashboard_response(token: str, db: Session) -> UserDashboardOut:
         ],
         contact_number=crud_user_out.contact_number,
         consecutive_checkins=crud_user_out.consecutive_checkins,
+        consecutive_non_checkins=crud_user_out.consecutive_non_checkins,
         can_record_mood=_can_record_mood(user_id, db),
     )
 
@@ -191,7 +192,7 @@ def _should_alert_admin(user_id: int, db: Session) -> bool:
         )
 
 
-def _update_user(user_id: int, db: Session) -> None:
+def _update_user_mood_checkin(user_id: int, db: Session) -> None:
     try:
         CRUDUser(db).update(user_id, "can_record_mood", False)
 
@@ -200,6 +201,11 @@ def _update_user(user_id: int, db: Session) -> None:
             user_id,
             "consecutive_checkins",
             user.consecutive_checkins + 1,
+        )
+        CRUDUser(db).update(
+            user_id,
+            "consecutive_non_checkins",
+            0,
         )
 
         user = CRUDUser(db).get(user_id)
@@ -231,7 +237,7 @@ def get_create_user_mood_response(
             created_at=mood_in_model.created_at,
         )
         CRUDMood(db).create(db_mood_model)
-        _update_user(user_id, db)
+        _update_user_mood_checkin(user_id, db)
 
         if _should_alert_admin(user_id, db):
             user = CRUDUser(db).get(user_id)
@@ -263,6 +269,7 @@ def get_create_user_mood_response(
                 for mood in crud_moods_out
             ],
             consecutive_checkins=crud_updated_user_out.consecutive_checkins,
+            consecutive_non_checkins=crud_user_out.consecutive_non_checkins,
             can_record_mood=crud_updated_user_out.can_record_mood,
             mood_message=_get_mood_message(app_language),
         )
