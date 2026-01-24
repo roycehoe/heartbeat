@@ -8,14 +8,12 @@ from models.base import Base
 
 import models
 from alembic import context
+from settings import AppSettings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-SQLALCHEMY_DATABASE_URL = (
-    dotenv_values(".env").get("SQLALCHEMY_DATABASE_URL_STAGING") or ""
-)
-config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
+config.set_main_option("sqlalchemy.url", AppSettings.SQLALCHEMY_DATABASE_URL_STAGING)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
