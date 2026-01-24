@@ -239,9 +239,10 @@ def get_create_user_mood_response(
         CRUDMood(db).create(db_mood_model)
         _update_user_mood_checkin(user_id, db)
 
+        user = CRUDUser(db).get(user_id)
+        crud_user_out = CRUDUserOut.model_validate(user)
+
         if _should_alert_admin(user_id, db):
-            user = CRUDUser(db).get(user_id)
-            crud_user_out = CRUDUserOut.model_validate(user)
             admin = CRUDAdmin(db).get(crud_user_out.user_id)
             whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
                 f"+65{admin.contact_number}",
