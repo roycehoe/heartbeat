@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from routers import admin, admin_user, user
 from scripts import (
+    _run_end_of_day_cron_job,
     get_scheduler,
 )
 from services.statistics import get_statistics
@@ -49,6 +50,15 @@ def healthcheck():
 )
 def statistics(token: str = Header(None), db: Session = Depends(get_db)):
     return get_statistics(token, db)
+
+
+@app.post(
+    "/end-of-day-cron-job",
+    status_code=status.HTTP_200_OK,
+    include_in_schema=False,
+)
+def eod_cron_job(db: Session = Depends(get_db)):
+    return _run_end_of_day_cron_job(db)
 
 
 app.include_router(admin.router)
