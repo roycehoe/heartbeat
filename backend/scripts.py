@@ -83,9 +83,7 @@ def _notify_admins_of_errant_user_suspension(
         admin = CRUDAdmin(db).get(user.user_id)
         whatsapp_message_data = get_suspend_errant_user_whatsapp_message_data(
             f"65{admin.contact_number}",
-            admin.name,
             user.name,
-            datetime.now(pytz.timezone("Asia/Singapore")),
         )
         send_whatsapp_message(whatsapp_message_data)
 

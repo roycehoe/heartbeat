@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    IS_PROD: bool = True
+    IS_PROD: bool = False
     DB_ENCRYPTION_SECRET: str
     ADMIN_PASSWORD: str
     SQLALCHEMY_DATABASE_URL_STAGING: str = (

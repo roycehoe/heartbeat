@@ -56,7 +56,6 @@ def statistics(token: str = Header(None), db: Session = Depends(get_db)):
 @app.post(
     "/end-of-day-cron-job",
     status_code=status.HTTP_200_OK,
-    include_in_schema=False,
 )
 def eod_cron_job(db: Session = Depends(get_db)):
     if AppSettings.IS_PROD:
