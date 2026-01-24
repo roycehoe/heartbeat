@@ -10,6 +10,7 @@ from scripts import (
     get_scheduler,
 )
 from services.statistics import get_statistics
+from settings import AppSettings
 
 
 app = FastAPI(
@@ -58,6 +59,8 @@ def statistics(token: str = Header(None), db: Session = Depends(get_db)):
     include_in_schema=False,
 )
 def eod_cron_job(db: Session = Depends(get_db)):
+    if AppSettings.IS_PROD:
+        return
     return _run_end_of_day_cron_job(db)
 
 
