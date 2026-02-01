@@ -241,7 +241,6 @@ def get_create_user_mood_response(
 
         user = CRUDUser(db).get(user_id)
         crud_user_out = CRUDUserOut.model_validate(user)
-
         if _should_alert_admin(user_id, db):
             admin = CRUDAdmin(db).get(crud_user_out.user_id)
             whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
@@ -251,14 +250,10 @@ def get_create_user_mood_response(
             )
             send_whatsapp_message(whatsapp_message)
 
-        updated_user = CRUDUser(db).get(user_id)
-        crud_updated_user_out = CRUDUserOut.model_validate(updated_user)
-
         mood_models = CRUDMood(db).get_by({"care_receipient_id": user_id})
+
         crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
-
         app_language: AppLanguage = get_token_data(token, "app_language")
-
         return UserMoodOut(
             user_id=user_id,
             moods=[
@@ -269,9 +264,9 @@ def get_create_user_mood_response(
                 )
                 for mood in crud_moods_out
             ],
-            consecutive_checkins=crud_updated_user_out.consecutive_checkins,
+            consecutive_checkins=crud_user_out.consecutive_checkins,
             consecutive_non_checkins=crud_user_out.consecutive_non_checkins,
-            can_record_mood=crud_updated_user_out.can_record_mood,
+            can_record_mood=crud_user_out.can_record_mood,
             mood_message=_get_mood_message(app_language),
         )
 
