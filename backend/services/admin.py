@@ -33,7 +33,6 @@ from schemas.admin import (
 from utils.token import create_access_token
 
 
-
 def get_create_admin_response(request: AdminCreateRequest, db: Session) -> None:
     try:
         admin_in_model = AdminIn(**request.model_dump(by_alias=True))
@@ -122,6 +121,7 @@ def get_user_dashboard_response(token: str, db: Session) -> AdminDashboardOut:
         ],
         contact_number=crud_user_out.contact_number,
         consecutive_checkins=crud_user_out.consecutive_checkins,
+        consecutive_non_checkins=crud_user_out.consecutive_non_checkins,
         can_record_mood=_can_record_mood(user_id, db),
     )
 
@@ -165,6 +165,7 @@ def get_admin_dashboard_response(
                     floor=crud_user_out.floor,
                     moods=dashboard_moods_out,
                     consecutive_checkins=crud_user_out.consecutive_checkins,
+                    consecutive_non_checkins=crud_user_out.consecutive_non_checkins,
                     can_record_mood=_can_record_mood(crud_user_out.id, db),
                 )
             )

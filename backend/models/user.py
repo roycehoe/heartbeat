@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 from models.base import Base
 from sqlalchemy_utils import EncryptedType
 
-DB_ENCRYPTION_SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
+from settings import AppSettings
 
 
 class Citizenship(Enum):
@@ -36,7 +36,7 @@ class User(Base):
     clerk_id = Column(String, unique=True, index=True)
     citizenship = Column(SQLAlchemyEnum(Citizenship))
     contact_number = Column(
-        EncryptedType(String, DB_ENCRYPTION_SECRET),
+        EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET),
         nullable=True,
         comment="Assumes SG phone number",
     )

@@ -52,6 +52,7 @@ export interface DashboardResponse {
   moods: Mood[];
   can_record_mood: boolean;
   consecutive_checkins: number;
+  consecutive_non_checkins: number;
 }
 
 interface MoodResponse extends DashboardResponse {
@@ -95,7 +96,7 @@ export function useGetAdminDashboardResponse() {
 }
 
 export async function getUserMoodResponse(
-  moodRequest: MoodRequest
+  moodRequest: MoodRequest,
 ): Promise<MoodResponse> {
   const response = await httpClient.post("/user/mood", moodRequest);
   return response.data;
@@ -107,7 +108,7 @@ export async function getUserClaimGiftResponse(): Promise<DashboardResponse> {
 }
 
 export async function getUserLoginResponse(
-  loginRequest: UserLoginRequest
+  loginRequest: UserLoginRequest,
 ): Promise<LoginResponse> {
   const response = await httpClient.post("/user/login", loginRequest);
   return response.data;

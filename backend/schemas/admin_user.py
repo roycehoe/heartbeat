@@ -44,6 +44,7 @@ class AdminUserDashboardOut(BaseModel):
     moods: list[AdminUserDashboardMoodOut]
     can_record_mood: bool
     consecutive_checkins: int
+    consecutive_non_checkins: int
 
     class Config:
         use_enum_values = True

@@ -6,6 +6,9 @@ from datetime import datetime, time, timedelta
 def get_admin_dashboard_moods_out(
     moods_in: list[CRUDMoodOut], start_date: datetime, end_date: datetime
 ) -> list[AdminDashboardMoodOut]:
+    if not moods_in:
+        return []
+
     result: list[AdminDashboardMoodOut] = []
     current_date = start_date.date()
     end_date_only = end_date.date()

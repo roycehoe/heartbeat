@@ -2,14 +2,12 @@ from datetime import datetime, timedelta
 from typing import Union
 
 import jwt
-from dotenv import dotenv_values
 from fastapi import HTTPException, status
 import requests
 
 from exceptions import ClerkAuthenticationFailedException
 from settings import AppSettings
 
-config = dotenv_values(".env")
 SECRET_KEY = "secret"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES_10_YEARS = 60 * 24 * 365 * 10

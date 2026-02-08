@@ -43,6 +43,7 @@ def get_create_user_response(
             block=user_in_model.block,
             unit=user_in_model.unit,
             consecutive_checkins=0,
+            consecutive_non_checkins=0,
             user_id=admin_id,
             can_record_mood=True,
             created_at=user_in_model.created_at,
@@ -204,6 +205,7 @@ def get_get_user_response(
                 for mood in admin_dashboard_mood_out
             ],
             consecutive_checkins=crud_user_out.consecutive_checkins,
+            consecutive_non_checkins=crud_user_out.consecutive_non_checkins,
             can_record_mood=_can_record_mood(crud_user_out.id, db),
             is_suspended=crud_user_out.is_suspended,
         )

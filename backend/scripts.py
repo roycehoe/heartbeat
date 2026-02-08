@@ -1,194 +1,44 @@
-import time
-from datetime import datetime, timedelta
-from random import choice, sample
+from datetime import datetime
 
-from dotenv import dotenv_values
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy.orm import Session
 
-from crud import CRUDAdmin, CRUDMood, CRUDUser
-from enums import Gender, Race, AppLanguage
-from models.user import User
-from models.mood import Mood
-from models.care_receipient import CareReceipient
+from crud import CRUDAdmin, CRUDUser
 from schemas.crud import CRUDUserOut
 from settings import AppSettings
-from utils.hashing import hash_password
-from utils.whatsapp import get_non_compliant_whatsapp_message_data
+from utils.whatsapp import (
+    get_non_compliant_whatsapp_message_data,
+    get_suspend_errant_user_whatsapp_message_data,
+)
 from gateway import send_whatsapp_message
 
 
-def _generate_mood_data_compliant_user(
-    user_id=1,
-    start_date=datetime(year=2024, month=9, day=2),
-    end_date=datetime.now() - timedelta(days=1),
-):
-    moods = []
-    delta = end_date - start_date
-    for day_offset in range(delta.days + 1):
-        moods.append(
-            {
-                "user_id": user_id,
-                "mood": choice(["happy", "ok"]),
-                "created_at": start_date + timedelta(days=day_offset),
-            }
-        )
-    return moods
-
-
-def _generate_mood_data_4_consecutive_sad(
-    user_id=2,
-    start_date=datetime(year=2024, month=9, day=3),
-    end_date=datetime.now() - timedelta(days=1),
-):
-    moods = []
-    delta = end_date - start_date
-
-    for day_offset in range(delta.days + 1):
-        mood_data = {
-            "user_id": user_id,
-            # Last 4 days should be sad
-            "mood": choice(["happy", "ok"]) if day_offset < 4 else "sad",
-            "created_at": start_date + timedelta(days=day_offset),
-        }
-
-        moods.append(mood_data)
-
-    return moods
-
-
-def _generate_mood_data_non_compliant_user(
-    user_id=3,
-    start_date=datetime(year=2024, month=9, day=4),
-    end_date=datetime.now() - timedelta(days=1),
-):
-    mood_data_compliant_user = _generate_mood_data_compliant_user(
-        user_id, start_date, end_date
+def _is_errant_user(
+    user: CRUDUserOut,
+    errant_user_consecutive_non_checkin_criterion: int = AppSettings.ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION,
+) -> bool:
+    return (
+        user.consecutive_non_checkins % errant_user_consecutive_non_checkin_criterion
+        == 0
     )
-    # We want to retain the first date for frontend rendering purposes to show that this is the third user
-    mood_data_to_remove = sample(mood_data_compliant_user[1:], 5)
-    return [
-        mood_data_compliant_user[0],
-        *[
-            mood_data
-            for mood_data in mood_data_compliant_user
-            if mood_data not in mood_data_to_remove
-        ],
+
+
+def _get_errant_users(db: Session) -> list[CRUDUserOut]:
+    non_compliant_non_suspended_users = [
+        CRUDUserOut.model_validate(user)
+        for user in CRUDUser(db).get_by_all(
+            {"can_record_mood": True, "is_suspended": False}
+        )
     ]
+    return [user for user in non_compliant_non_suspended_users if _is_errant_user(user)]
 
 
-def _generate_mood_data() -> list[dict]:
+def _get_non_compliant_users(db: Session) -> list[CRUDUserOut]:
     return [
-        *_generate_mood_data_compliant_user(),
-        *_generate_mood_data_4_consecutive_sad(),
-        *_generate_mood_data_non_compliant_user(),
+        CRUDUserOut.model_validate(user)
+        for user in CRUDUser(db).get_by_all({"can_record_mood": True})
     ]
-
-
-def _generate_user_data(created_at_days_offset=24) -> list[dict]:
-    created_at = datetime.today() - timedelta(days=created_at_days_offset)
-    return [
-        {
-            "id": 1,
-            "username": "user1",
-            "password": hash_password("user1"),
-            "name": "user1",
-            "alias": "alias1",
-            "age": 69,
-            "race": Race.CHINESE,
-            "gender": Gender.MALE,
-            "app_language": AppLanguage.ENGLISH,
-            "postal_code": 123123,
-            "floor": 9,
-            "contact_number": 90001111,
-            "consecutive_checkins": 5,
-            "created_at": created_at,
-            "admin_id": 1,
-            "can_record_mood": True,
-        },
-        {
-            "id": 2,
-            "username": "user2",
-            "password": hash_password("user2"),
-            "name": "user2",
-            "alias": "alias1",
-            "age": 69,
-            "race": Race.CHINESE,
-            "gender": Gender.MALE,
-            "app_language": AppLanguage.CHINESE,
-            "postal_code": 123123,
-            "floor": 9,
-            "contact_number": 90001111,
-            "consecutive_checkins": 5,
-            "created_at": created_at,
-            "admin_id": 1,
-            "can_record_mood": True,
-        },
-        {
-            "id": 3,
-            "username": "user3",
-            "password": hash_password("user3"),
-            "name": "user3",
-            "alias": "user3",
-            "age": 69,
-            "race": Race.CHINESE,
-            "gender": Gender.MALE,
-            "app_language": AppLanguage.CHINESE,
-            "postal_code": 123123,
-            "floor": 9,
-            "contact_number": 90001111,
-            "consecutive_checkins": 0,
-            "created_at": created_at,
-            "admin_id": 1,
-            "can_record_mood": True,
-        },
-    ]
-
-
-def _generate_admin_data(created_at_days_offset=24) -> list[dict]:
-    created_at = datetime.today() - timedelta(days=created_at_days_offset)
-    return [
-        {
-            "id": 1,
-            "username": "admin",
-            "name": "admin",
-            "contact_number": 91348131,
-            "password": hash_password(AppSettings.ADMIN_PASSWORD),
-            "created_at": created_at,
-        }
-    ]
-
-
-def is_db_empty(db: Session) -> bool:
-    if len(CRUDMood(db).get_all()) == 0:
-        return True
-    return False
-
-
-def populate_db(db: Session) -> None:
-    admin_data = _generate_admin_data()
-    for data in admin_data:
-        CRUDAdmin(db).create(User(**data))
-
-    user_data = _generate_user_data()
-    for data in user_data:
-        CRUDUser(db).create(CareReceipient(**data))
-
-    mood_data = _generate_mood_data()
-    for data in mood_data:
-        CRUDMood(db).create(Mood(**data))
-
-
-def delete_all_db_data(db: Session) -> None:
-    CRUDMood(db).delete_all()
-    CRUDUser(db).delete_all()
-    CRUDAdmin(db).delete_all()
-
-
-def repopulate_db(db: Session) -> None:
-    delete_all_db_data(db)
-    populate_db(db)
 
 
 def _reset_all_user_can_record_mood_state(db: Session) -> None:
@@ -199,20 +49,48 @@ def _reset_all_user_can_record_mood_state(db: Session) -> None:
         CRUDUser(db).update(user.id, "can_record_mood", True)
 
 
-def _update_non_compliant_users_states(db: Session) -> None:
-    non_compliant_users = [
-        CRUDUserOut.model_validate(user)
-        for user in CRUDUser(db).get_by_all({"can_record_mood": True})
-    ]
+def _reset_non_compliant_users_consecutive_checkins(
+    db: Session, non_compliant_users: list[CRUDUserOut]
+) -> None:
     for user in non_compliant_users:
         CRUDUser(db).update(user.id, "consecutive_checkins", 0)
 
 
-def _notify_admin_of_non_compliant_users(db: Session) -> None:
-    non_compliant_users = [
-        CRUDUserOut.model_validate(user)
-        for user in CRUDUser(db).get_by_all({"can_record_mood": True})
-    ]
+def _update_non_compliant_users_non_consecutive_checkins(
+    db: Session, non_compliant_users: list[CRUDUserOut]
+) -> None:
+    for user in non_compliant_users:
+        CRUDUser(db).update(
+            user.id, "consecutive_non_checkins", user.consecutive_non_checkins + 1
+        )
+
+
+def _suspend_notifications_for_errant_users(
+    db: Session, non_compliant_users: list[CRUDUserOut]
+) -> None:
+    for user in non_compliant_users:
+        if not _is_errant_user(user):
+            continue
+        CRUDUser(db).update(user.id, "is_suspended", True)
+
+
+def _notify_admins_of_errant_user_suspension(
+    db: Session, non_compliant_users: list[CRUDUserOut]
+) -> None:
+    for user in non_compliant_users:
+        if user.is_suspended:
+            continue
+        admin = CRUDAdmin(db).get(user.user_id)
+        whatsapp_message_data = get_suspend_errant_user_whatsapp_message_data(
+            f"65{admin.contact_number}",
+            user.name,
+        )
+        send_whatsapp_message(whatsapp_message_data)
+
+
+def _notify_admin_of_non_compliant_users(
+    db: Session, non_compliant_users: list[CRUDUserOut]
+) -> None:
     for user in non_compliant_users:
         if user.is_suspended:
             continue
@@ -226,8 +104,15 @@ def _notify_admin_of_non_compliant_users(db: Session) -> None:
 
 
 def _run_end_of_day_cron_job(db: Session) -> None:
-    _notify_admin_of_non_compliant_users(db)
-    _update_non_compliant_users_states(db)
+    non_compliant_users = _get_non_compliant_users(db)
+    _notify_admin_of_non_compliant_users(db, non_compliant_users)
+    _reset_non_compliant_users_consecutive_checkins(db, non_compliant_users)
+    _update_non_compliant_users_non_consecutive_checkins(db, non_compliant_users)
+
+    errant_users = _get_errant_users(db)
+    _notify_admins_of_errant_user_suspension(db, errant_users)
+    _suspend_notifications_for_errant_users(db, errant_users)
+
     _reset_all_user_can_record_mood_state(db)
 
 

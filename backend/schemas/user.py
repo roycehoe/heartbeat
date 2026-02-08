@@ -24,6 +24,7 @@ class UserMoodOut(BaseModel):
     moods: list[UserMoodIn]
     can_record_mood: bool
     consecutive_checkins: int
+    consecutive_non_checkins: int
     mood_message: str
 
     class Config:
@@ -52,6 +53,7 @@ class UserDashboardOut(BaseModel):
     moods: list[UserDashboardMoodOut]
     can_record_mood: bool
     consecutive_checkins: int
+    consecutive_non_checkins: int
 
     class Config:
         use_enum_values = True

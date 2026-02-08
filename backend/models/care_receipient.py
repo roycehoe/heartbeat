@@ -1,13 +1,9 @@
-import os
-
-from dotenv import dotenv_values
 from models.base import Base
 from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EncryptedType
 
-DB_ENCRYPTION_SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
-
+from settings import AppSettings
 
 class CareReceipient(Base):
     __tablename__ = "care_receipient"
@@ -15,9 +11,9 @@ class CareReceipient(Base):
     id = Column(Integer, primary_key=True)
 
     # USER SIGNUP FIELDS
-    name = Column(EncryptedType(String, DB_ENCRYPTION_SECRET), nullable=False)
+    name = Column(EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET), nullable=False)
     contact_number = Column(
-        EncryptedType(String, DB_ENCRYPTION_SECRET),
+        EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET),
         nullable=False,
         comment="Assumes SG phone number",
     )
@@ -34,6 +30,7 @@ class CareReceipient(Base):
     unit = Column(String, nullable=False)
 
     consecutive_checkins = Column(Integer, nullable=False)
+    consecutive_non_checkins = Column(Integer, nullable=False)
     is_suspended = Column(Boolean, nullable=False, default=False)
 
     created_at = Column(TIMESTAMP, nullable=False)
