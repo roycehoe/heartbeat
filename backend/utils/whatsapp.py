@@ -39,3 +39,18 @@ def get_non_compliant_whatsapp_message_data(
     )
 
     return SendWhatsappMessageRequestData(to=to, template=template)
+
+
+def get_suspend_errant_user_whatsapp_message_data(
+    to: str, name: str
+) -> SendWhatsappMessageRequestData:
+    template_component_parameters = [
+        TemplateComponentParameter(parameter_name="name", text=name),
+    ]
+
+    template = Template(
+        name="suspend_user",
+        components=[TemplateComponent(parameters=template_component_parameters)],
+    )
+
+    return SendWhatsappMessageRequestData(to=to, template=template)
