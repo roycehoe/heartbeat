@@ -194,6 +194,7 @@ def _should_alert_admin(user_id: int, db: Session) -> bool:
 
 def _update_user_mood_checkin(user_id: int, db: Session) -> None:
     try:
+        CRUDUser(db).update(user_id, "is_suspended", False)
         CRUDUser(db).update(user_id, "can_record_mood", False)
 
         user = CRUDUser(db).get(user_id)
