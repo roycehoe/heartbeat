@@ -17,7 +17,7 @@ from enums import SelectedMood
 SECRET = dotenv_values(".env").get("DB_ENCRYPTION_SECRET") or ""
 
 
-class Admin(Base):
+class Caregiver(Base):
     __tablename__ = "admin"
 
     id = Column(Integer, primary_key=True, comment="Primary key")
@@ -33,15 +33,15 @@ class Admin(Base):
 
     created_at = Column(TIMESTAMP, nullable=False)
 
-    users = relationship("User", back_populates="admin")  # One-to-Zero/Many
+    care_receipients = relationship("CareReceipient", back_populates="caregiver")  # One-to-Zero/Many
 
 
-class User(Base):
+class CareReceipient(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
 
-    # USER SIGNUP FIELDS
+    # CARE RECEIPIENT SIGNUP FIELDS
     username = Column(
         String, nullable=False, comment="User's username; doubles as username"
     )
@@ -69,10 +69,10 @@ class User(Base):
     admin_id = Column(Integer, ForeignKey("admin.id"))
     can_record_mood = Column(Boolean, nullable=False)
 
-    admin = relationship(
-        "Admin", back_populates="users"
-    )  # Many users can belong to one Admin
-    moods = relationship("Mood", back_populates="user")  # One-to-Zero/Many
+    caregiver = relationship(
+        "Caregiver", back_populates="care_receipients"
+    )
+    moods = relationship("Mood", back_populates="care_receipient")  # One-to-Zero/Many
 
 
 class Mood(Base):
@@ -83,4 +83,4 @@ class Mood(Base):
     mood = Column(Enum(SelectedMood))
     created_at = Column(TIMESTAMP, nullable=False)
 
-    user = relationship("User", back_populates="moods")  # Each Mood belongs to one User
+    care_receipient = relationship("CareReceipient", back_populates="moods")

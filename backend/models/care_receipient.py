@@ -37,5 +37,5 @@ class CareReceipient(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     can_record_mood = Column(Boolean, nullable=False)
 
-    user = relationship("User", back_populates="care_receipients")
+    caregiver = relationship("Caregiver", back_populates="care_receipients")
     moods = relationship("Mood", back_populates="care_receipient")

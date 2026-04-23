@@ -9,4 +9,4 @@ class Thread(Base):
     user_id = Column(String, ForeignKey("users.clerk_id"))
     title = Column(String)
 
-    user = relationship("User", back_populates="threads")
+    caregiver = relationship("Caregiver", back_populates="threads")

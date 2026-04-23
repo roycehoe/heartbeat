@@ -6,16 +6,16 @@ from pydantic import BaseModel, Field, StringConstraints
 from enums import Gender, Race, SelectedMood
 
 
-class AdminLogInRequest(BaseModel):
+class CaregiverLogInRequest(BaseModel):
     token: str
 
 
-class AdminCreateRequest(BaseModel):
+class CaregiverCreateRequest(BaseModel):
     clerk_id: str
     contact_number: int = Field(..., alias="contactNumber")
 
 
-class AdminIn(AdminCreateRequest):
+class CaregiverIn(CaregiverCreateRequest):
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Config:
@@ -23,16 +23,16 @@ class AdminIn(AdminCreateRequest):
         from_attributes = True
 
 
-class AdminToken(BaseModel):
+class CaregiverToken(BaseModel):
     access_token: str
     token_type: str
 
 
-class AdminMoodRequest(BaseModel):
+class CaregiverMoodRequest(BaseModel):
     mood: SelectedMood
 
 
-class AdminMoodIn(AdminMoodRequest):
+class CaregiverMoodIn(CaregiverMoodRequest):
     user_id: int
     created_at: datetime = Field(default_factory=datetime.now)
 
@@ -41,7 +41,7 @@ class AdminMoodIn(AdminMoodRequest):
         from_attributes = True
 
 
-class AdminDashboardMoodOut(BaseModel):
+class CaregiverDashboardMoodOut(BaseModel):
     mood: Optional[SelectedMood]
     created_at: datetime
 
@@ -49,7 +49,7 @@ class AdminDashboardMoodOut(BaseModel):
         from_attributes = True
 
 
-class AdminDashboardOut(BaseModel):
+class CaregiverDashboardOut(BaseModel):
     user_id: int
     name: str
     alias: str
@@ -60,7 +60,7 @@ class AdminDashboardOut(BaseModel):
     floor: int
     contact_number: int
 
-    moods: list[AdminDashboardMoodOut]
+    moods: list[CaregiverDashboardMoodOut]
     can_record_mood: bool
     consecutive_checkins: int
     consecutive_non_checkins: int

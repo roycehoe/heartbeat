@@ -20,8 +20,8 @@ def _get_sgt_now():
     return sgt_now
 
 
-def get_active_users_last_7_days(db: Session):
-    """Get the number of unique active users in the last 7 days."""
+def get_active_care_receipients_last_7_days(db: Session):
+    """Get the number of unique active care receipients in the last 7 days."""
     seven_days_ago = _get_sgt_now() - timedelta(days=7)
 
     count = (

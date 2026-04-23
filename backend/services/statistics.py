@@ -1,38 +1,41 @@
 from sqlalchemy.orm import Session
 
-from crud import CRUDAdmin, CRUDMood, CRUDUser
+from crud import CRUDCaregiver, CRUDMood, CRUDCareReceipient
 from settings import AppSettings
 from utils.token import get_token_data
 
 
-def is_super_admin(
+def is_super_caregiver(
     token: str,
     db: Session,
     superadmin_clerk_id: str = AppSettings.SUPERADMIN_CLERK_ID,
 ):
-    admin_id = get_token_data(token, "admin_id")
-    admin = CRUDAdmin(db).get_by(admin_id)
+    caregiver_id = get_token_data(token, "admin_id")
+    caregiver = CRUDCaregiver(db).get_by(caregiver_id)
 
-    return str(admin.clerk_id) == superadmin_clerk_id
+    return str(caregiver.clerk_id) == superadmin_clerk_id
 
 
 def get_statistics(token: str, db: Session):
-    if not is_super_admin(token, db):
+    if not is_super_caregiver(token, db):
         return []
 
     statistics = []
-    all_admins = [i.__dict__ for i in CRUDAdmin(db).get_by_all({})]
-    for admin in all_admins:
-        statistics.append(admin)
+    all_caregivers = [i.__dict__ for i in CRUDCaregiver(db).get_by_all({})]
+    for caregiver in all_caregivers:
+        statistics.append(caregiver)
 
-    for admin in statistics:
-        users = [i.__dict__ for i in CRUDUser(db).get_by_all({"user_id": admin["id"]})]
-        admin["users"] = users
-        for user in users:
-            user_mood = [
-                CRUDMood(db).get_by({"care_receipient_id": user["id"]})
-                for user in users
+    for caregiver in statistics:
+        care_receipients = [
+            i.__dict__
+            for i in CRUDCareReceipient(db).get_by_all({"user_id": caregiver["id"]})
+        ]
+        caregiver["care_receipients"] = care_receipients
+        for care_receipient in care_receipients:
+            care_receipient_mood = [
+                CRUDMood(db).get_by({"care_receipient_id": care_receipient["id"]})
+                for care_receipient in care_receipients
             ][0]
-            user["mood"] = [i.__dict__ for i in user_mood]
+            care_receipient["mood"] = [i.__dict__ for i in care_receipient_mood]
 
     return statistics

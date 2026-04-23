@@ -5,17 +5,17 @@ from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
 from exceptions import (
-    DBCreateAccountWithUsernameAlreadyExistsException,
+    DBDuplicateAccountException,
     DBException,
     DBGetAccountException,
     NoRecordFoundException,
 )
-from models.user import User
+from models.caregiver import Caregiver
 from models.mood import Mood
 from models.care_receipient import CareReceipient
 
 
-class CRUDUser:
+class CRUDCareReceipient:
     def __init__(self, session: Session):
         self.session = session
 
@@ -24,8 +24,8 @@ class CRUDUser:
             self.session.add(account)
             self.session.commit()
 
-        except DBCreateAccountWithUsernameAlreadyExistsException:
-            raise DBCreateAccountWithUsernameAlreadyExistsException
+        except DBDuplicateAccountException:
+            raise DBDuplicateAccountException
         except Exception as e:
             raise DBException(e)
         return account
@@ -119,26 +119,26 @@ class CRUDUser:
         return
 
 
-class CRUDAdmin:
+class CRUDCaregiver:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, user: User) -> User:
+    def create(self, caregiver: Caregiver) -> Caregiver:
         try:
-            if self.session.query(User).filter_by(clerk_id=user.clerk_id).first():
-                raise DBCreateAccountWithUsernameAlreadyExistsException
-            self.session.add(user)
+            if self.session.query(Caregiver).filter_by(clerk_id=caregiver.clerk_id).first():
+                raise DBDuplicateAccountException
+            self.session.add(caregiver)
             self.session.commit()
 
-        except DBCreateAccountWithUsernameAlreadyExistsException:
-            raise DBCreateAccountWithUsernameAlreadyExistsException
+        except DBDuplicateAccountException:
+            raise DBDuplicateAccountException
         except Exception as e:
             raise DBException(e)
-        return user
+        return caregiver
 
-    def update(self, id: int, field: str, value: Any) -> User:
+    def update(self, id: int, field: str, value: Any) -> Caregiver:
         try:
-            if account := self.session.query(User).filter_by(id=id).first():
+            if account := self.session.query(Caregiver).filter_by(id=id).first():
                 setattr(account, field, value)
                 self.session.commit()
                 self.session.refresh(account)
@@ -148,9 +148,9 @@ class CRUDAdmin:
         except Exception:
             raise DBGetAccountException
 
-    def get(self, id: int) -> User:
+    def get(self, id: int) -> Caregiver:
         try:
-            if account := self.session.query(User).filter_by(id=id).first():
+            if account := self.session.query(Caregiver).filter_by(id=id).first():
                 return account
             raise NoRecordFoundException
 
@@ -159,9 +159,9 @@ class CRUDAdmin:
         except Exception:
             raise DBGetAccountException
 
-    def get_by(self, field: dict[Any, Any]) -> User:
+    def get_by(self, field: dict[Any, Any]) -> Caregiver:
         try:
-            if account := self.session.query(User).filter_by(**field).first():
+            if account := self.session.query(Caregiver).filter_by(**field).first():
                 return account
             raise NoRecordFoundException
 
@@ -174,18 +174,18 @@ class CRUDAdmin:
         self,
         field: dict[Any, Any],
         sort_direction: int = 0,
-    ) -> list[User]:
+    ) -> list[Caregiver]:
         try:
             if sort_direction == 0:
-                return self.session.query(User).filter_by(**field).all()
-            return self.session.query(User).filter_by(**field).all()
+                return self.session.query(Caregiver).filter_by(**field).all()
+            return self.session.query(Caregiver).filter_by(**field).all()
 
         except Exception as e:
             raise DBException(e)
 
     def delete(self, id: int) -> None:
         try:
-            if account := self.session.query(User).filter_by(id=id).first():
+            if account := self.session.query(Caregiver).filter_by(id=id).first():
                 self.session.delete(account)
                 self.session.commit()
                 return
@@ -198,7 +198,7 @@ class CRUDAdmin:
 
     def delete_all(self) -> None:
         try:
-            self.session.query(User).delete()
+            self.session.query(Caregiver).delete()
             return
 
         except Exception as e:
@@ -230,11 +230,11 @@ class CRUDMood:
         except Exception as e:
             raise DBException(e)
 
-    def get_latest(self, user_id: int, limit: int) -> list[Mood]:
+    def get_latest(self, care_receipient_id: int, limit: int) -> list[Mood]:
         try:
             return (
                 self.session.query(Mood)
-                .filter_by(care_receipient_id=user_id)
+                .filter_by(care_receipient_id=care_receipient_id)
                 .order_by(Mood.created_at.desc())
                 .limit(limit)
                 .all()
