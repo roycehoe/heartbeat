@@ -29,7 +29,7 @@ class Relationship(Enum):
     NON_FAMILY = "NON_FAMILY"
 
 
-class User(Base):
+class Caregiver(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -52,5 +52,5 @@ class User(Base):
     annual_property_value = Column(Integer, nullable=True)
     monthly_pchi = Column(Integer, nullable=True)
 
-    threads = relationship("Thread", back_populates="user")
-    care_receipients = relationship("CareReceipient", back_populates="user")
+    threads = relationship("Thread", back_populates="caregiver")
+    care_receipients = relationship("CareReceipient", back_populates="caregiver")

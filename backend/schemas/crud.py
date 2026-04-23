@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from enums import Gender, Race, SelectedMood
 
 
-class CRUDAdminOut(BaseModel):
+class CRUDCaregiverOut(BaseModel):
     id: int
     username: str
     name: str
@@ -17,7 +17,7 @@ class CRUDAdminOut(BaseModel):
         from_attributes = True
 
 
-class CRUDUserOut(BaseModel):
+class CRUDCareReceipientOut(BaseModel):
     id: int
     name: str
     alias: str
