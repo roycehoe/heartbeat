@@ -40,7 +40,7 @@ export function useGetSignUpAdminResponse() {
 export async function getCreateUserResponse(
   createUserRequest: CreateUserRequest
 ): Promise<AxiosResponse<null>> {
-  return await httpClient.post("/admin/user", createUserRequest);
+  return await httpClient.post("/user", createUserRequest);
 }
 
 export function useGetCreateNewUser() {
@@ -51,7 +51,7 @@ export function useGetCreateNewUser() {
 export async function getAdminUserResponse(
   userId: number
 ): Promise<DashboardResponse> {
-  const response = await httpClient.get(`/admin/user/${userId}`);
+  const response = await httpClient.get(`/user/${userId}`);
   return response.data;
 }
 
@@ -63,7 +63,7 @@ export function useGetAdminUserResponse(userId: number) {
 }
 
 export async function getDeleteUserResponse(userId: number): Promise<null> {
-  const response = await httpClient.delete(`/admin/user/${userId}`);
+  const response = await httpClient.delete(`/user/${userId}`);
   return response.data;
 }
 
@@ -72,18 +72,18 @@ export async function getUpdateUserResponse(
   createUserRequest: CreateUserRequest
 ): Promise<null> {
   const response = await httpClient.put(
-    `/admin/user/${userId}`,
+    `/user/${userId}`,
     createUserRequest
   );
   return response.data;
 }
 
 export async function getSuspendUserResponse(userId: number): Promise<null> {
-  const response = await httpClient.put(`/admin/user/${userId}/suspend`);
+  const response = await httpClient.put(`/user/${userId}/suspend`);
   return response.data;
 }
 
 export async function getUnsuspendUserResponse(userId: number): Promise<null> {
-  const response = await httpClient.put(`/admin/user/${userId}/unsuspend`);
+  const response = await httpClient.put(`/user/${userId}/unsuspend`);
   return response.data;
 }

@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -6,22 +7,31 @@ from sqlalchemy.orm import Session
 from crud import CRUDAdmin, CRUDMood, CRUDUser
 from enums import AppLanguage, SelectedMood
 from exceptions import (
+    DBCreateAccountWithUsernameAlreadyExistsException,
     DBException,
+    DifferentPasswordAndConfirmPasswordException,
     InvalidCredentialsToAccessUser,
     NoRecordFoundException,
+    UserNotUnderCurrentAdminException,
 )
+from models.care_receipient import CareReceipient
 from models.mood import Mood
 from schemas.crud import CRUDMoodOut, CRUDUserOut
 from schemas.user import (
+    AdminUserDashboardMoodOut,
+    AdminUserDashboardOut,
+    UserCreateRequest,
     UserDashboardMoodOut,
     UserDashboardOut,
+    UserIn,
     UserLogInRequest,
     UserMoodIn,
     UserMoodOut,
     UserMoodRequest,
     UserToken,
+    UserUpdateRequest,
 )
-from utils.hashing import verify_password
+from utils.mood import get_admin_dashboard_moods_out
 from utils.token import create_access_token, get_token_data
 from utils.whatsapp import get_consecutive_sad_moods_whatsapp_message_data
 from gateway import send_whatsapp_message
@@ -35,11 +45,11 @@ DEFAULT_MOOD_MESSAGES_ENGLISH = (
     "Keep going, brighter days are ahead.",
     "You matter, and your story matters.",
     "Even slow progress is progress.",
-    "You’re never too old to dream.",
+    "You're never too old to dream.",
     "Your strength inspires others.",
     "Embrace today with hope.",
     "Your heart has seen many sunsets, and each is beautiful.",
-    "You’re not alone in this journey.",
+    "You're not alone in this journey.",
     "Peace comes with patience.",
     "The best is yet to come.",
     "Take one moment at a time.",
@@ -48,9 +58,9 @@ DEFAULT_MOOD_MESSAGES_ENGLISH = (
     "You are loved and cherished.",
     "Each breath is a blessing.",
     "Small joys can fill big hearts.",
-    "You’ve overcome before, you will again.",
+    "You've overcome before, you will again.",
     "Happiness is within you.",
-    "You’re more capable than you know.",
+    "You're more capable than you know.",
     "You are a gift to the world.",
     "Strength grows from every challenge.",
     "Your presence makes the world brighter.",
@@ -278,3 +288,190 @@ def get_create_user_mood_response(
         )
     except DBException as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+
+
+def get_create_user_response(
+    request: UserCreateRequest, token: str, db: Session
+) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        user_in_model = UserIn(**request.model_dump(by_alias=True))
+        db_user_model = CareReceipient(
+            name=user_in_model.name,
+            contact_number=user_in_model.contact_number,
+            age=user_in_model.age,
+            alias=user_in_model.alias,
+            app_language=user_in_model.app_language,
+            race=user_in_model.race,
+            gender=user_in_model.gender,
+            postal_code=user_in_model.postal_code,
+            floor=user_in_model.floor,
+            block=user_in_model.block,
+            unit=user_in_model.unit,
+            consecutive_checkins=0,
+            consecutive_non_checkins=0,
+            user_id=admin_id,
+            can_record_mood=True,
+            created_at=user_in_model.created_at,
+        )
+        CRUDUser(db).create(db_user_model)
+        return
+
+    except DifferentPasswordAndConfirmPasswordException:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password and confirm password must be the same",
+        )
+    except DBCreateAccountWithUsernameAlreadyExistsException:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account with username already exists",
+        )
+    except DBException as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=e,
+        )
+
+
+def get_delete_user_response(user_id: int, token: str, db: Session) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
+        if user_id not in [user.id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+        return CRUDUser(db).delete(user_id)
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot delete user that is not under current admin",
+        )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
+
+
+def get_update_user_response(
+    user_id: int, request: UserUpdateRequest, token: str, db: Session
+) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
+        if user_id not in [user.id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+        if request.password != request.confirm_password:
+            raise DifferentPasswordAndConfirmPasswordException
+
+        for key, value in request.model_dump(exclude={"confirm_password"}).items():
+            CRUDUser(db).update(user_id, key, value)
+        return
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot update user that is not under current admin",
+        )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
+
+
+def get_suspend_user_response(user_id: int, token: str, db: Session) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
+        if user_id not in [user.id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+        CRUDUser(db).update(user_id, "is_suspended", True)
+        return
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot update user that is not under current admin",
+        )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
+
+
+def get_unsuspend_user_response(user_id: int, token: str, db: Session) -> None:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
+        if user_id not in [user.id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+        CRUDUser(db).update(user_id, "is_suspended", False)
+        return
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot update user that is not under current admin",
+        )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
+
+
+def get_get_user_response(
+    user_id: int, token: str, db: Session
+) -> AdminUserDashboardOut:
+    try:
+        admin_id = get_token_data(token, "admin_id")
+        users_under_admin = CRUDUser(db).get_by_all({"user_id": admin_id})
+        if user_id not in [user.id for user in users_under_admin]:
+            raise UserNotUnderCurrentAdminException
+
+        user_model = CRUDUser(db).get(user_id)
+        crud_user_out = CRUDUserOut.model_validate(user_model)
+
+        crud_moods_out = [
+            CRUDMoodOut.model_validate(mood) for mood in crud_user_out.moods
+        ]
+        admin_dashboard_mood_out = get_admin_dashboard_moods_out(
+            crud_moods_out, crud_user_out.created_at, datetime.today()
+        )
+
+        return AdminUserDashboardOut(
+            user_id=crud_user_out.id,
+            contact_number=crud_user_out.contact_number,
+            name=crud_user_out.name,
+            alias=crud_user_out.alias,
+            age=crud_user_out.age,
+            race=crud_user_out.race,
+            gender=crud_user_out.gender,
+            postal_code=crud_user_out.postal_code,
+            floor=crud_user_out.floor,
+            block=crud_user_out.block,
+            unit=crud_user_out.unit,
+            moods=[
+                AdminUserDashboardMoodOut.model_validate(mood)
+                for mood in admin_dashboard_mood_out
+            ],
+            consecutive_checkins=crud_user_out.consecutive_checkins,
+            consecutive_non_checkins=crud_user_out.consecutive_non_checkins,
+            can_record_mood=_can_record_mood(crud_user_out.id, db),
+            is_suspended=crud_user_out.is_suspended,
+        )
+
+    except UserNotUnderCurrentAdminException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot get user that are not under current admin",
+        )
+
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No record of user found",
+        )
