@@ -2,7 +2,6 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Flex,
   Heading,
   IconButton,
   Table,
@@ -14,14 +13,15 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { Banner, BxChevronLeft } from "@opengovsg/design-system-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { Banner } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAdminUserResponse } from "../../../api/admin";
-import { DashboardResponse, Mood, MoodValue } from "../../../api/user";
+import { useGetAdminUserResponse } from "../../../api/admin";
+import { AppLanguage, Mood, MoodValue } from "../../../api/user";
+import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import { IconMood } from "../../../components/IconMood";
+import { VIEW_USER_FORM_FIELDS_PROPS } from "../constants";
 import ModalUpdateUser from "../UpdateUser";
 
 const getDayAbbreviation = (date: Date) => {
@@ -134,17 +134,12 @@ const UserDetail = () => {
   const { userId } = useParams();
   const [isShowPersonalInformation, setIsShowInformation] =
     useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [adminUserData, setAdminUserData] = useState<DashboardResponse>();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const loadAdminUserData = async () => {
-    setIsLoading(true);
-    const adminUserData = await getAdminUserResponse(userId);
-    setAdminUserData(adminUserData);
-    setIsLoading(false);
-  };
+  const { data: adminUserData, isLoading } = useGetAdminUserResponse(
+    Number(userId)
+  );
 
   const handleGearIconClick = (userId: string) => {
     navigate(`/admin/${userId}/settings`);
@@ -156,9 +151,7 @@ const UserDetail = () => {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
-      return;
     }
-    loadAdminUserData();
   }, []);
 
   if (isLoading || !adminUserData || !userId) {
@@ -211,7 +204,7 @@ const UserDetail = () => {
           <Heading size="sm" color="#8080808C">
             Profile
           </Heading>
-          <Heading size="sm">{adminUserData?.alias}</Heading>
+          <Heading size="sm">{adminUserData.alias}</Heading>
         </Box>
         {getSadDaysCount(adminUserData.moods.slice(0, 7)) > 2 && (
           <Banner size="sm" variant="error">
@@ -223,10 +216,30 @@ const UserDetail = () => {
         <UserMoodHistoryTable moods={adminUserData.moods} />
         <Box display="flex" gap="4px">
           <Heading size="sm">Personal Information</Heading>
-          <img height="18px" width="18px" src="/assets/icon/edit.svg" />
+          <Box
+            display="flex"
+            alignItems="center"
+            cursor="pointer"
+            onClick={() => setIsEditModalOpen(true)}
+          >
+            <img height="18px" width="18px" src="/assets/icon/edit.svg" />
+          </Box>
         </Box>
-        <ModalUpdateUser
-          dashboardData={adminUserData}
+        <FormFieldsViewUser
+          createUserForm={{
+            contactNumber: adminUserData.contact_number,
+            name: adminUserData.name,
+            age: adminUserData.age,
+            alias: adminUserData.alias,
+            race: adminUserData.race,
+            gender: adminUserData.gender,
+            appLanguage: AppLanguage.ENGLISH,
+            postalCode: adminUserData.postal_code,
+            floor: adminUserData.floor,
+            block: adminUserData.block,
+            unit: adminUserData.unit,
+          }}
+          createUpdateUserFormFields={VIEW_USER_FORM_FIELDS_PROPS}
           isShowPersonalInformation={isShowPersonalInformation}
         />
         <ToggleShowHidePersonalInformation
@@ -234,6 +247,12 @@ const UserDetail = () => {
           setIsShowInformation={setIsShowInformation}
         />
       </Box>
+      <ModalUpdateUser
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        userId={userId}
+        dashboardData={adminUserData}
+      />
     </Box>
   );
 };

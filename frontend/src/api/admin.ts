@@ -59,6 +59,7 @@ export function useGetAdminUserResponse(userId: number) {
   return useQuery({
     queryKey: ["getAdminUserResponse", userId],
     queryFn: () => getAdminUserResponse(userId),
+    enabled: !!userId,
   });
 }
 
@@ -71,11 +72,20 @@ export async function getUpdateUserResponse(
   userId: number,
   createUserRequest: CreateUserRequest
 ): Promise<null> {
-  const response = await httpClient.put(
-    `/user/${userId}`,
-    createUserRequest
-  );
+  const response = await httpClient.put(`/user/${userId}`, createUserRequest);
   return response.data;
+}
+
+export function useUpdateUser() {
+  return useMutation({
+    mutationFn: ({
+      userId,
+      request,
+    }: {
+      userId: number;
+      request: CreateUserRequest;
+    }) => getUpdateUserResponse(userId, request),
+  });
 }
 
 export async function getSuspendUserResponse(userId: number): Promise<null> {
