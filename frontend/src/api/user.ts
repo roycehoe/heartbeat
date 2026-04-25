@@ -92,6 +92,7 @@ export function useGetAdminDashboardResponse() {
   return useQuery({
     queryKey: ["getAdminDashboardResponse"],
     queryFn: () => getAdminDashboardResponse(),
+    refetchInterval: 5 * 60 * 1000,
   });
 }
 
