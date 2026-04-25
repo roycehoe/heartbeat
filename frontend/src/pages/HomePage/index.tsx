@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
 import {
-  getUserClaimGiftResponse,
-  getUserMoodResponse,
   MoodValue,
+  useGetUserClaimGiftResponse,
   useGetUserDashboardResponse,
-} from "../../api/user"; // ← Make sure this is the correct path
+  useGetUserMoodResponse,
+} from "../../api/user";
 import Display from "./Display";
 import MoodBtns from "./MoodBtns";
 
@@ -32,18 +32,19 @@ function HomePage() {
     data: dashboardData,
     isLoading,
     error,
-    refetch,
   } = useGetUserDashboardResponse();
 
-  const onMoodButtonClick = async (mood: MoodValue) => {
-    const userMoodResponse = await getUserMoodResponse({ mood });
-    setMoodMessage(userMoodResponse.mood_message);
-    refetch(); // Refresh dashboard after mood update
+  const { mutate: recordMood } = useGetUserMoodResponse();
+  const { mutate: claimGift } = useGetUserClaimGiftResponse();
+
+  const onMoodButtonClick = (mood: MoodValue) => {
+    recordMood({ mood }, {
+      onSuccess: (data) => setMoodMessage(data.mood_message),
+    });
   };
 
-  const onClaimGiftBtnClick = async () => {
-    await getUserClaimGiftResponse();
-    refetch(); // Refresh dashboard after claiming gift
+  const onClaimGiftBtnClick = () => {
+    claimGift();
   };
 
   const incrementIndex = () => {

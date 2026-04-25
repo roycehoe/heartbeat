@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DashboardResponse,
-  getUserLoginResponse,
   useGetAdminDashboardResponse,
+  useGetUserLoginResponse,
 } from "../../api/user";
 import { LogInFormState } from "./Index";
 
@@ -17,15 +17,19 @@ function CareReceipientSelectionForm({
   setLogInFormState,
 }: CareReceipientSelectionFormProps) {
   const { data, isLoading } = useGetAdminDashboardResponse();
+  const { mutate: loginUser, isPending: isLoggingIn } = useGetUserLoginResponse();
   const [selectedCareReceipient, setSelectedCareReceipient] =
     useState<DashboardResponse | null>(null);
   const navigate = useNavigate();
 
-  const onSignInButtonClick = async (userId: number) => {
-    const response = await getUserLoginResponse({ user_id: userId });
-    localStorage.setItem("token", response.access_token);
-    navigate("/");
-    setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
+  const onSignInButtonClick = (userId: number) => {
+    loginUser({ user_id: userId }, {
+      onSuccess: (response) => {
+        localStorage.setItem("token", response.access_token);
+        navigate("/");
+        setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
+      },
+    });
   };
 
   if (isLoading) {
@@ -74,6 +78,7 @@ function CareReceipientSelectionForm({
         <Button
           width="100%"
           isDisabled={!!!selectedCareReceipient}
+          isLoading={isLoggingIn}
           onClick={() => onSignInButtonClick(selectedCareReceipient?.user_id)}
         >
           <Text>Sign in</Text>

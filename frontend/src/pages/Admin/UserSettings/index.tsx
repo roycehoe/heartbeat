@@ -14,8 +14,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  getDeleteUserResponse,
   useGetAdminUserResponse,
+  useGetDeleteUserResponse,
   useSuspendUser,
   useUnsuspendUser,
 } from "../../../api/admin";
@@ -34,22 +34,26 @@ const UserSettings = () => {
 
   const { mutate: suspendUser } = useSuspendUser();
   const { mutate: unsuspendUser } = useUnsuspendUser();
+  const { mutate: deleteUser } = useGetDeleteUserResponse();
 
   const handleBackIconClick = (userId: string) => {
     navigate(`/admin/${userId}`);
   };
 
-  const handleOnConfirmModalDeleteUser = async (userId: number) => {
-    await getDeleteUserResponse(userId);
-    setIsDeleteUserModalOpen(false);
-    toast({
-      title: "User Deleted Successfully",
-      description: "This user's account has been deleted successfully",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
+  const handleOnConfirmModalDeleteUser = (userId: number) => {
+    deleteUser(userId, {
+      onSuccess: () => {
+        setIsDeleteUserModalOpen(false);
+        toast({
+          title: "User Deleted Successfully",
+          description: "This user's account has been deleted successfully",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        navigate(`/admin`);
+      },
     });
-    navigate(`/admin`);
   };
 
   const handleSuspendUserSwitchClick = (userId: number) => {
