@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { DashboardResponse } from "../../../api/user";
+import { DashboardResponse } from "../../../api/types";
 import Brand from "../../../components/Brand";
 import Tree from "../../../components/Tree";
 

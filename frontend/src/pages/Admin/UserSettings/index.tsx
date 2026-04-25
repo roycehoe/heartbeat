@@ -13,12 +13,10 @@ import { Banner } from "@opengovsg/design-system-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useGetAdminUserResponse,
-  useGetDeleteUserResponse,
-  useSuspendUser,
-  useUnsuspendUser,
-} from "../../../api/admin";
+import { useGetAdminUserResponse } from "../../../api/getAdminUserResponse";
+import { useGetDeleteUserResponse } from "../../../api/getDeleteUserResponse";
+import { useSuspendUser } from "../../../api/getSuspendUserResponse";
+import { useUnsuspendUser } from "../../../api/getUnsuspendUserResponse";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteUser from "../../../components/ModalDeleteUser";
 

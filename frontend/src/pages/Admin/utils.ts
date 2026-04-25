@@ -1,4 +1,4 @@
-import { DashboardResponse, MoodValue } from "../../api/user";
+import { DashboardResponse, MoodValue } from "../../api/types";
 import { CreateUserForm } from "./CreateUser";
 import { UpdateUserForm } from "./UpdateUser";
 

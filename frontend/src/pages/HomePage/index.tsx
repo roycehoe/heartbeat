@@ -3,12 +3,10 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
-import {
-  MoodValue,
-  useGetUserClaimGiftResponse,
-  useGetUserDashboardResponse,
-  useGetUserMoodResponse,
-} from "../../api/user";
+import { useGetUserClaimGiftResponse } from "../../api/getUserClaimGiftResponse";
+import { useGetUserDashboardResponse } from "../../api/getUserDashboardResponse";
+import { useGetUserMoodResponse } from "../../api/getUserMoodResponse";
+import { MoodValue } from "../../api/types";
 import Display from "./Display";
 import MoodBtns from "./MoodBtns";
 

@@ -10,11 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useNavigate } from "react-router-dom";
-import {
-  DashboardResponse,
-  Mood,
-  useGetAdminDashboardResponse,
-} from "../../api/user";
+import { useGetAdminDashboardResponse } from "../../api/getAdminDashboardResponse";
+import { DashboardResponse, Mood } from "../../api/types";
 
 import { useEffect } from "react";
 import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
