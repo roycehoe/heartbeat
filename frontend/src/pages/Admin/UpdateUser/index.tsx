@@ -14,8 +14,8 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { CreateUserRequest, useUpdateUser } from "../../../api/admin";
-import { AppLanguage, DashboardResponse } from "../../../api/user";
+import { useUpdateUser } from "../../../api/getUpdateUserResponse";
+import { AppLanguage, CreateUserRequest, DashboardResponse } from "../../../api/types";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 import { UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
 import { getSubmitUpdateUserFormErrorMessage } from "../utils";

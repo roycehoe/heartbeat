@@ -2,11 +2,9 @@ import { Box, Text } from "@chakra-ui/react";
 import { Button, Menu } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  DashboardResponse,
-  useGetAdminDashboardResponse,
-  useGetUserLoginResponse,
-} from "../../api/user";
+import { useGetAdminDashboardResponse } from "../../api/getAdminDashboardResponse";
+import { useGetUserLoginResponse } from "../../api/getUserLoginResponse";
+import { DashboardResponse } from "../../api/types";
 import { LogInFormState } from "./Index";
 
 type CareReceipientSelectionFormProps = {

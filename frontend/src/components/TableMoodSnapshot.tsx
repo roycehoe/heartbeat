@@ -10,7 +10,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { DashboardResponse, Mood } from "../api/user";
+import { DashboardResponse, Mood } from "../api/types";
 import { IconMood } from "./IconMood";
 
 const TableMoodSnapshotRow = (props: {

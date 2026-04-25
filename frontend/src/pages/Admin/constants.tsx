@@ -1,4 +1,4 @@
-import { AppLanguage, Gender, Race } from "../../api/user";
+import { AppLanguage, Gender, Race } from "../../api/types";
 import { CreateUserForm } from "./CreateUser";
 import { UpdateUserForm } from "./UpdateUser";
 

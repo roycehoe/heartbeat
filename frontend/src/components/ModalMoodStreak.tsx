@@ -8,7 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { jwtDecode } from "jwt-decode";
-import { AppLanguage } from "../api/user";
+import { AppLanguage } from "../api/types";
 
 interface decodedTokenData {
   user_id: string;

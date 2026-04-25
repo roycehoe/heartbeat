@@ -2,7 +2,7 @@ import { Spinner } from "@chakra-ui/react";
 import { SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect } from "react";
-import { useGetAdminLoginResponse } from "../../api/user";
+import { useGetAdminLoginResponse } from "../../api/getAdminLoginResponse";
 import { LogInFormState } from "./Index";
 
 function CaregiverLogInForm({

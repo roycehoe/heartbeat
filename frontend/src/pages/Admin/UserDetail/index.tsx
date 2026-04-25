@@ -16,8 +16,8 @@ import {
 import { Banner } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetAdminUserResponse } from "../../../api/admin";
-import { AppLanguage, Mood, MoodValue } from "../../../api/user";
+import { useGetAdminUserResponse } from "../../../api/getAdminUserResponse";
+import { AppLanguage, Mood, MoodValue } from "../../../api/types";
 import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import { IconMood } from "../../../components/IconMood";

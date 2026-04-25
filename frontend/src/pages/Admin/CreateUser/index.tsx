@@ -11,8 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
-import { CreateUserRequest, useGetCreateNewUser } from "../../../api/admin";
-import { AppLanguage, Gender, Race } from "../../../api/user";
+import { useGetCreateNewUser } from "../../../api/getCreateUserResponse";
+import { AppLanguage, CreateUserRequest, Gender, Race } from "../../../api/types";
 import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
 
 import axios from "axios";
