@@ -11,7 +11,8 @@ export function getSubmitUpdateUserFormErrorMessage(
   if (!/^\d+$/.test(userForm.contactNumber)) {
     return "Contact number must contain only digits.";
   }
-  if (userForm.contactNumber.length !== 8) {
+  if (String(userForm.contactNumber).length !== 8) {
+      console.log(userForm.contactNumber)
     return "Contact number must contain exactly eight digits.";
   }
 

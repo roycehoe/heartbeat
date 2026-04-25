@@ -13,6 +13,8 @@ export function FormFieldsViewUser(props: {
   createUserForm: CreateUserForm;
   isShowPersonalInformation: boolean;
 }) {
+  const handleChange = () => {};
+
   return (
     <Box display="flex" flexDirection="column" gap="16px">
       {Object.keys(props.createUpdateUserFormFields).map((field) => {
