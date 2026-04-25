@@ -1,15 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { httpClerkClient } from "./httpClient";
-import { LoginResponse } from "./types";
+import { CaregiverToken } from "./types";
 
-export async function getAdminLoginResponse(): Promise<LoginResponse> {
+export async function getCaregiverLoginResponse(): Promise<CaregiverToken> {
   const response = await httpClerkClient.post("/admin/login");
   return response.data;
 }
 
-export function useGetAdminLoginResponse() {
+export function useGetCaregiverLoginResponse() {
   return useMutation({
-    mutationFn: () => getAdminLoginResponse(),
+    mutationFn: () => getCaregiverLoginResponse(),
     retry: 1,
   });
 }

@@ -16,13 +16,13 @@ import {
 import { Banner } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetAdminUserResponse } from "../../../api/getAdminUserResponse";
-import { AppLanguage, Mood, MoodValue } from "../../../api/types";
-import { FormFieldsViewUser } from "../../../components/FormFieldsViewUser";
+import { useGetCareReceipientDetailResponse } from "../../../api/getCareReceipientDetailResponse";
+import { AppLanguage, CareReceipientDetailMoodOut, SelectedMood } from "../../../api/types";
+import { FormFieldsViewCareReceipient } from "../../../components/FormFieldsViewCareReceipient";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import { IconMood } from "../../../components/IconMood";
-import { VIEW_USER_FORM_FIELDS_PROPS } from "../constants";
-import ModalUpdateUser from "../UpdateUser";
+import { VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "../constants";
+import ModalUpdateCareReceipient from "../UpdateCareReceipient";
 
 const getDayAbbreviation = (date: Date) => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -71,11 +71,11 @@ const ToggleShowHidePersonalInformation = (props: {
   );
 };
 
-const getSadDaysCount = (moods: Mood[]) => {
-  return moods.slice(0, 7).filter((mood) => mood.mood === MoodValue.SAD).length;
+const getSadDaysCount = (moods: CareReceipientDetailMoodOut[]) => {
+  return moods.slice(0, 7).filter((mood) => mood.mood === SelectedMood.SAD).length;
 };
 
-const UserMoodHistoryTable = (props: { moods: Mood[] }) => {
+const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) => {
   const lastSevenDays = [...Array(7)].map((_, index) => {
     const date = new Date();
     date.setDate(date.getDate() - index);
@@ -130,14 +130,14 @@ const UserMoodHistoryTable = (props: { moods: Mood[] }) => {
   );
 };
 
-const UserDetail = () => {
+const CareReceipientDetail = () => {
   const { userId } = useParams();
   const [isShowPersonalInformation, setIsShowInformation] =
     useState<boolean>(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { data: adminUserData, isLoading } = useGetAdminUserResponse(
+  const { data: adminUserData, isLoading } = useGetCareReceipientDetailResponse(
     Number(userId)
   );
 
@@ -225,8 +225,8 @@ const UserDetail = () => {
             <img height="18px" width="18px" src="/assets/icon/edit.svg" />
           </Box>
         </Box>
-        <FormFieldsViewUser
-          createUserForm={{
+        <FormFieldsViewCareReceipient
+          createCareReceipientForm={{
             contactNumber: adminUserData.contact_number,
             name: adminUserData.name,
             age: adminUserData.age,
@@ -239,7 +239,7 @@ const UserDetail = () => {
             block: adminUserData.block,
             unit: adminUserData.unit,
           }}
-          createUpdateUserFormFields={VIEW_USER_FORM_FIELDS_PROPS}
+          createUpdateCareReceipientFormFields={VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS}
           isShowPersonalInformation={isShowPersonalInformation}
         />
         <ToggleShowHidePersonalInformation
@@ -247,7 +247,7 @@ const UserDetail = () => {
           setIsShowInformation={setIsShowInformation}
         />
       </Box>
-      <ModalUpdateUser
+      <ModalUpdateCareReceipient
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         userId={userId}
@@ -257,4 +257,4 @@ const UserDetail = () => {
   );
 };
 
-export default UserDetail;
+export default CareReceipientDetail;

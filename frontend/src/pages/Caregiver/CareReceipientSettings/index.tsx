@@ -13,32 +13,32 @@ import { Banner } from "@opengovsg/design-system-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetAdminUserResponse } from "../../../api/getAdminUserResponse";
-import { useGetDeleteUserResponse } from "../../../api/getDeleteUserResponse";
-import { useSuspendUser } from "../../../api/getSuspendUserResponse";
-import { useUnsuspendUser } from "../../../api/getUnsuspendUserResponse";
+import { useGetCareReceipientDetailResponse } from "../../../api/getCareReceipientDetailResponse";
+import { useGetCareReceipientDeleteResponse } from "../../../api/getCareReceipientDeleteResponse";
+import { useGetCareReceipientSuspendResponse } from "../../../api/getCareReceipientSuspendResponse";
+import { useGetCareReceipientUnsuspendResponse } from "../../../api/getCareReceipientUnsuspendResponse";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import ModalDeleteUser from "../../../components/ModalDeleteUser";
+import ModalDeleteCareReceipient from "../../../components/ModalDeleteCareReceipient";
 
-const UserSettings = () => {
+const CareReceipientSettings = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useGetAdminUserResponse(Number(userId));
+  const { data, isLoading } = useGetCareReceipientDetailResponse(Number(userId));
 
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] =
     useState<boolean>(false);
 
-  const { mutate: suspendUser } = useSuspendUser();
-  const { mutate: unsuspendUser } = useUnsuspendUser();
-  const { mutate: deleteUser } = useGetDeleteUserResponse();
+  const { mutate: suspendUser } = useGetCareReceipientSuspendResponse();
+  const { mutate: unsuspendUser } = useGetCareReceipientUnsuspendResponse();
+  const { mutate: deleteUser } = useGetCareReceipientDeleteResponse();
 
   const handleBackIconClick = (userId: string) => {
     navigate(`/admin/${userId}`);
   };
 
-  const handleOnConfirmModalDeleteUser = (userId: number) => {
+  const handleOnConfirmModalDeleteCareReceipient = (userId: number) => {
     deleteUser(userId, {
       onSuccess: () => {
         setIsDeleteUserModalOpen(false);
@@ -59,7 +59,7 @@ const UserSettings = () => {
     mutate(userId, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ["getAdminUserResponse", userId],
+          queryKey: ["getCareReceipientDetailResponse", userId],
         });
       },
     });
@@ -125,10 +125,10 @@ const UserSettings = () => {
             >
               <Text>Delete user</Text>
             </Button>
-            <ModalDeleteUser
+            <ModalDeleteCareReceipient
               isOpen={isDeleteUserModalOpen}
               onClose={() => setIsDeleteUserModalOpen(false)}
-              onConfirm={() => handleOnConfirmModalDeleteUser(Number(userId))}
+              onConfirm={() => handleOnConfirmModalDeleteCareReceipient(Number(userId))}
             />
           </Box>
         </Box>
@@ -137,4 +137,4 @@ const UserSettings = () => {
   );
 };
 
-export default UserSettings;
+export default CareReceipientSettings;

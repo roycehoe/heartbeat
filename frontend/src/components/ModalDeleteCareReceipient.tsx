@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-function ModalDeleteUser({
+function ModalDeleteCareReceipient({
   isOpen,
   onClose,
   onConfirm,
@@ -43,4 +43,4 @@ function ModalDeleteUser({
   );
 }
 
-export default ModalDeleteUser;
+export default ModalDeleteCareReceipient;

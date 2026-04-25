@@ -1,9 +1,9 @@
-import { DashboardResponse, MoodValue } from "../../api/types";
-import { CreateUserForm } from "./CreateUser";
-import { UpdateUserForm } from "./UpdateUser";
+import { CareReceipientDetailOut, SelectedMood } from "../../api/types";
+import { CreateCareReceipientForm } from "./CreateCareReceipient";
+import { UpdateCareReceipientForm } from "./UpdateCareReceipient";
 
-export function getSubmitUpdateUserFormErrorMessage(
-  userForm: UpdateUserForm
+export function getSubmitUpdateCareReceipientFormErrorMessage(
+  userForm: UpdateCareReceipientForm
 ): string {
   if (!userForm.contactNumber) {
     return "Contact number is required.";
@@ -44,10 +44,10 @@ export function getSubmitUpdateUserFormErrorMessage(
   return "";
 }
 
-export function getSubmitCreateUserFormErrorMessage(
-  userForm: CreateUserForm
+export function getSubmitCreateCareReceipientFormErrorMessage(
+  userForm: CreateCareReceipientForm
 ): string {
-  const errorMessage = getSubmitUpdateUserFormErrorMessage(userForm);
+  const errorMessage = getSubmitUpdateCareReceipientFormErrorMessage(userForm);
   if (errorMessage !== "") {
     return errorMessage;
   }

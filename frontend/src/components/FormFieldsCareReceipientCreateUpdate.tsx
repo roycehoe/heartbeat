@@ -1,52 +1,54 @@
 import { Box } from "@chakra-ui/react";
-import { CreateUpdateUserFormFieldProps } from "../pages/Admin/constants";
-import { CreateUserForm } from "../pages/Admin/CreateUser";
-import { UpdateUserForm } from "../pages/Admin/UpdateUser";
+import { CreateUpdateCareReceipientFormFieldProps } from "../pages/Caregiver/constants";
+import { CreateCareReceipientForm } from "../pages/Caregiver/CreateCareReceipient";
+import { UpdateCareReceipientForm } from "../pages/Caregiver/UpdateCareReceipient";
 import FormCheckboxTermsAndConditions from "./FormCheckboxTermsAndConditions";
-import FormInputUser from "./FormInputUser";
-import FormSelectUser from "./FormSelectUser";
+import FormInputCareReceipient from "./FormInputCareReceipient";
+import FormSelectCareReceipient from "./FormSelectCareReceipient";
 
-function FormFieldsUserCreateUpdate(props: {
-  createUpdateUserFormFields: Record<
-    keyof CreateUserForm | keyof UpdateUserForm,
-    CreateUpdateUserFormFieldProps
+function FormFieldsCareReceipientCreateUpdate(props: {
+  createUpdateCareReceipientFormFields: Record<
+    keyof CreateCareReceipientForm | keyof UpdateCareReceipientForm,
+    CreateUpdateCareReceipientFormFieldProps
   >;
-  createUserForm: CreateUserForm;
-  setCreateUserForm: React.Dispatch<React.SetStateAction<CreateUserForm>>;
+  createCareReceipientForm: CreateCareReceipientForm;
+  setCreateCareReceipientForm: React.Dispatch<
+    React.SetStateAction<CreateCareReceipientForm>
+  >;
 }) {
   const handleChange = (e, field) => {
-    props.setCreateUserForm({
-      ...props.createUserForm,
+    props.setCreateCareReceipientForm({
+      ...props.createCareReceipientForm,
       [field]: e.target.value,
     });
   };
 
   const handleCheckboxChange = (e, field) => {
-    props.setCreateUserForm({
-      ...props.createUserForm,
+    props.setCreateCareReceipientForm({
+      ...props.createCareReceipientForm,
       [field]: e.target.checked,
     });
   };
 
   return (
     <Box display="flex" flexDirection="column" gap="16px">
-      {Object.keys(props.createUpdateUserFormFields).map((field) => {
+      {Object.keys(props.createUpdateCareReceipientFormFields).map((field) => {
         const { formLabel, isRequired, type, options, placeholder } =
-          props.createUpdateUserFormFields[field];
+          props.createUpdateCareReceipientFormFields[field];
 
         if (type === "select") {
           return (
-            <FormSelectUser
+            <FormSelectCareReceipient
               field={field}
               isRequired={isRequired}
               isDisabled={false}
               formLabel={formLabel}
               type={type}
-              value={props.createUserForm[field]}
+              value={props.createCareReceipientForm[field]}
               onChange={(e) => handleChange(e, field)}
               placeholder={placeholder}
               options={options}
-            ></FormSelectUser>
+            ></FormSelectCareReceipient>
           );
         }
         if (type === "checkbox") {
@@ -56,7 +58,7 @@ function FormFieldsUserCreateUpdate(props: {
               isRequired={isRequired}
               formLabel={formLabel}
               type={type}
-              value={props.createUserForm[field]}
+              value={props.createCareReceipientForm[field]}
               onChange={(e) => handleCheckboxChange(e, field)}
               placeholder={formLabel}
             ></FormCheckboxTermsAndConditions>
@@ -64,19 +66,19 @@ function FormFieldsUserCreateUpdate(props: {
         }
 
         return (
-          <FormInputUser
+          <FormInputCareReceipient
             field={field}
             isRequired={isRequired}
             formLabel={formLabel}
             type={type}
-            value={props.createUserForm[field]}
+            value={props.createCareReceipientForm[field]}
             onChange={(e) => handleChange(e, field)}
             placeholder={placeholder}
-          ></FormInputUser>
+          ></FormInputCareReceipient>
         );
       })}
     </Box>
   );
 }
 
-export default FormFieldsUserCreateUpdate;
+export default FormFieldsCareReceipientCreateUpdate;

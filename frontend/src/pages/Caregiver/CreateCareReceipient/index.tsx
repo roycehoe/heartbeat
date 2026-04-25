@@ -11,21 +11,21 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
-import { useGetCreateNewUser } from "../../../api/getCreateUserResponse";
-import { AppLanguage, CreateUserRequest, Gender, Race } from "../../../api/types";
-import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
+import { useGetCareReceipientCreateResponse } from "../../../api/getCareReceipientCreateResponse";
+import { AppLanguage, CareReceipientCreateRequest, Gender, Race } from "../../../api/types";
+import FormFieldsCareReceipientCreateUpdate from "../../../components/FormFieldsCareReceipientCreateUpdate";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import { CREATE_USER_FORM_FIELDS_PROPS } from "../constants";
-import { getSubmitCreateUserFormErrorMessage } from "../utils";
+import { CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "../constants";
+import { getSubmitCreateCareReceipientFormErrorMessage } from "../utils";
 
-export interface CreateUserForm extends CreateUserRequest {
+export interface CreateCareReceipientForm extends CareReceipientCreateRequest {
   hasAgreedToTermsAndConditions: boolean;
 }
 
-const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
+const DEFAULT_CREATE_CARE_RECEIPIENT_FORM: CreateCareReceipientForm = {
   contactNumber: "",
   name: "",
   age: "",
@@ -40,33 +40,33 @@ const DEFAULT_CREATE_USER_FORM: CreateUserForm = {
   hasAgreedToTermsAndConditions: false,
 };
 
-function ModalCreateUser() {
-  const [createUserForm, setCreateUserForm] = useState({
-    ...DEFAULT_CREATE_USER_FORM,
-  } as CreateUserForm);
+function ModalCreateCareReceipient() {
+  const [createCareReceipientForm, setCreateCareReceipientForm] = useState({
+    ...DEFAULT_CREATE_CARE_RECEIPIENT_FORM,
+  } as CreateCareReceipientForm);
   const [errorMessage, setErrorMessage] = useState("");
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
   const navigate = useNavigate();
   const toast = useToast();
-  const { mutate, isPending } = useGetCreateNewUser();
+  const { mutate, isPending } = useGetCareReceipientCreateResponse();
 
-  function resetCreateUserForm() {
-    setCreateUserForm({ ...DEFAULT_CREATE_USER_FORM });
+  function resetCreateCareReceipientForm() {
+    setCreateCareReceipientForm({ ...DEFAULT_CREATE_CARE_RECEIPIENT_FORM });
   }
 
   useEffect(() => {
-    setErrorMessage(getSubmitCreateUserFormErrorMessage(createUserForm));
-  }, [createUserForm]);
+    setErrorMessage(getSubmitCreateCareReceipientFormErrorMessage(createCareReceipientForm));
+  }, [createCareReceipientForm]);
 
-  async function handleCreateUser() {
+  async function handleCreateCareReceipient() {
     mutate(
       {
-        ...createUserForm,
+        ...createCareReceipientForm,
       },
       {
         onSuccess: () => {
-          resetCreateUserForm();
+          resetCreateCareReceipientForm();
           setHasCreatedUserSuccessfully(true);
           setErrorMessage("");
           navigate(`/admin`);
@@ -135,10 +135,10 @@ function ModalCreateUser() {
         </Box>
 
         <Box display="flex" flexDirection="column" width="100%" gap="24px">
-          <FormFieldsUserCreateUpdate
-            createUserForm={createUserForm}
-            setCreateUserForm={setCreateUserForm}
-            createUpdateUserFormFields={CREATE_USER_FORM_FIELDS_PROPS}
+          <FormFieldsCareReceipientCreateUpdate
+            createCareReceipientForm={createCareReceipientForm}
+            setCreateCareReceipientForm={setCreateCareReceipientForm}
+            createUpdateCareReceipientFormFields={CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS}
           />
           <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
             <AlertIcon />
@@ -147,7 +147,7 @@ function ModalCreateUser() {
           <Button
             mr="3px"
             variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
-            onClick={handleCreateUser}
+            onClick={handleCreateCareReceipient}
             isLoading={isPending}
           >
             {hasCreatedUserSuccessfully ? "User created!" : "Create account"}
@@ -158,4 +158,4 @@ function ModalCreateUser() {
   );
 }
 
-export default ModalCreateUser;
+export default ModalCreateCareReceipient;

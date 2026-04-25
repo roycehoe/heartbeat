@@ -1,7 +1,7 @@
 import { Box, SlideFade, useDisclosure } from "@chakra-ui/react";
 import moment, { Moment } from "moment";
 import { useState } from "react";
-import { MoodValue } from "../../../api/types";
+import { SelectedMood } from "../../../api/types";
 import ModalMoodStreak from "../../../components/ModalMoodStreak";
 import MoodBtn from "../../../components/MoodBtn";
 import MoodMessage from "../../../components/MoodMessage";
@@ -10,7 +10,7 @@ const MOOD_BTN_PROPS = [
   {
     icon: "/assets/button/happy.svg",
     isDisabledIcon: "/assets/button/happy-inactive.svg",
-    value: MoodValue.HAPPY,
+    value: SelectedMood.HAPPY,
     bg: "hsl(140, 65%, 41%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(140, 65%, 30%) 0%, hsl(140, 65%, 41%) 50%, hsl(140, 65%, 55%) 100%)",
@@ -21,7 +21,7 @@ const MOOD_BTN_PROPS = [
   {
     icon: "/assets/button/ok.svg",
     isDisabledIcon: "/assets/button/ok-inactive.svg",
-    value: MoodValue.OK,
+    value: SelectedMood.OK,
     bg: "hsl(33, 91%, 58%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(33, 91%, 45%) 0%, hsl(33, 91%, 58%) 50%, hsl(33, 91%, 70%) 100%)",
@@ -32,7 +32,7 @@ const MOOD_BTN_PROPS = [
   {
     icon: "/assets/button/sad.svg",
     isDisabledIcon: "/assets/button/sad-inactive.svg",
-    value: MoodValue.SAD,
+    value: SelectedMood.SAD,
     bg: "hsl(343, 79%, 64%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(343, 79%, 52%) 0%, hsl(343, 79%, 64%) 50%, hsl(343, 79%, 75%) 100%)",
@@ -43,19 +43,19 @@ const MOOD_BTN_PROPS = [
 ];
 
 const MOOD_MESSAGE_PROPS = {
-  [MoodValue.HAPPY]: {
+  [SelectedMood.HAPPY]: {
     flexboxBg: "#D7FFB8",
     bg: "hsl(140, 65%, 41%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(140, 65%, 30%) 0%, hsl(140, 65%, 41%) 50%, hsl(140, 65%, 55%) 100%)",
   },
-  [MoodValue.OK]: {
+  [SelectedMood.OK]: {
     flexboxBg: "hsl(44, 91%, 58%, 50%)",
     bg: "hsl(33, 91%, 58%)",
     bgLinearGradient:
       "linear-gradient(to left, hsl(33, 91%, 45%) 0%, hsl(33, 91%, 58%) 50%, hsl(33, 91%, 70%) 100%)",
   },
-  [MoodValue.SAD]: {
+  [SelectedMood.SAD]: {
     flexboxBg: "#FCA5BE",
     bg: "hsl(343, 79%, 64%)",
     bgLinearGradient:
@@ -87,14 +87,14 @@ function MoodBtns(props: {
   moodsCreatedAt: Moment[];
   moodMessage: string;
   streak: number;
-  onClick: (mood: MoodValue) => Promise<void>;
+  onClick: (mood: SelectedMood) => Promise<void>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isShowMoodMessage, setIsShowMoodMessage] = useState(false);
-  const [clickedMood, setClickedMood] = useState(MoodValue.HAPPY);
+  const [clickedMood, setClickedMood] = useState(SelectedMood.HAPPY);
   const [timerId, setTimerId] = useState(null);
 
-  const handleClick = async (mood: MoodValue) => {
+  const handleClick = async (mood: SelectedMood) => {
     setClickedMood(mood);
     await props.onClick(mood);
     setIsShowMoodMessage(true);

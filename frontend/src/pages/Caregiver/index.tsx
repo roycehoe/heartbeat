@@ -10,8 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useNavigate } from "react-router-dom";
-import { useGetAdminDashboardResponse } from "../../api/getAdminDashboardResponse";
-import { DashboardResponse, Mood } from "../../api/types";
+import { useGetCaregiverDashboardResponse } from "../../api/getCaregiverDashboardResponse";
+import { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "../../api/types";
 
 import { useEffect } from "react";
 import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
@@ -23,7 +23,7 @@ enum ColorTag {
   GOOD = "#34C759",
 }
 
-function getColorTag(user: DashboardResponse): ColorTag {
+function getColorTag(user: CareReceipientDetailOut): ColorTag {
   if (hasPoorMentalState(user.moods.slice(0, 4))) {
     return ColorTag.BAD;
   }
@@ -33,11 +33,11 @@ function getColorTag(user: DashboardResponse): ColorTag {
   return ColorTag.GOOD;
 }
 
-function hasPoorMentalState(moods: Mood[]): boolean {
+function hasPoorMentalState(moods: CareReceipientDetailMoodOut[]): boolean {
   return moods.filter((mood) => mood.mood === "sad").length >= 2;
 }
 
-function getPoorMentalStateCount(users: DashboardResponse[]): number {
+function getPoorMentalStateCount(users: CareReceipientDetailOut[]): number {
   return users.filter(
     (user) =>
       user.moods.slice(0, 4).filter((mood) => mood.mood === "sad").length >= 2
@@ -50,12 +50,12 @@ function isUnresponsive(userMoodDates: Mood[]): boolean {
     .every((mood) => mood === null);
 }
 
-function getUnresponsiveCount(users: DashboardResponse[]): number {
+function getUnresponsiveCount(users: CareReceipientDetailOut[]): number {
   return users.filter((user) => isUnresponsive(user.moods.slice(0, 4))).length;
 }
 
 function AdminDashboardSummaryCards(props: {
-  dashboardData: DashboardResponse[];
+  dashboardData: CareReceipientDetailOut[];
 }) {
   return (
     <Grid templateColumns="repeat(2, 1fr)" gap="12px">
@@ -79,10 +79,10 @@ function AdminDashboardSummaryCards(props: {
   );
 }
 
-function Admin() {
+function Caregiver() {
   const navigate = useNavigate();
 
-  const { data, isLoading } = useGetAdminDashboardResponse();
+  const { data, isLoading } = useGetCaregiverDashboardResponse();
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
@@ -168,4 +168,4 @@ function Admin() {
   );
 }
 
-export default Admin;
+export default Caregiver;
