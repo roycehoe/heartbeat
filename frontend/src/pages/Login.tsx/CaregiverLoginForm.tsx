@@ -2,7 +2,7 @@ import { Spinner } from "@chakra-ui/react";
 import { SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect } from "react";
-import { useGetAdminLoginResponse } from "../../api/getAdminLoginResponse";
+import { useGetCaregiverLoginResponse } from "../../api/getCaregiverLoginResponse";
 import { LogInFormState } from "./Index";
 
 function CaregiverLogInForm({
@@ -10,7 +10,7 @@ function CaregiverLogInForm({
 }: {
   setLogInFormState: (logInFormState: LogInFormState) => void;
 }) {
-  const { mutate, isPending } = useGetAdminLoginResponse();
+  const { mutate, isPending } = useGetCaregiverLoginResponse();
   const { getToken, isSignedIn, userId: clerkUserId } = useAuth();
 
   useEffect(() => {

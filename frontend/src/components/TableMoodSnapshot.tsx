@@ -10,14 +10,14 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { DashboardResponse, Mood } from "../api/types";
+import { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "../api/types";
 import { IconMood } from "./IconMood";
 
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
   name: string;
   userId: number;
-  moods: Mood[];
+  moods: CareReceipientDetailMoodOut[];
   handleUserClick: (userId: number) => void;
 }) => {
   const today = new Date();
@@ -54,8 +54,8 @@ const TableMoodSnapshotRow = (props: {
 };
 
 export const TableMoodSnapshot = (props: {
-  dashboardData: DashboardResponse[];
-  getColorTag: (user: DashboardResponse) => string;
+  dashboardData: CareReceipientDetailOut[];
+  getColorTag: (user: CareReceipientDetailOut) => string;
   handleUserClick: (userId: number) => void;
 }) => {
   return (

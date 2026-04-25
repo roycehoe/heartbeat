@@ -1,8 +1,8 @@
 import { AppLanguage, Gender, Race } from "../../api/types";
-import { CreateUserForm } from "./CreateUser";
-import { UpdateUserForm } from "./UpdateUser";
+import { CreateCareReceipientForm } from "./CreateCareReceipient";
+import { UpdateCareReceipientForm } from "./UpdateCareReceipient";
 
-export interface CreateUpdateUserFormFieldProps {
+export interface CreateUpdateCareReceipientFormFieldProps {
   formLabel: string;
   isRequired: boolean;
   type: string;
@@ -10,9 +10,9 @@ export interface CreateUpdateUserFormFieldProps {
   placeholder: string;
 }
 
-export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
-  keyof UpdateUserForm,
-  CreateUpdateUserFormFieldProps
+export const UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
+  keyof UpdateCareReceipientForm,
+  CreateUpdateCareReceipientFormFieldProps
 > = {
   name: {
     formLabel: "Name",
@@ -93,9 +93,9 @@ export const UPDATE_USER_FORM_FIELDS_PROPS: Record<
   },
 };
 
-export const VIEW_USER_FORM_FIELDS_PROPS: Record<
-  keyof UpdateUserForm,
-  CreateUpdateUserFormFieldProps
+export const VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
+  keyof UpdateCareReceipientForm,
+  CreateUpdateCareReceipientFormFieldProps
 > = {
   name: {
     formLabel: "Name",
@@ -176,11 +176,11 @@ export const VIEW_USER_FORM_FIELDS_PROPS: Record<
   },
 };
 
-export const CREATE_USER_FORM_FIELDS_PROPS: Record<
-  keyof CreateUserForm,
-  CreateUpdateUserFormFieldProps
+export const CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
+  keyof CreateCareReceipientForm,
+  CreateUpdateCareReceipientFormFieldProps
 > = {
-  ...UPDATE_USER_FORM_FIELDS_PROPS,
+  ...UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS,
   hasAgreedToTermsAndConditions: {
     formLabel: "Terms and Conditions",
     isRequired: true,

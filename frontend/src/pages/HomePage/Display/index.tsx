@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react";
-import { DashboardResponse } from "../../../api/types";
+import { CareReceipientDetailOut } from "../../../api/types";
 import Brand from "../../../components/Brand";
 import Tree from "../../../components/Tree";
 
 function Display(props: {
-  dashboardData: DashboardResponse;
+  dashboardData: CareReceipientDetailOut;
   goToNextUser: () => void;
   onClaimGiftBtnClick: () => Promise<void>;
 }) {

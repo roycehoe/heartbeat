@@ -8,12 +8,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Admin from "./pages/Admin";
-import ModalCreateUser from "./pages/Admin/CreateUser";
-import { HowDoesItWork } from "./pages/Admin/HowDoesItWork";
-import { Settings } from "./pages/Admin/Settings";
-import UserDetail from "./pages/Admin/UserDetail";
-import UserSettings from "./pages/Admin/UserSettings";
+import Caregiver from "./pages/Caregiver";
+import ModalCreateCareReceipient from "./pages/Caregiver/CreateCareReceipient";
+import { HowDoesItWork } from "./pages/Caregiver/HowDoesItWork";
+import { Settings } from "./pages/Caregiver/Settings";
+import CareReceipientDetail from "./pages/Caregiver/CareReceipientDetail";
+import CareReceipientSettings from "./pages/Caregiver/CareReceipientSettings";
 import HomePage from "./pages/HomePage";
 import LogIn from "./pages/Login.tsx/Index";
 const queryClient = new QueryClient();
@@ -32,13 +32,13 @@ const App = () => {
             <Routes>
               <Route index element={<HomePage />} />
               <Route path="/login" element={<LogIn />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/:userId" element={<UserDetail />} />
+              <Route path="/admin" element={<Caregiver />} />
+              <Route path="/admin/:userId" element={<CareReceipientDetail />} />
               <Route
                 path="/admin/:userId/settings"
-                element={<UserSettings />}
+                element={<CareReceipientSettings />}
               />
-              <Route path="/admin/create-user" element={<ModalCreateUser />} />
+              <Route path="/admin/create-user" element={<ModalCreateCareReceipient />} />
               <Route path="/admin/about" element={<HowDoesItWork />} />
               <Route path="/admin/settings" element={<Settings />} />
             </Routes>

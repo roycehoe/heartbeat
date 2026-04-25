@@ -1,4 +1,4 @@
-export enum MoodValue {
+export enum SelectedMood {
   HAPPY = "happy",
   OK = "ok",
   SAD = "sad",
@@ -21,17 +21,17 @@ export enum AppLanguage {
   CHINESE = "Chinese",
 }
 
-export interface Mood {
-  mood: MoodValue | undefined;
+export interface CareReceipientDetailMoodOut {
+  mood: SelectedMood | undefined;
   user_id: number;
   created_at: string;
 }
 
-export interface MoodRequest {
-  mood: MoodValue;
+export interface CareReceipientMoodRequest {
+  mood: SelectedMood;
 }
 
-export interface DashboardResponse {
+export interface CareReceipientDetailOut {
   user_id: number;
   name: string;
   alias: string;
@@ -45,26 +45,31 @@ export interface DashboardResponse {
   contact_number: number;
   is_suspended: boolean;
 
-  moods: Mood[];
+  moods: CareReceipientDetailMoodOut[];
   can_record_mood: boolean;
   consecutive_checkins: number;
   consecutive_non_checkins: number;
 }
 
-export interface MoodResponse extends DashboardResponse {
+export interface CareReceipientMoodOut extends CareReceipientDetailOut {
   mood_message: string;
 }
 
-export interface UserLoginRequest {
+export interface CareReceipientLogInRequest {
   user_id: number;
 }
 
-export interface LoginResponse {
+export interface CareReceipientToken {
   access_token: string;
   token_type: string;
 }
 
-export interface CreateUserRequest {
+export interface CaregiverToken {
+  access_token: string;
+  token_type: string;
+}
+
+export interface CareReceipientCreateRequest {
   contactNumber: number;
   name: string;
   age: number;
@@ -78,9 +83,9 @@ export interface CreateUserRequest {
   unit: string;
 }
 
-export interface SignUpAdminRequest {
+export interface CaregiverCreateRequest {
   clerk_id: string;
   contactNumber: number;
 }
 
-export interface UpdateUserRequest extends CreateUserRequest {}
+export interface CareReceipientUpdateRequest extends CareReceipientCreateRequest {}

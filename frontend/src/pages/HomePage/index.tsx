@@ -3,10 +3,10 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
-import { useGetUserClaimGiftResponse } from "../../api/getUserClaimGiftResponse";
-import { useGetUserDashboardResponse } from "../../api/getUserDashboardResponse";
-import { useGetUserMoodResponse } from "../../api/getUserMoodResponse";
-import { MoodValue } from "../../api/types";
+import { useGetCareReceipientClaimGiftResponse } from "../../api/getCareReceipientClaimGiftResponse";
+import { useGetCareReceipientDashboardResponse } from "../../api/getCareReceipientDashboardResponse";
+import { useGetCareReceipientMoodResponse } from "../../api/getCareReceipientMoodResponse";
+import { SelectedMood } from "../../api/types";
 import Display from "./Display";
 import MoodBtns from "./MoodBtns";
 
@@ -30,12 +30,12 @@ function HomePage() {
     data: dashboardData,
     isLoading,
     error,
-  } = useGetUserDashboardResponse();
+  } = useGetCareReceipientDashboardResponse();
 
-  const { mutate: recordMood } = useGetUserMoodResponse();
-  const { mutate: claimGift } = useGetUserClaimGiftResponse();
+  const { mutate: recordMood } = useGetCareReceipientMoodResponse();
+  const { mutate: claimGift } = useGetCareReceipientClaimGiftResponse();
 
-  const onMoodButtonClick = (mood: MoodValue) => {
+  const onMoodButtonClick = (mood: SelectedMood) => {
     recordMood({ mood }, {
       onSuccess: (data) => setMoodMessage(data.mood_message),
     });

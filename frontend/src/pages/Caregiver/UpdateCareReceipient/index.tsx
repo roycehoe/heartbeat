@@ -14,17 +14,17 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useUpdateUser } from "../../../api/getUpdateUserResponse";
-import { AppLanguage, CreateUserRequest, DashboardResponse } from "../../../api/types";
-import FormFieldsUserCreateUpdate from "../../../components/FormFieldsUserCreateUpdate";
-import { UPDATE_USER_FORM_FIELDS_PROPS } from "../constants";
-import { getSubmitUpdateUserFormErrorMessage } from "../utils";
+import { useGetCareReceipientUpdateResponse } from "../../../api/getCareReceipientUpdateResponse";
+import { AppLanguage, CareReceipientCreateRequest, CareReceipientDetailOut } from "../../../api/types";
+import FormFieldsCareReceipientCreateUpdate from "../../../components/FormFieldsCareReceipientCreateUpdate";
+import { UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "../constants";
+import { getSubmitUpdateCareReceipientFormErrorMessage } from "../utils";
 
-export interface UpdateUserForm extends CreateUserRequest {}
+export interface UpdateCareReceipientForm extends CareReceipientCreateRequest {}
 
-function dashboardDataToUpdateUserFormData(
-  dashboardData: DashboardResponse
-): UpdateUserForm {
+function dashboardDataToUpdateCareReceipientFormData(
+  dashboardData: CareReceipientDetailOut
+): UpdateCareReceipientForm {
   return {
     contactNumber: dashboardData.contact_number,
     name: dashboardData.name,
@@ -40,31 +40,31 @@ function dashboardDataToUpdateUserFormData(
   };
 }
 
-function ModalUpdateUser(props: {
+function ModalUpdateCareReceipient(props: {
   isOpen: boolean;
   onClose: () => void;
   userId: string;
-  dashboardData: DashboardResponse;
+  dashboardData: CareReceipientDetailOut;
 }) {
-  const [updateUserForm, setUpdateUserForm] = useState<UpdateUserForm>(
-    dashboardDataToUpdateUserFormData(props.dashboardData)
+  const [updateCareReceipientForm, setUpdateCareReceipientForm] = useState<UpdateCareReceipientForm>(
+    dashboardDataToUpdateCareReceipientFormData(props.dashboardData)
   );
   const [errorMessage, setErrorMessage] = useState("");
-  const { mutate, isPending } = useUpdateUser();
+  const { mutate, isPending } = useGetCareReceipientUpdateResponse();
   const queryClient = useQueryClient();
   const toast = useToast();
 
   useEffect(() => {
-    setErrorMessage(getSubmitUpdateUserFormErrorMessage(updateUserForm));
-  }, [updateUserForm]);
+    setErrorMessage(getSubmitUpdateCareReceipientFormErrorMessage(updateCareReceipientForm));
+  }, [updateCareReceipientForm]);
 
   function handleSubmit() {
     mutate(
-      { userId: Number(props.userId), request: updateUserForm },
+      { userId: Number(props.userId), request: updateCareReceipientForm },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ["getAdminUserResponse", Number(props.userId)],
+            queryKey: ["getCareReceipientDetailResponse", Number(props.userId)],
           });
           props.onClose();
           toast({
@@ -95,10 +95,10 @@ function ModalUpdateUser(props: {
         <ModalHeader>Edit Personal Information</ModalHeader>
         <ModalCloseButton />
         <ModalBody display="flex" flexDirection="column" gap="16px">
-          <FormFieldsUserCreateUpdate
-            createUserForm={updateUserForm}
-            setCreateUserForm={setUpdateUserForm}
-            createUpdateUserFormFields={UPDATE_USER_FORM_FIELDS_PROPS}
+          <FormFieldsCareReceipientCreateUpdate
+            createCareReceipientForm={updateCareReceipientForm}
+            setCreateCareReceipientForm={setUpdateCareReceipientForm}
+            createUpdateCareReceipientFormFields={UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS}
           />
           {errorMessage && (
             <Alert status="error" variant="subtle" minH="52px">
@@ -126,4 +126,4 @@ function ModalUpdateUser(props: {
   );
 }
 
-export default ModalUpdateUser;
+export default ModalUpdateCareReceipient;

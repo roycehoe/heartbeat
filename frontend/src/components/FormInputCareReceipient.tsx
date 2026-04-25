@@ -1,6 +1,6 @@
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 
-function FormInputUser(props: {
+function FormInputCareReceipient(props: {
   field: string;
   isRequired: boolean;
   isDisabled: boolean;
@@ -30,4 +30,4 @@ function FormInputUser(props: {
   );
 }
 
-export default FormInputUser;
+export default FormInputCareReceipient;

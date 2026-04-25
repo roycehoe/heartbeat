@@ -1,6 +1,6 @@
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 
-function FormSelectUser(props: {
+function FormSelectCareReceipient(props: {
   field: string;
   isRequired: boolean;
   isDisabled: boolean;
@@ -27,4 +27,4 @@ function FormSelectUser(props: {
   );
 }
 
-export default FormSelectUser;
+export default FormSelectCareReceipient;

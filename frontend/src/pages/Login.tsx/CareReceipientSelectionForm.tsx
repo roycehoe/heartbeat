@@ -2,9 +2,9 @@ import { Box, Text } from "@chakra-ui/react";
 import { Button, Menu } from "@opengovsg/design-system-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetAdminDashboardResponse } from "../../api/getAdminDashboardResponse";
-import { useGetUserLoginResponse } from "../../api/getUserLoginResponse";
-import { DashboardResponse } from "../../api/types";
+import { useGetCaregiverDashboardResponse } from "../../api/getCaregiverDashboardResponse";
+import { useGetCareReceipientLoginResponse } from "../../api/getCareReceipientLoginResponse";
+import { CareReceipientDetailOut } from "../../api/types";
 import { LogInFormState } from "./Index";
 
 type CareReceipientSelectionFormProps = {
@@ -14,10 +14,10 @@ type CareReceipientSelectionFormProps = {
 function CareReceipientSelectionForm({
   setLogInFormState,
 }: CareReceipientSelectionFormProps) {
-  const { data, isLoading } = useGetAdminDashboardResponse();
-  const { mutate: loginUser, isPending: isLoggingIn } = useGetUserLoginResponse();
+  const { data, isLoading } = useGetCaregiverDashboardResponse();
+  const { mutate: loginUser, isPending: isLoggingIn } = useGetCareReceipientLoginResponse();
   const [selectedCareReceipient, setSelectedCareReceipient] =
-    useState<DashboardResponse | null>(null);
+    useState<CareReceipientDetailOut | null>(null);
   const navigate = useNavigate();
 
   const onSignInButtonClick = (userId: number) => {
@@ -59,7 +59,7 @@ function CareReceipientSelectionForm({
             {careReceipients.length === 0 ? (
               <Menu.Item isDisabled>No care receipients found</Menu.Item>
             ) : (
-              careReceipients.map((careReceipient: DashboardResponse) => (
+              careReceipients.map((careReceipient: CareReceipientDetailOut) => (
                 <Menu.Item
                   key={careReceipient.user_id}
                   onClick={() => setSelectedCareReceipient(careReceipient)}
