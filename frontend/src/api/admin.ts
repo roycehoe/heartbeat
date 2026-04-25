@@ -93,7 +93,19 @@ export async function getSuspendUserResponse(userId: number): Promise<null> {
   return response.data;
 }
 
+export function useSuspendUser() {
+  return useMutation({
+    mutationFn: (userId: number) => getSuspendUserResponse(userId),
+  });
+}
+
 export async function getUnsuspendUserResponse(userId: number): Promise<null> {
   const response = await httpClient.put(`/user/${userId}/unsuspend`);
   return response.data;
+}
+
+export function useUnsuspendUser() {
+  return useMutation({
+    mutationFn: (userId: number) => getUnsuspendUserResponse(userId),
+  });
 }

@@ -10,13 +10,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Banner } from "@opengovsg/design-system-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getDeleteUserResponse,
-  getSuspendUserResponse,
-  getUnsuspendUserResponse,
   useGetAdminUserResponse,
+  useSuspendUser,
+  useUnsuspendUser,
 } from "../../../api/admin";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteUser from "../../../components/ModalDeleteUser";
@@ -25,14 +26,14 @@ const UserSettings = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const { data, isLoading } = useGetAdminUserResponse(userId);
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useGetAdminUserResponse(Number(userId));
 
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] =
     useState<boolean>(false);
-  useState<boolean>(false);
-  const [isSuspended, setIsSuspended] = useState<boolean>(
-    data?.is_suspended || true
-  );
+
+  const { mutate: suspendUser } = useSuspendUser();
+  const { mutate: unsuspendUser } = useUnsuspendUser();
 
   const handleBackIconClick = (userId: string) => {
     navigate(`/admin/${userId}`);
@@ -51,14 +52,15 @@ const UserSettings = () => {
     navigate(`/admin`);
   };
 
-  const handleSuspendUserSwitchClick = async (userId: number) => {
-    if (isSuspended) {
-      await getUnsuspendUserResponse(userId);
-      setIsSuspended(false);
-    } else {
-      await getSuspendUserResponse(userId);
-      setIsSuspended(true);
-    }
+  const handleSuspendUserSwitchClick = (userId: number) => {
+    const mutate = data?.is_suspended ? unsuspendUser : suspendUser;
+    mutate(userId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["getAdminUserResponse", userId],
+        });
+      },
+    });
   };
 
   if (isLoading) {
@@ -107,7 +109,7 @@ const UserSettings = () => {
             <FormLabel mb="0">Suspend user?</FormLabel>
             <Switch
               onChange={() => handleSuspendUserSwitchClick(data.user_id)}
-              isChecked={isSuspended}
+              isChecked={data.is_suspended}
             />
           </FormControl>
         </Box>
