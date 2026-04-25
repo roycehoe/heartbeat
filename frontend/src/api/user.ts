@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { httpClerkClient, httpClient } from "./httpClient";
 
@@ -115,21 +115,51 @@ export async function getUserLoginResponse(
   return response.data;
 }
 
-async function getAdminLoginResponse(): Promise<LoginResponse> {
+export async function getAdminLoginResponse(): Promise<LoginResponse> {
   const response = await httpClerkClient.post("/admin/login");
   return response.data;
 }
 
-export function useGetAdminLoginRespose() {
-  return useQuery({
-    queryKey: ["adminLogin"],
-    queryFn: () => getAdminLoginResponse(),
-    enabled: false,
+export function useGetAdminLoginResponse() {
+  return useMutation({
+    mutationFn: () => getAdminLoginResponse(),
     retry: 1,
+  });
+}
+
+export function useGetUserMoodResponse() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (request: MoodRequest) => getUserMoodResponse(request),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getUserDashboardResponse"] });
+    },
+  });
+}
+
+export function useGetUserClaimGiftResponse() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => getUserClaimGiftResponse(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getUserDashboardResponse"] });
+    },
+  });
+}
+
+export function useGetUserLoginResponse() {
+  return useMutation({
+    mutationFn: (request: UserLoginRequest) => getUserLoginResponse(request),
   });
 }
 
 export async function resetDB(): Promise<null> {
   const response = await httpClient.get("/reset_db");
   return response.data;
+}
+
+export function useResetDB() {
+  return useMutation({
+    mutationFn: () => resetDB(),
+  });
 }

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { httpClient } from "./httpClient";
 import { AppLanguage, DashboardResponse, Gender, Race } from "./user";
@@ -66,6 +66,16 @@ export function useGetAdminUserResponse(userId: number) {
 export async function getDeleteUserResponse(userId: number): Promise<null> {
   const response = await httpClient.delete(`/user/${userId}`);
   return response.data;
+}
+
+export function useGetDeleteUserResponse() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: number) => getDeleteUserResponse(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAdminDashboardResponse"] });
+    },
+  });
 }
 
 export async function getUpdateUserResponse(
