@@ -3,7 +3,7 @@ import secrets
 from datetime import datetime
 
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from crud import CRUDCaregiver, CRUDCareReceipient, CRUDMagicLinkToken, CRUDMood
 from enums import AppLanguage, SelectedMood
@@ -19,18 +19,15 @@ from exceptions import (
 from models.care_receipient import CareReceipient
 from models.magic_link_token import MagicLinkToken
 from models.mood import Mood
-from schemas.crud import CRUDMoodOut, CRUDCareReceipientOut
 from schemas.care_receipient import (
     CareReceipientCreateRequest,
-    CareReceipientDashboardMoodOut,
-    CareReceipientDashboardOut,
-    CareReceipientDetailMoodOut,
-    CareReceipientDetailOut,
-    CareReceipientIn,
+    CareReceipientDashboardMoodData,
+    GetCareReceipientDashboardResponse,
+    CareReceipientDetailMoodData,
+    GetCareReceipientDetailResponse,
     CareReceipientLogInRequest,
     CareReceipientLoginUrlResponse,
-    CareReceipientMoodIn,
-    CareReceipientMoodOut,
+    CreateCareReceipientMoodResponse,
     CareReceipientMoodRequest,
     CareReceipientToken,
     CareReceipientUpdateRequest,
@@ -115,10 +112,9 @@ def authenticate_care_receipient(
 ) -> CareReceipientToken:
     try:
         care_receipient = CRUDCareReceipient(db).get(request.care_receipient_id)
-        care_receipient_out = CRUDCareReceipientOut.model_validate(care_receipient)
         token_caregiver_id = int(get_token_data(token, "caregiver_id"))
 
-        if care_receipient_out.user_id != token_caregiver_id:
+        if care_receipient.user_id != token_caregiver_id:
             raise InvalidCredentialsToAccessCareReceipient
 
         access_token = create_access_token(
@@ -140,9 +136,7 @@ def authenticate_care_receipient(
 
 def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
     try:
-        return CRUDCareReceipientOut.model_validate(
-            CRUDCareReceipient(db).get(care_receipient_id)
-        ).can_record_mood
+        return CRUDCareReceipient(db).get(care_receipient_id).can_record_mood
     except NoRecordFoundException:
         raise CareReceipientNotFoundException
     except DBException as e:
@@ -151,30 +145,27 @@ def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
 
 def get_care_receipient_dashboard_response(
     care_receipient_id: int, db: Session
-) -> CareReceipientDashboardOut:
+) -> GetCareReceipientDashboardResponse:
     try:
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
-        crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
+        care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
 
-        care_receipient_model = CRUDCareReceipient(db).get(care_receipient_id)
-        crud_care_receipient_out = CRUDCareReceipientOut.model_validate(care_receipient_model)
-
-        return CareReceipientDashboardOut(
+        return GetCareReceipientDashboardResponse(
             care_receipient_id=care_receipient_id,
-            name=crud_care_receipient_out.name,
-            alias=crud_care_receipient_out.alias,
-            age=crud_care_receipient_out.age,
-            race=crud_care_receipient_out.race,
-            gender=crud_care_receipient_out.gender,
-            postal_code=crud_care_receipient_out.postal_code,
-            floor=crud_care_receipient_out.floor,
+            name=care_receipient.name,
+            alias=care_receipient.alias,
+            age=care_receipient.age,
+            race=care_receipient.race,
+            gender=care_receipient.gender,
+            postal_code=care_receipient.postal_code,
+            floor=care_receipient.floor,
             moods=[
-                CareReceipientDashboardMoodOut(mood=mood.mood, created_at=mood.created_at)
-                for mood in crud_moods_out
+                CareReceipientDashboardMoodData(mood=mood.mood, created_at=mood.created_at)
+                for mood in mood_models
             ],
-            contact_number=crud_care_receipient_out.contact_number,
-            consecutive_checkins=crud_care_receipient_out.consecutive_checkins,
-            consecutive_non_checkins=crud_care_receipient_out.consecutive_non_checkins,
+            contact_number=int(care_receipient.contact_number),
+            consecutive_checkins=care_receipient.consecutive_checkins,
+            consecutive_non_checkins=care_receipient.consecutive_non_checkins,
             can_record_mood=_can_record_mood(care_receipient_id, db),
         )
 
@@ -204,16 +195,13 @@ def _get_mood_message(
 
 def _should_alert_caregiver(care_receipient_id: int, db: Session) -> bool:
     try:
-        previous_mood_models = CRUDMood(db).get_latest(
+        previous_moods = CRUDMood(db).get_latest(
             care_receipient_id, SHOULD_ALERT_CAREGIVER_CRITERION
         )
-        previous_moods_crud_mood_out = [
-            CRUDMoodOut.model_validate(i) for i in previous_mood_models
-        ]
-        if len(previous_moods_crud_mood_out) < SHOULD_ALERT_CAREGIVER_CRITERION:
+        if len(previous_moods) < SHOULD_ALERT_CAREGIVER_CRITERION:
             return False
-        for previous_mood in previous_moods_crud_mood_out:
-            if previous_mood.mood != SelectedMood.SAD:
+        for mood in previous_moods:
+            if mood.mood != SelectedMood.SAD:
                 return False
         return True
 
@@ -254,7 +242,7 @@ def _update_care_receipient_mood_checkin(care_receipient_id: int, db: Session) -
 
 def get_create_care_receipient_mood_response(
     request: CareReceipientMoodRequest, care_receipient_id: int, db: Session
-) -> CareReceipientMoodOut:
+) -> CreateCareReceipientMoodResponse:
     try:
         if not _can_record_mood(care_receipient_id, db):
             raise HTTPException(
@@ -262,44 +250,32 @@ def get_create_care_receipient_mood_response(
                 detail="Mood for today has already been recorded. Please try again tomorrow",
             )
 
-        mood_in_model = CareReceipientMoodIn(mood=request.mood, care_receipient_id=care_receipient_id)
         db_mood_model = Mood(
-            care_receipient_id=mood_in_model.care_receipient_id,
-            mood=mood_in_model.mood,
-            created_at=mood_in_model.created_at,
+            care_receipient_id=care_receipient_id,
+            mood=request.mood,
+            created_at=datetime.now(),
         )
         CRUDMood(db).create(db_mood_model)
         _update_care_receipient_mood_checkin(care_receipient_id, db)
 
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-        crud_care_receipient_out = CRUDCareReceipientOut.model_validate(care_receipient)
         if _should_alert_caregiver(care_receipient_id, db):
-            caregiver = CRUDCaregiver(db).get(crud_care_receipient_out.user_id)
+            caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
             whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
                 f"+65{caregiver.contact_number}",
-                crud_care_receipient_out.name,
+                care_receipient.name,
                 SHOULD_ALERT_CAREGIVER_CRITERION,
             )
             send_whatsapp_message(whatsapp_message)
 
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
-
-        crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
-        app_language = crud_care_receipient_out.app_language
-        return CareReceipientMoodOut(
+        return CreateCareReceipientMoodResponse(
             care_receipient_id=care_receipient_id,
-            moods=[
-                CareReceipientMoodIn(
-                    mood=mood.mood,
-                    care_receipient_id=mood.care_receipient_id,
-                    created_at=mood.created_at,
-                )
-                for mood in crud_moods_out
-            ],
-            consecutive_checkins=crud_care_receipient_out.consecutive_checkins,
-            consecutive_non_checkins=crud_care_receipient_out.consecutive_non_checkins,
-            can_record_mood=crud_care_receipient_out.can_record_mood,
-            mood_message=_get_mood_message(app_language),
+            moods=mood_models,
+            consecutive_checkins=care_receipient.consecutive_checkins,
+            consecutive_non_checkins=care_receipient.consecutive_non_checkins,
+            can_record_mood=care_receipient.can_record_mood,
+            mood_message=_get_mood_message(care_receipient.app_language),
         )
 
     except CareReceipientNotFoundException:
@@ -321,24 +297,23 @@ def get_create_care_receipient_response(
 ) -> None:
     try:
         caregiver_id = get_token_data(token, "caregiver_id")
-        care_receipient_in_model = CareReceipientIn(**request.model_dump(by_alias=True))
         db_care_receipient_model = CareReceipient(
-            name=care_receipient_in_model.name,
-            contact_number=care_receipient_in_model.contact_number,
-            age=care_receipient_in_model.age,
-            alias=care_receipient_in_model.alias,
-            app_language=care_receipient_in_model.app_language,
-            race=care_receipient_in_model.race,
-            gender=care_receipient_in_model.gender,
-            postal_code=care_receipient_in_model.postal_code,
-            floor=care_receipient_in_model.floor,
-            block=care_receipient_in_model.block,
-            unit=care_receipient_in_model.unit,
+            name=request.name,
+            contact_number=str(request.contact_number),
+            age=request.age,
+            alias=request.alias,
+            app_language=request.app_language,
+            race=request.race,
+            gender=request.gender,
+            postal_code=request.postal_code,
+            floor=request.floor,
+            block=request.block,
+            unit=request.unit,
             consecutive_checkins=0,
             consecutive_non_checkins=0,
             user_id=caregiver_id,
             can_record_mood=True,
-            created_at=care_receipient_in_model.created_at,
+            created_at=datetime.now(),
         )
         CRUDCareReceipient(db).create(db_care_receipient_model)
         return
@@ -474,7 +449,7 @@ def get_unsuspend_care_receipient_response(
 
 def get_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
-) -> CareReceipientDetailOut:
+) -> GetCareReceipientDetailResponse:
     try:
         caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
@@ -485,39 +460,31 @@ def get_care_receipient_response(
         ]:
             raise CareReceipientNotUnderCurrentCaregiverException
 
-        care_receipient_model = CRUDCareReceipient(db).get(care_receipient_id)
-        crud_care_receipient_out = CRUDCareReceipientOut.model_validate(
-            care_receipient_model
-        )
-
-        crud_moods_out = [
-            CRUDMoodOut.model_validate(mood)
-            for mood in crud_care_receipient_out.moods
-        ]
+        care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
         dashboard_moods_out = get_admin_dashboard_moods_out(
-            crud_moods_out, crud_care_receipient_out.created_at, datetime.today()
+            care_receipient.moods, care_receipient.created_at, datetime.today()
         )
 
-        return CareReceipientDetailOut(
-            care_receipient_id=crud_care_receipient_out.id,
-            contact_number=crud_care_receipient_out.contact_number,
-            name=crud_care_receipient_out.name,
-            alias=crud_care_receipient_out.alias,
-            age=crud_care_receipient_out.age,
-            race=crud_care_receipient_out.race,
-            gender=crud_care_receipient_out.gender,
-            postal_code=crud_care_receipient_out.postal_code,
-            floor=crud_care_receipient_out.floor,
-            block=crud_care_receipient_out.block,
-            unit=crud_care_receipient_out.unit,
+        return GetCareReceipientDetailResponse(
+            care_receipient_id=care_receipient.id,
+            contact_number=int(care_receipient.contact_number),
+            name=care_receipient.name,
+            alias=care_receipient.alias,
+            age=care_receipient.age,
+            race=care_receipient.race,
+            gender=care_receipient.gender,
+            postal_code=care_receipient.postal_code,
+            floor=care_receipient.floor,
+            block=care_receipient.block,
+            unit=care_receipient.unit,
             moods=[
-                CareReceipientDetailMoodOut.model_validate(mood)
+                CareReceipientDetailMoodData(mood=mood.mood, created_at=mood.created_at)
                 for mood in dashboard_moods_out
             ],
-            consecutive_checkins=crud_care_receipient_out.consecutive_checkins,
-            consecutive_non_checkins=crud_care_receipient_out.consecutive_non_checkins,
-            can_record_mood=_can_record_mood(crud_care_receipient_out.id, db),
-            is_suspended=crud_care_receipient_out.is_suspended,
+            consecutive_checkins=care_receipient.consecutive_checkins,
+            consecutive_non_checkins=care_receipient.consecutive_non_checkins,
+            can_record_mood=_can_record_mood(care_receipient.id, db),
+            is_suspended=care_receipient.is_suspended,
         )
 
     except CareReceipientNotUnderCurrentCaregiverException:

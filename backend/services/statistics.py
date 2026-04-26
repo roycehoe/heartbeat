@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from crud import CRUDCaregiver, CRUDMood, CRUDCareReceipient
 from settings import AppSettings

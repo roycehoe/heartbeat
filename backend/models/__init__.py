@@ -1,5 +1,3 @@
-# SQLAlchemy models
-from models.base import Base as Base
 from models.caregiver import *  # noqa: F403
 from models.thread import *  # noqa: F403
 from models.dementia_daycare import *  # noqa: F403

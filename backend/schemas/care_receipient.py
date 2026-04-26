@@ -4,24 +4,16 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 from enums import AppLanguage, Gender, Race, SelectedMood
+from models.mood import Mood
 
 
 class CareReceipientMoodRequest(BaseModel):
     mood: SelectedMood
 
 
-class CareReceipientMoodIn(CareReceipientMoodRequest):
+class CreateCareReceipientMoodResponse(BaseModel):
     care_receipient_id: int
-    created_at: datetime = Field(default_factory=datetime.now)
-
-    class Config:
-        use_enum_values = True
-        from_attributes = True
-
-
-class CareReceipientMoodOut(BaseModel):
-    care_receipient_id: int
-    moods: list[CareReceipientMoodIn]
+    moods: list[Mood]
     can_record_mood: bool
     consecutive_checkins: int
     consecutive_non_checkins: int
@@ -29,9 +21,10 @@ class CareReceipientMoodOut(BaseModel):
 
     class Config:
         use_enum_values = True
+        arbitrary_types_allowed = True
 
 
-class CareReceipientDashboardMoodOut(BaseModel):
+class CareReceipientDashboardMoodData(BaseModel):
     mood: Optional[SelectedMood]
     created_at: datetime
 
@@ -39,7 +32,7 @@ class CareReceipientDashboardMoodOut(BaseModel):
         from_attributes = True
 
 
-class CareReceipientDashboardOut(BaseModel):
+class GetCareReceipientDashboardResponse(BaseModel):
     care_receipient_id: int
     name: str
     alias: str
@@ -50,7 +43,7 @@ class CareReceipientDashboardOut(BaseModel):
     floor: int
     contact_number: int
 
-    moods: list[CareReceipientDashboardMoodOut]
+    moods: list[CareReceipientDashboardMoodData]
     can_record_mood: bool
     consecutive_checkins: int
     consecutive_non_checkins: int
@@ -68,20 +61,7 @@ class CareReceipientToken(BaseModel):
     token_type: str
 
 
-class CaregiverMoodRequest(BaseModel):
-    mood: SelectedMood
-
-
-class CaregiverMoodIn(CaregiverMoodRequest):
-    care_receipient_id: int
-    created_at: datetime = Field(default_factory=datetime.now)
-
-    class Config:
-        use_enum_values = True
-        from_attributes = True
-
-
-class CareReceipientDetailMoodOut(BaseModel):
+class CareReceipientDetailMoodData(BaseModel):
     mood: Optional[SelectedMood]
     created_at: datetime
 
@@ -89,7 +69,7 @@ class CareReceipientDetailMoodOut(BaseModel):
         from_attributes = True
 
 
-class CareReceipientDetailOut(BaseModel):
+class GetCareReceipientDetailResponse(BaseModel):
     care_receipient_id: int
     name: str
     alias: str
@@ -103,7 +83,7 @@ class CareReceipientDetailOut(BaseModel):
     contact_number: int
     is_suspended: bool
 
-    moods: list[CareReceipientDetailMoodOut]
+    moods: list[CareReceipientDetailMoodData]
     can_record_mood: bool
     consecutive_checkins: int
     consecutive_non_checkins: int
@@ -131,15 +111,6 @@ class CareReceipientCreateRequest(BaseModel):
 
 class CareReceipientUpdateRequest(CareReceipientCreateRequest):
     pass
-
-
-class CareReceipientIn(CareReceipientCreateRequest):
-    created_at: datetime = Field(default_factory=datetime.now)
-    can_record_mood: bool = True
-
-    class Config:
-        use_enum_values = True
-        from_attributes = True
 
 
 class CareReceipientLoginUrlResponse(BaseModel):

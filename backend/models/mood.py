@@ -1,21 +1,27 @@
-from enum import Enum
-from models.base import Base
-from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, Enum as SQLAlchemyEnum
-from sqlalchemy.orm import relationship
+from datetime import datetime
+from typing import Optional
+
+from sqlalchemy import TIMESTAMP, Column
+from sqlalchemy import Enum as SQLAlchemyEnum
+from sqlmodel import Field, SQLModel
+from sqlmodel import Relationship as SQLRelationship
+
+from enums import SelectedMood
 
 
-class SelectedMood(str, Enum):
-    HAPPY = "happy"
-    OK = "ok"
-    SAD = "sad"
-
-
-class Mood(Base):
+class Mood(SQLModel, table=True):
     __tablename__ = "mood"
 
-    id = Column(Integer, primary_key=True)
-    care_receipient_id = Column(Integer, ForeignKey("care_receipient.id"))
-    mood = Column(SQLAlchemyEnum(SelectedMood))
-    created_at = Column(TIMESTAMP, nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    care_receipient_id: Optional[int] = Field(
+        default=None, foreign_key="care_receipient.id"
+    )
+    mood: Optional[SelectedMood] = Field(
+        default=None,
+        sa_column=Column(SQLAlchemyEnum(SelectedMood), nullable=True),
+    )
+    created_at: datetime = Field(sa_column=Column(TIMESTAMP, nullable=False))
 
-    care_receipient = relationship("CareReceipient", back_populates="moods")
+    care_receipient: Optional["CareReceipient"] = SQLRelationship(
+        back_populates="moods"
+    )

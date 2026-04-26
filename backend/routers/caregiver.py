@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, Header, status
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from database import get_db
 from schemas.caregiver import (
     CaregiverCreateRequest,
-    CaregiverDashboardOut,
+    CaregiverDashboardData,
     CaregiverToken,
 )
 from services.caregiver import (
@@ -35,7 +35,7 @@ def caregiver_log_in(db: Session = Depends(get_db), token: str = Header(None)):
 @router.get(
     "/dashboard",
     status_code=status.HTTP_200_OK,
-    response_model=list[CaregiverDashboardOut],
+    response_model=list[CaregiverDashboardData],
 )
 def caregiver_dashboard(
     token: str = Header(None),

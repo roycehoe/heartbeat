@@ -1,32 +1,29 @@
 from typing import List, Optional
-from sqlalchemy import Float, Integer, String
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import Mapped, mapped_column
-from models.base import Base
+
+from sqlalchemy import ARRAY, Column, String
+from sqlmodel import Field, SQLModel
 
 
-class DementiaDaycare(Base):
+class DementiaDaycare(SQLModel, table=True):
     __tablename__ = "dementia_daycare"
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, index=True, autoincrement=True, unique=True
-    )
-    friendly_id: Mapped[str] = mapped_column(String, unique=True)
-    name: Mapped[str] = mapped_column(String)
-    phone: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    email: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    website: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    lat: Mapped[float] = mapped_column(Float)
-    lng: Mapped[float] = mapped_column(Float)
-    operating_hours: Mapped[List[str]] = mapped_column(ARRAY(String))
-    building_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    block: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    postal_code: Mapped[str] = mapped_column(String)
-    street_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    unit_no: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    availability: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    google_map_place_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    photos: Mapped[List[str]] = mapped_column(ARRAY(String))
-    min_price: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    max_price: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    id: Optional[int] = Field(default=None, primary_key=True, index=True, unique=True)
+    friendly_id: str = Field(unique=True)
+    name: str
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    website: Optional[str] = None
+    lat: float
+    lng: float
+    operating_hours: List[str] = Field(sa_column=Column(ARRAY(String)))
+    building_name: Optional[str] = None
+    block: Optional[str] = None
+    postal_code: str
+    street_name: Optional[str] = None
+    unit_no: Optional[str] = None
+    availability: Optional[str] = None
+    google_map_place_id: Optional[str] = None
+    photos: List[str] = Field(sa_column=Column(ARRAY(String)))
+    min_price: Optional[int] = None
+    max_price: Optional[int] = None
+    description: Optional[str] = None

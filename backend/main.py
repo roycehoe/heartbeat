@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from database import get_db
 from routers import caregiver, care_receipient

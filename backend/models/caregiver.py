@@ -1,9 +1,11 @@
 from enum import Enum
-from sqlalchemy import Integer, String, Column
+from typing import List, Optional
+
+from sqlalchemy import Column, String
 from sqlalchemy import Enum as SQLAlchemyEnum
-from sqlalchemy.orm import relationship
-from models.base import Base
 from sqlalchemy_utils import EncryptedType
+from sqlmodel import Field, SQLModel
+from sqlmodel import Relationship as SQLRelationship
 
 from settings import AppSettings
 
@@ -27,28 +29,38 @@ class Relationship(Enum):
     NON_FAMILY = "NON_FAMILY"
 
 
-class Caregiver(Base):
+class Caregiver(SQLModel, table=True):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    clerk_id = Column(String, unique=True, index=True)
-    citizenship = Column(SQLAlchemyEnum(Citizenship))
-    contact_number = Column(
-        EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET),
-        nullable=True,
-        comment="Assumes SG phone number",
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
+    clerk_id: Optional[str] = Field(default=None, unique=True, index=True)
+    citizenship: Optional[Citizenship] = Field(
+        default=None,
+        sa_column=Column(SQLAlchemyEnum(Citizenship), nullable=True),
     )
+    contact_number: Optional[str] = Field(
+        default=None,
+        sa_column=Column(
+            EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET), nullable=True
+        ),
+    )
+    care_recipient_age: Optional[int] = Field(default=None)
+    care_recipient_citizenship: Optional[Citizenship] = Field(
+        default=None,
+        sa_column=Column(SQLAlchemyEnum(Citizenship), nullable=True),
+    )
+    care_recipient_residence: Optional[Residence] = Field(
+        default=None,
+        sa_column=Column(SQLAlchemyEnum(Residence), nullable=True),
+    )
+    care_recipient_relationship: Optional[Relationship] = Field(
+        default=None,
+        sa_column=Column(SQLAlchemyEnum(Relationship), nullable=True),
+    )
+    household_size: Optional[int] = Field(default=None)
+    total_monthly_household_income: Optional[int] = Field(default=None)
+    annual_property_value: Optional[int] = Field(default=None)
+    monthly_pchi: Optional[int] = Field(default=None)
 
-    care_recipient_age = Column(Integer)
-    care_recipient_citizenship = Column(SQLAlchemyEnum(Citizenship))
-    care_recipient_residence = Column(SQLAlchemyEnum(Residence))
-    care_recipient_relationship = Column(SQLAlchemyEnum(Relationship))
-
-    # PCHI info
-    household_size = Column(Integer, nullable=True)
-    total_monthly_household_income = Column(Integer, nullable=True)
-    annual_property_value = Column(Integer, nullable=True)
-    monthly_pchi = Column(Integer, nullable=True)
-
-    threads = relationship("Thread", back_populates="caregiver")
-    care_receipients = relationship("CareReceipient", back_populates="caregiver")
+    threads: List["Thread"] = SQLRelationship(back_populates="caregiver")
+    care_receipients: List["CareReceipient"] = SQLRelationship(back_populates="caregiver")
