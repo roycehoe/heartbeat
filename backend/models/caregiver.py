@@ -1,6 +1,4 @@
-import os
 from enum import Enum
-from dotenv import dotenv_values
 from sqlalchemy import Integer, String, Column
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship

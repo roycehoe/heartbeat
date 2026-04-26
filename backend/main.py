@@ -1,4 +1,3 @@
-from dotenv import dotenv_values
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session

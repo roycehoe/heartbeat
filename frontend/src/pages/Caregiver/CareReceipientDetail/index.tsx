@@ -17,8 +17,10 @@ import { Banner } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetCareReceipientDetailResponse } from "../../../api/getCareReceipientDetailResponse";
+import { useGetCareReceipientLoginUrlResponse } from "../../../api/getCareReceipientLoginUrlResponse";
 import { AppLanguage, CareReceipientDetailMoodOut, SelectedMood } from "../../../api/types";
 import { FormFieldsViewCareReceipient } from "../../../components/FormFieldsViewCareReceipient";
+import ShareLoginLinkCard from "../../../components/ShareLoginLinkCard";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import { IconMood } from "../../../components/IconMood";
 import { VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "../constants";
@@ -140,6 +142,9 @@ const CareReceipientDetail = () => {
   const { data: careReceipientData, isLoading } = useGetCareReceipientDetailResponse(
     Number(careReceipientId)
   );
+  const { data: loginUrlData } = useGetCareReceipientLoginUrlResponse(
+    Number(careReceipientId)
+  );
 
   const handleGearIconClick = (careReceipientId: string) => {
     navigate(`/dashboard/care-receipient/${careReceipientId}/settings`);
@@ -214,6 +219,12 @@ const CareReceipientDetail = () => {
         )}
 
         <UserMoodHistoryTable moods={careReceipientData.moods} />
+        {loginUrlData?.url && (
+          <ShareLoginLinkCard
+            loginLink={loginUrlData.url}
+            alias={careReceipientData.alias}
+          />
+        )}
         <Box display="flex" gap="4px">
           <Heading size="sm">Personal Information</Heading>
           <Box

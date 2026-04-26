@@ -1,9 +1,6 @@
-from clerk_backend_api import AuthenticateRequestOptions, Clerk, authenticate_request
-from dotenv import dotenv_values
 from fastapi import HTTPException, status
-import httpx
 from sqlalchemy.orm import Session
-from datetime import datetime, time, timedelta
+from datetime import datetime
 
 from crud import CRUDMood
 

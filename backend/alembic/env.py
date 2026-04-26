@@ -1,12 +1,10 @@
 from logging.config import fileConfig
 
-from dotenv import dotenv_values
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from models.base import Base
 
-import models
 from alembic import context
 from settings import AppSettings
 

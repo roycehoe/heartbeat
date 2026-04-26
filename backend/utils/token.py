@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 from typing import Union
 
-import jwt
-from fastapi import HTTPException, status
 import requests
+from fastapi import HTTPException, status
+from jose import jwt
+from jose.exceptions import ExpiredSignatureError, JWTError
 
 from exceptions import ClerkAuthenticationFailedException
 from settings import AppSettings
@@ -41,16 +42,8 @@ def get_token_data(token: str, param: str) -> Union[int, str]:
         )
 
 
-import httpx
-from fastapi import HTTPException, status
 
 CLERK_VERIFY_TOKEN_URL = "https://api.clerk.com/v1/clients/verify"
-
-
-import os
-import requests
-from jose import jwt
-from jose.exceptions import JWTError, ExpiredSignatureError
 
 CLERK_JWKS_URL = "https://api.clerk.com/v1/jwks"
 CLERK_ISSUER = "https://clerk.your-domain.com"  # <-- from Clerk Dashboard
