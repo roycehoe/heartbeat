@@ -30,17 +30,17 @@ const App = () => {
             flexDirection="column"
           >
             <Routes>
-              <Route index element={<HomePage />} />
+              <Route path="/:careReceipientId" element={<HomePage />} />
               <Route path="/login" element={<LogIn />} />
-              <Route path="/admin" element={<Caregiver />} />
-              <Route path="/admin/:userId" element={<CareReceipientDetail />} />
+              <Route path="/dashboard" element={<Caregiver />} />
+              <Route path="/dashboard/care-receipient/:careReceipientId" element={<CareReceipientDetail />} />
               <Route
-                path="/admin/:userId/settings"
+                path="/dashboard/care-receipient/:careReceipientId/settings"
                 element={<CareReceipientSettings />}
               />
-              <Route path="/admin/create-user" element={<ModalCreateCareReceipient />} />
-              <Route path="/admin/about" element={<HowDoesItWork />} />
-              <Route path="/admin/settings" element={<Settings />} />
+              <Route path="/dashboard/create-care-receipient" element={<ModalCreateCareReceipient />} />
+              <Route path="/dashboard/about" element={<HowDoesItWork />} />
+              <Route path="/dashboard/settings" element={<Settings />} />
             </Routes>
           </Box>
         </BrowserRouter>

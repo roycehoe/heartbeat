@@ -43,7 +43,7 @@ function dashboardDataToUpdateCareReceipientFormData(
 function ModalUpdateCareReceipient(props: {
   isOpen: boolean;
   onClose: () => void;
-  userId: string;
+  careReceipientId: string;
   dashboardData: CareReceipientDetailOut;
 }) {
   const [updateCareReceipientForm, setUpdateCareReceipientForm] = useState<UpdateCareReceipientForm>(
@@ -60,11 +60,11 @@ function ModalUpdateCareReceipient(props: {
 
   function handleSubmit() {
     mutate(
-      { userId: Number(props.userId), request: updateCareReceipientForm },
+      { careReceipientId: Number(props.careReceipientId), request: updateCareReceipientForm },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ["getCareReceipientDetailResponse", Number(props.userId)],
+            queryKey: ["getCareReceipientDetailResponse", Number(props.careReceipientId)],
           });
           props.onClose();
           toast({

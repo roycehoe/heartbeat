@@ -21,11 +21,11 @@ import { IconArrowLeft } from "../../../components/IconArrowLeft";
 import ModalDeleteCareReceipient from "../../../components/ModalDeleteCareReceipient";
 
 const CareReceipientSettings = () => {
-  const { userId } = useParams();
+  const { careReceipientId } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useGetCareReceipientDetailResponse(Number(userId));
+  const { data, isLoading } = useGetCareReceipientDetailResponse(Number(careReceipientId));
 
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] =
     useState<boolean>(false);
@@ -34,12 +34,12 @@ const CareReceipientSettings = () => {
   const { mutate: unsuspendUser } = useGetCareReceipientUnsuspendResponse();
   const { mutate: deleteUser } = useGetCareReceipientDeleteResponse();
 
-  const handleBackIconClick = (userId: string) => {
-    navigate(`/admin/${userId}`);
+  const handleBackIconClick = (careReceipientId: string) => {
+    navigate(`/dashboard/care-receipient/${careReceipientId}`);
   };
 
-  const handleOnConfirmModalDeleteCareReceipient = (userId: number) => {
-    deleteUser(userId, {
+  const handleOnConfirmModalDeleteCareReceipient = (careReceipientId: number) => {
+    deleteUser(careReceipientId, {
       onSuccess: () => {
         setIsDeleteUserModalOpen(false);
         toast({
@@ -49,17 +49,17 @@ const CareReceipientSettings = () => {
           duration: 9000,
           isClosable: true,
         });
-        navigate(`/admin`);
+        navigate(`/dashboard`);
       },
     });
   };
 
-  const handleSuspendUserSwitchClick = (userId: number) => {
+  const handleSuspendUserSwitchClick = (careReceipientId: number) => {
     const mutate = data?.is_suspended ? unsuspendUser : suspendUser;
-    mutate(userId, {
+    mutate(careReceipientId, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ["getCareReceipientDetailResponse", userId],
+          queryKey: ["getCareReceipientDetailResponse", careReceipientId],
         });
       },
     });
@@ -93,7 +93,7 @@ const CareReceipientSettings = () => {
         <Box display="flex" flexDir="column" gap="12px">
           <Box display="flex" gap="8px">
             <IconButton
-              onClick={() => handleBackIconClick(data.user_id)}
+              onClick={() => handleBackIconClick(data.care_receipient_id)}
               isRound={true}
               variant="solid"
               aria-label="Done"
@@ -110,7 +110,7 @@ const CareReceipientSettings = () => {
           <FormControl display="flex" alignItems="center">
             <FormLabel mb="0">Suspend user?</FormLabel>
             <Switch
-              onChange={() => handleSuspendUserSwitchClick(data.user_id)}
+              onChange={() => handleSuspendUserSwitchClick(data.care_receipient_id)}
               isChecked={data.is_suspended}
             />
           </FormControl>
@@ -128,7 +128,7 @@ const CareReceipientSettings = () => {
             <ModalDeleteCareReceipient
               isOpen={isDeleteUserModalOpen}
               onClose={() => setIsDeleteUserModalOpen(false)}
-              onConfirm={() => handleOnConfirmModalDeleteCareReceipient(Number(userId))}
+              onConfirm={() => handleOnConfirmModalDeleteCareReceipient(Number(careReceipientId))}
             />
           </Box>
         </Box>

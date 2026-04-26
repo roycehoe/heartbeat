@@ -11,7 +11,7 @@ function CaregiverOrCareReceipientSelection({
   const navigate = useNavigate();
 
   const onLogInAsCaregiverButtonClick = () => {
-    navigate("/admin");
+    navigate("/dashboard");
   };
   const onLogInAsCareReceipientButtonClick = () => {
     setLogInFormState(LogInFormState.CareReceipientSelection);

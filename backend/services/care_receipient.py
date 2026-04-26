@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from crud import CRUDCaregiver, CRUDMood, CRUDCareReceipient
 from enums import AppLanguage, SelectedMood
 from exceptions import (
+    CareReceipientNotFoundException,
     DBDuplicateAccountException,
     DBException,
     DifferentPasswordAndConfirmPasswordException,
@@ -108,15 +109,15 @@ def authenticate_care_receipient(
     request: CareReceipientLogInRequest, token: str, db: Session
 ) -> CareReceipientToken:
     try:
-        care_receipient = CRUDCareReceipient(db).get(request.user_id)
+        care_receipient = CRUDCareReceipient(db).get(request.care_receipient_id)
         care_receipient_out = CRUDCareReceipientOut.model_validate(care_receipient)
-        token_caregiver_id = int(get_token_data(token, "admin_id"))
+        token_caregiver_id = int(get_token_data(token, "caregiver_id"))
 
         if care_receipient_out.user_id != token_caregiver_id:
             raise InvalidCredentialsToAccessCareReceipient
 
         access_token = create_access_token(
-            {"user_id": care_receipient.id, "app_language": care_receipient.app_language}
+            {"care_receipient_id": care_receipient.id, "app_language": care_receipient.app_language}
         )
         return CareReceipientToken(access_token=access_token, token_type="bearer")
 
@@ -138,42 +139,52 @@ def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
             CRUDCareReceipient(db).get(care_receipient_id)
         ).can_record_mood
     except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No care receipient record found",
-        )
+        raise CareReceipientNotFoundException
     except DBException as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
 def get_care_receipient_dashboard_response(
-    token: str, db: Session
+    care_receipient_id: int, db: Session
 ) -> CareReceipientDashboardOut:
-    care_receipient_id: int = get_token_data(token, "user_id")
-    mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
-    crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
+    try:
+        mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
+        crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
 
-    care_receipient_model = CRUDCareReceipient(db).get(care_receipient_id)
-    crud_care_receipient_out = CRUDCareReceipientOut.model_validate(care_receipient_model)
+        care_receipient_model = CRUDCareReceipient(db).get(care_receipient_id)
+        crud_care_receipient_out = CRUDCareReceipientOut.model_validate(care_receipient_model)
 
-    return CareReceipientDashboardOut(
-        user_id=care_receipient_id,
-        name=crud_care_receipient_out.name,
-        alias=crud_care_receipient_out.alias,
-        age=crud_care_receipient_out.age,
-        race=crud_care_receipient_out.race,
-        gender=crud_care_receipient_out.gender,
-        postal_code=crud_care_receipient_out.postal_code,
-        floor=crud_care_receipient_out.floor,
-        moods=[
-            CareReceipientDashboardMoodOut(mood=mood.mood, created_at=mood.created_at)
-            for mood in crud_moods_out
-        ],
-        contact_number=crud_care_receipient_out.contact_number,
-        consecutive_checkins=crud_care_receipient_out.consecutive_checkins,
-        consecutive_non_checkins=crud_care_receipient_out.consecutive_non_checkins,
-        can_record_mood=_can_record_mood(care_receipient_id, db),
-    )
+        return CareReceipientDashboardOut(
+            care_receipient_id=care_receipient_id,
+            name=crud_care_receipient_out.name,
+            alias=crud_care_receipient_out.alias,
+            age=crud_care_receipient_out.age,
+            race=crud_care_receipient_out.race,
+            gender=crud_care_receipient_out.gender,
+            postal_code=crud_care_receipient_out.postal_code,
+            floor=crud_care_receipient_out.floor,
+            moods=[
+                CareReceipientDashboardMoodOut(mood=mood.mood, created_at=mood.created_at)
+                for mood in crud_moods_out
+            ],
+            contact_number=crud_care_receipient_out.contact_number,
+            consecutive_checkins=crud_care_receipient_out.consecutive_checkins,
+            consecutive_non_checkins=crud_care_receipient_out.consecutive_non_checkins,
+            can_record_mood=_can_record_mood(care_receipient_id, db),
+        )
+
+    except CareReceipientNotFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Care receipient not found",
+        )
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Care receipient not found",
+        )
+    except DBException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
 def _get_mood_message(
@@ -237,19 +248,18 @@ def _update_care_receipient_mood_checkin(care_receipient_id: int, db: Session) -
 
 
 def get_create_care_receipient_mood_response(
-    request: CareReceipientMoodRequest, token: str, db: Session
+    request: CareReceipientMoodRequest, care_receipient_id: int, db: Session
 ) -> CareReceipientMoodOut:
     try:
-        care_receipient_id: int = get_token_data(token, "user_id")
         if not _can_record_mood(care_receipient_id, db):
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 detail="Mood for today has already been recorded. Please try again tomorrow",
             )
 
-        mood_in_model = CareReceipientMoodIn(mood=request.mood, user_id=care_receipient_id)
+        mood_in_model = CareReceipientMoodIn(mood=request.mood, care_receipient_id=care_receipient_id)
         db_mood_model = Mood(
-            care_receipient_id=mood_in_model.user_id,
+            care_receipient_id=mood_in_model.care_receipient_id,
             mood=mood_in_model.mood,
             created_at=mood_in_model.created_at,
         )
@@ -270,13 +280,13 @@ def get_create_care_receipient_mood_response(
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
 
         crud_moods_out = [CRUDMoodOut.model_validate(mood) for mood in mood_models]
-        app_language: AppLanguage = get_token_data(token, "app_language")
+        app_language = crud_care_receipient_out.app_language
         return CareReceipientMoodOut(
-            user_id=care_receipient_id,
+            care_receipient_id=care_receipient_id,
             moods=[
                 CareReceipientMoodIn(
                     mood=mood.mood,
-                    user_id=mood.care_receipient_id,
+                    care_receipient_id=mood.care_receipient_id,
                     created_at=mood.created_at,
                 )
                 for mood in crud_moods_out
@@ -287,6 +297,11 @@ def get_create_care_receipient_mood_response(
             mood_message=_get_mood_message(app_language),
         )
 
+    except CareReceipientNotFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Care receipient not found",
+        )
     except NoRecordFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -300,7 +315,7 @@ def get_create_care_receipient_response(
     request: CareReceipientCreateRequest, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "admin_id")
+        caregiver_id = get_token_data(token, "caregiver_id")
         care_receipient_in_model = CareReceipientIn(**request.model_dump(by_alias=True))
         db_care_receipient_model = CareReceipient(
             name=care_receipient_in_model.name,
@@ -344,7 +359,7 @@ def get_delete_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "admin_id")
+        caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
@@ -373,7 +388,7 @@ def get_update_care_receipient_response(
     db: Session,
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "admin_id")
+        caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
@@ -402,7 +417,7 @@ def get_suspend_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "admin_id")
+        caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
@@ -429,7 +444,7 @@ def get_unsuspend_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "admin_id")
+        caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
@@ -456,7 +471,7 @@ def get_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> CareReceipientDetailOut:
     try:
-        caregiver_id = get_token_data(token, "admin_id")
+        caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
@@ -479,7 +494,7 @@ def get_care_receipient_response(
         )
 
         return CareReceipientDetailOut(
-            user_id=crud_care_receipient_out.id,
+            care_receipient_id=crud_care_receipient_out.id,
             contact_number=crud_care_receipient_out.contact_number,
             name=crud_care_receipient_out.name,
             alias=crud_care_receipient_out.alias,

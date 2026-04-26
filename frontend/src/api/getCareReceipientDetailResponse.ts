@@ -3,16 +3,16 @@ import { httpClient } from "./httpClient";
 import { CareReceipientDetailOut } from "./types";
 
 export async function getCareReceipientDetailResponse(
-  userId: number
+  careReceipientId: number
 ): Promise<CareReceipientDetailOut> {
-  const response = await httpClient.get(`/user/${userId}`);
+  const response = await httpClient.get(`/user/${careReceipientId}`);
   return response.data;
 }
 
-export function useGetCareReceipientDetailResponse(userId: number) {
+export function useGetCareReceipientDetailResponse(careReceipientId: number) {
   return useQuery({
-    queryKey: ["getCareReceipientDetailResponse", userId],
-    queryFn: () => getCareReceipientDetailResponse(userId),
-    enabled: !!userId,
+    queryKey: ["getCareReceipientDetailResponse", careReceipientId],
+    queryFn: () => getCareReceipientDetailResponse(careReceipientId),
+    enabled: !!careReceipientId,
   });
 }

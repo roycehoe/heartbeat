@@ -1,7 +1,7 @@
 import { Box, Fade } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
 import { useGetCareReceipientClaimGiftResponse } from "../../api/getCareReceipientClaimGiftResponse";
 import { useGetCareReceipientDashboardResponse } from "../../api/getCareReceipientDashboardResponse";
@@ -11,6 +11,9 @@ import Display from "./Display";
 import MoodBtns from "./MoodBtns";
 
 function HomePage() {
+  const { careReceipientId: rawId } = useParams();
+  const careReceipientId = parseInt(rawId ?? "0");
+
   const [currentIndex, setCurrentIndex] = useState<number>(() => {
     const storedIndex = localStorage.getItem("currentIndex");
     return storedIndex !== null ? Number(storedIndex) : 0;
@@ -20,24 +23,25 @@ function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
+    if (isNaN(careReceipientId) || careReceipientId <= 0) {
       navigate("/login");
       return;
     }
-  }, []);
+  }, [careReceipientId]);
 
   const {
     data: dashboardData,
     isLoading,
     error,
-  } = useGetCareReceipientDashboardResponse();
+  } = useGetCareReceipientDashboardResponse(careReceipientId);
 
-  const { mutate: recordMood } = useGetCareReceipientMoodResponse();
+  const { mutate: recordMood } = useGetCareReceipientMoodResponse(careReceipientId);
   const { mutate: claimGift } = useGetCareReceipientClaimGiftResponse();
 
   const onMoodButtonClick = (mood: SelectedMood) => {
     recordMood({ mood }, {
       onSuccess: (data) => setMoodMessage(data.mood_message),
+      onError: () => navigate("/login"),
     });
   };
 
@@ -58,7 +62,7 @@ function HomePage() {
     navigate("/login");
     return;
   }
-  if (!localStorage.getItem("token")) {
+  if (isNaN(careReceipientId) || careReceipientId <= 0) {
     return navigate("/login");
   }
   if (isLoading || !dashboardData) {

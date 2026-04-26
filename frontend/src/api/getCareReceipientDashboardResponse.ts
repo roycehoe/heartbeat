@@ -3,16 +3,17 @@ import { AxiosResponse } from "axios";
 import { httpClient } from "./httpClient";
 import { CareReceipientDetailOut } from "./types";
 
-export async function getCareReceipientDashboardResponse(): Promise<
-  AxiosResponse<CareReceipientDetailOut>
-> {
-  return await httpClient.get("/user/dashboard");
+export async function getCareReceipientDashboardResponse(
+  careReceipientId: number
+): Promise<AxiosResponse<CareReceipientDetailOut>> {
+  return await httpClient.get(`/user/${careReceipientId}/dashboard`);
 }
 
-export function useGetCareReceipientDashboardResponse() {
+export function useGetCareReceipientDashboardResponse(careReceipientId: number) {
   return useQuery({
-    queryKey: ["getCareReceipientDashboardResponse"],
-    queryFn: () => getCareReceipientDashboardResponse(),
+    queryKey: ["getCareReceipientDashboardResponse", careReceipientId],
+    queryFn: () => getCareReceipientDashboardResponse(careReceipientId),
     refetchInterval: 60 * 60 * 1000,
+    retry: false,
   });
 }

@@ -54,7 +54,7 @@ function getUnresponsiveCount(users: CareReceipientDetailOut[]): number {
   return users.filter((user) => isUnresponsive(user.moods.slice(0, 4))).length;
 }
 
-function AdminDashboardSummaryCards(props: {
+function CaregiverDashboardSummaryCards(props: {
   dashboardData: CareReceipientDetailOut[];
 }) {
   return (
@@ -91,14 +91,14 @@ function Caregiver() {
     }
   }, [data]);
 
-  const handleUserClick = (userId: number) => {
-    navigate(`/admin/${userId}`);
+  const handleCareReceipientClick = (careReceipientId: number) => {
+    navigate(`/dashboard/care-receipient/${careReceipientId}`);
   };
   const handleAddAnotherPersonClick = () => {
-    navigate(`/admin/create-user`);
+    navigate(`/dashboard/create-care-receipient`);
   };
   const handleGearIconClick = () => {
-    navigate(`/admin/settings`);
+    navigate(`/dashboard/settings`);
   };
 
   if (isLoading || !data) {
@@ -145,12 +145,12 @@ function Caregiver() {
               <Heading size="sm">Persons I care for</Heading>
             </Box>
 
-            <AdminDashboardSummaryCards dashboardData={data.data} />
+            <CaregiverDashboardSummaryCards dashboardData={data.data} />
 
             <TableMoodSnapshot
               dashboardData={data.data}
               getColorTag={getColorTag}
-              handleUserClick={handleUserClick}
+              handleCareReceipientClick={handleCareReceipientClick}
             />
             <Button size="xs" onClick={handleAddAnotherPersonClick}>
               Add another person

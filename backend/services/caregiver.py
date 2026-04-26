@@ -62,7 +62,7 @@ def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
         caregiver = CRUDCaregiver(db).get_by({"clerk_id": caregiver_clerk_id})
         access_token = create_access_token(
             {
-                "admin_id": caregiver.id,
+                "caregiver_id": caregiver.id,
             }
         )
         return CaregiverToken(access_token=access_token, token_type="bearer")
@@ -101,8 +101,8 @@ def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
 def get_care_receipient_dashboard_response(
     token: str, db: Session
 ) -> CaregiverDashboardOut:
-    care_receipient_id: int = get_token_data(token, "user_id")
-    mood_models = CRUDMood(db).get_by({"user_id": care_receipient_id})
+    care_receipient_id: int = get_token_data(token, "care_receipient_id")
+    mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
     care_receipient_model = CRUDCareReceipient(db).get(care_receipient_id)
 
     crud_mood_out = [
@@ -111,7 +111,7 @@ def get_care_receipient_dashboard_response(
     crud_care_receipient_out = CRUDCareReceipientOut.model_validate(care_receipient_model)
 
     return CaregiverDashboardOut(
-        user_id=care_receipient_id,
+        care_receipient_id=care_receipient_id,
         name=crud_care_receipient_out.name,
         alias=crud_care_receipient_out.alias,
         age=crud_care_receipient_out.age,
@@ -136,7 +136,7 @@ def get_caregiver_dashboard_response(
     try:
         response: list[CaregiverDashboardOut] = []
 
-        caregiver_id = get_token_data(token, "admin_id")
+        caregiver_id = get_token_data(token, "caregiver_id")
         care_receipient_models = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}, sort, sort_direction
         )
@@ -162,7 +162,7 @@ def get_caregiver_dashboard_response(
 
             response.append(
                 CaregiverDashboardOut(
-                    user_id=crud_care_receipient_out.id,
+                    care_receipient_id=crud_care_receipient_out.id,
                     contact_number=crud_care_receipient_out.contact_number,
                     name=crud_care_receipient_out.name,
                     alias=crud_care_receipient_out.alias,

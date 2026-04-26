@@ -131,21 +131,21 @@ const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) =
 };
 
 const CareReceipientDetail = () => {
-  const { userId } = useParams();
+  const { careReceipientId } = useParams();
   const [isShowPersonalInformation, setIsShowInformation] =
     useState<boolean>(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { data: adminUserData, isLoading } = useGetCareReceipientDetailResponse(
-    Number(userId)
+  const { data: careReceipientData, isLoading } = useGetCareReceipientDetailResponse(
+    Number(careReceipientId)
   );
 
-  const handleGearIconClick = (userId: string) => {
-    navigate(`/admin/${userId}/settings`);
+  const handleGearIconClick = (careReceipientId: string) => {
+    navigate(`/dashboard/care-receipient/${careReceipientId}/settings`);
   };
   const handleBackIconClick = () => {
-    navigate(`/admin`);
+    navigate(`/dashboard`);
   };
 
   useEffect(() => {
@@ -154,7 +154,7 @@ const CareReceipientDetail = () => {
     }
   }, []);
 
-  if (isLoading || !adminUserData || !userId) {
+  if (isLoading || !careReceipientData || !careReceipientId) {
     return (
       <Box
         width="100vw"
@@ -195,7 +195,7 @@ const CareReceipientDetail = () => {
           <Box
             display="flex"
             justifyContent="center"
-            onClick={() => handleGearIconClick(userId)}
+            onClick={() => handleGearIconClick(careReceipientId)}
           >
             <img src="/assets/icon/gear.svg" />
           </Box>
@@ -204,16 +204,16 @@ const CareReceipientDetail = () => {
           <Heading size="sm" color="#8080808C">
             Profile
           </Heading>
-          <Heading size="sm">{adminUserData.alias}</Heading>
+          <Heading size="sm">{careReceipientData.alias}</Heading>
         </Box>
-        {getSadDaysCount(adminUserData.moods.slice(0, 7)) > 2 && (
+        {getSadDaysCount(careReceipientData.moods.slice(0, 7)) > 2 && (
           <Banner size="sm" variant="error">
             Poor mood reported in the past{" "}
-            {getSadDaysCount(adminUserData.moods.slice(0, 7))} days
+            {getSadDaysCount(careReceipientData.moods.slice(0, 7))} days
           </Banner>
         )}
 
-        <UserMoodHistoryTable moods={adminUserData.moods} />
+        <UserMoodHistoryTable moods={careReceipientData.moods} />
         <Box display="flex" gap="4px">
           <Heading size="sm">Personal Information</Heading>
           <Box
@@ -227,17 +227,17 @@ const CareReceipientDetail = () => {
         </Box>
         <FormFieldsViewCareReceipient
           createCareReceipientForm={{
-            contactNumber: adminUserData.contact_number,
-            name: adminUserData.name,
-            age: adminUserData.age,
-            alias: adminUserData.alias,
-            race: adminUserData.race,
-            gender: adminUserData.gender,
+            contactNumber: careReceipientData.contact_number,
+            name: careReceipientData.name,
+            age: careReceipientData.age,
+            alias: careReceipientData.alias,
+            race: careReceipientData.race,
+            gender: careReceipientData.gender,
             appLanguage: AppLanguage.ENGLISH,
-            postalCode: adminUserData.postal_code,
-            floor: adminUserData.floor,
-            block: adminUserData.block,
-            unit: adminUserData.unit,
+            postalCode: careReceipientData.postal_code,
+            floor: careReceipientData.floor,
+            block: careReceipientData.block,
+            unit: careReceipientData.unit,
           }}
           createUpdateCareReceipientFormFields={VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS}
           isShowPersonalInformation={isShowPersonalInformation}
@@ -250,8 +250,8 @@ const CareReceipientDetail = () => {
       <ModalUpdateCareReceipient
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        userId={userId}
-        dashboardData={adminUserData}
+        careReceipientId={careReceipientId}
+        dashboardData={careReceipientData}
       />
     </Box>
   );

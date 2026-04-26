@@ -2,14 +2,15 @@ import { useMutation } from "@tanstack/react-query";
 import { httpClient } from "./httpClient";
 
 export async function getCareReceipientSuspendResponse(
-  userId: number
+  careReceipientId: number
 ): Promise<null> {
-  const response = await httpClient.put(`/user/${userId}/suspend`);
+  const response = await httpClient.put(`/user/${careReceipientId}/suspend`);
   return response.data;
 }
 
 export function useGetCareReceipientSuspendResponse() {
   return useMutation({
-    mutationFn: (userId: number) => getCareReceipientSuspendResponse(userId),
+    mutationFn: (careReceipientId: number) =>
+      getCareReceipientSuspendResponse(careReceipientId),
   });
 }
