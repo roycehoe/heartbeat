@@ -20,11 +20,11 @@ function CareReceipientSelectionForm({
     useState<CareReceipientDetailOut | null>(null);
   const navigate = useNavigate();
 
-  const onSignInButtonClick = (userId: number) => {
-    loginUser({ user_id: userId }, {
+  const onSignInButtonClick = (careReceipientId: number) => {
+    loginUser({ care_receipient_id: careReceipientId }, {
       onSuccess: (response) => {
         localStorage.setItem("token", response.access_token);
-        navigate("/");
+        navigate(`/${careReceipientId}`);
         setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
       },
     });
@@ -61,7 +61,7 @@ function CareReceipientSelectionForm({
             ) : (
               careReceipients.map((careReceipient: CareReceipientDetailOut) => (
                 <Menu.Item
-                  key={careReceipient.user_id}
+                  key={careReceipient.care_receipient_id}
                   onClick={() => setSelectedCareReceipient(careReceipient)}
                 >
                   {careReceipient.alias}
@@ -77,7 +77,7 @@ function CareReceipientSelectionForm({
           width="100%"
           isDisabled={!!!selectedCareReceipient}
           isLoading={isLoggingIn}
-          onClick={() => onSignInButtonClick(selectedCareReceipient?.user_id)}
+          onClick={() => onSignInButtonClick(selectedCareReceipient?.care_receipient_id)}
         >
           <Text>Sign in</Text>
         </Button>

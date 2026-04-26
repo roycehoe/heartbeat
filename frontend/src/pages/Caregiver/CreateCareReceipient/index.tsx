@@ -69,7 +69,7 @@ function ModalCreateCareReceipient() {
           resetCreateCareReceipientForm();
           setHasCreatedUserSuccessfully(true);
           setErrorMessage("");
-          navigate(`/admin`);
+          navigate(`/dashboard`);
           toast({
             title: "User created",
             description: "Your user has been created successfully",
@@ -114,7 +114,7 @@ function ModalCreateCareReceipient() {
       >
         <Box display="flex" gap="8px" justifyContent="space-between">
           <IconButton
-            onClick={() => navigate(`/admin`)}
+            onClick={() => navigate(`/dashboard`)}
             isRound={true}
             variant="solid"
             aria-label="Done"
@@ -129,7 +129,7 @@ function ModalCreateCareReceipient() {
             Set up an account for your loved one to keep tabs on their mental
             well-being
           </Text>
-          <Link onClick={() => navigate(`/admin/about`)}>
+          <Link onClick={() => navigate(`/dashboard/about`)}>
             How does it work?
           </Link>
         </Box>

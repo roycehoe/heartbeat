@@ -40,25 +40,27 @@ def care_receipient_log_in(
 
 
 @router.get(
-    "/dashboard",
+    "/{care_receipient_id}/dashboard",
     status_code=status.HTTP_200_OK,
     response_model=CareReceipientDashboardOut,
 )
 def care_receipient_dashboard(
-    token: str = Header(None), db: Session = Depends(get_db)
+    care_receipient_id: int, db: Session = Depends(get_db)
 ):
-    return get_care_receipient_dashboard_response(token, db)
+    return get_care_receipient_dashboard_response(care_receipient_id, db)
 
 
 @router.post(
-    "/mood", status_code=status.HTTP_201_CREATED, response_model=CareReceipientMoodOut
+    "/{care_receipient_id}/mood",
+    status_code=status.HTTP_201_CREATED,
+    response_model=CareReceipientMoodOut,
 )
 def send_mood(
+    care_receipient_id: int,
     request: CareReceipientMoodRequest,
-    token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_create_care_receipient_mood_response(request, token, db)
+    return get_create_care_receipient_mood_response(request, care_receipient_id, db)
 
 
 @router.post(

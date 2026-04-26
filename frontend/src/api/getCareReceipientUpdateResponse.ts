@@ -3,11 +3,11 @@ import { httpClient } from "./httpClient";
 import { CareReceipientCreateRequest } from "./types";
 
 export async function getCareReceipientUpdateResponse(
-  userId: number,
+  careReceipientId: number,
   careReceipientCreateRequest: CareReceipientCreateRequest
 ): Promise<null> {
   const response = await httpClient.put(
-    `/user/${userId}`,
+    `/user/${careReceipientId}`,
     careReceipientCreateRequest
   );
   return response.data;
@@ -16,11 +16,11 @@ export async function getCareReceipientUpdateResponse(
 export function useGetCareReceipientUpdateResponse() {
   return useMutation({
     mutationFn: ({
-      userId,
+      careReceipientId,
       request,
     }: {
-      userId: number;
+      careReceipientId: number;
       request: CareReceipientCreateRequest;
-    }) => getCareReceipientUpdateResponse(userId, request),
+    }) => getCareReceipientUpdateResponse(careReceipientId, request),
   });
 }

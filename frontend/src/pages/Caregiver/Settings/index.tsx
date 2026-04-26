@@ -11,7 +11,7 @@ export function Settings() {
   const { signOut } = useClerk();
 
   const handleBackIconClick = () => {
-    navigate(`/admin`);
+    navigate(`/dashboard`);
   };
   const logoutUser = () => {
     localStorage.removeItem("token");

@@ -33,7 +33,7 @@ class CaregiverMoodRequest(BaseModel):
 
 
 class CaregiverMoodIn(CaregiverMoodRequest):
-    user_id: int
+    care_receipient_id: int
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Config:
@@ -50,7 +50,7 @@ class CaregiverDashboardMoodOut(BaseModel):
 
 
 class CaregiverDashboardOut(BaseModel):
-    user_id: int
+    care_receipient_id: int
     name: str
     alias: str
     age: int

@@ -23,7 +23,7 @@ export enum AppLanguage {
 
 export interface CareReceipientDetailMoodOut {
   mood: SelectedMood | undefined;
-  user_id: number;
+  care_receipient_id: number;
   created_at: string;
 }
 
@@ -32,7 +32,7 @@ export interface CareReceipientMoodRequest {
 }
 
 export interface CareReceipientDetailOut {
-  user_id: number;
+  care_receipient_id: number;
   name: string;
   alias: string;
   age: number;
@@ -56,7 +56,7 @@ export interface CareReceipientMoodOut extends CareReceipientDetailOut {
 }
 
 export interface CareReceipientLogInRequest {
-  user_id: number;
+  care_receipient_id: number;
 }
 
 export interface CareReceipientToken {

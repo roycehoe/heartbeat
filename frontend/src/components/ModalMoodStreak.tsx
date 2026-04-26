@@ -11,7 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import { AppLanguage } from "../api/types";
 
 interface decodedTokenData {
-  user_id: string;
+  care_receipient_id: string;
   app_language: AppLanguage;
   exp: number;
 }

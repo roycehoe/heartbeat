@@ -11,7 +11,7 @@ class CareReceipientMoodRequest(BaseModel):
 
 
 class CareReceipientMoodIn(CareReceipientMoodRequest):
-    user_id: int
+    care_receipient_id: int
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Config:
@@ -20,7 +20,7 @@ class CareReceipientMoodIn(CareReceipientMoodRequest):
 
 
 class CareReceipientMoodOut(BaseModel):
-    user_id: int
+    care_receipient_id: int
     moods: list[CareReceipientMoodIn]
     can_record_mood: bool
     consecutive_checkins: int
@@ -40,7 +40,7 @@ class CareReceipientDashboardMoodOut(BaseModel):
 
 
 class CareReceipientDashboardOut(BaseModel):
-    user_id: int
+    care_receipient_id: int
     name: str
     alias: str
     age: int
@@ -60,7 +60,7 @@ class CareReceipientDashboardOut(BaseModel):
 
 
 class CareReceipientLogInRequest(BaseModel):
-    user_id: int
+    care_receipient_id: int
 
 
 class CareReceipientToken(BaseModel):
@@ -73,7 +73,7 @@ class CaregiverMoodRequest(BaseModel):
 
 
 class CaregiverMoodIn(CaregiverMoodRequest):
-    user_id: int
+    care_receipient_id: int
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Config:
@@ -90,7 +90,7 @@ class CareReceipientDetailMoodOut(BaseModel):
 
 
 class CareReceipientDetailOut(BaseModel):
-    user_id: int
+    care_receipient_id: int
     name: str
     alias: str
     age: int

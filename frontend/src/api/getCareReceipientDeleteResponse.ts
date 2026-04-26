@@ -2,16 +2,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { httpClient } from "./httpClient";
 
 export async function getCareReceipientDeleteResponse(
-  userId: number
+  careReceipientId: number
 ): Promise<null> {
-  const response = await httpClient.delete(`/user/${userId}`);
+  const response = await httpClient.delete(`/user/${careReceipientId}`);
   return response.data;
 }
 
 export function useGetCareReceipientDeleteResponse() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (userId: number) => getCareReceipientDeleteResponse(userId),
+    mutationFn: (careReceipientId: number) =>
+      getCareReceipientDeleteResponse(careReceipientId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["getCaregiverDashboardResponse"],

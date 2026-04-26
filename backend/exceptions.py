@@ -40,3 +40,7 @@ class ClerkAuthenticationFailedException(Exception):
 
 class InvalidCredentialsToAccessCareReceipient(Exception):
     pass
+
+
+class CareReceipientNotFoundException(Exception):
+    pass
