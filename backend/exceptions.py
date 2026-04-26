@@ -44,3 +44,5 @@ class InvalidCredentialsToAccessCareReceipient(Exception):
 
 class CareReceipientNotFoundException(Exception):
     pass
+
+

@@ -1,7 +1,7 @@
-import { Box, Fade } from "@chakra-ui/react";
+import { Box, Fade, Heading, Text, VStack } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
 import { useGetCareReceipientClaimGiftResponse } from "../../api/getCareReceipientClaimGiftResponse";
 import { useGetCareReceipientDashboardResponse } from "../../api/getCareReceipientDashboardResponse";
@@ -10,9 +10,22 @@ import { SelectedMood } from "../../api/types";
 import Display from "./Display";
 import MoodBtns from "./MoodBtns";
 
+function getCareReceipientIdFromToken(): number | null {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  try {
+    const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(base64));
+    return typeof payload.care_receipient_id === "number"
+      ? payload.care_receipient_id
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 function HomePage() {
-  const { careReceipientId: rawId } = useParams();
-  const careReceipientId = parseInt(rawId ?? "0");
+  const careReceipientId = getCareReceipientIdFromToken() ?? 0;
 
   const [currentIndex, setCurrentIndex] = useState<number>(() => {
     const storedIndex = localStorage.getItem("currentIndex");
@@ -22,12 +35,7 @@ function HomePage() {
   const [moodMessage, setMoodMessage] = useState<string>("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isNaN(careReceipientId) || careReceipientId <= 0) {
-      navigate("/login");
-      return;
-    }
-  }, [careReceipientId]);
+  const isSessionValid = !isNaN(careReceipientId) && careReceipientId > 0;
 
   const {
     data: dashboardData,
@@ -58,12 +66,23 @@ function HomePage() {
     localStorage.setItem("currentIndex", nextIndex.toString());
   };
 
-  if (error) {
-    navigate("/login");
-    return;
-  }
-  if (isNaN(careReceipientId) || careReceipientId <= 0) {
-    return navigate("/login");
+  if (!isSessionValid || error) {
+    return (
+      <Box
+        width="100vw"
+        height="100vh"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <VStack spacing={3} textAlign="center" px={6}>
+          <Heading size="md">Your session has expired</Heading>
+          <Text color="gray.600" fontSize="sm">
+            Please ask your caregiver to send you a new login link.
+          </Text>
+        </VStack>
+      </Box>
+    );
   }
   if (isLoading || !dashboardData) {
     return (

@@ -223,6 +223,7 @@ const CareReceipientDetail = () => {
           <ShareLoginLinkCard
             loginLink={loginUrlData.url}
             alias={careReceipientData.alias}
+            careReceipientId={careReceipientData.care_receipient_id}
           />
         )}
         <Box display="flex" gap="4px">

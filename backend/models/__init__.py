@@ -7,3 +7,4 @@ from models.review import *  # noqa: F403
 from models.bookmark import *  # noqa: F403
 from models.care_receipient import *  # noqa: F403
 from models.mood import *  # noqa: F403
+from models.magic_link_token import *  # noqa: F403

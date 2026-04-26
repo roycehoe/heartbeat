@@ -3,33 +3,48 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from schemas.care_receipient import (
-    CareReceipientDetailOut,
     CareReceipientCreateRequest,
     CareReceipientDashboardOut,
+    CareReceipientDetailOut,
     CareReceipientLogInRequest,
     CareReceipientLoginUrlResponse,
     CareReceipientMoodOut,
     CareReceipientMoodRequest,
     CareReceipientToken,
     CareReceipientUpdateRequest,
+    MagicLinkVerifyRequest,
 )
 from services.care_receipient import (
     authenticate_care_receipient,
+    get_care_receipient_dashboard_response,
+    get_care_receipient_login_url_response,
+    get_care_receipient_response,
     get_create_care_receipient_mood_response,
     get_create_care_receipient_response,
     get_delete_care_receipient_response,
-    get_care_receipient_response,
-    get_care_receipient_login_url_response,
     get_suspend_care_receipient_response,
     get_unsuspend_care_receipient_response,
     get_update_care_receipient_response,
-    get_care_receipient_dashboard_response,
+    revoke_magic_link_token_response,
+    verify_magic_link_token_response,
 )
 
 router = APIRouter(
     prefix="/user",
     tags=["User"],
 )
+
+
+@router.post(
+    "/magic-link/verify",
+    status_code=status.HTTP_200_OK,
+    response_model=CareReceipientToken,
+)
+def verify_magic_link(
+    request: MagicLinkVerifyRequest,
+    db: Session = Depends(get_db),
+):
+    return verify_magic_link_token_response(request, db)
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=CareReceipientToken)
@@ -88,6 +103,19 @@ def get_care_receipient_login_url(
     db: Session = Depends(get_db),
 ):
     return get_care_receipient_login_url_response(care_receipient_id, token, db)
+
+
+@router.post(
+    "/{care_receipient_id}/login-url/revoke",
+    status_code=status.HTTP_200_OK,
+    response_model=CareReceipientLoginUrlResponse,
+)
+def revoke_care_receipient_login_url(
+    care_receipient_id: int,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    return revoke_magic_link_token_response(care_receipient_id, token, db)
 
 
 @router.get(

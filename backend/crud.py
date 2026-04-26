@@ -11,8 +11,9 @@ from exceptions import (
     NoRecordFoundException,
 )
 from models.caregiver import Caregiver
-from models.mood import Mood
 from models.care_receipient import CareReceipient
+from models.magic_link_token import MagicLinkToken
+from models.mood import Mood
 
 
 class CRUDCareReceipient:
@@ -254,3 +255,40 @@ class CRUDMood:
             return
         except Exception:
             raise DBGetAccountException
+
+
+class CRUDMagicLinkToken:
+    def __init__(self, session: Session):
+        self.session = session
+
+    def create(self, token: MagicLinkToken) -> MagicLinkToken:
+        try:
+            self.session.add(token)
+            self.session.commit()
+            self.session.refresh(token)
+        except Exception as e:
+            raise DBException(e)
+        return token
+
+    def get_by_token(self, token: str) -> MagicLinkToken:
+        try:
+            if record := self.session.query(MagicLinkToken).filter_by(token=token).first():
+                return record
+            raise NoRecordFoundException
+        except NoRecordFoundException:
+            raise NoRecordFoundException
+        except Exception as e:
+            raise DBException(e)
+
+    def get_by_care_receipient_id(self, care_receipient_id: int) -> MagicLinkToken | None:
+        try:
+            return self.session.query(MagicLinkToken).filter_by(care_receipient_id=care_receipient_id).first()
+        except Exception as e:
+            raise DBException(e)
+
+    def delete_by_care_receipient_id(self, care_receipient_id: int) -> None:
+        try:
+            self.session.query(MagicLinkToken).filter_by(care_receipient_id=care_receipient_id).delete()
+            self.session.commit()
+        except Exception as e:
+            raise DBException(e)
