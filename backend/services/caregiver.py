@@ -12,7 +12,6 @@ from utils.token import (
 from exceptions import (
     ClerkAuthenticationFailedException,
     DBDuplicateAccountException,
-    DBException,
     NoRecordFoundException,
 )
 from models.caregiver import Caregiver
@@ -39,11 +38,6 @@ def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) 
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Account with username already exists",
         )
-    except DBException as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
-        )
 
 
 def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
@@ -51,6 +45,8 @@ def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
         caregiver_clerk_id = get_clerk_id_from_verified_clerk_token(token)
 
         caregiver = CRUDCaregiver(db).get_by({"clerk_id": caregiver_clerk_id})
+        if not caregiver:
+            raise NoRecordFoundException
         access_token = create_access_token(
             {
                 "caregiver_id": caregiver.id,
@@ -68,23 +64,16 @@ def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication with Clerk failed",
         )
-    except DBException as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
-        )
 
 
 def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
-    try:
-        return CRUDCareReceipient(db).get(care_receipient_id).can_record_mood
-    except NoRecordFoundException:
+    care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
+    if not care_receipient:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No care receipient record found",
         )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+    return care_receipient.can_record_mood
 
 
 def get_care_receipient_dashboard_response(
@@ -93,6 +82,11 @@ def get_care_receipient_dashboard_response(
     care_receipient_id: int = get_token_data(token, "care_receipient_id")
     mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
     care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
+    if not care_receipient:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No care receipient record found",
+        )
 
     return CaregiverDashboardData(
         care_receipient_id=care_receipient_id,
@@ -117,43 +111,39 @@ def get_care_receipient_dashboard_response(
 def get_caregiver_dashboard_response(
     token: str, db: Session, sort: str, sort_direction: int
 ) -> list[CaregiverDashboardData]:
-    try:
-        response: list[CaregiverDashboardData] = []
+    response: list[CaregiverDashboardData] = []
 
-        caregiver_id = get_token_data(token, "caregiver_id")
-        care_receipient_models = CRUDCareReceipient(db).get_by_all(
-            {"user_id": caregiver_id}, sort, sort_direction
+    caregiver_id = get_token_data(token, "caregiver_id")
+    care_receipient_models = CRUDCareReceipient(db).get_by_all(
+        {"user_id": caregiver_id}, sort, sort_direction
+    )
+    if not care_receipient_models:
+        return []
+
+    for care_receipient in care_receipient_models:
+        mood_models = CRUDMood(db).get_by(
+            {"care_receipient_id": care_receipient.id}
         )
-        if not care_receipient_models:
-            return []
 
-        for care_receipient in care_receipient_models:
-            mood_models = CRUDMood(db).get_by(
-                {"care_receipient_id": care_receipient.id}
+        dashboard_moods_out = get_admin_dashboard_moods_out(
+            mood_models, care_receipient.created_at, datetime.today()
+        )
+
+        response.append(
+            CaregiverDashboardData(
+                care_receipient_id=care_receipient.id,
+                contact_number=int(care_receipient.contact_number),
+                name=care_receipient.name,
+                alias=care_receipient.alias,
+                age=care_receipient.age,
+                race=care_receipient.race,
+                gender=care_receipient.gender,
+                postal_code=care_receipient.postal_code,
+                floor=care_receipient.floor,
+                moods=dashboard_moods_out,
+                consecutive_checkins=care_receipient.consecutive_checkins,
+                consecutive_non_checkins=care_receipient.consecutive_non_checkins,
+                can_record_mood=_can_record_mood(care_receipient.id, db),
             )
-
-            dashboard_moods_out = get_admin_dashboard_moods_out(
-                mood_models, care_receipient.created_at, datetime.today()
-            )
-
-            response.append(
-                CaregiverDashboardData(
-                    care_receipient_id=care_receipient.id,
-                    contact_number=int(care_receipient.contact_number),
-                    name=care_receipient.name,
-                    alias=care_receipient.alias,
-                    age=care_receipient.age,
-                    race=care_receipient.race,
-                    gender=care_receipient.gender,
-                    postal_code=care_receipient.postal_code,
-                    floor=care_receipient.floor,
-                    moods=dashboard_moods_out,
-                    consecutive_checkins=care_receipient.consecutive_checkins,
-                    consecutive_non_checkins=care_receipient.consecutive_non_checkins,
-                    can_record_mood=_can_record_mood(care_receipient.id, db),
-                )
-            )
-        return response
-
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+        )
+    return response

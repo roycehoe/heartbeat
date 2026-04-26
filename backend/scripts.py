@@ -37,35 +37,35 @@ def _get_non_compliant_care_receipients(db: Session) -> list[CareReceipient]:
 
 
 def _reset_all_care_receipient_can_record_mood_state(db: Session) -> None:
-    for care_receipient in CRUDCareReceipient(db).get_by_all({}):
-        CRUDCareReceipient(db).update(care_receipient.id, "can_record_mood", True)
+    crud = CRUDCareReceipient(db)
+    for care_receipient in crud.get_by_all({}):
+        crud.reset_can_record_mood(care_receipient)
 
 
 def _reset_non_compliant_care_receipients_consecutive_checkins(
     db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
+    crud = CRUDCareReceipient(db)
     for care_receipient in non_compliant_care_receipients:
-        CRUDCareReceipient(db).update(care_receipient.id, "consecutive_checkins", 0)
+        crud.reset_consecutive_checkins(care_receipient)
 
 
 def _update_non_compliant_care_receipients_non_consecutive_checkins(
     db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
+    crud = CRUDCareReceipient(db)
     for care_receipient in non_compliant_care_receipients:
-        CRUDCareReceipient(db).update(
-            care_receipient.id,
-            "consecutive_non_checkins",
-            care_receipient.consecutive_non_checkins + 1,
-        )
+        crud.increment_consecutive_non_checkins(care_receipient)
 
 
 def _suspend_errant_care_receipients(
     db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
+    crud = CRUDCareReceipient(db)
     for care_receipient in non_compliant_care_receipients:
         if not _is_errant_care_receipient(care_receipient):
             continue
-        CRUDCareReceipient(db).update(care_receipient.id, "is_suspended", True)
+        crud.suspend(care_receipient)
 
 
 def _notify_caregivers_of_errant_care_receipient_suspension(
