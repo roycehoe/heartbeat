@@ -2,16 +2,13 @@ import { Spinner } from "@chakra-ui/react";
 import { SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useGetCaregiverLoginResponse } from "../../api/getCaregiverLoginResponse";
-import { LogInFormState } from "./Index";
 
-function CaregiverLogInForm({
-  setLogInFormState,
-}: {
-  setLogInFormState: (logInFormState: LogInFormState) => void;
-}) {
+function CaregiverLogInForm() {
   const { mutate, isPending } = useGetCaregiverLoginResponse();
   const { getToken, isSignedIn, userId: clerkUserId } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isSignedIn || isPending) return;
@@ -23,7 +20,7 @@ function CaregiverLogInForm({
       mutate(undefined, {
         onSuccess: (loginData) => {
           localStorage.setItem("token", loginData.access_token);
-          setLogInFormState(LogInFormState.CaregiverOrCareReceipientSelection);
+          navigate("/dashboard");
         },
         onError: () => {
           window.open(
@@ -43,13 +40,11 @@ function CaregiverLogInForm({
   }
 
   return (
-    <>
-      <SignedOut>
-        <SignInButton>
-          <Button>Start here</Button>
-        </SignInButton>
-      </SignedOut>
-    </>
+    <SignedOut>
+      <SignInButton>
+        <Button>Start here</Button>
+      </SignInButton>
+    </SignedOut>
   );
 }
 

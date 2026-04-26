@@ -1,62 +1,13 @@
 import { Box, Flex, Heading, Image, Spinner, Text } from "@chakra-ui/react";
 import { ClerkLoaded, ClerkLoading } from "@clerk/clerk-react";
-import { useState } from "react";
-import CaregiverCreationSuccess from "./CaregiverCreationSuccess";
 import CaregiverLogInForm from "./CaregiverLoginForm";
-import CaregiverOrCareReceipientSelection from "./CaregiverOrCareReceipientSelection";
-import CareReceipientSelectionForm from "./CareReceipientSelectionForm";
-
-export enum LogInFormState {
-  CaregiverAuthenticate,
-  CaregiverCreationSuccess,
-  CaregiverOrCareReceipientSelection,
-  CareReceipientSelection,
-}
-
-const RenderForm = (props: {
-  logInFormState: LogInFormState;
-  setLogInFormState: React.Dispatch<React.SetStateAction<LogInFormState>>;
-}) => {
-  switch (props.logInFormState) {
-    case LogInFormState.CaregiverAuthenticate:
-      return <CaregiverLogInForm setLogInFormState={props.setLogInFormState} />;
-
-    case LogInFormState.CaregiverOrCareReceipientSelection:
-      return (
-        <CaregiverOrCareReceipientSelection
-          setLogInFormState={props.setLogInFormState}
-        ></CaregiverOrCareReceipientSelection>
-      );
-
-    case LogInFormState.CareReceipientSelection:
-      return (
-        <CareReceipientSelectionForm
-          setLogInFormState={props.setLogInFormState}
-        ></CareReceipientSelectionForm>
-      );
-
-    case LogInFormState.CaregiverCreationSuccess:
-      return (
-        <CaregiverCreationSuccess
-          setLogInFormState={props.setLogInFormState}
-        ></CaregiverCreationSuccess>
-      );
-
-    default:
-      return null;
-  }
-};
 
 function LogIn() {
-  const [logInFormState, setLogInFormState] = useState(
-    LogInFormState.CaregiverAuthenticate,
-  );
-
   return (
     <>
       <ClerkLoading>
         <Flex justifyContent="center" alignItems="center" height="100%">
-          <Spinner></Spinner>
+          <Spinner />
         </Flex>
       </ClerkLoading>
       <ClerkLoaded>
@@ -78,7 +29,7 @@ function LogIn() {
                 <Image
                   src="/assets/logo-circle-heartbeat.png"
                   boxSize="32px"
-                ></Image>
+                />
               </Box>
               <Box>
                 <Heading fontSize="2xl">HeartBeat</Heading>
@@ -87,10 +38,7 @@ function LogIn() {
                 </Text>
               </Box>
             </Box>
-            <RenderForm
-              logInFormState={logInFormState}
-              setLogInFormState={setLogInFormState}
-            ></RenderForm>
+            <CaregiverLogInForm />
           </Box>
         </Flex>
       </ClerkLoaded>
