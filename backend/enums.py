@@ -22,3 +22,5 @@ class Gender(str, Enum):
 class AppLanguage(str, Enum):
     ENGLISH = "English"
     CHINESE = "Chinese"
+    MALAY = "Malay"
+    TAMIL = "Tamil"

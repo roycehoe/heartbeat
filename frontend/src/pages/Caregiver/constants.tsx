@@ -60,7 +60,7 @@ export const UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
     formLabel: "Application Language",
     isRequired: true,
     type: "select",
-    options: [AppLanguage.ENGLISH, AppLanguage.CHINESE],
+    options: [AppLanguage.ENGLISH, AppLanguage.CHINESE, AppLanguage.MALAY, AppLanguage.TAMIL],
     placeholder: AppLanguage.ENGLISH,
   },
   postalCode: {
@@ -143,7 +143,7 @@ export const VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
     formLabel: "Application Language",
     isRequired: true,
     type: "select",
-    options: [AppLanguage.ENGLISH, AppLanguage.CHINESE],
+    options: [AppLanguage.ENGLISH, AppLanguage.CHINESE, AppLanguage.MALAY, AppLanguage.TAMIL],
     placeholder: AppLanguage.ENGLISH,
   },
   postalCode: {

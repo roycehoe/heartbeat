@@ -152,6 +152,7 @@ function HomePage() {
                 moment(mood.created_at)
               )}
               streak={dashboardData.data.consecutive_checkins}
+              appLanguage={dashboardData.data.app_language}
               onClick={onMoodButtonClick}
               moodMessage={moodMessage}
             />

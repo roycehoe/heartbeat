@@ -1,7 +1,7 @@
 import { Box, SlideFade, useDisclosure } from "@chakra-ui/react";
 import moment, { Moment } from "moment";
 import { useState } from "react";
-import { SelectedMood } from "../../../api/types";
+import { AppLanguage, SelectedMood } from "../../../api/types";
 import ModalMoodStreak from "../../../components/ModalMoodStreak";
 import MoodBtn from "../../../components/MoodBtn";
 import MoodMessage from "../../../components/MoodMessage";
@@ -87,6 +87,7 @@ function MoodBtns(props: {
   moodsCreatedAt: Moment[];
   moodMessage: string;
   streak: number;
+  appLanguage: AppLanguage;
   onClick: (mood: SelectedMood) => Promise<void>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -170,6 +171,7 @@ function MoodBtns(props: {
         )}
         tickData={getCheckedDaysBoolean(getDaysOfWeek(), props.moodsCreatedAt)}
         streak={props.streak}
+        appLanguage={props.appLanguage}
       ></ModalMoodStreak>
     </Box>
   );
