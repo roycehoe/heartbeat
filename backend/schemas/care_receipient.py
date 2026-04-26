@@ -140,3 +140,7 @@ class CareReceipientIn(CareReceipientCreateRequest):
     class Config:
         use_enum_values = True
         from_attributes = True
+
+
+class CareReceipientLoginUrlResponse(BaseModel):
+    url: str
