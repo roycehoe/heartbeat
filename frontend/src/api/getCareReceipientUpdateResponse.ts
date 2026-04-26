@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
-import { CareReceipientCreateRequest } from "./types";
+import { httpClient } from "@/api/httpClient";
+import { CareReceipientCreateRequest } from "@/api/types";
 
 export async function getCareReceipientUpdateResponse(
   careReceipientId: number,

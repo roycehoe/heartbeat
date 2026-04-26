@@ -10,11 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useNavigate } from "react-router-dom";
-import { useGetCaregiverDashboardResponse } from "../../api/getCaregiverDashboardResponse";
-import { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "../../api/types";
+import { useGetCaregiverDashboardResponse } from "@/api/getCaregiverDashboardResponse";
+import { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
 
 import { useEffect } from "react";
-import { TableMoodSnapshot } from "../../components/TableMoodSnapshot";
+import { TableMoodSnapshot } from "@/components/TableMoodSnapshot";
 
 enum ColorTag {
   BAD = "#FF3B30",

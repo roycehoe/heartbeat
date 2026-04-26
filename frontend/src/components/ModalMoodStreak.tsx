@@ -7,7 +7,7 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import { AppLanguage } from "../api/types";
+import { AppLanguage } from "@/api/types";
 
 const STREAK_LABEL: Record<AppLanguage, { pre: string; post: string }> = {
   [AppLanguage.ENGLISH]: { pre: "", post: " day streak!" },

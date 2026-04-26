@@ -10,8 +10,8 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "../api/types";
-import { IconMood } from "./IconMood";
+import { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
+import { IconMood } from "@/components/IconMood";
 
 const TableMoodSnapshotRow = (props: {
   colorTag: string;

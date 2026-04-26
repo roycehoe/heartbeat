@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { SelectedMood } from "../api/types";
+import { SelectedMood } from "@/api/types";
 
 export const IconMood = (props: {
   mood: SelectedMood | undefined;

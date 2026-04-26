@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
-import { CareReceipientToken, MagicLinkVerifyRequest } from "./types";
+import { httpClient } from "@/api/httpClient";
+import { CareReceipientToken, MagicLinkVerifyRequest } from "@/api/types";
 
 export async function postMagicLinkVerify(
   request: MagicLinkVerifyRequest

@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import { CareReceipientDetailOut } from "../../../api/types";
-import Brand from "../../../components/Brand";
-import Tree from "../../../components/Tree";
+import { CareReceipientDetailOut } from "@/api/types";
+import Brand from "@/components/Brand";
+import Tree from "@/components/Tree";
 
 function Display(props: {
   dashboardData: CareReceipientDetailOut;

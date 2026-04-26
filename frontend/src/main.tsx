@@ -3,7 +3,7 @@ import "@fontsource/ibm-plex-mono"; // Optional import for code font
 import "inter-ui/inter.css"; // Import the font
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import App from "@/App";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 

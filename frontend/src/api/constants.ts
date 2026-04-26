@@ -1,4 +1,4 @@
-import { AdminLoginRequest } from "./user";
+import { AdminLoginRequest } from "@/api/user";
 
 export const DEFAULT_USER_CREDENTIALS: AdminLoginRequest[] = [
   { username: "user1@heartbeatmail.com", password: "user1@heartbeatmail.com" },

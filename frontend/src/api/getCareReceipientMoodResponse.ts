@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
-import { CareReceipientMoodOut, CareReceipientMoodRequest } from "./types";
+import { httpClient } from "@/api/httpClient";
+import { CareReceipientMoodOut, CareReceipientMoodRequest } from "@/api/types";
 
 export async function getCareReceipientMoodResponse(
   moodRequest: CareReceipientMoodRequest,

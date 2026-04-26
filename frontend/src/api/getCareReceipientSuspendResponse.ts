@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
+import { httpClient } from "@/api/httpClient";
 
 export async function getCareReceipientSuspendResponse(
   careReceipientId: number

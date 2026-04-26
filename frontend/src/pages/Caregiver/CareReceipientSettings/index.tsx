@@ -13,12 +13,12 @@ import { Banner } from "@opengovsg/design-system-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetCareReceipientDetailResponse } from "../../../api/getCareReceipientDetailResponse";
-import { useGetCareReceipientDeleteResponse } from "../../../api/getCareReceipientDeleteResponse";
-import { useGetCareReceipientSuspendResponse } from "../../../api/getCareReceipientSuspendResponse";
-import { useGetCareReceipientUnsuspendResponse } from "../../../api/getCareReceipientUnsuspendResponse";
-import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import ModalDeleteCareReceipient from "../../../components/ModalDeleteCareReceipient";
+import { useGetCareReceipientDetailResponse } from "@/api/getCareReceipientDetailResponse";
+import { useGetCareReceipientDeleteResponse } from "@/api/getCareReceipientDeleteResponse";
+import { useGetCareReceipientSuspendResponse } from "@/api/getCareReceipientSuspendResponse";
+import { useGetCareReceipientUnsuspendResponse } from "@/api/getCareReceipientUnsuspendResponse";
+import { IconArrowLeft } from "@/components/IconArrowLeft";
+import ModalDeleteCareReceipient from "@/components/ModalDeleteCareReceipient";
 
 const CareReceipientSettings = () => {
   const { careReceipientId } = useParams();

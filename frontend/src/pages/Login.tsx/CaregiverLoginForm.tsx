@@ -3,7 +3,7 @@ import { SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetCaregiverLoginResponse } from "../../api/getCaregiverLoginResponse";
+import { useGetCaregiverLoginResponse } from "@/api/getCaregiverLoginResponse";
 
 function CaregiverLogInForm() {
   const { mutate, isPending } = useGetCaregiverLoginResponse();

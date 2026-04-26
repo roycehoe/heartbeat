@@ -1,9 +1,9 @@
 import { Box } from "@chakra-ui/react";
-import { CreateUpdateCareReceipientFormFieldProps } from "../pages/Caregiver/constants";
-import { CreateCareReceipientForm } from "../pages/Caregiver/CreateCareReceipient";
-import { UpdateCareReceipientForm } from "../pages/Caregiver/UpdateCareReceipient";
-import FormInputCareReceipient from "./FormInputCareReceipient";
-import FormSelectCareReceipient from "./FormSelectCareReceipient";
+import { CreateUpdateCareReceipientFormFieldProps } from "@/pages/Caregiver/constants";
+import { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
+import { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
+import FormInputCareReceipient from "@/components/FormInputCareReceipient";
+import FormSelectCareReceipient from "@/components/FormSelectCareReceipient";
 
 export function FormFieldsViewCareReceipient(props: {
   createUpdateCareReceipientFormFields: Record<

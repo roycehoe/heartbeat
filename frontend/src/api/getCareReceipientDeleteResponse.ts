@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
+import { httpClient } from "@/api/httpClient";
 
 export async function getCareReceipientDeleteResponse(
   careReceipientId: number

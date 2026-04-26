@@ -1,7 +1,7 @@
 import { Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { usePostMagicLinkVerify } from "../../api/postMagicLinkVerify";
+import { usePostMagicLinkVerify } from "@/api/postMagicLinkVerify";
 
 const MagicLinkVerify = () => {
   const { token } = useParams<{ token: string }>();

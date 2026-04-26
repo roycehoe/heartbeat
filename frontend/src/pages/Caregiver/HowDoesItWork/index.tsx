@@ -1,6 +1,6 @@
 import { Box, Heading, IconButton, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { IconArrowLeft } from "../../../components/IconArrowLeft";
+import { IconArrowLeft } from "@/components/IconArrowLeft";
 
 export function HowDoesItWork() {
   const navigate = useNavigate();

@@ -8,15 +8,15 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Caregiver from "./pages/Caregiver";
-import ModalCreateCareReceipient from "./pages/Caregiver/CreateCareReceipient";
-import { HowDoesItWork } from "./pages/Caregiver/HowDoesItWork";
-import { Settings } from "./pages/Caregiver/Settings";
-import CareReceipientDetail from "./pages/Caregiver/CareReceipientDetail";
-import CareReceipientSettings from "./pages/Caregiver/CareReceipientSettings";
-import HomePage from "./pages/HomePage";
-import LogIn from "./pages/Login.tsx/Index";
-import MagicLinkVerify from "./pages/MagicLinkVerify";
+import Caregiver from "@/pages/Caregiver";
+import ModalCreateCareReceipient from "@/pages/Caregiver/CreateCareReceipient";
+import { HowDoesItWork } from "@/pages/Caregiver/HowDoesItWork";
+import { Settings } from "@/pages/Caregiver/Settings";
+import CareReceipientDetail from "@/pages/Caregiver/CareReceipientDetail";
+import CareReceipientSettings from "@/pages/Caregiver/CareReceipientSettings";
+import HomePage from "@/pages/HomePage";
+import LogIn from "@/pages/Login.tsx/Index";
+import MagicLinkVerify from "@/pages/MagicLinkVerify";
 const queryClient = new QueryClient();
 
 const App = () => {

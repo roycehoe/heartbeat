@@ -1,6 +1,6 @@
-import { AppLanguage, Gender, Race } from "../../api/types";
-import { CreateCareReceipientForm } from "./CreateCareReceipient";
-import { UpdateCareReceipientForm } from "./UpdateCareReceipient";
+import { AppLanguage, Gender, Race } from "@/api/types";
+import { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
+import { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
 
 export interface CreateUpdateCareReceipientFormFieldProps {
   formLabel: string;

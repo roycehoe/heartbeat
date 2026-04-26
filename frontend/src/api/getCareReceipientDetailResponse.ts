@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
-import { CareReceipientDetailOut } from "./types";
+import { httpClient } from "@/api/httpClient";
+import { CareReceipientDetailOut } from "@/api/types";
 
 export async function getCareReceipientDetailResponse(
   careReceipientId: number
