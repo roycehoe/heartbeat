@@ -526,3 +526,25 @@ def get_care_receipient_response(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No record of care receipient found",
         )
+
+
+def get_care_receipient_login_url_response(
+    care_receipient_id: int, token: str, db: Session
+) -> CareReceipientLoginUrlResponse:
+    try:
+        caregiver_id = get_token_data(token, "caregiver_id")
+        care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
+            {"user_id": caregiver_id}
+        )
+        if care_receipient_id not in [care_receipient.id for care_receipient in care_receipients_under_caregiver]:
+            raise CareReceipientNotUnderCurrentCaregiverException
+        return CareReceipientLoginUrlResponse(
+            url=f"https://heartbeat.carecompass.sg/{care_receipient_id}"
+        )
+    except CareReceipientNotUnderCurrentCaregiverException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot get login URL for care receipient that is not under current caregiver",
+        )
+    except DBException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)

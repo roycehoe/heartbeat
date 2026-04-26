@@ -7,6 +7,7 @@ from schemas.care_receipient import (
     CareReceipientCreateRequest,
     CareReceipientDashboardOut,
     CareReceipientLogInRequest,
+    CareReceipientLoginUrlResponse,
     CareReceipientMoodOut,
     CareReceipientMoodRequest,
     CareReceipientToken,
@@ -18,6 +19,7 @@ from services.care_receipient import (
     get_create_care_receipient_response,
     get_delete_care_receipient_response,
     get_care_receipient_response,
+    get_care_receipient_login_url_response,
     get_suspend_care_receipient_response,
     get_unsuspend_care_receipient_response,
     get_update_care_receipient_response,
@@ -73,6 +75,19 @@ def create_care_receipient(
     db: Session = Depends(get_db),
 ):
     return get_create_care_receipient_response(request, token, db)
+
+
+@router.get(
+    "/{care_receipient_id}/login-url",
+    status_code=status.HTTP_200_OK,
+    response_model=CareReceipientLoginUrlResponse,
+)
+def get_care_receipient_login_url(
+    care_receipient_id: int,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    return get_care_receipient_login_url_response(care_receipient_id, token, db)
 
 
 @router.get(
