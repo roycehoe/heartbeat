@@ -16,15 +16,15 @@ import {
 import { Banner } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetCareReceipientDetailResponse } from "../../../api/getCareReceipientDetailResponse";
-import { useGetCareReceipientLoginUrlResponse } from "../../../api/getCareReceipientLoginUrlResponse";
-import { CareReceipientDetailMoodOut, SelectedMood } from "../../../api/types";
-import { FormFieldsViewCareReceipient } from "../../../components/FormFieldsViewCareReceipient";
-import ShareLoginLinkCard from "../../../components/ShareLoginLinkCard";
-import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import { IconMood } from "../../../components/IconMood";
-import { VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "../constants";
-import ModalUpdateCareReceipient from "../UpdateCareReceipient";
+import { useGetCareReceipientDetailResponse } from "@/api/getCareReceipientDetailResponse";
+import { useGetCareReceipientLoginUrlResponse } from "@/api/getCareReceipientLoginUrlResponse";
+import { CareReceipientDetailMoodOut, SelectedMood } from "@/api/types";
+import { FormFieldsViewCareReceipient } from "@/components/FormFieldsViewCareReceipient";
+import ShareLoginLinkCard from "@/components/ShareLoginLinkCard";
+import { IconArrowLeft } from "@/components/IconArrowLeft";
+import { IconMood } from "@/components/IconMood";
+import { VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "@/pages/Caregiver/constants";
+import ModalUpdateCareReceipient from "@/pages/Caregiver/UpdateCareReceipient";
 
 const getDayAbbreviation = (date: Date) => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

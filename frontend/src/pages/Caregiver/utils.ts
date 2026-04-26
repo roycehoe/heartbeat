@@ -1,6 +1,6 @@
-import { CareReceipientDetailOut, SelectedMood } from "../../api/types";
-import { CreateCareReceipientForm } from "./CreateCareReceipient";
-import { UpdateCareReceipientForm } from "./UpdateCareReceipient";
+import { CareReceipientDetailOut, SelectedMood } from "@/api/types";
+import { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
+import { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
 
 export function getSubmitUpdateCareReceipientFormErrorMessage(
   userForm: UpdateCareReceipientForm

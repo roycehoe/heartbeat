@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
-import { CareReceipientDetailOut } from "./types";
+import { httpClient } from "@/api/httpClient";
+import { CareReceipientDetailOut } from "@/api/types";
 
 export async function getCareReceipientClaimGiftResponse(): Promise<CareReceipientDetailOut> {
   const response = await httpClient.get("/user/claim_gift");

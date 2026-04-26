@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { httpClerkClient } from "./httpClient";
-import { CaregiverToken } from "./types";
+import { httpClerkClient } from "@/api/httpClient";
+import { CaregiverToken } from "@/api/types";
 
 export async function getCaregiverLoginResponse(): Promise<CaregiverToken> {
   const response = await httpClerkClient.post("/admin/login");

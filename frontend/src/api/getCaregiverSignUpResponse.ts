@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import { httpClient } from "./httpClient";
-import { CaregiverCreateRequest } from "./types";
+import { httpClient } from "@/api/httpClient";
+import { CaregiverCreateRequest } from "@/api/types";
 
 export async function getCaregiverSignUpResponse(
   caregiverCreateRequest: CaregiverCreateRequest

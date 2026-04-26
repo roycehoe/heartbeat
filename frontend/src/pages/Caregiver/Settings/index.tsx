@@ -3,8 +3,8 @@ import { useClerk } from "@clerk/clerk-react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import ModalLogOut from "../../../components/ModalLogout";
+import { IconArrowLeft } from "@/components/IconArrowLeft";
+import ModalLogOut from "@/components/ModalLogout";
 
 export function Settings() {
   const navigate = useNavigate();

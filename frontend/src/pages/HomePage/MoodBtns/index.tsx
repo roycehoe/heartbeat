@@ -1,10 +1,10 @@
 import { Box, SlideFade, useDisclosure } from "@chakra-ui/react";
 import moment, { Moment } from "moment";
 import { useState } from "react";
-import { AppLanguage, SelectedMood } from "../../../api/types";
-import ModalMoodStreak from "../../../components/ModalMoodStreak";
-import MoodBtn from "../../../components/MoodBtn";
-import MoodMessage from "../../../components/MoodMessage";
+import { AppLanguage, SelectedMood } from "@/api/types";
+import ModalMoodStreak from "@/components/ModalMoodStreak";
+import MoodBtn from "@/components/MoodBtn";
+import MoodMessage from "@/components/MoodMessage";
 
 const MOOD_BTN_PROPS = [
   {

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { httpClient } from "./httpClient";
-import { CareReceipientLogInRequest, CareReceipientToken } from "./types";
+import { httpClient } from "@/api/httpClient";
+import { CareReceipientLogInRequest, CareReceipientToken } from "@/api/types";
 
 export async function getCareReceipientLoginResponse(
   loginRequest: CareReceipientLogInRequest

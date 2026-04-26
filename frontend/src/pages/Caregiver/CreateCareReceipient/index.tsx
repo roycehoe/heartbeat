@@ -11,15 +11,15 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
-import { useGetCareReceipientCreateResponse } from "../../../api/getCareReceipientCreateResponse";
-import { AppLanguage, CareReceipientCreateRequest, Gender, Race } from "../../../api/types";
-import FormFieldsCareReceipientCreateUpdate from "../../../components/FormFieldsCareReceipientCreateUpdate";
+import { useGetCareReceipientCreateResponse } from "@/api/getCareReceipientCreateResponse";
+import { AppLanguage, CareReceipientCreateRequest, Gender, Race } from "@/api/types";
+import FormFieldsCareReceipientCreateUpdate from "@/components/FormFieldsCareReceipientCreateUpdate";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { IconArrowLeft } from "../../../components/IconArrowLeft";
-import { CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "../constants";
-import { getSubmitCreateCareReceipientFormErrorMessage } from "../utils";
+import { IconArrowLeft } from "@/components/IconArrowLeft";
+import { CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "@/pages/Caregiver/constants";
+import { getSubmitCreateCareReceipientFormErrorMessage } from "@/pages/Caregiver/utils";
 
 export interface CreateCareReceipientForm extends CareReceipientCreateRequest {
   hasAgreedToTermsAndConditions: boolean;

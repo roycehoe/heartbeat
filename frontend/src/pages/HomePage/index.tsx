@@ -2,13 +2,13 @@ import { Box, Divider, Fade, Heading, Text, VStack } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_USER_CREDENTIALS } from "../../api/constants";
-import { useGetCareReceipientClaimGiftResponse } from "../../api/getCareReceipientClaimGiftResponse";
-import { useGetCareReceipientDashboardResponse } from "../../api/getCareReceipientDashboardResponse";
-import { useGetCareReceipientMoodResponse } from "../../api/getCareReceipientMoodResponse";
-import { SelectedMood } from "../../api/types";
-import Display from "./Display";
-import MoodBtns from "./MoodBtns";
+import { DEFAULT_USER_CREDENTIALS } from "@/api/constants";
+import { useGetCareReceipientClaimGiftResponse } from "@/api/getCareReceipientClaimGiftResponse";
+import { useGetCareReceipientDashboardResponse } from "@/api/getCareReceipientDashboardResponse";
+import { useGetCareReceipientMoodResponse } from "@/api/getCareReceipientMoodResponse";
+import { SelectedMood } from "@/api/types";
+import Display from "@/pages/HomePage/Display";
+import MoodBtns from "@/pages/HomePage/MoodBtns";
 
 function getCareReceipientIdFromToken(): number | null {
   const token = localStorage.getItem("token");

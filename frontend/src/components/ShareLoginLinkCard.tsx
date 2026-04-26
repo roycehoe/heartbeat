@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { usePostRevokeMagicLink } from "../api/postRevokeMagicLink";
+import { usePostRevokeMagicLink } from "@/api/postRevokeMagicLink";
 
 interface ShareLoginLinkCardProps {
   loginLink: string;
