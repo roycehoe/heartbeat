@@ -89,3 +89,7 @@ export interface CaregiverCreateRequest {
 }
 
 export interface CareReceipientUpdateRequest extends CareReceipientCreateRequest {}
+
+export interface CareReceipientLoginUrlResponse {
+  url: string;
+}

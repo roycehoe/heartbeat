@@ -26,6 +26,7 @@ from schemas.care_receipient import (
     CareReceipientDashboardOut,
     CareReceipientIn,
     CareReceipientLogInRequest,
+    CareReceipientLoginUrlResponse,
     CareReceipientMoodIn,
     CareReceipientMoodOut,
     CareReceipientMoodRequest,

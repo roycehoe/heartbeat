@@ -5,7 +5,6 @@ from database import get_db
 from schemas.caregiver import (
     CaregiverCreateRequest,
     CaregiverDashboardOut,
-    CaregiverLogInRequest,
     CaregiverToken,
 )
 from services.caregiver import (

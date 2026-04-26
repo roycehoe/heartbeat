@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Annotated, Optional
+from typing import Optional
 
-from pydantic import BaseModel, Field, StringConstraints
+from pydantic import BaseModel, Field
 
 from enums import Gender, Race, SelectedMood
 
