@@ -11,7 +11,6 @@ from exceptions import (
     CareReceipientNotFoundException,
     CareReceipientNotUnderCurrentCaregiverException,
     DBDuplicateAccountException,
-    DBException,
     DifferentPasswordAndConfirmPasswordException,
     InvalidCredentialsToAccessCareReceipient,
     NoRecordFoundException,
@@ -178,6 +177,8 @@ def authenticate_care_receipient(
 ) -> CareReceipientToken:
     try:
         care_receipient = CRUDCareReceipient(db).get(request.care_receipient_id)
+        if not care_receipient:
+            raise InvalidCredentialsToAccessCareReceipient
         token_caregiver_id = int(get_token_data(token, "caregiver_id"))
 
         if care_receipient.user_id != token_caregiver_id:
@@ -191,20 +192,13 @@ def authenticate_care_receipient(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials to access care receipient",
         )
-    except DBException as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
-        )
 
 
 def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
-    try:
-        return CRUDCareReceipient(db).get(care_receipient_id).can_record_mood
-    except NoRecordFoundException:
+    care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
+    if not care_receipient:
         raise CareReceipientNotFoundException
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+    return care_receipient.can_record_mood
 
 
 def get_care_receipient_dashboard_response(
@@ -213,6 +207,8 @@ def get_care_receipient_dashboard_response(
     try:
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
+        if not care_receipient:
+            raise NoRecordFoundException
 
         return GetCareReceipientDashboardResponse(
             care_receipient_id=care_receipient_id,
@@ -244,8 +240,6 @@ def get_care_receipient_dashboard_response(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Care receipient not found",
         )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
 _MOOD_MESSAGES: dict[AppLanguage, tuple[str, ...]] = {
@@ -262,50 +256,26 @@ def _get_mood_message(language: AppLanguage) -> str:
 
 
 def _should_alert_caregiver(care_receipient_id: int, db: Session) -> bool:
-    try:
-        previous_moods = CRUDMood(db).get_latest(
-            care_receipient_id, SHOULD_ALERT_CAREGIVER_CRITERION
-        )
-        if len(previous_moods) < SHOULD_ALERT_CAREGIVER_CRITERION:
+    previous_moods = CRUDMood(db).get_latest(
+        care_receipient_id, SHOULD_ALERT_CAREGIVER_CRITERION
+    )
+    if len(previous_moods) < SHOULD_ALERT_CAREGIVER_CRITERION:
+        return False
+    for mood in previous_moods:
+        if mood.mood != SelectedMood.SAD:
             return False
-        for mood in previous_moods:
-            if mood.mood != SelectedMood.SAD:
-                return False
-        return True
-
-    except DBException as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
-        )
+    return True
 
 
 def _update_care_receipient_mood_checkin(care_receipient_id: int, db: Session) -> None:
-    try:
-        CRUDCareReceipient(db).update(care_receipient_id, "is_suspended", False)
-        CRUDCareReceipient(db).update(care_receipient_id, "can_record_mood", False)
-
-        care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-        CRUDCareReceipient(db).update(
-            care_receipient_id,
-            "consecutive_checkins",
-            care_receipient.consecutive_checkins + 1,
-        )
-        CRUDCareReceipient(db).update(
-            care_receipient_id,
-            "consecutive_non_checkins",
-            0,
-        )
-
-        CRUDCareReceipient(db).get(care_receipient_id)
-
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No care receipient mood record found",
-        )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+    crud = CRUDCareReceipient(db)
+    care_receipient = crud.get(care_receipient_id)
+    if not care_receipient:
+        raise NoRecordFoundException
+    crud.unsuspend(care_receipient)
+    crud.mark_mood_recorded(care_receipient)
+    crud.increment_consecutive_checkins(care_receipient)
+    crud.reset_consecutive_non_checkins(care_receipient)
 
 
 def get_create_care_receipient_mood_response(
@@ -327,14 +297,17 @@ def get_create_care_receipient_mood_response(
         _update_care_receipient_mood_checkin(care_receipient_id, db)
 
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
+        if not care_receipient:
+            raise NoRecordFoundException
         if _should_alert_caregiver(care_receipient_id, db):
             caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
-            whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
-                f"+65{caregiver.contact_number}",
-                care_receipient.name,
-                SHOULD_ALERT_CAREGIVER_CRITERION,
-            )
-            send_whatsapp_message(whatsapp_message)
+            if caregiver:
+                whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
+                    f"+65{caregiver.contact_number}",
+                    care_receipient.name,
+                    SHOULD_ALERT_CAREGIVER_CRITERION,
+                )
+                send_whatsapp_message(whatsapp_message)
 
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
         return CreateCareReceipientMoodResponse(
@@ -356,8 +329,6 @@ def get_create_care_receipient_mood_response(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No care receipient mood record found",
         )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
 def get_create_care_receipient_response(
@@ -396,11 +367,6 @@ def get_create_care_receipient_response(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Account with username already exists",
         )
-    except DBException as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e,
-        )
 
 
 def get_delete_care_receipient_response(
@@ -411,21 +377,19 @@ def get_delete_care_receipient_response(
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
-        if care_receipient_id not in [
-            cr.id for cr in care_receipients_under_caregiver
-        ]:
+        care_receipient = next(
+            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            None,
+        )
+        if not care_receipient:
             raise CareReceipientNotUnderCurrentCaregiverException
-        return CRUDCareReceipient(db).delete(care_receipient_id)
+        CRUDCareReceipient(db).delete(care_receipient)
+        return
 
     except CareReceipientNotUnderCurrentCaregiverException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot delete care receipient that is not under current caregiver",
-        )
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No record of care receipient found",
         )
 
 
@@ -440,24 +404,21 @@ def get_update_care_receipient_response(
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
-        if care_receipient_id not in [
-            cr.id for cr in care_receipients_under_caregiver
-        ]:
+        care_receipient = next(
+            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            None,
+        )
+        if not care_receipient:
             raise CareReceipientNotUnderCurrentCaregiverException
-
-        for key, value in request.model_dump(exclude={"confirm_password"}).items():
-            CRUDCareReceipient(db).update(care_receipient_id, key, value)
+        CRUDCareReceipient(db).update_profile(
+            care_receipient, request.model_dump(exclude={"confirm_password"})
+        )
         return
 
     except CareReceipientNotUnderCurrentCaregiverException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot update care receipient that is not under current caregiver",
-        )
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No record of care receipient found",
         )
 
 
@@ -469,22 +430,19 @@ def get_suspend_care_receipient_response(
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
-        if care_receipient_id not in [
-            cr.id for cr in care_receipients_under_caregiver
-        ]:
+        care_receipient = next(
+            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            None,
+        )
+        if not care_receipient:
             raise CareReceipientNotUnderCurrentCaregiverException
-        CRUDCareReceipient(db).update(care_receipient_id, "is_suspended", True)
+        CRUDCareReceipient(db).suspend(care_receipient)
         return
 
     except CareReceipientNotUnderCurrentCaregiverException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot update care receipient that is not under current caregiver",
-        )
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No record of care receipient found",
         )
 
 
@@ -496,22 +454,19 @@ def get_unsuspend_care_receipient_response(
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
             {"user_id": caregiver_id}
         )
-        if care_receipient_id not in [
-            cr.id for cr in care_receipients_under_caregiver
-        ]:
+        care_receipient = next(
+            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            None,
+        )
+        if not care_receipient:
             raise CareReceipientNotUnderCurrentCaregiverException
-        CRUDCareReceipient(db).update(care_receipient_id, "is_suspended", False)
+        CRUDCareReceipient(db).unsuspend(care_receipient)
         return
 
     except CareReceipientNotUnderCurrentCaregiverException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot update care receipient that is not under current caregiver",
-        )
-    except NoRecordFoundException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No record of care receipient found",
         )
 
 
@@ -529,6 +484,8 @@ def get_care_receipient_response(
             raise CareReceipientNotUnderCurrentCaregiverException
 
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
+        if not care_receipient:
+            raise NoRecordFoundException
         dashboard_moods_out = get_admin_dashboard_moods_out(
             care_receipient.moods, care_receipient.created_at, datetime.today()
         )
@@ -605,8 +562,6 @@ def get_care_receipient_login_url_response(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot get login URL for care receipient that is not under current caregiver",
         )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
 def revoke_magic_link_token_response(
@@ -627,8 +582,6 @@ def revoke_magic_link_token_response(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot revoke login URL for care receipient that is not under current caregiver",
         )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
 def verify_magic_link_token_response(
@@ -636,8 +589,12 @@ def verify_magic_link_token_response(
 ) -> CareReceipientToken:
     try:
         magic_link = CRUDMagicLinkToken(db).get_by_token(request.token)
+        if not magic_link:
+            raise NoRecordFoundException
 
         care_receipient = CRUDCareReceipient(db).get(magic_link.care_receipient_id)
+        if not care_receipient:
+            raise NoRecordFoundException
         access_token = create_access_token({"care_receipient_id": care_receipient.id})
         return CareReceipientToken(access_token=access_token, token_type="bearer")
 
@@ -646,5 +603,3 @@ def verify_magic_link_token_response(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or revoked login link",
         )
-    except DBException as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
