@@ -93,3 +93,7 @@ export interface CareReceipientUpdateRequest extends CareReceipientCreateRequest
 export interface CareReceipientLoginUrlResponse {
   url: string;
 }
+
+export interface MagicLinkVerifyRequest {
+  token: string;
+}

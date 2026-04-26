@@ -144,3 +144,7 @@ class CareReceipientIn(CareReceipientCreateRequest):
 
 class CareReceipientLoginUrlResponse(BaseModel):
     url: str
+
+
+class MagicLinkVerifyRequest(BaseModel):
+    token: str

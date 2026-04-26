@@ -1,29 +1,31 @@
 import random
+import secrets
 from datetime import datetime
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from crud import CRUDCaregiver, CRUDMood, CRUDCareReceipient
+from crud import CRUDCaregiver, CRUDCareReceipient, CRUDMagicLinkToken, CRUDMood
 from enums import AppLanguage, SelectedMood
 from exceptions import (
     CareReceipientNotFoundException,
+    CareReceipientNotUnderCurrentCaregiverException,
     DBDuplicateAccountException,
     DBException,
     DifferentPasswordAndConfirmPasswordException,
     InvalidCredentialsToAccessCareReceipient,
     NoRecordFoundException,
-    CareReceipientNotUnderCurrentCaregiverException,
 )
 from models.care_receipient import CareReceipient
+from models.magic_link_token import MagicLinkToken
 from models.mood import Mood
 from schemas.crud import CRUDMoodOut, CRUDCareReceipientOut
 from schemas.care_receipient import (
-    CareReceipientDetailMoodOut,
-    CareReceipientDetailOut,
     CareReceipientCreateRequest,
     CareReceipientDashboardMoodOut,
     CareReceipientDashboardOut,
+    CareReceipientDetailMoodOut,
+    CareReceipientDetailOut,
     CareReceipientIn,
     CareReceipientLogInRequest,
     CareReceipientLoginUrlResponse,
@@ -32,7 +34,9 @@ from schemas.care_receipient import (
     CareReceipientMoodRequest,
     CareReceipientToken,
     CareReceipientUpdateRequest,
+    MagicLinkVerifyRequest,
 )
+from settings import AppSettings
 from utils.mood import get_admin_dashboard_moods_out
 from utils.token import create_access_token, get_token_data
 from utils.whatsapp import get_consecutive_sad_moods_whatsapp_message_data
@@ -529,23 +533,84 @@ def get_care_receipient_response(
         )
 
 
+def _assert_caregiver_owns_care_receipient(
+    caregiver_id: int, care_receipient_id: int, db: Session
+) -> None:
+    care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
+        {"user_id": caregiver_id}
+    )
+    if care_receipient_id not in [care_receipient.id for care_receipient in care_receipients_under_caregiver]:
+        raise CareReceipientNotUnderCurrentCaregiverException
+
+
+def _create_magic_link_token(care_receipient_id: int, db: Session) -> str:
+    raw_token = secrets.token_urlsafe(32)
+    CRUDMagicLinkToken(db).create(
+        MagicLinkToken(token=raw_token, care_receipient_id=care_receipient_id)
+    )
+    return raw_token
+
+
 def get_care_receipient_login_url_response(
     care_receipient_id: int, token: str, db: Session
 ) -> CareReceipientLoginUrlResponse:
     try:
         caregiver_id = get_token_data(token, "caregiver_id")
-        care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
-            {"user_id": caregiver_id}
-        )
-        if care_receipient_id not in [care_receipient.id for care_receipient in care_receipients_under_caregiver]:
-            raise CareReceipientNotUnderCurrentCaregiverException
+        _assert_caregiver_owns_care_receipient(caregiver_id, care_receipient_id, db)
+
+        existing = CRUDMagicLinkToken(db).get_by_care_receipient_id(care_receipient_id)
+        raw_token = existing.token if existing else _create_magic_link_token(care_receipient_id, db)
+
         return CareReceipientLoginUrlResponse(
-            url=f"https://heartbeat.carecompass.sg/{care_receipient_id}"
+            url=f"{AppSettings.FRONTEND_BASE_URL}/login/{raw_token}"
         )
     except CareReceipientNotUnderCurrentCaregiverException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot get login URL for care receipient that is not under current caregiver",
+        )
+    except DBException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+
+
+def revoke_magic_link_token_response(
+    care_receipient_id: int, token: str, db: Session
+) -> CareReceipientLoginUrlResponse:
+    try:
+        caregiver_id = get_token_data(token, "caregiver_id")
+        _assert_caregiver_owns_care_receipient(caregiver_id, care_receipient_id, db)
+
+        CRUDMagicLinkToken(db).delete_by_care_receipient_id(care_receipient_id)
+        raw_token = _create_magic_link_token(care_receipient_id, db)
+
+        return CareReceipientLoginUrlResponse(
+            url=f"{AppSettings.FRONTEND_BASE_URL}/login/{raw_token}"
+        )
+    except CareReceipientNotUnderCurrentCaregiverException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot revoke login URL for care receipient that is not under current caregiver",
+        )
+    except DBException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
+
+
+def verify_magic_link_token_response(
+    request: MagicLinkVerifyRequest, db: Session
+) -> CareReceipientToken:
+    try:
+        magic_link = CRUDMagicLinkToken(db).get_by_token(request.token)
+
+        care_receipient = CRUDCareReceipient(db).get(magic_link.care_receipient_id)
+        access_token = create_access_token(
+            {"care_receipient_id": care_receipient.id, "app_language": care_receipient.app_language}
+        )
+        return CareReceipientToken(access_token=access_token, token_type="bearer")
+
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or revoked login link",
         )
     except DBException as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)

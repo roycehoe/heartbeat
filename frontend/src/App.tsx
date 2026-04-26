@@ -16,6 +16,7 @@ import CareReceipientDetail from "./pages/Caregiver/CareReceipientDetail";
 import CareReceipientSettings from "./pages/Caregiver/CareReceipientSettings";
 import HomePage from "./pages/HomePage";
 import LogIn from "./pages/Login.tsx/Index";
+import MagicLinkVerify from "./pages/MagicLinkVerify";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -30,7 +31,8 @@ const App = () => {
             flexDirection="column"
           >
             <Routes>
-              <Route path="/:careReceipientId" element={<HomePage />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login/:token" element={<MagicLinkVerify />} />
               <Route path="/login" element={<LogIn />} />
               <Route path="/dashboard" element={<Caregiver />} />
               <Route path="/dashboard/care-receipient/:careReceipientId" element={<CareReceipientDetail />} />
