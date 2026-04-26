@@ -42,6 +42,7 @@ class GetCareReceipientDashboardResponse(BaseModel):
     postal_code: int
     floor: int
     contact_number: int
+    app_language: AppLanguage
 
     moods: list[CareReceipientDashboardMoodData]
     can_record_mood: bool
@@ -82,6 +83,7 @@ class GetCareReceipientDetailResponse(BaseModel):
     unit: str
     contact_number: int
     is_suspended: bool
+    app_language: AppLanguage
 
     moods: list[CareReceipientDetailMoodData]
     can_record_mood: bool

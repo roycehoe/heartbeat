@@ -106,6 +106,72 @@ DEFAULT_MOOD_MESSAGES_CHINESE = (
     "珍惜每一天，把它当作新的冒险。",
 )
 
+DEFAULT_MOOD_MESSAGES_MALAY = (
+    "Setiap hari adalah permulaan baru.",
+    "Anda lebih kuat dari yang anda sangka.",
+    "Satu langkah kecil hari ini, perubahan besar esok.",
+    "Senyuman anda adalah kekuatan anda.",
+    "Teruskan, hari yang lebih cerah menanti.",
+    "Anda penting, dan kisah anda bermakna.",
+    "Walaupun lambat, ia tetap kemajuan.",
+    "Tidak pernah terlambat untuk bermimpi.",
+    "Kekuatan anda memberi inspirasi kepada orang lain.",
+    "Sambut hari ini dengan penuh harapan.",
+    "Hati anda telah menyaksikan banyak senja, setiap satunya indah.",
+    "Anda tidak bersendirian dalam perjalanan ini.",
+    "Ketenangan datang bersama kesabaran.",
+    "Yang terbaik masih belum tiba.",
+    "Ambil satu langkah pada satu masa.",
+    "Keberanian anda menerangi orang lain.",
+    "Percayalah pada diri anda hari ini.",
+    "Anda dicintai dan dihargai.",
+    "Setiap nafas adalah satu nikmat.",
+    "Kegembiraan kecil boleh memenuhi hati yang besar.",
+    "Anda pernah mengatasi cabaran sebelum ini, anda boleh lakukan lagi.",
+    "Kebahagiaan ada dalam diri anda.",
+    "Anda lebih mampu dari yang anda tahu.",
+    "Anda adalah hadiah kepada dunia.",
+    "Kekuatan tumbuh daripada setiap cabaran.",
+    "Kehadiran anda menerangi dunia.",
+    "Hari ini milik anda untuk dijadikan indah.",
+    "Fokus pada kebaikan di sekeliling anda.",
+    "Ketabahan anda adalah kekuatan anda.",
+    "Hargai setiap hari sebagai pengembaraan baru.",
+)
+
+DEFAULT_MOOD_MESSAGES_TAMIL = (
+    "ஒவ்வொரு நாளும் ஒரு புதிய தொடக்கம்.",
+    "நீங்கள் நினைப்பதை விட வலிமையானவர்.",
+    "இன்றைய சிறிய அடி, நாளைய பெரிய மாற்றம்.",
+    "உங்கள் புன்னகை உங்கள் ஆற்றல்.",
+    "தொடர்ந்து செல்லுங்கள், பிரகாசமான நாட்கள் காத்திருக்கின்றன.",
+    "நீங்கள் முக்கியமானவர், உங்கள் கதையும் முக்கியமானது.",
+    "மெதுவான முன்னேற்றமும் முன்னேற்றமே.",
+    "கனவு காண்பதற்கு ஒருபோதும் தாமதமில்லை.",
+    "உங்கள் வலிமை மற்றவர்களுக்கு உத்வேகம் அளிக்கிறது.",
+    "இன்றை நம்பிக்கையுடன் வரவேற்கவும்.",
+    "உங்கள் இதயம் பல அஸ்தமனங்களை கண்டது, ஒவ்வொன்றும் அழகானது.",
+    "இந்த பயணத்தில் நீங்கள் தனியாக இல்லை.",
+    "பொறுமையுடன் அமைதி வரும்.",
+    "சிறந்தது இன்னும் வரவில்லை.",
+    "ஒரு நேரத்தில் ஒரு அடி எடுத்து வையுங்கள்.",
+    "உங்கள் தைரியம் மற்றவர்களுக்கு ஒளி தருகிறது.",
+    "இன்று உங்களை நம்புங்கள்.",
+    "நீங்கள் நேசிக்கப்படுகிறீர்கள், மதிக்கப்படுகிறீர்கள்.",
+    "ஒவ்வொரு மூச்சும் ஒரு ஆசீர்வாதம்.",
+    "சிறிய மகிழ்ச்சிகள் பெரிய இதயங்களை நிரப்பலாம்.",
+    "நீங்கள் முன்பும் சவால்களை வென்றீர்கள், மீண்டும் வெல்வீர்கள்.",
+    "மகிழ்ச்சி உங்களுக்குள்ளேயே உள்ளது.",
+    "உங்களுக்குத் தெரிவதை விட நீங்கள் அதிகம் செய்யக்கூடியவர்.",
+    "நீங்கள் உலகிற்கு ஒரு கொடை.",
+    "ஒவ்வொரு சவாலிலும் வலிமை வளர்கிறது.",
+    "உங்கள் இருப்பு உலகை பிரகாசமாக்குகிறது.",
+    "இன்று உங்களுக்கு அழகாக்கும் நாள்.",
+    "உங்கள் சுற்றுப்புறத்தில் உள்ள நன்மைகளில் கவனம் செலுத்துங்கள்.",
+    "உங்கள் மனவுறுதி உங்கள் ஆற்றல்.",
+    "ஒவ்வொரு நாளையும் ஒரு புதிய சாகசமாக மதியுங்கள்.",
+)
+
 
 def authenticate_care_receipient(
     request: CareReceipientLogInRequest, token: str, db: Session
@@ -117,9 +183,7 @@ def authenticate_care_receipient(
         if care_receipient.user_id != token_caregiver_id:
             raise InvalidCredentialsToAccessCareReceipient
 
-        access_token = create_access_token(
-            {"care_receipient_id": care_receipient.id, "app_language": care_receipient.app_language}
-        )
+        access_token = create_access_token({"care_receipient_id": care_receipient.id})
         return CareReceipientToken(access_token=access_token, token_type="bearer")
 
     except InvalidCredentialsToAccessCareReceipient:
@@ -159,6 +223,7 @@ def get_care_receipient_dashboard_response(
             gender=care_receipient.gender,
             postal_code=care_receipient.postal_code,
             floor=care_receipient.floor,
+            app_language=care_receipient.app_language,
             moods=[
                 CareReceipientDashboardMoodData(mood=mood.mood, created_at=mood.created_at)
                 for mood in mood_models
@@ -183,14 +248,17 @@ def get_care_receipient_dashboard_response(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
 
 
-def _get_mood_message(
-    language: AppLanguage,
-    english_mood_messages: tuple[str, ...] = DEFAULT_MOOD_MESSAGES_ENGLISH,
-    chinese_mood_messages: tuple[str, ...] = DEFAULT_MOOD_MESSAGES_CHINESE,
-) -> str:
-    if language == AppLanguage.ENGLISH:
-        return random.choice(english_mood_messages)
-    return random.choice(chinese_mood_messages)
+_MOOD_MESSAGES: dict[AppLanguage, tuple[str, ...]] = {
+    AppLanguage.ENGLISH: DEFAULT_MOOD_MESSAGES_ENGLISH,
+    AppLanguage.CHINESE: DEFAULT_MOOD_MESSAGES_CHINESE,
+    AppLanguage.MALAY: DEFAULT_MOOD_MESSAGES_MALAY,
+    AppLanguage.TAMIL: DEFAULT_MOOD_MESSAGES_TAMIL,
+}
+
+
+def _get_mood_message(language: AppLanguage) -> str:
+    messages = _MOOD_MESSAGES.get(language, DEFAULT_MOOD_MESSAGES_ENGLISH)
+    return random.choice(messages)
 
 
 def _should_alert_caregiver(care_receipient_id: int, db: Session) -> bool:
@@ -477,6 +545,7 @@ def get_care_receipient_response(
             floor=care_receipient.floor,
             block=care_receipient.block,
             unit=care_receipient.unit,
+            app_language=care_receipient.app_language,
             moods=[
                 CareReceipientDetailMoodData(mood=mood.mood, created_at=mood.created_at)
                 for mood in dashboard_moods_out
@@ -569,9 +638,7 @@ def verify_magic_link_token_response(
         magic_link = CRUDMagicLinkToken(db).get_by_token(request.token)
 
         care_receipient = CRUDCareReceipient(db).get(magic_link.care_receipient_id)
-        access_token = create_access_token(
-            {"care_receipient_id": care_receipient.id, "app_language": care_receipient.app_language}
-        )
+        access_token = create_access_token({"care_receipient_id": care_receipient.id})
         return CareReceipientToken(access_token=access_token, token_type="bearer")
 
     except NoRecordFoundException:

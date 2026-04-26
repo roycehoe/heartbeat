@@ -19,6 +19,8 @@ export enum Gender {
 export enum AppLanguage {
   ENGLISH = "English",
   CHINESE = "Chinese",
+  MALAY = "Malay",
+  TAMIL = "Tamil",
 }
 
 export interface CareReceipientDetailMoodOut {
@@ -44,6 +46,7 @@ export interface CareReceipientDetailOut {
   unit: string;
   contact_number: number;
   is_suspended: boolean;
+  app_language: AppLanguage;
 
   moods: CareReceipientDetailMoodOut[];
   can_record_mood: boolean;

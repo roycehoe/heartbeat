@@ -7,40 +7,27 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import { jwtDecode } from "jwt-decode";
 import { AppLanguage } from "../api/types";
 
-interface decodedTokenData {
-  care_receipient_id: string;
-  app_language: AppLanguage;
-  exp: number;
-}
+const STREAK_LABEL: Record<AppLanguage, { pre: string; post: string }> = {
+  [AppLanguage.ENGLISH]: { pre: "", post: " day streak!" },
+  [AppLanguage.CHINESE]: { pre: "连续打卡 ", post: " 天!" },
+  [AppLanguage.MALAY]: { pre: "", post: " hari berturut-turut!" },
+  [AppLanguage.TAMIL]: { pre: "", post: " நாள் தொடர்ச்சி!" },
+};
+
+const STREAK_FOOTER: Record<AppLanguage, string> = {
+  [AppLanguage.ENGLISH]: "Keep your streak going by checking in tomorrow!",
+  [AppLanguage.CHINESE]: "记得明天打卡，继续保持连续哦",
+  [AppLanguage.MALAY]: "Teruskan rentak anda dengan mendaftar masuk esok!",
+  [AppLanguage.TAMIL]: "நாளை செக் இன் செய்வதன் மூலம் உங்கள் தொடர்ச்சியை தொடர்ந்து வையுங்கள்!",
+};
 
 function StreakCountDisplay(props: {
   streakCount: number;
   appLanguage: AppLanguage;
 }) {
-  if (props.appLanguage === AppLanguage.ENGLISH) {
-    return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="space-evenly"
-        alignItems="center"
-      >
-        <Box>
-          <Text fontWeight="600" fontSize="86px" color="#25AC51" lineHeight="1">
-            {props.streakCount}
-          </Text>
-        </Box>
-        <Box>
-          <Text fontWeight="600" fontSize="32px" color="#25AC51">
-            day streak!
-          </Text>
-        </Box>
-      </Box>
-    );
-  }
+  const { pre, post } = STREAK_LABEL[props.appLanguage] ?? STREAK_LABEL[AppLanguage.ENGLISH];
   return (
     <Box
       display="flex"
@@ -48,16 +35,12 @@ function StreakCountDisplay(props: {
       justifyContent="space-evenly"
       alignItems="center"
     >
-      <Box>
-        <Text fontWeight="600" fontSize="32px" color="#25AC51">
-          连续打卡
-        </Text>
-      </Box>
-      <Box>
-        <Text fontWeight="600" fontSize="86px" color="#25AC51" lineHeight="1">
-          {props.streakCount}天!
-        </Text>
-      </Box>
+      <Text fontWeight="600" fontSize="86px" color="#25AC51" lineHeight="1">
+        {props.streakCount}
+      </Text>
+      <Text fontWeight="600" fontSize="32px" color="#25AC51">
+        {pre}{props.streakCount}{post}
+      </Text>
     </Box>
   );
 }
@@ -68,18 +51,15 @@ function ModalMoodStreak({
   daysOfWeek,
   tickData,
   streak,
+  appLanguage,
 }: {
   isOpen: boolean;
   handleClose: () => void;
   daysOfWeek: string[];
   tickData: boolean[];
   streak: number;
+  appLanguage: AppLanguage;
 }) {
-  const tokenData = localStorage.getItem("token");
-  if (!tokenData) {
-    return;
-  }
-  const { app_language } = jwtDecode(tokenData) as decodedTokenData;
   return (
     <Modal
       isOpen={isOpen}
@@ -116,7 +96,7 @@ function ModalMoodStreak({
               }}
             />
           </Box>
-          <StreakCountDisplay streakCount={streak} appLanguage={app_language} />
+          <StreakCountDisplay streakCount={streak} appLanguage={appLanguage} />
 
           <Box>
             <Box
@@ -156,9 +136,7 @@ function ModalMoodStreak({
             </Box>
             <Box marginBottom="18px" mt="12px">
               <Text textAlign="center">
-                {app_language === AppLanguage.ENGLISH
-                  ? "Keep your streak going by checking in tomorrow!"
-                  : "记得明天打卡，继续保持连续哦"}
+                {STREAK_FOOTER[appLanguage] ?? STREAK_FOOTER[AppLanguage.ENGLISH]}
               </Text>
             </Box>
           </Box>

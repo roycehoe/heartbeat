@@ -15,7 +15,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useGetCareReceipientUpdateResponse } from "../../../api/getCareReceipientUpdateResponse";
-import { AppLanguage, CareReceipientCreateRequest, CareReceipientDetailOut } from "../../../api/types";
+import { CareReceipientCreateRequest, CareReceipientDetailOut } from "../../../api/types";
 import FormFieldsCareReceipientCreateUpdate from "../../../components/FormFieldsCareReceipientCreateUpdate";
 import { UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "../constants";
 import { getSubmitUpdateCareReceipientFormErrorMessage } from "../utils";
@@ -32,7 +32,7 @@ function dashboardDataToUpdateCareReceipientFormData(
     alias: dashboardData.alias,
     race: dashboardData.race,
     gender: dashboardData.gender,
-    appLanguage: AppLanguage.ENGLISH,
+    appLanguage: dashboardData.app_language,
     postalCode: dashboardData.postal_code,
     floor: dashboardData.floor,
     unit: dashboardData.unit,

@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetCareReceipientDetailResponse } from "../../../api/getCareReceipientDetailResponse";
 import { useGetCareReceipientLoginUrlResponse } from "../../../api/getCareReceipientLoginUrlResponse";
-import { AppLanguage, CareReceipientDetailMoodOut, SelectedMood } from "../../../api/types";
+import { CareReceipientDetailMoodOut, SelectedMood } from "../../../api/types";
 import { FormFieldsViewCareReceipient } from "../../../components/FormFieldsViewCareReceipient";
 import ShareLoginLinkCard from "../../../components/ShareLoginLinkCard";
 import { IconArrowLeft } from "../../../components/IconArrowLeft";
@@ -245,7 +245,7 @@ const CareReceipientDetail = () => {
             alias: careReceipientData.alias,
             race: careReceipientData.race,
             gender: careReceipientData.gender,
-            appLanguage: AppLanguage.ENGLISH,
+            appLanguage: careReceipientData.app_language,
             postalCode: careReceipientData.postal_code,
             floor: careReceipientData.floor,
             block: careReceipientData.block,
