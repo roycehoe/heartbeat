@@ -1,4 +1,4 @@
-import { Box, Fade, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Divider, Fade, Heading, Text, VStack } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -75,11 +75,36 @@ function HomePage() {
         alignItems="center"
         justifyContent="center"
       >
-        <VStack spacing={3} textAlign="center" px={6}>
-          <Heading size="md">Your session has expired</Heading>
-          <Text color="gray.600" fontSize="sm">
-            Please ask your caregiver to send you a new login link.
-          </Text>
+        <VStack
+          spacing={4}
+          textAlign="center"
+          px={6}
+          divider={<Divider borderColor="gray.200" />}
+        >
+          <VStack spacing={1}>
+            <Heading size="sm">Sign in again</Heading>
+            <Text color="gray.600" fontSize="sm">
+              To continue, open the link your caregiver sent you.
+            </Text>
+          </VStack>
+          <VStack spacing={1}>
+            <Heading size="sm">请重新登录</Heading>
+            <Text color="gray.600" fontSize="sm">
+              请开启看护人发给您的链接，即可继续使用。
+            </Text>
+          </VStack>
+          <VStack spacing={1}>
+            <Heading size="sm">Log masuk semula</Heading>
+            <Text color="gray.600" fontSize="sm">
+              Untuk meneruskan, buka pautan yang dihantar pengasuh anda.
+            </Text>
+          </VStack>
+          <VStack spacing={1}>
+            <Heading size="sm">மீண்டும் உள்நுழையவும்</Heading>
+            <Text color="gray.600" fontSize="sm">
+              தொடர்வதற்கு, உங்கள் பராமரிப்பாளர் அனுப்பிய இணைப்பைத் திறக்கவும்.
+            </Text>
+          </VStack>
         </VStack>
       </Box>
     );
