@@ -1,27 +1,24 @@
-from sqlalchemy import Integer, String
+from typing import Optional
+
+from sqlalchemy import Column
 from sqlalchemy import Enum as SQLAlchemyEnum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlmodel import Field, SQLModel
 
-from models.base import Base
 from models.util import use_enum_values
-
-# TODO: migrate ReviewableType to ResourceType
 from models.review import ReviewableType
 
 
-class Bookmark(Base):
+class Bookmark(SQLModel, table=True):
     __tablename__ = "bookmarks"
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, index=True, autoincrement=True, unique=True
+    id: Optional[int] = Field(default=None, primary_key=True, index=True, unique=True)
+    user_id: str
+    target_id: int
+    target_type: ReviewableType = Field(
+        sa_column=Column(
+            SQLAlchemyEnum(ReviewableType, values_callable=use_enum_values),
+            nullable=False,
+        )
     )
-
-    user_id: Mapped[str] = mapped_column(String)
-
-    # We sacrifice referential integrity here for polymorphism
-    target_id: Mapped[int] = mapped_column(Integer)
-    target_type: Mapped[ReviewableType] = mapped_column(
-        SQLAlchemyEnum(ReviewableType, values_callable=use_enum_values)
-    )
-    title: Mapped[str] = mapped_column(String)
-    link: Mapped[str] = mapped_column(String)
+    title: str
+    link: str

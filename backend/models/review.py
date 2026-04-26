@@ -1,11 +1,11 @@
-from enum import Enum
 from datetime import datetime
+from enum import Enum
 from typing import Optional
-from sqlalchemy import DateTime, Integer, String, func
-from sqlalchemy import Enum as SQLAlchemyEnum
-from sqlalchemy.orm import Mapped, mapped_column
 
-from models.base import Base
+from sqlalchemy import Column, DateTime, func
+from sqlalchemy import Enum as SQLAlchemyEnum
+from sqlmodel import Field, SQLModel
+
 from models.util import use_enum_values
 
 
@@ -19,31 +19,27 @@ class ReviewSource(str, Enum):
     IN_APP = "IN_APP"
 
 
-class Review(Base):
+class Review(SQLModel, table=True):
     __tablename__ = "reviews"
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, index=True, autoincrement=True, unique=True
+    id: Optional[int] = Field(default=None, primary_key=True, index=True, unique=True)
+    review_source: ReviewSource = Field(
+        sa_column=Column(SQLAlchemyEnum(ReviewSource), nullable=False)
     )
-    review_source: Mapped[ReviewSource] = mapped_column(SQLAlchemyEnum(ReviewSource))
-    # We sacrifice referential integrity here for polymorphism
-    target_id: Mapped[int] = mapped_column(Integer)
-    target_type: Mapped[ReviewableType] = mapped_column(
-        SQLAlchemyEnum(ReviewableType, values_callable=use_enum_values)
+    target_id: int
+    target_type: ReviewableType = Field(
+        sa_column=Column(
+            SQLAlchemyEnum(ReviewableType, values_callable=use_enum_values),
+            nullable=False,
+        )
     )
-    content: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    overall_rating: Mapped[int] = mapped_column(Integer)
-    # Attributions
-    author_name: Mapped[str] = mapped_column(String)
-    author_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # in-app id
-    google_review_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    google_author_url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    google_author_photo_url: Mapped[Optional[str]] = mapped_column(
-        String, nullable=True
-    )
-
-    # Metadata
-    # Overriden if review is from 3rd party source, else defaults to server time
-    published_time: Mapped[datetime] = mapped_column(
-        DateTime, server_default=func.now()
+    content: Optional[str] = None
+    overall_rating: int
+    author_name: str
+    author_id: Optional[str] = None
+    google_review_id: Optional[str] = None
+    google_author_url: Optional[str] = None
+    google_author_photo_url: Optional[str] = None
+    published_time: datetime = Field(
+        sa_column=Column(DateTime, server_default=func.now(), nullable=False)
     )

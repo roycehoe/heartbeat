@@ -1,10 +1,11 @@
-from models.base import Base
-from sqlalchemy import Column, ForeignKey, Integer, String
+from typing import Optional
+
+from sqlmodel import Field, SQLModel
 
 
-class MagicLinkToken(Base):
+class MagicLinkToken(SQLModel, table=True):
     __tablename__ = "magic_link_token"
 
-    id = Column(Integer, primary_key=True)
-    token = Column(String, unique=True, nullable=False, index=True)
-    care_receipient_id = Column(Integer, ForeignKey("care_receipient.id"), nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    token: str = Field(unique=True, index=True)
+    care_receipient_id: int = Field(foreign_key="care_receipient.id")

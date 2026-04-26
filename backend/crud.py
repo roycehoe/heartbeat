@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from sqlalchemy import asc, desc
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select
 
 from exceptions import (
     DBDuplicateAccountException,
@@ -24,7 +24,7 @@ class CRUDCareReceipient:
         try:
             self.session.add(account)
             self.session.commit()
-
+            self.session.refresh(account)
         except DBDuplicateAccountException:
             raise DBDuplicateAccountException
         except Exception as e:
@@ -33,22 +33,29 @@ class CRUDCareReceipient:
 
     def update(self, id: int, field: str, value: Any) -> CareReceipient:
         try:
-            if account := self.session.query(CareReceipient).filter_by(id=id).first():
-                setattr(account, field, value)
-                self.session.commit()
-                self.session.refresh(account)
-                return account
+            account = self.session.exec(
+                select(CareReceipient).where(CareReceipient.id == id)
+            ).first()
+            if not account:
+                raise NoRecordFoundException
+            setattr(account, field, value)
+            self.session.add(account)
+            self.session.commit()
+            self.session.refresh(account)
+            return account
+        except NoRecordFoundException:
             raise NoRecordFoundException
-
         except Exception:
             raise DBGetAccountException
 
     def get(self, id: int) -> CareReceipient:
         try:
-            if account := self.session.query(CareReceipient).filter_by(id=id).first():
-                return account
-            raise NoRecordFoundException
-
+            account = self.session.exec(
+                select(CareReceipient).where(CareReceipient.id == id)
+            ).first()
+            if not account:
+                raise NoRecordFoundException
+            return account
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception:
@@ -56,10 +63,13 @@ class CRUDCareReceipient:
 
     def get_by(self, field: dict[Any, Any]) -> CareReceipient:
         try:
-            if account := self.session.query(CareReceipient).filter_by(**field).first():
-                return account
-            raise NoRecordFoundException
-
+            stmt = select(CareReceipient)
+            for key, value in field.items():
+                stmt = stmt.where(getattr(CareReceipient, key) == value)
+            account = self.session.exec(stmt).first()
+            if not account:
+                raise NoRecordFoundException
+            return account
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception as e:
@@ -72,31 +82,25 @@ class CRUDCareReceipient:
         sort_direction: int = 0,
     ) -> list[CareReceipient]:
         try:
-            if sort_direction == 0:
-                return (
-                    self.session.query(CareReceipient)
-                    .filter_by(**field)
-                    .order_by(desc(sort))
-                    .all()
-                )
-            return (
-                self.session.query(CareReceipient)
-                .filter_by(**field)
-                .order_by(asc(sort))
-                .all()
-            )
-
+            sort_col = getattr(CareReceipient, sort)
+            order = asc(sort_col) if sort_direction else desc(sort_col)
+            stmt = select(CareReceipient)
+            for key, value in field.items():
+                stmt = stmt.where(getattr(CareReceipient, key) == value)
+            stmt = stmt.order_by(order)
+            return list(self.session.exec(stmt).all())
         except Exception as e:
             raise DBException(e)
 
     def delete(self, id: int) -> None:
         try:
-            if account := self.session.query(CareReceipient).filter_by(id=id).first():
-                self.session.delete(account)
-                self.session.commit()
-                return
-            raise NoRecordFoundException
-
+            account = self.session.exec(
+                select(CareReceipient).where(CareReceipient.id == id)
+            ).first()
+            if not account:
+                raise NoRecordFoundException
+            self.session.delete(account)
+            self.session.commit()
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception as e:
@@ -104,20 +108,16 @@ class CRUDCareReceipient:
 
     def delete_all(self) -> None:
         try:
-            self.session.query(CareReceipient).delete()
-            return
-
+            for account in self.session.exec(select(CareReceipient)).all():
+                self.session.delete(account)
+            self.session.commit()
         except Exception as e:
             raise DBException(e)
 
     def reset_all_can_record_mood(self) -> None:
-        # TODO: Think of a better way to
-        # use this. Here might not be the best place
-
-        for row in self.session.query(CareReceipient):
-            row.update({"can_record_mood": True})
+        for row in self.session.exec(select(CareReceipient)).all():
+            row.can_record_mood = True
         self.session.commit()
-        return
 
 
 class CRUDCaregiver:
@@ -126,11 +126,13 @@ class CRUDCaregiver:
 
     def create(self, caregiver: Caregiver) -> Caregiver:
         try:
-            if self.session.query(Caregiver).filter_by(clerk_id=caregiver.clerk_id).first():
+            if self.session.exec(
+                select(Caregiver).where(Caregiver.clerk_id == caregiver.clerk_id)
+            ).first():
                 raise DBDuplicateAccountException
             self.session.add(caregiver)
             self.session.commit()
-
+            self.session.refresh(caregiver)
         except DBDuplicateAccountException:
             raise DBDuplicateAccountException
         except Exception as e:
@@ -139,22 +141,27 @@ class CRUDCaregiver:
 
     def update(self, id: int, field: str, value: Any) -> Caregiver:
         try:
-            if account := self.session.query(Caregiver).filter_by(id=id).first():
-                setattr(account, field, value)
-                self.session.commit()
-                self.session.refresh(account)
-                return account
-            raise NoRecordFoundException
-
+            account = self.session.exec(
+                select(Caregiver).where(Caregiver.id == id)
+            ).first()
+            if not account:
+                raise NoRecordFoundException
+            setattr(account, field, value)
+            self.session.add(account)
+            self.session.commit()
+            self.session.refresh(account)
+            return account
         except Exception:
             raise DBGetAccountException
 
     def get(self, id: int) -> Caregiver:
         try:
-            if account := self.session.query(Caregiver).filter_by(id=id).first():
-                return account
-            raise NoRecordFoundException
-
+            account = self.session.exec(
+                select(Caregiver).where(Caregiver.id == id)
+            ).first()
+            if not account:
+                raise NoRecordFoundException
+            return account
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception:
@@ -162,10 +169,13 @@ class CRUDCaregiver:
 
     def get_by(self, field: dict[Any, Any]) -> Caregiver:
         try:
-            if account := self.session.query(Caregiver).filter_by(**field).first():
-                return account
-            raise NoRecordFoundException
-
+            stmt = select(Caregiver)
+            for key, value in field.items():
+                stmt = stmt.where(getattr(Caregiver, key) == value)
+            account = self.session.exec(stmt).first()
+            if not account:
+                raise NoRecordFoundException
+            return account
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception as e:
@@ -177,21 +187,22 @@ class CRUDCaregiver:
         sort_direction: int = 0,
     ) -> list[Caregiver]:
         try:
-            if sort_direction == 0:
-                return self.session.query(Caregiver).filter_by(**field).all()
-            return self.session.query(Caregiver).filter_by(**field).all()
-
+            stmt = select(Caregiver)
+            for key, value in field.items():
+                stmt = stmt.where(getattr(Caregiver, key) == value)
+            return list(self.session.exec(stmt).all())
         except Exception as e:
             raise DBException(e)
 
     def delete(self, id: int) -> None:
         try:
-            if account := self.session.query(Caregiver).filter_by(id=id).first():
-                self.session.delete(account)
-                self.session.commit()
-                return
-            raise NoRecordFoundException
-
+            account = self.session.exec(
+                select(Caregiver).where(Caregiver.id == id)
+            ).first()
+            if not account:
+                raise NoRecordFoundException
+            self.session.delete(account)
+            self.session.commit()
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception as e:
@@ -199,9 +210,9 @@ class CRUDCaregiver:
 
     def delete_all(self) -> None:
         try:
-            self.session.query(Caregiver).delete()
-            return
-
+            for account in self.session.exec(select(Caregiver)).all():
+                self.session.delete(account)
+            self.session.commit()
         except Exception as e:
             raise DBException(e)
 
@@ -209,7 +220,6 @@ class CRUDCaregiver:
 class CRUDMood:
     def __init__(self, session: Session):
         self.session = session
-        self.DEFAULT_DATE_FILTER = datetime.today()
 
     def create(self, mood: Mood) -> Mood:
         try:
@@ -222,37 +232,39 @@ class CRUDMood:
 
     def get_by(self, field: dict[Any, Any], day_range: int = 30) -> list[Mood]:
         try:
-            return (
-                self.session.query(Mood)
-                .filter_by(**field)
-                .filter(Mood.created_at > datetime.today() - timedelta(days=day_range))
-                .all()
-            )
+            cutoff = datetime.today() - timedelta(days=day_range)
+            stmt = select(Mood)
+            for key, value in field.items():
+                stmt = stmt.where(getattr(Mood, key) == value)
+            stmt = stmt.where(Mood.created_at > cutoff)
+            return list(self.session.exec(stmt).all())
         except Exception as e:
             raise DBException(e)
 
     def get_latest(self, care_receipient_id: int, limit: int) -> list[Mood]:
         try:
-            return (
-                self.session.query(Mood)
-                .filter_by(care_receipient_id=care_receipient_id)
-                .order_by(Mood.created_at.desc())
-                .limit(limit)
-                .all()
+            return list(
+                self.session.exec(
+                    select(Mood)
+                    .where(Mood.care_receipient_id == care_receipient_id)
+                    .order_by(Mood.created_at.desc())
+                    .limit(limit)
+                ).all()
             )
         except Exception as e:
             raise DBException(e)
 
     def get_all(self) -> list[Mood]:
         try:
-            return self.session.query(Mood).all()
+            return list(self.session.exec(select(Mood)).all())
         except Exception:
             raise DBGetAccountException
 
     def delete_all(self) -> None:
         try:
-            self.session.query(Mood).delete()
-            return
+            for mood in self.session.exec(select(Mood)).all():
+                self.session.delete(mood)
+            self.session.commit()
         except Exception:
             raise DBGetAccountException
 
@@ -272,23 +284,37 @@ class CRUDMagicLinkToken:
 
     def get_by_token(self, token: str) -> MagicLinkToken:
         try:
-            if record := self.session.query(MagicLinkToken).filter_by(token=token).first():
-                return record
-            raise NoRecordFoundException
+            record = self.session.exec(
+                select(MagicLinkToken).where(MagicLinkToken.token == token)
+            ).first()
+            if not record:
+                raise NoRecordFoundException
+            return record
         except NoRecordFoundException:
             raise NoRecordFoundException
         except Exception as e:
             raise DBException(e)
 
-    def get_by_care_receipient_id(self, care_receipient_id: int) -> MagicLinkToken | None:
+    def get_by_care_receipient_id(
+        self, care_receipient_id: int
+    ) -> MagicLinkToken | None:
         try:
-            return self.session.query(MagicLinkToken).filter_by(care_receipient_id=care_receipient_id).first()
+            return self.session.exec(
+                select(MagicLinkToken).where(
+                    MagicLinkToken.care_receipient_id == care_receipient_id
+                )
+            ).first()
         except Exception as e:
             raise DBException(e)
 
     def delete_by_care_receipient_id(self, care_receipient_id: int) -> None:
         try:
-            self.session.query(MagicLinkToken).filter_by(care_receipient_id=care_receipient_id).delete()
+            for token in self.session.exec(
+                select(MagicLinkToken).where(
+                    MagicLinkToken.care_receipient_id == care_receipient_id
+                )
+            ).all():
+                self.session.delete(token)
             self.session.commit()
         except Exception as e:
             raise DBException(e)

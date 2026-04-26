@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, Header, status
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from database import get_db
 from schemas.care_receipient import (
     CareReceipientCreateRequest,
-    CareReceipientDashboardOut,
-    CareReceipientDetailOut,
+    GetCareReceipientDashboardResponse,
+    GetCareReceipientDetailResponse,
     CareReceipientLogInRequest,
     CareReceipientLoginUrlResponse,
-    CareReceipientMoodOut,
+    CreateCareReceipientMoodResponse,
     CareReceipientMoodRequest,
     CareReceipientToken,
     CareReceipientUpdateRequest,
@@ -59,7 +59,7 @@ def care_receipient_log_in(
 @router.get(
     "/{care_receipient_id}/dashboard",
     status_code=status.HTTP_200_OK,
-    response_model=CareReceipientDashboardOut,
+    response_model=GetCareReceipientDashboardResponse,
 )
 def care_receipient_dashboard(
     care_receipient_id: int, db: Session = Depends(get_db)
@@ -70,7 +70,7 @@ def care_receipient_dashboard(
 @router.post(
     "/{care_receipient_id}/mood",
     status_code=status.HTTP_201_CREATED,
-    response_model=CareReceipientMoodOut,
+    response_model=CreateCareReceipientMoodResponse,
 )
 def send_mood(
     care_receipient_id: int,
@@ -121,7 +121,7 @@ def revoke_care_receipient_login_url(
 @router.get(
     "/{care_receipient_id}",
     status_code=status.HTTP_200_OK,
-    response_model=CareReceipientDetailOut,
+    response_model=GetCareReceipientDetailResponse,
 )
 def get_care_receipient(
     care_receipient_id: int,
