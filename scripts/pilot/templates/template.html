@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title }}</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger:  #dc2626;
+      --neutral: #6b7280;
+      --border:  #e5e7eb;
+      --bg:      #f9fafb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #111827;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 32px 48px 24px;
+    }
+
+    header h1 { font-size: 1.75rem; margin-bottom: 4px; }
+    header p  { opacity: .85; font-size: .95rem; }
+
+    main { max-width: 1100px; margin: 32px auto; padding: 0 24px 48px; }
+
+    /* ── Section ── */
+    section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+    }
+
+    section h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    section h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 10px;
+      color: #374151;
+    }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+
+    .stat-card {
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 16px 20px;
+      text-align: center;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-card .label {
+      font-size: .8rem;
+      color: var(--neutral);
+      margin-top: 4px;
+    }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      margin-top: 8px;
+    }
+
+    th {
+      background: #f3f4f6;
+      text-align: left;
+      padding: 9px 12px;
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--neutral);
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #fafafa; }
+
+    /* ── Bar chart (CSS) ── */
+    .bar-wrap { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+    .bar-label { width: 70px; font-size: .82rem; color: #374151; flex-shrink: 0; }
+    .bar-track { flex: 1; background: #e5e7eb; border-radius: 4px; height: 18px; }
+    .bar-fill  { height: 100%; border-radius: 4px; background: var(--primary); }
+    .bar-value { width: 44px; text-align: right; font-size: .82rem; color: var(--neutral); flex-shrink: 0; }
+
+    /* ── Mood colours ── */
+    .mood-happy { background: #86efac; }
+    .mood-ok    { background: #fde68a; }
+    .mood-sad   { background: #fca5a5; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+
+    .badge-green  { background: #dcfce7; color: var(--success); }
+    .badge-yellow { background: #fef9c3; color: var(--warning); }
+    .badge-red    { background: #fee2e2; color: var(--danger);  }
+
+    .note { font-size: .85rem; color: var(--neutral); margin-top: 8px; }
+
+    footer {
+      text-align: center;
+      font-size: .8rem;
+      color: var(--neutral);
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>{{ title }}</h1>
+  <p>Pilot period: {{ pilot_start }} – {{ pilot_end }} &nbsp;({{ pilot_days }} days) &nbsp;·&nbsp; Generated: {{ generated_at }}</p>
+</header>
+
+<main>
+
+  <!-- ── 1. Executive Summary ── -->
+  <section>
+    <h2>1. Executive Summary</h2>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="value">{{ summary.enrolled }}</div>
+        <div class="label">Total enrolled</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ summary.participants }}</div>
+        <div class="label">Participated (≥1 check-in)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ "%.1f"|format(summary.participation_rate * 100) }}%</div>
+        <div class="label">Participation rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ summary.never_checked_in }}</div>
+        <div class="label">Never checked in</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ "%.1f"|format(summary.avg_checkin_days) }}</div>
+        <div class="label">Avg check-in days</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. Onboarding Timeline ── -->
+  <section>
+    <h2>2. Onboarding Timeline</h2>
+    {% if onboarding %}
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>New users</th>
+          <th>Cumulative</th>
+          <th>Trend</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set max_day_count = onboarding | map(attribute='count') | max %}
+        {% for row in onboarding %}
+        <tr>
+          <td>{{ row.date }}</td>
+          <td>{{ row.count }}</td>
+          <td>{{ row.cumulative }}</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:{{ (row.count / max_day_count * 100) | int }}%"></div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No onboarding data in the pilot window.</p>
+    {% endif %}
+  </section>
+
+  <!-- ── 3. Engagement / Login Data ── -->
+  <section>
+    <h2>3. Engagement &amp; Login Data</h2>
+    <p class="note">
+      Login activity is proxied by mood submissions — one per day per user (enforced by
+      <code>can_record_mood</code>). <code>created_at</code> on <code>CareReceipient</code>
+      indicates account creation / onboarding date.
+    </p>
+
+    <h3>Per-user engagement</h3>
+    {% if engagement %}
+    <table>
+      <thead>
+        <tr>
+          <th>Alias</th>
+          <th>Onboarded</th>
+          <th>First check-in</th>
+          <th>Last check-in</th>
+          <th>Check-in days</th>
+          <th>Completion</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in engagement %}
+        <tr>
+          <td>{{ u.alias }}</td>
+          <td>{{ u.onboarded_at }}</td>
+          <td>{{ u.first_checkin or "—" }}</td>
+          <td>{{ u.last_checkin  or "—" }}</td>
+          <td>{{ u.checkin_days }}</td>
+          <td>
+            {% if u.completion_pct >= 70 %}
+              <span class="badge badge-green">{{ u.completion_pct }}%</span>
+            {% elif u.completion_pct >= 30 %}
+              <span class="badge badge-yellow">{{ u.completion_pct }}%</span>
+            {% else %}
+              <span class="badge badge-red">{{ u.completion_pct }}%</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No engagement data.</p>
+    {% endif %}
+
+    <h3>Users who never checked in</h3>
+    {% if never_checked_in %}
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Onboarded</th><th>Age</th></tr>
+      </thead>
+      <tbody>
+        {% for u in never_checked_in %}
+        <tr><td>{{ u.alias }}</td><td>{{ u.onboarded_at }}</td><td>{{ u.age }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">All enrolled users checked in at least once. 🎉</p>
+    {% endif %}
+  </section>
+
+  <!-- ── 4. Consistency Analysis ── -->
+  <section>
+    <h2>4. Consistency Analysis</h2>
+
+    <h3>Check-in frequency distribution</h3>
+    {% if checkin_distribution %}
+    {% set max_bucket = checkin_distribution | map(attribute='count') | max %}
+    {% for b in checkin_distribution %}
+    <div class="bar-wrap">
+      <span class="bar-label">{{ b.bucket }} days</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:{% if max_bucket > 0 %}{{ (b.count / max_bucket * 100) | int }}{% else %}0{% endif %}%"></div>
+      </div>
+      <span class="bar-value">{{ b.count }} users</span>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <h3>Daily check-in trend</h3>
+    {% if daily_checkin_trend %}
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Active users</th><th>Trend</th></tr>
+      </thead>
+      <tbody>
+        {% set max_daily = daily_checkin_trend | map(attribute='users') | max %}
+        {% for row in daily_checkin_trend %}
+        <tr>
+          <td>{{ row.date }}</td>
+          <td>{{ row.users }}</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:{{ (row.users / max_daily * 100) | int }}%"></div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No check-in data in the pilot window.</p>
+    {% endif %}
+
+    <h3>Check-in hour of day</h3>
+    {% if checkin_hour_distribution %}
+    {% set max_hour_count = checkin_hour_distribution | map(attribute='count') | max %}
+    {% for h in checkin_hour_distribution %}
+    <div class="bar-wrap">
+      <span class="bar-label">{{ "%02d:00" | format(h.hour) }}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:{% if max_hour_count > 0 %}{{ (h.count / max_hour_count * 100) | int }}{% else %}0{% endif %}%"></div>
+      </div>
+      <span class="bar-value">{{ h.count }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="note">No hour-of-day data in the pilot window.</p>
+    {% endif %}
+
+    <h3>Week-over-week retention</h3>
+    <p class="note">
+      <strong>Activity retention</strong> compares the count of unique active users in Week 1 vs the final week.
+      <strong>Cohort retention</strong> tracks what % of Week-1 users were still active in the final week.
+    </p>
+    <div class="stat-grid" style="max-width:720px">
+      <div class="stat-card">
+        <div class="value">{{ retention.week1_users }}</div>
+        <div class="label">Week 1 active users<br>(19–25 Apr)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ retention.last_week_users }}</div>
+        <div class="label">Last-week active users<br>(11–17 May)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ "%.1f"|format(retention.activity_retention_rate * 100) }}%</div>
+        <div class="label">Activity retention<br>(Wk 1 → Wk 5)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ cohort_retention.retained_users }}/{{ cohort_retention.week1_users }}</div>
+        <div class="label">Cohort: Wk-1 users<br>still active in Wk 5</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">{{ "%.1f"|format(cohort_retention.cohort_retention_rate * 100) }}%</div>
+        <div class="label">Cohort retention rate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. Mood Distribution ── -->
+  <section>
+    <h2>5. Mood Distribution</h2>
+
+    <h3>Overall breakdown</h3>
+    {% if mood_distribution %}
+    {% set max_mood = mood_distribution | map(attribute='count') | max %}
+    {% for m in mood_distribution %}
+    <div class="bar-wrap">
+      <span class="bar-label" style="text-transform:capitalize">{{ m.mood }}</span>
+      <div class="bar-track">
+        <div class="bar-fill mood-{{ m.mood }}" style="width:{{ (m.count / max_mood * 100) | int }}%"></div>
+      </div>
+      <span class="bar-value">{{ m.count }} ({{ m.pct }}%)</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="note">No mood data in the pilot window.</p>
+    {% endif %}
+
+    <h3>Daily mood breakdown</h3>
+    {% if daily_mood_trend %}
+    <table>
+      <thead>
+        <tr><th>Date</th><th>😊 Happy</th><th>😐 OK</th><th>😢 Sad</th></tr>
+      </thead>
+      <tbody>
+        {% for row in daily_mood_trend %}
+        <tr>
+          <td>{{ row.date }}</td>
+          <td>{{ row.happy }}</td>
+          <td>{{ row.ok }}</td>
+          <td>{{ row.sad }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No daily mood data.</p>
+    {% endif %}
+
+    <h3>Week-by-week mood summary</h3>
+    {% if weekly_mood_trend %}
+    <table>
+      <thead>
+        <tr><th>Week</th><th>😊 Happy</th><th>😐 OK</th><th>😢 Sad</th></tr>
+      </thead>
+      <tbody>
+        {% for row in weekly_mood_trend %}
+        <tr>
+          <td>{{ row.week }}</td>
+          <td>{{ row.happy }}</td>
+          <td>{{ row.ok }}</td>
+          <td>{{ row.sad }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No weekly mood data.</p>
+    {% endif %}
+
+    <h3>Users with ≥2 consecutive sad days</h3>
+    {% if consecutive_sad_users %}
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Age</th><th>Gender</th></tr>
+      </thead>
+      <tbody>
+        {% for u in consecutive_sad_users %}
+        <tr><td>{{ u.alias }}</td><td>{{ u.age }}</td><td>{{ u.gender }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No users with ≥2 consecutive sad days during the pilot.</p>
+    {% endif %}
+  </section>
+
+  <!-- ── 6. Demographics ── -->
+  <section>
+    <h2>6. Participant Demographics</h2>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:24px">
+
+      <div>
+        <h3>Age distribution</h3>
+        <canvas id="ageChart" style="max-height:240px"></canvas>
+        <script>
+          (function() {
+            var labels = [{% for b in demographics.age %}{{ b.age }}{% if not loop.last %},{% endif %}{% endfor %}];
+            var counts = [{% for b in demographics.age %}{{ b.count }}{% if not loop.last %},{% endif %}{% endfor %}];
+            new Chart(document.getElementById('ageChart'), {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Users',
+                  data: counts,
+                  backgroundColor: '#3b82f6',
+                  borderRadius: 3,
+                  barPercentage: 0.6,
+                }]
+              },
+              options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                  x: { title: { display: true, text: 'Age' } },
+                  y: { title: { display: true, text: 'Users' }, ticks: { stepSize: 1 }, beginAtZero: true }
+                }
+              }
+            });
+          })();
+        </script>
+        <noscript>
+          <table>
+            <thead><tr><th>Age</th><th>Users</th></tr></thead>
+            <tbody>
+              {% for b in demographics.age %}
+              <tr><td>{{ b.age }}</td><td>{{ b.count }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </noscript>
+      </div>
+
+      <div>
+        <h3>Gender</h3>
+        {% if demographics.gender %}
+        {% set max_g = demographics.gender | map(attribute='count') | max %}
+        {% for b in demographics.gender %}
+        <div class="bar-wrap">
+          <span class="bar-label">{{ b.label }}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:{{ (b.count / max_g * 100) | int if max_g > 0 else 0 }}%"></div>
+          </div>
+          <span class="bar-value">{{ b.count }}</span>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="note">No gender data.</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <h3>Race</h3>
+        {% if demographics.race %}
+        {% set max_r = demographics.race | map(attribute='count') | max %}
+        {% for b in demographics.race %}
+        <div class="bar-wrap">
+          <span class="bar-label">{{ b.label }}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:{{ (b.count / max_r * 100) | int if max_r > 0 else 0 }}%"></div>
+          </div>
+          <span class="bar-value">{{ b.count }}</span>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="note">No race data.</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <h3>App language</h3>
+        {% if demographics.language %}
+        {% set max_l = demographics.language | map(attribute='count') | max %}
+        {% for b in demographics.language %}
+        <div class="bar-wrap">
+          <span class="bar-label">{{ b.label }}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:{{ (b.count / max_l * 100) | int if max_l > 0 else 0 }}%"></div>
+          </div>
+          <span class="bar-value">{{ b.count }}</span>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="note">No language data.</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 7. Notable Flags ── -->
+  <section>
+    <h2>7. Notable Flags</h2>
+
+    <h3>Suspended users</h3>
+    {% if suspended_users %}
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Onboarded</th><th>Consecutive non-check-ins</th></tr>
+      </thead>
+      <tbody>
+        {% for u in suspended_users %}
+        <tr>
+          <td>{{ u.alias }}</td>
+          <td>{{ u.onboarded_at }}</td>
+          <td><span class="badge badge-red">{{ u.consecutive_non_checkins }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No suspended users during the pilot. ✅</p>
+    {% endif %}
+
+    <h3>High non-check-in users (≥3 consecutive, not suspended)</h3>
+    {% if high_non_checkin_users %}
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Consecutive non-check-ins</th><th>Consecutive check-ins</th></tr>
+      </thead>
+      <tbody>
+        {% for u in high_non_checkin_users %}
+        <tr>
+          <td>{{ u.alias }}</td>
+          <td><span class="badge badge-yellow">{{ u.consecutive_non_checkins }}</span></td>
+          <td>{{ u.consecutive_checkins }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No users with ≥3 consecutive non-check-ins (excluding suspended). ✅</p>
+    {% endif %}
+
+    <h3>Early drop-offs (active Week 1 but absent in final week)</h3>
+    {% if early_dropoffs %}
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Age</th></tr>
+      </thead>
+      <tbody>
+        {% for u in early_dropoffs %}
+        <tr><td>{{ u.alias }}</td><td>{{ u.age }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="note">No users dropped off between Week 1 and the final week. 🎉</p>
+    {% endif %}
+
+  </section>
+
+</main>
+
+<footer>
+  Auto-generated by <strong>scripts/pilot/report.py</strong> · {{ generated_at }}
+</footer>
+
+</body>
+</html>

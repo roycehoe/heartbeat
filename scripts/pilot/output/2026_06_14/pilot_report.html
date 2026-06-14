@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Heartbeat Pilot Program Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger:  #dc2626;
+      --neutral: #6b7280;
+      --border:  #e5e7eb;
+      --bg:      #f9fafb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #111827;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 32px 48px 24px;
+    }
+
+    header h1 { font-size: 1.75rem; margin-bottom: 4px; }
+    header p  { opacity: .85; font-size: .95rem; }
+
+    main { max-width: 1100px; margin: 32px auto; padding: 0 24px 48px; }
+
+    /* ── Section ── */
+    section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+    }
+
+    section h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    section h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 10px;
+      color: #374151;
+    }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+
+    .stat-card {
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 16px 20px;
+      text-align: center;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-card .label {
+      font-size: .8rem;
+      color: var(--neutral);
+      margin-top: 4px;
+    }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      margin-top: 8px;
+    }
+
+    th {
+      background: #f3f4f6;
+      text-align: left;
+      padding: 9px 12px;
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--neutral);
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #fafafa; }
+
+    /* ── Bar chart (CSS) ── */
+    .bar-wrap { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+    .bar-label { width: 70px; font-size: .82rem; color: #374151; flex-shrink: 0; }
+    .bar-track { flex: 1; background: #e5e7eb; border-radius: 4px; height: 18px; }
+    .bar-fill  { height: 100%; border-radius: 4px; background: var(--primary); }
+    .bar-value { width: 44px; text-align: right; font-size: .82rem; color: var(--neutral); flex-shrink: 0; }
+
+    /* ── Mood colours ── */
+    .mood-happy { background: #86efac; }
+    .mood-ok    { background: #fde68a; }
+    .mood-sad   { background: #fca5a5; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+
+    .badge-green  { background: #dcfce7; color: var(--success); }
+    .badge-yellow { background: #fef9c3; color: var(--warning); }
+    .badge-red    { background: #fee2e2; color: var(--danger);  }
+
+    .note { font-size: .85rem; color: var(--neutral); margin-top: 8px; }
+
+    footer {
+      text-align: center;
+      font-size: .8rem;
+      color: var(--neutral);
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Heartbeat Pilot Program Report</h1>
+  <p>Pilot period: 19 Apr 2026 – 17 May 2026 &nbsp;(29 days) &nbsp;·&nbsp; Generated: 14 Jun 2026</p>
+</header>
+
+<main>
+
+  <!-- ── 1. Executive Summary ── -->
+  <section>
+    <h2>1. Executive Summary</h2>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="value">23</div>
+        <div class="label">Total enrolled</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">19</div>
+        <div class="label">Participated (≥1 check-in)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">82.6%</div>
+        <div class="label">Participation rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">0</div>
+        <div class="label">Never checked in</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">6.3</div>
+        <div class="label">Avg check-in days</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. Onboarding Timeline ── -->
+  <section>
+    <h2>2. Onboarding Timeline</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>New users</th>
+          <th>Cumulative</th>
+          <th>Trend</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+        <tr>
+          <td>2026-04-19</td>
+          <td>19</td>
+          <td>19</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:100%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-13</td>
+          <td>1</td>
+          <td>20</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:5%"></div>
+            </div>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+  </section>
+
+  <!-- ── 3. Engagement / Login Data ── -->
+  <section>
+    <h2>3. Engagement &amp; Login Data</h2>
+    <p class="note">
+      Login activity is proxied by mood submissions — one per day per user (enforced by
+      <code>can_record_mood</code>). <code>created_at</code> on <code>CareReceipient</code>
+      indicates account creation / onboarding date.
+    </p>
+
+    <h3>Per-user engagement</h3>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Alias</th>
+          <th>Onboarded</th>
+          <th>First check-in</th>
+          <th>Last check-in</th>
+          <th>Check-in days</th>
+          <th>Completion</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>Zh</td>
+          <td>2026-02-18</td>
+          <td>2026-04-19</td>
+          <td>2026-04-22</td>
+          <td>2</td>
+          <td>
+            
+              <span class="badge badge-red">6.9%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>JW</td>
+          <td>2026-02-26</td>
+          <td>—</td>
+          <td>—</td>
+          <td>0</td>
+          <td>
+            
+              <span class="badge badge-red">0.0%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Test</td>
+          <td>2026-03-08</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>1</td>
+          <td>
+            
+              <span class="badge badge-red">3.4%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>PN</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>1</td>
+          <td>
+            
+              <span class="badge badge-red">3.4%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Dad</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>1</td>
+          <td>
+            
+              <span class="badge badge-red">3.4%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Lily</td>
+          <td>2026-04-19</td>
+          <td>—</td>
+          <td>—</td>
+          <td>0</td>
+          <td>
+            
+              <span class="badge badge-red">0.0%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Derrick</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-05-12</td>
+          <td>17</td>
+          <td>
+            
+              <span class="badge badge-yellow">58.6%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Mom</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-21</td>
+          <td>2</td>
+          <td>
+            
+              <span class="badge badge-red">6.9%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Choon Lee</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-05-12</td>
+          <td>22</td>
+          <td>
+            
+              <span class="badge badge-green">75.9%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Nil</td>
+          <td>2026-04-19</td>
+          <td>—</td>
+          <td>—</td>
+          <td>0</td>
+          <td>
+            
+              <span class="badge badge-red">0.0%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Ting Ja</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-05-12</td>
+          <td>20</td>
+          <td>
+            
+              <span class="badge badge-yellow">69.0%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Cheng</td>
+          <td>2026-04-19</td>
+          <td>2026-04-22</td>
+          <td>2026-04-24</td>
+          <td>2</td>
+          <td>
+            
+              <span class="badge badge-red">6.9%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Lily</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-05-13</td>
+          <td>15</td>
+          <td>
+            
+              <span class="badge badge-yellow">51.7%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Sharon</td>
+          <td>2026-04-19</td>
+          <td>2026-04-26</td>
+          <td>2026-05-13</td>
+          <td>4</td>
+          <td>
+            
+              <span class="badge badge-red">13.8%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>KI</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>1</td>
+          <td>
+            
+              <span class="badge badge-red">3.4%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>vl</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-27</td>
+          <td>7</td>
+          <td>
+            
+              <span class="badge badge-red">24.1%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>it</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-26</td>
+          <td>6</td>
+          <td>
+            
+              <span class="badge badge-red">20.7%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>pl</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-26</td>
+          <td>8</td>
+          <td>
+            
+              <span class="badge badge-red">27.6%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Liau Chock Moi </td>
+          <td>2026-04-19</td>
+          <td>—</td>
+          <td>—</td>
+          <td>0</td>
+          <td>
+            
+              <span class="badge badge-red">0.0%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>KI</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>1</td>
+          <td>
+            
+              <span class="badge badge-red">3.4%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>nil</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-05-13</td>
+          <td>17</td>
+          <td>
+            
+              <span class="badge badge-yellow">58.6%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>nil</td>
+          <td>2026-04-19</td>
+          <td>2026-04-19</td>
+          <td>2026-05-13</td>
+          <td>17</td>
+          <td>
+            
+              <span class="badge badge-yellow">58.6%</span>
+            
+          </td>
+        </tr>
+        
+        <tr>
+          <td>Daniel</td>
+          <td>2026-05-13</td>
+          <td>2026-05-13</td>
+          <td>2026-05-13</td>
+          <td>1</td>
+          <td>
+            
+              <span class="badge badge-red">20.0%</span>
+            
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+
+    <h3>Users who never checked in</h3>
+    
+    <p class="note">All enrolled users checked in at least once. 🎉</p>
+    
+  </section>
+
+  <!-- ── 4. Consistency Analysis ── -->
+  <section>
+    <h2>4. Consistency Analysis</h2>
+
+    <h3>Check-in frequency distribution</h3>
+    
+    
+    
+    <div class="bar-wrap">
+      <span class="bar-label">0 days</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:33%"></div>
+      </div>
+      <span class="bar-value">4 users</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">1–7 days</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:100%"></div>
+      </div>
+      <span class="bar-value">12 users</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">8–14 days</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:8%"></div>
+      </div>
+      <span class="bar-value">1 users</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">15–21 days</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:41%"></div>
+      </div>
+      <span class="bar-value">5 users</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">22–29 days</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:8%"></div>
+      </div>
+      <span class="bar-value">1 users</span>
+    </div>
+    
+    
+
+    <h3>Daily check-in trend</h3>
+    
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Active users</th><th>Trend</th></tr>
+      </thead>
+      <tbody>
+        
+        
+        <tr>
+          <td>2026-04-19</td>
+          <td>16</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:100%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-20</td>
+          <td>4</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:25%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-21</td>
+          <td>8</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:50%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-22</td>
+          <td>9</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:56%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-23</td>
+          <td>6</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:37%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-24</td>
+          <td>10</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:62%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-25</td>
+          <td>9</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:56%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-26</td>
+          <td>8</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:50%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-27</td>
+          <td>4</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:25%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-28</td>
+          <td>4</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:25%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-29</td>
+          <td>4</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:25%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-30</td>
+          <td>6</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:37%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-01</td>
+          <td>1</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:6%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-02</td>
+          <td>3</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:18%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-03</td>
+          <td>3</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:18%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-04</td>
+          <td>4</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:25%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-05</td>
+          <td>6</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:37%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-06</td>
+          <td>5</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:31%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-07</td>
+          <td>5</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:31%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-08</td>
+          <td>6</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:37%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-09</td>
+          <td>4</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:25%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-10</td>
+          <td>6</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:37%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-11</td>
+          <td>3</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:18%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-12</td>
+          <td>6</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:37%"></div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-13</td>
+          <td>5</td>
+          <td>
+            <div class="bar-track" style="width:160px">
+              <div class="bar-fill" style="width:31%"></div>
+            </div>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+
+    <h3>Check-in hour of day</h3>
+    
+    
+    
+    <div class="bar-wrap">
+      <span class="bar-label">00:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:42%"></div>
+      </div>
+      <span class="bar-value">17</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">01:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:37%"></div>
+      </div>
+      <span class="bar-value">15</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">02:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:52%"></div>
+      </div>
+      <span class="bar-value">21</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">03:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:42%"></div>
+      </div>
+      <span class="bar-value">17</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">04:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:20%"></div>
+      </div>
+      <span class="bar-value">8</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">05:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:17%"></div>
+      </div>
+      <span class="bar-value">7</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">06:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:2%"></div>
+      </div>
+      <span class="bar-value">1</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">07:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:7%"></div>
+      </div>
+      <span class="bar-value">3</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">08:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:2%"></div>
+      </div>
+      <span class="bar-value">1</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">09:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:5%"></div>
+      </div>
+      <span class="bar-value">2</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">10:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:5%"></div>
+      </div>
+      <span class="bar-value">2</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">12:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:7%"></div>
+      </div>
+      <span class="bar-value">3</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">14:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:2%"></div>
+      </div>
+      <span class="bar-value">1</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">16:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:2%"></div>
+      </div>
+      <span class="bar-value">1</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">21:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:15%"></div>
+      </div>
+      <span class="bar-value">6</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">22:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:100%"></div>
+      </div>
+      <span class="bar-value">40</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label">23:00</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:60%"></div>
+      </div>
+      <span class="bar-value">24</span>
+    </div>
+    
+    
+
+    <h3>Week-over-week retention</h3>
+    <p class="note">
+      <strong>Activity retention</strong> compares the count of unique active users in Week 1 vs the final week.
+      <strong>Cohort retention</strong> tracks what % of Week-1 users were still active in the final week.
+    </p>
+    <div class="stat-grid" style="max-width:720px">
+      <div class="stat-card">
+        <div class="value">17</div>
+        <div class="label">Week 1 active users<br>(19–25 Apr)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">8</div>
+        <div class="label">Last-week active users<br>(11–17 May)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">47.1%</div>
+        <div class="label">Activity retention<br>(Wk 1 → Wk 5)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">6/18</div>
+        <div class="label">Cohort: Wk-1 users<br>still active in Wk 5</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">33.3%</div>
+        <div class="label">Cohort retention rate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. Mood Distribution ── -->
+  <section>
+    <h2>5. Mood Distribution</h2>
+
+    <h3>Overall breakdown</h3>
+    
+    
+    
+    <div class="bar-wrap">
+      <span class="bar-label" style="text-transform:capitalize">happy</span>
+      <div class="bar-track">
+        <div class="bar-fill mood-happy" style="width:100%"></div>
+      </div>
+      <span class="bar-value">159 (94.1%)</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label" style="text-transform:capitalize">ok</span>
+      <div class="bar-track">
+        <div class="bar-fill mood-ok" style="width:3%"></div>
+      </div>
+      <span class="bar-value">6 (3.6%)</span>
+    </div>
+    
+    <div class="bar-wrap">
+      <span class="bar-label" style="text-transform:capitalize">sad</span>
+      <div class="bar-track">
+        <div class="bar-fill mood-sad" style="width:2%"></div>
+      </div>
+      <span class="bar-value">4 (2.4%)</span>
+    </div>
+    
+    
+
+    <h3>Daily mood breakdown</h3>
+    
+    <table>
+      <thead>
+        <tr><th>Date</th><th>😊 Happy</th><th>😐 OK</th><th>😢 Sad</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>2026-04-19</td>
+          <td>23</td>
+          <td>1</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-20</td>
+          <td>4</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-21</td>
+          <td>8</td>
+          <td>1</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-22</td>
+          <td>9</td>
+          <td>0</td>
+          <td>1</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-23</td>
+          <td>6</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-24</td>
+          <td>10</td>
+          <td>0</td>
+          <td>1</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-25</td>
+          <td>10</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-26</td>
+          <td>7</td>
+          <td>1</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-27</td>
+          <td>5</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-28</td>
+          <td>4</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-29</td>
+          <td>5</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-04-30</td>
+          <td>6</td>
+          <td>0</td>
+          <td>1</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-01</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-02</td>
+          <td>4</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-03</td>
+          <td>4</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-04</td>
+          <td>3</td>
+          <td>1</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-05</td>
+          <td>8</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-06</td>
+          <td>5</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-07</td>
+          <td>4</td>
+          <td>1</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-08</td>
+          <td>7</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-09</td>
+          <td>5</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-10</td>
+          <td>7</td>
+          <td>1</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-11</td>
+          <td>3</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-12</td>
+          <td>7</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>2026-05-13</td>
+          <td>4</td>
+          <td>0</td>
+          <td>1</td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+
+    <h3>Week-by-week mood summary</h3>
+    
+    <table>
+      <thead>
+        <tr><th>Week</th><th>😊 Happy</th><th>😐 OK</th><th>😢 Sad</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>Wk 1 (19–25 Apr)</td>
+          <td>70</td>
+          <td>2</td>
+          <td>2</td>
+        </tr>
+        
+        <tr>
+          <td>Wk 2 (26 Apr–2 May)</td>
+          <td>32</td>
+          <td>1</td>
+          <td>1</td>
+        </tr>
+        
+        <tr>
+          <td>Wk 3 (3–9 May)</td>
+          <td>36</td>
+          <td>2</td>
+          <td>0</td>
+        </tr>
+        
+        <tr>
+          <td>Wk 4 (10–16 May)</td>
+          <td>21</td>
+          <td>1</td>
+          <td>1</td>
+        </tr>
+        
+        <tr>
+          <td>Wk 5 (17 May)</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+
+    <h3>Users with ≥2 consecutive sad days</h3>
+    
+    <p class="note">No users with ≥2 consecutive sad days during the pilot.</p>
+    
+  </section>
+
+  <!-- ── 6. Demographics ── -->
+  <section>
+    <h2>6. Participant Demographics</h2>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:24px">
+
+      <div>
+        <h3>Age distribution</h3>
+        <canvas id="ageChart" style="max-height:240px"></canvas>
+        <script>
+          (function() {
+            var labels = [61,66,67,68,70,71,77,79,82,83,86,90];
+            var counts = [1,1,3,4,4,1,2,1,1,1,2,2];
+            new Chart(document.getElementById('ageChart'), {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Users',
+                  data: counts,
+                  backgroundColor: '#3b82f6',
+                  borderRadius: 3,
+                  barPercentage: 0.6,
+                }]
+              },
+              options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                  x: { title: { display: true, text: 'Age' } },
+                  y: { title: { display: true, text: 'Users' }, ticks: { stepSize: 1 }, beginAtZero: true }
+                }
+              }
+            });
+          })();
+        </script>
+        <noscript>
+          <table>
+            <thead><tr><th>Age</th><th>Users</th></tr></thead>
+            <tbody>
+              
+              <tr><td>61</td><td>1</td></tr>
+              
+              <tr><td>66</td><td>1</td></tr>
+              
+              <tr><td>67</td><td>3</td></tr>
+              
+              <tr><td>68</td><td>4</td></tr>
+              
+              <tr><td>70</td><td>4</td></tr>
+              
+              <tr><td>71</td><td>1</td></tr>
+              
+              <tr><td>77</td><td>2</td></tr>
+              
+              <tr><td>79</td><td>1</td></tr>
+              
+              <tr><td>82</td><td>1</td></tr>
+              
+              <tr><td>83</td><td>1</td></tr>
+              
+              <tr><td>86</td><td>2</td></tr>
+              
+              <tr><td>90</td><td>2</td></tr>
+              
+            </tbody>
+          </table>
+        </noscript>
+      </div>
+
+      <div>
+        <h3>Gender</h3>
+        
+        
+        
+        <div class="bar-wrap">
+          <span class="bar-label">Female</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:100%"></div>
+          </div>
+          <span class="bar-value">17</span>
+        </div>
+        
+        <div class="bar-wrap">
+          <span class="bar-label">Male</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:35%"></div>
+          </div>
+          <span class="bar-value">6</span>
+        </div>
+        
+        
+      </div>
+
+      <div>
+        <h3>Race</h3>
+        
+        
+        
+        <div class="bar-wrap">
+          <span class="bar-label">Chinese</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:100%"></div>
+          </div>
+          <span class="bar-value">23</span>
+        </div>
+        
+        
+      </div>
+
+      <div>
+        <h3>App language</h3>
+        
+        
+        
+        <div class="bar-wrap">
+          <span class="bar-label">English</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:100%"></div>
+          </div>
+          <span class="bar-value">14</span>
+        </div>
+        
+        <div class="bar-wrap">
+          <span class="bar-label">Chinese</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:64%"></div>
+          </div>
+          <span class="bar-value">9</span>
+        </div>
+        
+        
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 7. Notable Flags ── -->
+  <section>
+    <h2>7. Notable Flags</h2>
+
+    <h3>Suspended users</h3>
+    
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Onboarded</th><th>Consecutive non-check-ins</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>JW</td>
+          <td>2026-02-26</td>
+          <td><span class="badge badge-red">75</span></td>
+        </tr>
+        
+        <tr>
+          <td>Nil</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">24</span></td>
+        </tr>
+        
+        <tr>
+          <td>Liau Chock Moi </td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">24</span></td>
+        </tr>
+        
+        <tr>
+          <td>Lily</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">24</span></td>
+        </tr>
+        
+        <tr>
+          <td>KI</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">23</span></td>
+        </tr>
+        
+        <tr>
+          <td>KI</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">23</span></td>
+        </tr>
+        
+        <tr>
+          <td>Dad</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">23</span></td>
+        </tr>
+        
+        <tr>
+          <td>PN</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">23</span></td>
+        </tr>
+        
+        <tr>
+          <td>Test</td>
+          <td>2026-03-08</td>
+          <td><span class="badge badge-red">23</span></td>
+        </tr>
+        
+        <tr>
+          <td>Mom</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">21</span></td>
+        </tr>
+        
+        <tr>
+          <td>Zh</td>
+          <td>2026-02-18</td>
+          <td><span class="badge badge-red">20</span></td>
+        </tr>
+        
+        <tr>
+          <td>Cheng</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">18</span></td>
+        </tr>
+        
+        <tr>
+          <td>it</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">16</span></td>
+        </tr>
+        
+        <tr>
+          <td>pl</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">16</span></td>
+        </tr>
+        
+        <tr>
+          <td>vl</td>
+          <td>2026-04-19</td>
+          <td><span class="badge badge-red">15</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+
+    <h3>High non-check-in users (≥3 consecutive, not suspended)</h3>
+    
+    <p class="note">No users with ≥3 consecutive non-check-ins (excluding suspended). ✅</p>
+    
+
+    <h3>Early drop-offs (active Week 1 but absent in final week)</h3>
+    
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Age</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr><td>it</td><td>67</td></tr>
+        
+        <tr><td>Zh</td><td>77</td></tr>
+        
+        <tr><td>vl</td><td>68</td></tr>
+        
+        <tr><td>KI</td><td>68</td></tr>
+        
+        <tr><td>Test</td><td>67</td></tr>
+        
+        <tr><td>KI</td><td>68</td></tr>
+        
+        <tr><td>Dad</td><td>83</td></tr>
+        
+        <tr><td>pl</td><td>71</td></tr>
+        
+        <tr><td>PN</td><td>61</td></tr>
+        
+        <tr><td>Cheng</td><td>77</td></tr>
+        
+        <tr><td>Mom</td><td>79</td></tr>
+        
+      </tbody>
+    </table>
+    
+
+  </section>
+
+</main>
+
+<footer>
+  Auto-generated by <strong>scripts/pilot/report.py</strong> · 14 Jun 2026
+</footer>
+
+</body>
+</html>
