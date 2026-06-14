@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .image-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        img {
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Title -->
+    <h1>{{ title }}</h1>
+
+    <!-- Optional Image -->
+    {% if image_path %}
+    <div class="image-container">
+        <img src="{{ image_path }}" alt="Report Image">
+    </div>
+    {% endif %}
+
+    <p>Hi Constituency Managers/Coordinators,</p>
+
+    <p>Please find the weekly user report listed below:</p>
+
+    <!-- Compliance Rate -->
+    <h2>Summary Statistics</h2>
+    <p>Compliance Rate: {{ compliance_rate }} </p>
+
+    <!-- Sad Users: Dynamic Table -->
+    <h2>Sad Users</h2>
+    <p>Users who are sad for 2 consecutive days or more</p>
+    {% if sad_users_last_7_days %}
+    <table>
+        <thead>
+            <tr>
+                {% for col in sad_users_last_7_days.cols %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in sad_users_last_7_days.rows %}
+            <tr>
+                {% for value in row %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p><i>No data available.</i></p>
+    {% endif %}
+
+    <p>Please do not reply to this thread as this is an auto-generated email. Do reach out to the Heartbeat team directly if there are any concerns. Thank you!</p>
+
+    <p>Best,<br>Heartbeat Team</p>
+
+</body>
+</html>
