@@ -219,6 +219,9 @@ class CRUDMagicLinkToken:
             select(MagicLinkToken).where(MagicLinkToken.token == token)
         ).first()
 
+    def get_by_id(self, magic_link_token_id: int) -> MagicLinkToken | None:
+        return self.session.get(MagicLinkToken, magic_link_token_id)
+
     def get_by_care_receipient_id(
         self, care_receipient_id: int
     ) -> MagicLinkToken | None:
