@@ -45,7 +45,6 @@ export interface CareReceipientMoodRequest {
 export interface CareReceipientDetailOut {
   care_receipient_id: number;
   name: string;
-  alias: string;
   age_range: AgeRange;
   race: Race;
   gender: Gender;
@@ -85,7 +84,6 @@ export interface CareReceipientCreateRequest {
   contactNumber: number;
   name: string;
   age_range: AgeRange;
-  alias: string;
   race: Race;
   appLanguage: AppLanguage;
   gender: Gender;

@@ -35,7 +35,6 @@ class CareReceipientDashboardMoodData(BaseModel):
 class GetCareReceipientDashboardResponse(BaseModel):
     care_receipient_id: int
     name: str
-    alias: str
     age_range: AgeRange
     race: Race
     gender: Gender
@@ -73,7 +72,6 @@ class CareReceipientDetailMoodData(BaseModel):
 class GetCareReceipientDetailResponse(BaseModel):
     care_receipient_id: int
     name: str
-    alias: str
     age_range: AgeRange
     race: Race
     gender: Gender
@@ -97,7 +95,6 @@ class GetCareReceipientDetailResponse(BaseModel):
 class CareReceipientCreateRequest(BaseModel):
     name: str
     contact_number: int = Field(..., alias="contactNumber")
-    alias: str
     age_range: AgeRange
     race: Race
     gender: Gender

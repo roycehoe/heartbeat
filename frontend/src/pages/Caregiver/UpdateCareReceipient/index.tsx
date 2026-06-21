@@ -29,7 +29,6 @@ function dashboardDataToUpdateCareReceipientFormData(
     contactNumber: dashboardData.contact_number,
     name: dashboardData.name,
     age_range: dashboardData.age_range,
-    alias: dashboardData.alias,
     race: dashboardData.race,
     gender: dashboardData.gender,
     appLanguage: dashboardData.app_language,

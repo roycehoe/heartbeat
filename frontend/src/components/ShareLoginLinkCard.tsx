@@ -22,13 +22,13 @@ import { usePostRevokeMagicLink } from "@/api/postRevokeMagicLink";
 
 interface ShareLoginLinkCardProps {
   loginLink: string;
-  alias: string;
+  name: string;
   careReceipientId: number;
 }
 
 const ShareLoginLinkCard = ({
   loginLink,
-  alias,
+  name,
   careReceipientId,
 }: ShareLoginLinkCardProps) => {
   const [isRevokeModalOpen, setIsRevokeModalOpen] = React.useState(false);
@@ -43,7 +43,7 @@ const ShareLoginLinkCard = ({
       await navigator.clipboard.writeText(loginLink);
       toast({
         title: "Link copied to clipboard",
-        description: `Share it with ${alias} to let them log in`,
+        description: `Share it with ${name} to let them log in`,
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -94,7 +94,7 @@ const ShareLoginLinkCard = ({
           <VStack spacing={3} align="stretch">
             <HStack>
               <LinkIcon color="blue.500" />
-              <Heading size="xs">{alias}'s Login Link</Heading>
+              <Heading size="xs">{name}'s Login Link</Heading>
             </HStack>
             <Box
               bg="white"
@@ -115,7 +115,7 @@ const ShareLoginLinkCard = ({
               colorScheme="blue"
               leftIcon={<CopyIcon />}
               onClick={handleCopy}
-              aria-label={`Copy login link for ${alias}`}
+              aria-label={`Copy login link for ${name}`}
             >
               Copy link
             </Button>
@@ -125,7 +125,7 @@ const ShareLoginLinkCard = ({
               variant="outline"
               colorScheme="red"
               onClick={() => setIsRevokeModalOpen(true)}
-              aria-label={`Revoke login link for ${alias}`}
+              aria-label={`Revoke login link for ${name}`}
             >
               Revoke link
             </Button>
@@ -143,7 +143,7 @@ const ShareLoginLinkCard = ({
           <ModalHeader>Revoke login link?</ModalHeader>
           <ModalBody>
             <Text fontSize="sm" color="gray.700">
-              This will invalidate {alias}'s current link and generate a new
+              This will invalidate {name}'s current link and generate a new
               one. Their phone shortcut will stop working until they save the
               new link.
             </Text>

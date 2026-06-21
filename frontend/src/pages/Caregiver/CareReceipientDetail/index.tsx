@@ -209,7 +209,7 @@ const CareReceipientDetail = () => {
           <Heading size="sm" color="#8080808C">
             Profile
           </Heading>
-          <Heading size="sm">{careReceipientData.alias}</Heading>
+          <Heading size="sm">{careReceipientData.name}</Heading>
         </Box>
         {getSadDaysCount(careReceipientData.moods.slice(0, 7)) > 2 && (
           <Banner size="sm" variant="error">
@@ -222,7 +222,7 @@ const CareReceipientDetail = () => {
         {loginUrlData?.url && (
           <ShareLoginLinkCard
             loginLink={loginUrlData.url}
-            alias={careReceipientData.alias}
+            name={careReceipientData.name}
             careReceipientId={careReceipientData.care_receipient_id}
           />
         )}
@@ -242,7 +242,6 @@ const CareReceipientDetail = () => {
             contactNumber: careReceipientData.contact_number,
             name: careReceipientData.name,
             age_range: careReceipientData.age_range,
-            alias: careReceipientData.alias,
             race: careReceipientData.race,
             gender: careReceipientData.gender,
             appLanguage: careReceipientData.app_language,

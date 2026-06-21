@@ -42,13 +42,6 @@ export const UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
     ],
     placeholder: AgeRange.UNDER_45,
   },
-  alias: {
-    formLabel: "Alias",
-    isRequired: true,
-    type: "text",
-    options: [],
-    placeholder: "JJ",
-  },
   race: {
     formLabel: "Race",
     isRequired: true,
@@ -131,13 +124,6 @@ export const VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
       AgeRange.R85_PLUS,
     ],
     placeholder: AgeRange.UNDER_45,
-  },
-  alias: {
-    formLabel: "Alias",
-    isRequired: true,
-    type: "text",
-    options: [],
-    placeholder: "JJ",
   },
   race: {
     formLabel: "Race",

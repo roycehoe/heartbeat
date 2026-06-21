@@ -24,13 +24,6 @@ export function getSubmitUpdateCareReceipientFormErrorMessage(
     return "Age range is required.";
   }
 
-  if (!userForm.alias) {
-    return "Alias is required.";
-  }
-  if (userForm.alias.length > 12) {
-    return "Alias must be less than 12 characters.";
-  }
-
   if (!userForm.postalCode) {
     return "Postal code is required.";
   } else if (!/^\d{6}$/.test(userForm.postalCode)) {
