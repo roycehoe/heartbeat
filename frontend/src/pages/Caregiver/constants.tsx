@@ -1,4 +1,4 @@
-import { AppLanguage, Gender, Race } from "@/api/types";
+import { AgeRange, AppLanguage, Gender, Race } from "@/api/types";
 import { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
 import { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
 
@@ -28,12 +28,19 @@ export const UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
     options: [],
     placeholder: "91234567",
   },
-  age: {
-    formLabel: "Age",
+  age_range: {
+    formLabel: "Age Range",
     isRequired: true,
-    type: "number",
-    options: [],
-    placeholder: "67",
+    type: "select",
+    options: [
+      AgeRange.UNDER_45,
+      AgeRange.R45_54,
+      AgeRange.R55_64,
+      AgeRange.R65_74,
+      AgeRange.R75_84,
+      AgeRange.R85_PLUS,
+    ],
+    placeholder: AgeRange.UNDER_45,
   },
   alias: {
     formLabel: "Alias",
@@ -111,12 +118,19 @@ export const VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
     options: [],
     placeholder: "91234567",
   },
-  age: {
-    formLabel: "Age",
+  age_range: {
+    formLabel: "Age Range",
     isRequired: true,
-    type: "number",
-    options: [],
-    placeholder: "67",
+    type: "select",
+    options: [
+      AgeRange.UNDER_45,
+      AgeRange.R45_54,
+      AgeRange.R55_64,
+      AgeRange.R65_74,
+      AgeRange.R75_84,
+      AgeRange.R85_PLUS,
+    ],
+    placeholder: AgeRange.UNDER_45,
   },
   alias: {
     formLabel: "Alias",

@@ -241,7 +241,7 @@ const CareReceipientDetail = () => {
           createCareReceipientForm={{
             contactNumber: careReceipientData.contact_number,
             name: careReceipientData.name,
-            age: careReceipientData.age,
+            age_range: careReceipientData.age_range,
             alias: careReceipientData.alias,
             race: careReceipientData.race,
             gender: careReceipientData.gender,
