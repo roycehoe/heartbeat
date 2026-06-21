@@ -230,7 +230,6 @@ def get_care_receipient_dashboard_response(
         return GetCareReceipientDashboardResponse(
             care_receipient_id=care_receipient_id,
             name=care_receipient.name,
-            alias=care_receipient.alias,
             age_range=care_receipient.age_range,
             race=care_receipient.race,
             gender=care_receipient.gender,
@@ -368,7 +367,6 @@ def get_create_care_receipient_response(
             name=request.name,
             contact_number=str(request.contact_number),
             age_range=request.age_range,
-            alias=request.alias,
             app_language=request.app_language,
             race=request.race,
             gender=request.gender,
@@ -522,7 +520,6 @@ def get_care_receipient_response(
             care_receipient_id=care_receipient.id,
             contact_number=int(care_receipient.contact_number),
             name=care_receipient.name,
-            alias=care_receipient.alias,
             age_range=care_receipient.age_range,
             race=care_receipient.race,
             gender=care_receipient.gender,

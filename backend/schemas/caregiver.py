@@ -35,7 +35,6 @@ class CaregiverDashboardMoodData(BaseModel):
 class CaregiverDashboardData(BaseModel):
     care_receipient_id: int
     name: str
-    alias: str
     age_range: AgeRange
     race: Race
     gender: Gender

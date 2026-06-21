@@ -23,7 +23,6 @@ class CareReceipient(SQLModel, table=True):
             EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET), nullable=False
         )
     )
-    alias: str
     app_language: str
     age_range: str
     race: str

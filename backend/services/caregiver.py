@@ -91,7 +91,6 @@ def get_care_receipient_dashboard_response(
     return CaregiverDashboardData(
         care_receipient_id=care_receipient_id,
         name=care_receipient.name,
-        alias=care_receipient.alias,
         age_range=care_receipient.age_range,
         race=care_receipient.race,
         gender=care_receipient.gender,
@@ -134,7 +133,6 @@ def get_caregiver_dashboard_response(
                 care_receipient_id=care_receipient.id,
                 contact_number=int(care_receipient.contact_number),
                 name=care_receipient.name,
-                alias=care_receipient.alias,
                 age_range=care_receipient.age_range,
                 race=care_receipient.race,
                 gender=care_receipient.gender,
