@@ -20,8 +20,8 @@ export function getSubmitUpdateCareReceipientFormErrorMessage(
     return "Name is required.";
   }
 
-  if (!userForm.age) {
-    return "Age is required.";
+  if (!userForm.age_range) {
+    return "Age range is required.";
   }
 
   if (!userForm.alias) {

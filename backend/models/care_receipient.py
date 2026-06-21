@@ -25,7 +25,7 @@ class CareReceipient(SQLModel, table=True):
     )
     alias: str
     app_language: str
-    age: int
+    age_range: str
     race: str
     gender: str
     postal_code: int

@@ -23,6 +23,15 @@ export enum AppLanguage {
   TAMIL = "Tamil",
 }
 
+export enum AgeRange {
+  UNDER_45 = "<45",
+  R45_54 = "45-54",
+  R55_64 = "55-64",
+  R65_74 = "65-74",
+  R75_84 = "75-84",
+  R85_PLUS = "85+",
+}
+
 export interface CareReceipientDetailMoodOut {
   mood: SelectedMood | undefined;
   care_receipient_id: number;
@@ -37,7 +46,7 @@ export interface CareReceipientDetailOut {
   care_receipient_id: number;
   name: string;
   alias: string;
-  age: number;
+  age_range: AgeRange;
   race: Race;
   gender: Gender;
   postal_code: number;
@@ -75,7 +84,7 @@ export interface CaregiverToken {
 export interface CareReceipientCreateRequest {
   contactNumber: number;
   name: string;
-  age: number;
+  age_range: AgeRange;
   alias: string;
   race: Race;
   appLanguage: AppLanguage;

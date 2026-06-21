@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from enums import Gender, Race, SelectedMood
+from enums import AgeRange, Gender, Race, SelectedMood
 
 
 class CaregiverLogInRequest(BaseModel):
@@ -36,7 +36,7 @@ class CaregiverDashboardData(BaseModel):
     care_receipient_id: int
     name: str
     alias: str
-    age: int
+    age_range: AgeRange
     race: Race
     gender: Gender
     postal_code: int

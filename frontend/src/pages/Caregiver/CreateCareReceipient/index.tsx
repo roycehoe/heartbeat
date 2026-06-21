@@ -28,7 +28,7 @@ export interface CreateCareReceipientForm extends CareReceipientCreateRequest {
 const DEFAULT_CREATE_CARE_RECEIPIENT_FORM: CreateCareReceipientForm = {
   contactNumber: "",
   name: "",
-  age: "",
+  age_range: "",
   alias: "",
   race: Race.CHINESE,
   gender: Gender.MALE,
