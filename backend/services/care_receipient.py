@@ -34,7 +34,7 @@ from schemas.care_receipient import (
 )
 from settings import AppSettings
 from utils.mood import get_admin_dashboard_moods_out
-from utils.token import create_access_token, get_token_data
+from utils.token import create_access_token, get_optional_token_data, get_token_data
 from utils.whatsapp import get_consecutive_sad_moods_whatsapp_message_data
 from gateway import send_whatsapp_message
 
@@ -201,10 +201,27 @@ def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
     return care_receipient.can_record_mood
 
 
+def _authenticate_care_receipient(
+    care_receipient_id: int, token: str, db: Session
+) -> None:
+    """Reject the request unless the caller's token belongs to this care receipient
+    and the magic-link session that issued it has not been revoked."""
+    token_care_receipient_id = get_token_data(token, "care_receipient_id")
+    if int(token_care_receipient_id) != care_receipient_id:
+        raise InvalidCredentialsToAccessCareReceipient
+
+    magic_link_token_id = get_optional_token_data(token, "magic_link_token_id")
+    if magic_link_token_id is not None and not CRUDMagicLinkToken(db).get_by_id(
+        int(magic_link_token_id)
+    ):
+        raise InvalidCredentialsToAccessCareReceipient
+
+
 def get_care_receipient_dashboard_response(
-    care_receipient_id: int, db: Session
+    care_receipient_id: int, token: str, db: Session
 ) -> GetCareReceipientDashboardResponse:
     try:
+        _authenticate_care_receipient(care_receipient_id, token, db)
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
         if not care_receipient:
@@ -230,6 +247,11 @@ def get_care_receipient_dashboard_response(
             can_record_mood=_can_record_mood(care_receipient_id, db),
         )
 
+    except InvalidCredentialsToAccessCareReceipient:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials to access care receipient",
+        )
     except CareReceipientNotFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -279,9 +301,10 @@ def _update_care_receipient_mood_checkin(care_receipient_id: int, db: Session) -
 
 
 def get_create_care_receipient_mood_response(
-    request: CareReceipientMoodRequest, care_receipient_id: int, db: Session
+    request: CareReceipientMoodRequest, care_receipient_id: int, token: str, db: Session
 ) -> CreateCareReceipientMoodResponse:
     try:
+        _authenticate_care_receipient(care_receipient_id, token, db)
         if not _can_record_mood(care_receipient_id, db):
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -319,6 +342,11 @@ def get_create_care_receipient_mood_response(
             mood_message=_get_mood_message(care_receipient.app_language),
         )
 
+    except InvalidCredentialsToAccessCareReceipient:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials to access care receipient",
+        )
     except CareReceipientNotFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -595,7 +623,12 @@ def verify_magic_link_token_response(
         care_receipient = CRUDCareReceipient(db).get(magic_link.care_receipient_id)
         if not care_receipient:
             raise NoRecordFoundException
-        access_token = create_access_token({"care_receipient_id": care_receipient.id})
+        access_token = create_access_token(
+            {
+                "care_receipient_id": care_receipient.id,
+                "magic_link_token_id": magic_link.id,
+            }
+        )
         return CareReceipientToken(access_token=access_token, token_type="bearer")
 
     except NoRecordFoundException:

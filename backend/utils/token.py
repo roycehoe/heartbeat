@@ -42,6 +42,15 @@ def get_token_data(token: str, param: str) -> Union[int, str]:
         )
 
 
+def get_optional_token_data(token: str, param: str) -> Union[int, str, None]:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+    return payload.get(param)
+
 
 CLERK_VERIFY_TOKEN_URL = "https://api.clerk.com/v1/clients/verify"
 

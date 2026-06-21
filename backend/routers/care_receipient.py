@@ -62,9 +62,11 @@ def care_receipient_log_in(
     response_model=GetCareReceipientDashboardResponse,
 )
 def care_receipient_dashboard(
-    care_receipient_id: int, db: Session = Depends(get_db)
+    care_receipient_id: int,
+    token: str = Header(None),
+    db: Session = Depends(get_db),
 ):
-    return get_care_receipient_dashboard_response(care_receipient_id, db)
+    return get_care_receipient_dashboard_response(care_receipient_id, token, db)
 
 
 @router.post(
@@ -75,9 +77,10 @@ def care_receipient_dashboard(
 def send_mood(
     care_receipient_id: int,
     request: CareReceipientMoodRequest,
+    token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_create_care_receipient_mood_response(request, care_receipient_id, db)
+    return get_create_care_receipient_mood_response(request, care_receipient_id, token, db)
 
 
 @router.post(
