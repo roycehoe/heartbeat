@@ -86,7 +86,7 @@ export const UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
   },
   unit: {
     formLabel: "Unit",
-    isRequired: true,
+    isRequired: false,
     type: "text",
     options: [],
     placeholder: "#04-08",
@@ -169,7 +169,7 @@ export const VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS: Record<
   },
   unit: {
     formLabel: "Unit",
-    isRequired: true,
+    isRequired: false,
     type: "text",
     options: [],
     placeholder: "#04-08",

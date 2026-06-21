@@ -80,7 +80,7 @@ class GetCareReceipientDetailResponse(BaseModel):
     postal_code: int
     floor: int
     block: str
-    unit: str
+    unit: Optional[str] = None
     contact_number: int
     is_suspended: bool
     app_language: AppLanguage
@@ -105,7 +105,7 @@ class CareReceipientCreateRequest(BaseModel):
     postal_code: int = Field(..., alias="postalCode")
     floor: int
     block: str
-    unit: str
+    unit: Optional[str] = None
 
     class Config:
         use_enum_values = True
