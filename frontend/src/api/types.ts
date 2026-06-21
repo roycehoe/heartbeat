@@ -43,7 +43,7 @@ export interface CareReceipientDetailOut {
   postal_code: number;
   floor: number;
   block: string;
-  unit: string;
+  unit?: string;
   contact_number: number;
   is_suspended: boolean;
   app_language: AppLanguage;
@@ -83,7 +83,7 @@ export interface CareReceipientCreateRequest {
   postalCode: number;
   floor: number;
   block: string;
-  unit: string;
+  unit?: string;
 }
 
 export interface CaregiverCreateRequest {

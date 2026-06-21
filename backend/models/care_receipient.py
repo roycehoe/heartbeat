@@ -31,7 +31,7 @@ class CareReceipient(SQLModel, table=True):
     postal_code: int
     floor: int
     block: str
-    unit: str
+    unit: Optional[str] = None
     consecutive_checkins: int
     consecutive_non_checkins: int
     is_suspended: bool = Field(default=False)
