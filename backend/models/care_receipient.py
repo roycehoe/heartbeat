@@ -34,9 +34,9 @@ class CareReceipient(SQLModel, table=True):
     consecutive_checkins: int
     consecutive_non_checkins: int
     is_suspended: bool = Field(default=False)
+    can_record_mood: bool
     created_at: datetime = Field(sa_column=Column(TIMESTAMP, nullable=False))
     user_id: Optional[int] = Field(default=None, foreign_key="users.id")
-    can_record_mood: bool
 
     caregiver: Optional["Caregiver"] = SQLRelationship(back_populates="care_receipients")
     moods: List["Mood"] = SQLRelationship(back_populates="care_receipient")
