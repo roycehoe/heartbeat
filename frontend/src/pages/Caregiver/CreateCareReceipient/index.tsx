@@ -82,17 +82,6 @@ function ModalCreateCareReceipient() {
         },
       }
     );
-    // try {
-    //   await getCreateUserResponse(createUserForm);
-    //   resetCreateUserForm();
-    //   setHasCreatedUserSuccessfully(true);
-    //   setErrorMessage("");
-    //   navigate(`/admin`);
-    // } catch (error) {
-    //   if (error?.response) {
-    //     setErrorMessage("Something went wrong. Please try again later.");
-    //   }
-    // }
   }
 
   return (

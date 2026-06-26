@@ -1,5 +1,5 @@
 import { Text } from "@chakra-ui/react";
-import "./MoodMessage.css"; // We'll create a CSS file for 3D styles
+import "./MoodMessage.css";
 
 function MoodMessage(props: {
   bg: string;
