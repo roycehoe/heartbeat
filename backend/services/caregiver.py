@@ -108,7 +108,10 @@ def get_care_receipient_dashboard_response(
 
 
 def get_caregiver_dashboard_response(
-    token: str, db: Session, sort: str, sort_direction: int
+    token: str,
+    db: Session,
+    sort: str,
+    sort_direction: int,
 ) -> list[CaregiverDashboardData]:
     response: list[CaregiverDashboardData] = []
 
