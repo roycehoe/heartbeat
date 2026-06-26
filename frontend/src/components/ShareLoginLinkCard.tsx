@@ -48,8 +48,7 @@ const ShareLoginLinkCard = ({
         duration: 5000,
         isClosable: true,
       });
-    } catch (err) {
-      console.error("Clipboard write failed", err);
+    } catch {
       toast({
         title: "Copy failed",
         description: "Could not copy — please copy the link manually",
