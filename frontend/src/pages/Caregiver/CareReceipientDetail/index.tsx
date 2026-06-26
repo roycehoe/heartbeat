@@ -249,6 +249,7 @@ const CareReceipientDetail = () => {
             floor: careReceipientData.floor,
             block: careReceipientData.block,
             unit: careReceipientData.unit,
+            hasAgreedToTermsAndConditions: false,
           }}
           createUpdateCareReceipientFormFields={VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS}
           isShowPersonalInformation={isShowPersonalInformation}

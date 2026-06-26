@@ -12,7 +12,7 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useGetCareReceipientCreateResponse } from "@/api/getCareReceipientCreateResponse";
-import { AppLanguage, CareReceipientCreateRequest, Gender, Race } from "@/api/types";
+import { AgeRange, AppLanguage, CareReceipientCreateRequest, Gender, Race } from "@/api/types";
 import FormFieldsCareReceipientCreateUpdate from "@/components/FormFieldsCareReceipientCreateUpdate";
 
 import axios from "axios";
@@ -28,7 +28,7 @@ export interface CreateCareReceipientForm extends CareReceipientCreateRequest {
 const DEFAULT_CREATE_CARE_RECEIPIENT_FORM: CreateCareReceipientForm = {
   contactNumber: "",
   name: "",
-  age_range: "",
+  age_range: AgeRange.UNDER_45,
   race: Race.CHINESE,
   gender: Gender.MALE,
   appLanguage: AppLanguage.ENGLISH,

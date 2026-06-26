@@ -15,5 +15,6 @@ export function useGetCareReceipientDashboardResponse(careReceipientId: number) 
     queryFn: () => getCareReceipientDashboardResponse(careReceipientId),
     refetchInterval: 60 * 60 * 1000,
     retry: false,
+    enabled: !!careReceipientId,
   });
 }
