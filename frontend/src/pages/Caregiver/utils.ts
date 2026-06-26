@@ -1,4 +1,3 @@
-import { CareReceipientDetailOut, SelectedMood } from "@/api/types";
 import { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
 import { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
 

@@ -1,4 +1,4 @@
-import { Box, FormControl, Link, Text } from "@chakra-ui/react";
+import { FormControl, Link, Text } from "@chakra-ui/react";
 import { Checkbox } from "@opengovsg/design-system-react";
 
 function FormCheckboxTermsAndConditions(props: {

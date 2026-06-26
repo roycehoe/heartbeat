@@ -24,7 +24,7 @@ function Brand() {
       if (newCount === 10) {
         setIsLogoutModalOpen(true);
         setClickCount(0);
-        clearTimeout(timerRef.current);
+        clearTimeout(timerRef.current ?? undefined);
         timerRef.current = null;
         return 0;
       }

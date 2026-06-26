@@ -88,12 +88,12 @@ function MoodBtns(props: {
   moodMessage: string;
   streak: number;
   appLanguage: AppLanguage;
-  onClick: (mood: SelectedMood) => Promise<void>;
+  onClick: (mood: SelectedMood) => void;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isShowMoodMessage, setIsShowMoodMessage] = useState(false);
   const [clickedMood, setClickedMood] = useState(SelectedMood.HAPPY);
-  const [timerId, setTimerId] = useState(null);
+  const [timerId, setTimerId] = useState<number | null>(null);
 
   const handleClick = async (mood: SelectedMood) => {
     setClickedMood(mood);
@@ -108,7 +108,7 @@ function MoodBtns(props: {
   };
 
   const handleClose = () => {
-    clearTimeout(timerId);
+    clearTimeout(timerId ?? undefined);
     onClose();
   };
 
