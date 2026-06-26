@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     IS_PROD: bool = False
     DB_ENCRYPTION_SECRET: str
+    SECRET_KEY: str
     ADMIN_PASSWORD: str
     SQLALCHEMY_DATABASE_URL_STAGING: str = (
         "postgresql://postgres:password@localhost:5432/postgres"

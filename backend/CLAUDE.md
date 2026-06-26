@@ -86,6 +86,7 @@ Defined in `settings.py` (Pydantic Settings, no defaults — app will not start 
 | Variable | Purpose |
 |---|---|
 | `DB_ENCRYPTION_SECRET` | Column-level encryption key |
+| `SECRET_KEY` | HS256 signing key for the internal app JWT |
 | `ADMIN_PASSWORD` | Admin password |
 | `PHONE_NUMBER_ID` | WhatsApp Business API phone number ID |
 | `WHATSAPP_API_ACCESS_TOKEN` | Meta Graph API token |
