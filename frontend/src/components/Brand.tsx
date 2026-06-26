@@ -4,7 +4,7 @@ import { useClerk } from "@clerk/clerk-react";
 import { useRef, useState } from "react";
 import ModalLogOut from "@/components/ModalLogout";
 
-function Brand(props: { goToNextUser: () => void }) {
+function Brand() {
   const [_, setClickCount] = useState(0);
   const timerRef = useRef<number | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
