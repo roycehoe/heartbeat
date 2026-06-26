@@ -11,7 +11,7 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { useNavigate } from "react-router-dom";
 import { useGetCaregiverDashboardResponse } from "@/api/getCaregiverDashboardResponse";
-import { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
+import type { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
 
 import { useEffect } from "react";
 import { TableMoodSnapshot } from "@/components/TableMoodSnapshot";

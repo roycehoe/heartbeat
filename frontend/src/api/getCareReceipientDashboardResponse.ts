@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import { httpClient } from "@/api/httpClient";
-import { CareReceipientDetailOut } from "@/api/types";
+import type { CareReceipientDetailOut } from "@/api/types";
 
 export async function getCareReceipientDashboardResponse(
   careReceipientId: number
