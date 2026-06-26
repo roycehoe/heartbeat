@@ -28,7 +28,7 @@ def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) 
     try:
         db_caregiver_model = Caregiver(
             clerk_id=request.clerk_id,
-            contact_number=str(request.contact_number),
+            contact_number=request.contact_number,
         )
         CRUDCaregiver(db).create(db_caregiver_model)
         return

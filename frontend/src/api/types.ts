@@ -91,7 +91,7 @@ export interface CareReceipientCreateRequest {
 
 export interface CaregiverCreateRequest {
   clerk_id: string;
-  contactNumber: number;
+  contactNumber: string;
 }
 
 export interface CareReceipientUpdateRequest extends CareReceipientCreateRequest {}
