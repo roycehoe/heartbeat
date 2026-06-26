@@ -217,7 +217,7 @@ def get_care_receipient_dashboard_response(
                 CareReceipientDashboardMoodData(mood=mood.mood, created_at=mood.created_at)
                 for mood in mood_models
             ],
-            contact_number=int(care_receipient.contact_number),
+            contact_number=care_receipient.contact_number,
             consecutive_checkins=care_receipient.consecutive_checkins,
             consecutive_non_checkins=care_receipient.consecutive_non_checkins,
             can_record_mood=_can_record_mood(care_receipient_id, db),
@@ -342,7 +342,7 @@ def get_create_care_receipient_response(
         token_caregiver_id = get_token_data(token, "caregiver_id")
         db_care_receipient_model = CareReceipient(
             name=request.name,
-            contact_number=str(request.contact_number),
+            contact_number=request.contact_number,
             age_range=request.age_range,
             app_language=request.app_language,
             race=request.race,
@@ -512,7 +512,7 @@ def get_care_receipient_response(
 
         return GetCareReceipientDetailResponse(
             care_receipient_id=care_receipient.id,
-            contact_number=int(care_receipient.contact_number),
+            contact_number=care_receipient.contact_number,
             name=care_receipient.name,
             age_range=care_receipient.age_range,
             race=care_receipient.race,

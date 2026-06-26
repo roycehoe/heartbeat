@@ -40,7 +40,7 @@ class GetCareReceipientDashboardResponse(BaseModel):
     gender: Gender
     postal_code: int
     floor: int
-    contact_number: int
+    contact_number: str
     app_language: AppLanguage
 
     moods: list[CareReceipientDashboardMoodData]
@@ -75,7 +75,7 @@ class GetCareReceipientDetailResponse(BaseModel):
     floor: int
     block: str
     unit: Optional[str] = None
-    contact_number: int
+    contact_number: str
     is_suspended: bool
     app_language: AppLanguage
 
@@ -90,7 +90,7 @@ class GetCareReceipientDetailResponse(BaseModel):
 
 class CareReceipientCreateRequest(BaseModel):
     name: str
-    contact_number: int = Field(..., alias="contactNumber")
+    contact_number: str = Field(..., alias="contactNumber")
     age_range: AgeRange
     race: Race
     gender: Gender
