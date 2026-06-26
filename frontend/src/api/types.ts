@@ -52,7 +52,7 @@ export interface CareReceipientDetailOut {
   floor: number;
   block: string;
   unit?: string;
-  contact_number: number;
+  contact_number: string;
   is_suspended: boolean;
   app_language: AppLanguage;
 
@@ -77,7 +77,7 @@ export interface CaregiverToken {
 }
 
 export interface CareReceipientCreateRequest {
-  contactNumber: number;
+  contactNumber: string;
   name: string;
   age_range: AgeRange;
   race: Race;

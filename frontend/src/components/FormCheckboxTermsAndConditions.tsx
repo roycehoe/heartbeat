@@ -1,20 +1,18 @@
-import { FormControl, Link, Text } from "@chakra-ui/react";
+import { FormControl, FormErrorMessage, Link, Text } from "@chakra-ui/react";
 import { Checkbox } from "@opengovsg/design-system-react";
+import type { ChangeEventHandler } from "react";
 
 function FormCheckboxTermsAndConditions(props: {
-  field: string;
-  isRequired: boolean;
-  isDisabled: boolean;
-  formLabel: string;
-  type: string;
   value: boolean;
-  onChange: (e: any, field: any) => void;
-  placeholder: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  isDisabled: boolean;
+  isInvalid: boolean;
+  errorMessage?: string;
 }) {
   return (
     <FormControl
-      key={props.field}
-      isRequired={props.isRequired}
+      isRequired
+      isInvalid={props.isInvalid}
       isDisabled={props.isDisabled}
       display="flex"
       flexDirection="column"
@@ -37,6 +35,7 @@ function FormCheckboxTermsAndConditions(props: {
       <Checkbox isChecked={props.value} onChange={props.onChange}>
         Accept terms and conditions
       </Checkbox>
+      <FormErrorMessage>{props.errorMessage}</FormErrorMessage>
     </FormControl>
   );
 }

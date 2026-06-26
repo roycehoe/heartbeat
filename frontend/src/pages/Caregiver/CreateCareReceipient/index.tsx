@@ -7,27 +7,38 @@ import {
   IconButton,
   Link,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import { Button } from "@opengovsg/design-system-react";
-import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 import { useGetCareReceipientCreateResponse } from "@/api/getCareReceipientCreateResponse";
 import { AgeRange, AppLanguage, Gender, Race } from "@/api/types";
-import type { CareReceipientCreateRequest } from "@/api/types";
-import FormFieldsCareReceipientCreateUpdate from "@/components/FormFieldsCareReceipientCreateUpdate";
-
-import { useNavigate } from "react-router-dom";
+import FormCheckboxTermsAndConditions from "@/components/FormCheckboxTermsAndConditions";
+import FormFieldsCareReceipientCreateUpdate, {
+  careReceipientFormSchema,
+  toCareReceipientCreateRequest,
+} from "@/components/FormFieldsCareReceipientCreateUpdate";
 import { IconArrowLeft } from "@/components/IconArrowLeft";
-import { CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "@/pages/Caregiver/constants";
-import { getSubmitCreateCareReceipientFormErrorMessage } from "@/pages/Caregiver/utils";
 
-export interface CreateCareReceipientForm extends CareReceipientCreateRequest {
-  hasAgreedToTermsAndConditions: boolean;
-}
+const createCareReceipientFormSchema = careReceipientFormSchema
+  .extend({
+    hasAgreedToTermsAndConditions: z.boolean(),
+  })
+  .refine((values) => values.hasAgreedToTermsAndConditions, {
+    message: "You must agree to the terms and conditions.",
+    path: ["hasAgreedToTermsAndConditions"],
+  });
+
+export type CreateCareReceipientForm = z.infer<
+  typeof createCareReceipientFormSchema
+>;
 
 const DEFAULT_CREATE_CARE_RECEIPIENT_FORM: CreateCareReceipientForm = {
-  contactNumber: "",
   name: "",
+  contactNumber: "",
   age_range: AgeRange.UNDER_45,
   race: Race.CHINESE,
   gender: Gender.MALE,
@@ -40,49 +51,29 @@ const DEFAULT_CREATE_CARE_RECEIPIENT_FORM: CreateCareReceipientForm = {
 };
 
 function ModalCreateCareReceipient() {
-  const [createCareReceipientForm, setCreateCareReceipientForm] = useState({
-    ...DEFAULT_CREATE_CARE_RECEIPIENT_FORM,
-  } as CreateCareReceipientForm);
   const [errorMessage, setErrorMessage] = useState("");
   const [hasCreatedUserSuccessfully, setHasCreatedUserSuccessfully] =
     useState(false);
   const navigate = useNavigate();
-  const toast = useToast();
   const { mutate, isPending } = useGetCareReceipientCreateResponse();
 
-  function resetCreateCareReceipientForm() {
-    setCreateCareReceipientForm({ ...DEFAULT_CREATE_CARE_RECEIPIENT_FORM });
-  }
+  const form = useForm<CreateCareReceipientForm>({
+    resolver: zodResolver(createCareReceipientFormSchema),
+    defaultValues: DEFAULT_CREATE_CARE_RECEIPIENT_FORM,
+  });
 
-  useEffect(() => {
-    setErrorMessage(getSubmitCreateCareReceipientFormErrorMessage(createCareReceipientForm));
-  }, [createCareReceipientForm]);
-
-  async function handleCreateCareReceipient() {
-    mutate(
-      {
-        ...createCareReceipientForm,
+  const handleCreateCareReceipient = form.handleSubmit((values) => {
+    setErrorMessage("");
+    mutate(toCareReceipientCreateRequest(values), {
+      onSuccess: () => {
+        form.reset();
+        setHasCreatedUserSuccessfully(true);
+        navigate(`/dashboard`);
       },
-      {
-        onSuccess: () => {
-          resetCreateCareReceipientForm();
-          setHasCreatedUserSuccessfully(true);
-          setErrorMessage("");
-          navigate(`/dashboard`);
-          toast({
-            title: "User created",
-            description: "Your user has been created successfully",
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          });
-        },
-        onError: () => {
-          setErrorMessage("Something went wrong. Please try again later.");
-        },
-      }
-    );
-  }
+      onError: () =>
+        setErrorMessage("Something went wrong. Please try again later."),
+    });
+  });
 
   return (
     <Box
@@ -122,25 +113,46 @@ function ModalCreateCareReceipient() {
           </Link>
         </Box>
 
-        <Box display="flex" flexDirection="column" width="100%" gap="24px">
-          <FormFieldsCareReceipientCreateUpdate
-            createCareReceipientForm={createCareReceipientForm}
-            setCreateCareReceipientForm={setCreateCareReceipientForm}
-            createUpdateCareReceipientFormFields={CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS}
-          />
-          <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
-            <AlertIcon />
-            <AlertDescription>{errorMessage}</AlertDescription>
-          </Alert>
-          <Button
-            mr="3px"
-            variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
-            onClick={handleCreateCareReceipient}
-            isLoading={isPending}
+        <FormProvider {...form}>
+          <Box
+            as="form"
+            noValidate
+            onSubmit={handleCreateCareReceipient}
+            display="flex"
+            flexDirection="column"
+            width="100%"
+            gap="24px"
           >
-            {hasCreatedUserSuccessfully ? "User created!" : "Create account"}
-          </Button>
-        </Box>
+            <FormFieldsCareReceipientCreateUpdate isDisabled={isPending} />
+            <Controller
+              name="hasAgreedToTermsAndConditions"
+              control={form.control}
+              render={({ field }) => (
+                <FormCheckboxTermsAndConditions
+                  value={field.value}
+                  onChange={field.onChange}
+                  isDisabled={isPending}
+                  isInvalid={!!form.formState.errors.hasAgreedToTermsAndConditions}
+                  errorMessage={
+                    form.formState.errors.hasAgreedToTermsAndConditions?.message
+                  }
+                />
+              )}
+            />
+            <Alert status="error" variant="subtle" hidden={errorMessage === ""}>
+              <AlertIcon />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+            <Button
+              type="submit"
+              mr="3px"
+              variant={hasCreatedUserSuccessfully ? "solid" : "outline"}
+              isLoading={isPending}
+            >
+              {hasCreatedUserSuccessfully ? "User created!" : "Create account"}
+            </Button>
+          </Box>
+        </FormProvider>
       </Box>
     </Box>
   );

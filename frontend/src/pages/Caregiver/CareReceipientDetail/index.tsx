@@ -24,7 +24,6 @@ import { FormFieldsViewCareReceipient } from "@/components/FormFieldsViewCareRec
 import ShareLoginLinkCard from "@/components/ShareLoginLinkCard";
 import { IconArrowLeft } from "@/components/IconArrowLeft";
 import { IconMood } from "@/components/IconMood";
-import { VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "@/pages/Caregiver/constants";
 import ModalUpdateCareReceipient from "@/pages/Caregiver/UpdateCareReceipient";
 
 const getDayAbbreviation = (date: Date) => {
@@ -239,20 +238,7 @@ const CareReceipientDetail = () => {
           </Box>
         </Box>
         <FormFieldsViewCareReceipient
-          createCareReceipientForm={{
-            contactNumber: careReceipientData.contact_number,
-            name: careReceipientData.name,
-            age_range: careReceipientData.age_range,
-            race: careReceipientData.race,
-            gender: careReceipientData.gender,
-            appLanguage: careReceipientData.app_language,
-            postalCode: careReceipientData.postal_code,
-            floor: careReceipientData.floor,
-            block: careReceipientData.block,
-            unit: careReceipientData.unit,
-            hasAgreedToTermsAndConditions: false,
-          }}
-          createUpdateCareReceipientFormFields={VIEW_CARE_RECEIPIENT_FORM_FIELDS_PROPS}
+          careReceipient={careReceipientData}
           isShowPersonalInformation={isShowPersonalInformation}
         />
         <ToggleShowHidePersonalInformation
