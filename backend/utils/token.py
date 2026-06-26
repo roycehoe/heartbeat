@@ -9,7 +9,7 @@ from jose.exceptions import ExpiredSignatureError, JWTError
 from exceptions import ClerkAuthenticationFailedException
 from settings import AppSettings
 
-SECRET_KEY = "secret"
+SECRET_KEY = AppSettings.SECRET_KEY
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES_10_YEARS = 60 * 24 * 365 * 10
 
