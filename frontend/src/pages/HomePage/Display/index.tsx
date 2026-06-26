@@ -5,7 +5,6 @@ import Tree from "@/components/Tree";
 
 function Display(props: {
   dashboardData: CareReceipientDetailOut;
-  goToNextUser: () => void;
   onClaimGiftBtnClick: () => Promise<void>;
 }) {
   return (
@@ -24,7 +23,7 @@ function Display(props: {
           justifyContent="space-between"
           margin="12px"
         >
-          <Brand goToNextUser={props.goToNextUser}></Brand>
+          <Brand></Brand>
         </Box>
         <Box className="dashboard--top--tree" height="100%" width="100%">
           <Tree onClaimGiftBtnClick={props.onClaimGiftBtnClick}></Tree>
