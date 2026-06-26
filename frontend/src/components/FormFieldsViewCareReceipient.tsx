@@ -1,54 +1,40 @@
-import { Box } from "@chakra-ui/react";
-import type { CreateUpdateCareReceipientFormFieldProps } from "@/pages/Caregiver/constants";
-import type { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
-import type { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
-import FormInputCareReceipient from "@/components/FormInputCareReceipient";
-import FormSelectCareReceipient from "@/components/FormSelectCareReceipient";
+import { Box, FormControl, FormLabel, Input } from "@chakra-ui/react";
+import type { CareReceipientDetailOut } from "@/api/types";
 
 export function FormFieldsViewCareReceipient(props: {
-  createUpdateCareReceipientFormFields: Record<
-    keyof CreateCareReceipientForm | keyof UpdateCareReceipientForm,
-    CreateUpdateCareReceipientFormFieldProps
-  >;
-  createCareReceipientForm: CreateCareReceipientForm;
+  careReceipient: CareReceipientDetailOut;
   isShowPersonalInformation: boolean;
 }) {
-  const handleChange = () => {};
+  const { careReceipient, isShowPersonalInformation } = props;
+  const inputType = isShowPersonalInformation ? "password" : "text";
+
+  const fields: { label: string; value: string }[] = [
+    { label: "Name", value: careReceipient.name },
+    { label: "Contact Number", value: careReceipient.contact_number },
+    { label: "Age Range", value: careReceipient.age_range },
+    { label: "Race", value: careReceipient.race },
+    { label: "Gender", value: careReceipient.gender },
+    { label: "Application Language", value: careReceipient.app_language },
+    { label: "Postal Code", value: String(careReceipient.postal_code) },
+    { label: "Floor", value: String(careReceipient.floor) },
+    { label: "Block", value: careReceipient.block },
+    { label: "Unit", value: careReceipient.unit ?? "" },
+  ];
 
   return (
     <Box display="flex" flexDirection="column" gap="16px">
-      {Object.keys(props.createUpdateCareReceipientFormFields).map((field) => {
-        const { formLabel, isRequired, type, options } =
-          props.createUpdateCareReceipientFormFields[field];
-
-        if (type === "select") {
-          return (
-            <FormSelectCareReceipient
-              field={field}
-              isRequired={isRequired}
-              isDisabled={true}
-              formLabel={formLabel}
-              type={props.isShowPersonalInformation ? "password" : type}
-              value={props.createCareReceipientForm[field]}
-              onChange={(e) => handleChange(e, field)}
-              placeholder={formLabel}
-              options={options}
-            ></FormSelectCareReceipient>
-          );
-        }
-        return (
-          <FormInputCareReceipient
-            field={field}
-            isRequired={isRequired}
-            isDisabled={true}
-            formLabel={formLabel}
-            type={props.isShowPersonalInformation ? "password" : type}
-            value={props.createCareReceipientForm[field]}
-            onChange={(e) => handleChange(e, field)}
-            placeholder={formLabel}
-          ></FormInputCareReceipient>
-        );
-      })}
+      {fields.map(({ label, value }) => (
+        <FormControl key={label} isDisabled>
+          <FormLabel>{label}</FormLabel>
+          <Input
+            isReadOnly
+            type={inputType}
+            value={value}
+            size="xs"
+            borderColor="slate.300"
+          />
+        </FormControl>
+      ))}
     </Box>
   );
 }
