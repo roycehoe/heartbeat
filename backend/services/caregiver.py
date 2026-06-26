@@ -100,7 +100,7 @@ def get_care_receipient_dashboard_response(
             CaregiverDashboardMoodData(mood=mood.mood, created_at=mood.created_at)
             for mood in mood_models
         ],
-        contact_number=int(care_receipient.contact_number),
+        contact_number=care_receipient.contact_number,
         consecutive_checkins=care_receipient.consecutive_checkins,
         consecutive_non_checkins=care_receipient.consecutive_non_checkins,
         can_record_mood=_can_record_mood(care_receipient_id, db),
@@ -134,7 +134,7 @@ def get_caregiver_dashboard_response(
         response.append(
             CaregiverDashboardData(
                 care_receipient_id=care_receipient.id,
-                contact_number=int(care_receipient.contact_number),
+                contact_number=care_receipient.contact_number,
                 name=care_receipient.name,
                 age_range=care_receipient.age_range,
                 race=care_receipient.race,

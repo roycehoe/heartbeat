@@ -40,7 +40,7 @@ class CaregiverDashboardData(BaseModel):
     gender: Gender
     postal_code: int
     floor: int
-    contact_number: int
+    contact_number: str
 
     moods: list[CaregiverDashboardMoodData]
     can_record_mood: bool
