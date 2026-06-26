@@ -1,5 +1,5 @@
-import { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
-import { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
+import type { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
+import type { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
 
 export function getSubmitUpdateCareReceipientFormErrorMessage(
   userForm: UpdateCareReceipientForm

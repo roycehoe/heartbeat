@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import { CreateUpdateCareReceipientFormFieldProps } from "@/pages/Caregiver/constants";
-import { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
-import { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
+import type { CreateUpdateCareReceipientFormFieldProps } from "@/pages/Caregiver/constants";
+import type { CreateCareReceipientForm } from "@/pages/Caregiver/CreateCareReceipient";
+import type { UpdateCareReceipientForm } from "@/pages/Caregiver/UpdateCareReceipient";
 import FormCheckboxTermsAndConditions from "@/components/FormCheckboxTermsAndConditions";
 import FormInputCareReceipient from "@/components/FormInputCareReceipient";
 import FormSelectCareReceipient from "@/components/FormSelectCareReceipient";

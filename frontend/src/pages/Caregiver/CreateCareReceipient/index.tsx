@@ -12,7 +12,8 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { useEffect, useState } from "react";
 import { useGetCareReceipientCreateResponse } from "@/api/getCareReceipientCreateResponse";
-import { AgeRange, AppLanguage, CareReceipientCreateRequest, Gender, Race } from "@/api/types";
+import { AgeRange, AppLanguage, Gender, Race } from "@/api/types";
+import type { CareReceipientCreateRequest } from "@/api/types";
 import FormFieldsCareReceipientCreateUpdate from "@/components/FormFieldsCareReceipientCreateUpdate";
 
 import { useNavigate } from "react-router-dom";

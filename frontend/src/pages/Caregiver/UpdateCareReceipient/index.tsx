@@ -15,7 +15,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useGetCareReceipientUpdateResponse } from "@/api/getCareReceipientUpdateResponse";
-import { CareReceipientCreateRequest, CareReceipientDetailOut } from "@/api/types";
+import type { CareReceipientCreateRequest, CareReceipientDetailOut } from "@/api/types";
 import FormFieldsCareReceipientCreateUpdate from "@/components/FormFieldsCareReceipientCreateUpdate";
 import { UPDATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "@/pages/Caregiver/constants";
 import { getSubmitUpdateCareReceipientFormErrorMessage } from "@/pages/Caregiver/utils";
