@@ -12,7 +12,6 @@ export function getSubmitUpdateCareReceipientFormErrorMessage(
     return "Contact number must contain only digits.";
   }
   if (String(userForm.contactNumber).length !== 8) {
-      console.log(userForm.contactNumber)
     return "Contact number must contain exactly eight digits.";
   }
 
