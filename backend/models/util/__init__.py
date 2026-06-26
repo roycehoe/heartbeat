@@ -1,1 +1,1 @@
-from .enum import use_enum_values as use_enum_values
+from models.util.enum import use_enum_values as use_enum_values
