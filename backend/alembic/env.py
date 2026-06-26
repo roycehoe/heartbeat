@@ -1,3 +1,8 @@
+# NOTE: The schema is bootstrapped via SQLModel.metadata.create_all at app startup,
+# not from migrations — the init migration (1f0eaf0d0ffe) is an empty stub and later
+# migrations ALTER tables they never created. `alembic upgrade head` therefore only
+# works against a DB that already has the tables; running it from an empty DB fails.
+# This predates the routing/auth refactor; a baseline create-table migration is owed.
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config

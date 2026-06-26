@@ -36,8 +36,8 @@ Cases like this are flagged inline below.
 |-------|---------|---------|
 | CRUD class | `CRUD` + PascalCase domain | `CRUDCareReceipient`, `CRUDCaregiver`, `CRUDMood`, `CRUDMagicLinkToken` |
 | CRUD methods | verb or verb + noun | `create()`, `get()`, `get_by()`, `suspend()`, `update_profile()` |
-| Service functions | snake_case verb phrases, usually `get_…_response` | `authenticate_care_receipient()`, `get_caregiver_dashboard_response()`, `get_create_care_receipient_response()` |
-| Schema — request | PascalCase domain + `…Request` | `CareReceipientCreateRequest`, `CareReceipientLogInRequest`, `MagicLinkVerifyRequest` |
+| Service functions | snake_case verb phrases, usually `get_…_response` | `verify_magic_link_token_response()`, `get_caregiver_dashboard_response()`, `get_create_care_receipient_response()` |
+| Schema — request | PascalCase domain + `…Request` | `CareReceipientCreateRequest`, `CareReceipientUpdateRequest`, `MagicLinkVerifyRequest` |
 | Schema — response | `Get…Response` / `Create…Response` / `…Token` / `…Data` | `GetCareReceipientDashboardResponse`, `CreateCareReceipientMoodResponse`, `CareReceipientToken` |
 | Exception class | Domain + Verb/State + Noun + `Exception` | `CareReceipientNotFoundException`, `DBDuplicateAccountException` |
 
@@ -102,19 +102,18 @@ care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
 Request body parameters in routers must use the full descriptive name of their schema, never the generic
 `request` — makes the schema type readable at the call site without chasing the variable. **This rule
 leads the code:** most routers still pass a bare `request`; new and touched routes use the descriptive
-form, as `care_receipient_log_in` already does:
+form:
 
 ```python
 # Good
-def care_receipient_log_in(
-    care_receipient_log_in_request: CareReceipientLogInRequest,
-    token: str = Header(None),
+def verify_magic_link(
+    magic_link_verify_request: MagicLinkVerifyRequest,
     db: Session = Depends(get_db),
 ):
-    return authenticate_care_receipient(care_receipient_log_in_request, token, db)
+    return verify_magic_link_token_response(magic_link_verify_request, db)
 
 # Bad
-def care_receipient_log_in(request: CareReceipientLogInRequest, ...):
+def verify_magic_link(request: MagicLinkVerifyRequest, ...):
 ```
 
 Authentication is performed **inside the service function**, not via a FastAPI dependency. Routers take
