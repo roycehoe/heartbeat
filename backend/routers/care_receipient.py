@@ -6,7 +6,6 @@ from schemas.care_receipient import (
     CareReceipientCreateRequest,
     GetCareReceipientDashboardResponse,
     GetCareReceipientDetailResponse,
-    CareReceipientLogInRequest,
     CareReceipientLoginUrlResponse,
     CreateCareReceipientMoodResponse,
     CareReceipientMoodRequest,
@@ -15,7 +14,6 @@ from schemas.care_receipient import (
     MagicLinkVerifyRequest,
 )
 from services.care_receipient import (
-    authenticate_care_receipient,
     get_care_receipient_dashboard_response,
     get_care_receipient_login_url_response,
     get_care_receipient_response,
@@ -45,15 +43,6 @@ def verify_magic_link(
     db: Session = Depends(get_db),
 ):
     return verify_magic_link_token_response(request, db)
-
-
-@router.post("/login", status_code=status.HTTP_200_OK, response_model=CareReceipientToken)
-def care_receipient_log_in(
-    care_receipient_log_in_request: CareReceipientLogInRequest,
-    token: str = Header(None),
-    db: Session = Depends(get_db),
-):
-    return authenticate_care_receipient(care_receipient_log_in_request, token, db)
 
 
 @router.get(

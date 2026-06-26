@@ -66,10 +66,6 @@ export interface CareReceipientMoodOut extends CareReceipientDetailOut {
   mood_message: string;
 }
 
-export interface CareReceipientLogInRequest {
-  care_receipient_id: number;
-}
-
 export interface CareReceipientToken {
   access_token: string;
   token_type: string;
