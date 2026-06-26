@@ -13,8 +13,8 @@ function Brand() {
   const handleClick = () => {
     if (!timerRef.current) {
       timerRef.current = setTimeout(() => {
-        setClickCount(0); // reset count after 10s
-        timerRef.current = null; // clear timer reference
+        setClickCount(0);
+        timerRef.current = null;
       }, 10000);
     }
 

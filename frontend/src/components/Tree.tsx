@@ -11,7 +11,6 @@ function Tree() {
   const treeDisplayUrl =
     TREE_DISPLAYS[Math.floor(Math.random() * TREE_DISPLAYS.length)];
 
-  // PLACEHOLDER UNTIL ALL GIFS ARE AVAILABLE
   const isUsingGif = treeDisplayUrl.slice(-3) === "gif";
 
   return (

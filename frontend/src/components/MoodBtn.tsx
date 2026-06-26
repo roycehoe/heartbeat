@@ -1,4 +1,4 @@
-import "./MoodBtn.css"; // We'll create a CSS file for 3D styles
+import "./MoodBtn.css";
 
 function MoodBtn(props: {
   icon: string;
