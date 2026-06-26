@@ -44,7 +44,7 @@ function getPoorMentalStateCount(users: CareReceipientDetailOut[]): number {
   ).length;
 }
 
-function isUnresponsive(userMoodDates: Mood[]): boolean {
+function isUnresponsive(userMoodDates: CareReceipientDetailMoodOut[]): boolean {
   return userMoodDates
     .map((userMoodDate) => userMoodDate.mood)
     .every((mood) => mood === null);
