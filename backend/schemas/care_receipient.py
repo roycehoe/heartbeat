@@ -52,10 +52,6 @@ class GetCareReceipientDashboardResponse(BaseModel):
         use_enum_values = True
 
 
-class CareReceipientLogInRequest(BaseModel):
-    care_receipient_id: int
-
-
 class CareReceipientToken(BaseModel):
     access_token: str
     token_type: str

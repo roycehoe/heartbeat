@@ -24,7 +24,6 @@ from schemas.care_receipient import (
     GetCareReceipientDashboardResponse,
     CareReceipientDetailMoodData,
     GetCareReceipientDetailResponse,
-    CareReceipientLogInRequest,
     CareReceipientLoginUrlResponse,
     CreateCareReceipientMoodResponse,
     CareReceipientMoodRequest,
@@ -172,31 +171,9 @@ DEFAULT_MOOD_MESSAGES_TAMIL = (
 )
 
 
-def authenticate_care_receipient(
-    request: CareReceipientLogInRequest, token: str, db: Session
-) -> CareReceipientToken:
-    try:
-        care_receipient = CRUDCareReceipient(db).get(request.care_receipient_id)
-        if not care_receipient:
-            raise InvalidCredentialsToAccessCareReceipient
-        token_caregiver_id = int(get_token_data(token, "caregiver_id"))
-
-        if care_receipient.user_id != token_caregiver_id:
-            raise InvalidCredentialsToAccessCareReceipient
-
-        access_token = create_access_token({"care_receipient_id": care_receipient.id})
-        return CareReceipientToken(access_token=access_token, token_type="bearer")
-
-    except InvalidCredentialsToAccessCareReceipient:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials to access care receipient",
-        )
-
-
 def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
     care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-    if not care_receipient:
+    if care_receipient is None:
         raise CareReceipientNotFoundException
     return care_receipient.can_record_mood
 
@@ -210,10 +187,10 @@ def _authenticate_care_receipient(
     if int(token_care_receipient_id) != care_receipient_id:
         raise InvalidCredentialsToAccessCareReceipient
 
-    magic_link_token_id = get_optional_token_data(token, "magic_link_token_id")
-    if magic_link_token_id is not None and not CRUDMagicLinkToken(db).get_by_id(
-        int(magic_link_token_id)
-    ):
+    token_magic_link_token_id = get_optional_token_data(token, "magic_link_token_id")
+    if token_magic_link_token_id is None:
+        raise InvalidCredentialsToAccessCareReceipient
+    if not CRUDMagicLinkToken(db).get_by_id(int(token_magic_link_token_id)):
         raise InvalidCredentialsToAccessCareReceipient
 
 
@@ -224,7 +201,7 @@ def get_care_receipient_dashboard_response(
         _authenticate_care_receipient(care_receipient_id, token, db)
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-        if not care_receipient:
+        if care_receipient is None:
             raise NoRecordFoundException
 
         return GetCareReceipientDashboardResponse(
@@ -291,7 +268,7 @@ def _should_alert_caregiver(care_receipient_id: int, db: Session) -> bool:
 def _update_care_receipient_mood_checkin(care_receipient_id: int, db: Session) -> None:
     crud = CRUDCareReceipient(db)
     care_receipient = crud.get(care_receipient_id)
-    if not care_receipient:
+    if care_receipient is None:
         raise NoRecordFoundException
     crud.unsuspend(care_receipient)
     crud.mark_mood_recorded(care_receipient)
@@ -319,7 +296,7 @@ def get_create_care_receipient_mood_response(
         _update_care_receipient_mood_checkin(care_receipient_id, db)
 
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-        if not care_receipient:
+        if care_receipient is None:
             raise NoRecordFoundException
         if _should_alert_caregiver(care_receipient_id, db):
             caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
@@ -362,7 +339,7 @@ def get_create_care_receipient_response(
     request: CareReceipientCreateRequest, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
+        token_caregiver_id = get_token_data(token, "caregiver_id")
         db_care_receipient_model = CareReceipient(
             name=request.name,
             contact_number=str(request.contact_number),
@@ -376,7 +353,7 @@ def get_create_care_receipient_response(
             unit=request.unit,
             consecutive_checkins=0,
             consecutive_non_checkins=0,
-            user_id=caregiver_id,
+            user_id=token_caregiver_id,
             can_record_mood=True,
             created_at=datetime.now(),
         )
@@ -399,15 +376,19 @@ def get_delete_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
+        token_caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
-            {"user_id": caregiver_id}
+            {"user_id": token_caregiver_id}
         )
         care_receipient = next(
-            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            (
+                care_receipient
+                for care_receipient in care_receipients_under_caregiver
+                if care_receipient.id == care_receipient_id
+            ),
             None,
         )
-        if not care_receipient:
+        if care_receipient is None:
             raise CareReceipientNotUnderCurrentCaregiverException
         CRUDCareReceipient(db).delete(care_receipient)
         return
@@ -426,15 +407,19 @@ def get_update_care_receipient_response(
     db: Session,
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
+        token_caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
-            {"user_id": caregiver_id}
+            {"user_id": token_caregiver_id}
         )
         care_receipient = next(
-            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            (
+                care_receipient
+                for care_receipient in care_receipients_under_caregiver
+                if care_receipient.id == care_receipient_id
+            ),
             None,
         )
-        if not care_receipient:
+        if care_receipient is None:
             raise CareReceipientNotUnderCurrentCaregiverException
         CRUDCareReceipient(db).update_profile(
             care_receipient, request.model_dump(exclude={"confirm_password"})
@@ -452,15 +437,19 @@ def get_suspend_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
+        token_caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
-            {"user_id": caregiver_id}
+            {"user_id": token_caregiver_id}
         )
         care_receipient = next(
-            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            (
+                care_receipient
+                for care_receipient in care_receipients_under_caregiver
+                if care_receipient.id == care_receipient_id
+            ),
             None,
         )
-        if not care_receipient:
+        if care_receipient is None:
             raise CareReceipientNotUnderCurrentCaregiverException
         CRUDCareReceipient(db).suspend(care_receipient)
         return
@@ -476,15 +465,19 @@ def get_unsuspend_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> None:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
+        token_caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
-            {"user_id": caregiver_id}
+            {"user_id": token_caregiver_id}
         )
         care_receipient = next(
-            (cr for cr in care_receipients_under_caregiver if cr.id == care_receipient_id),
+            (
+                care_receipient
+                for care_receipient in care_receipients_under_caregiver
+                if care_receipient.id == care_receipient_id
+            ),
             None,
         )
-        if not care_receipient:
+        if care_receipient is None:
             raise CareReceipientNotUnderCurrentCaregiverException
         CRUDCareReceipient(db).unsuspend(care_receipient)
         return
@@ -500,17 +493,18 @@ def get_care_receipient_response(
     care_receipient_id: int, token: str, db: Session
 ) -> GetCareReceipientDetailResponse:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
+        token_caregiver_id = get_token_data(token, "caregiver_id")
         care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
-            {"user_id": caregiver_id}
+            {"user_id": token_caregiver_id}
         )
         if care_receipient_id not in [
-            cr.id for cr in care_receipients_under_caregiver
+            care_receipient.id
+            for care_receipient in care_receipients_under_caregiver
         ]:
             raise CareReceipientNotUnderCurrentCaregiverException
 
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-        if not care_receipient:
+        if care_receipient is None:
             raise NoRecordFoundException
         dashboard_moods_out = get_admin_dashboard_moods_out(
             care_receipient.moods, care_receipient.created_at, datetime.today()
@@ -573,8 +567,8 @@ def get_care_receipient_login_url_response(
     care_receipient_id: int, token: str, db: Session
 ) -> CareReceipientLoginUrlResponse:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
-        _assert_caregiver_owns_care_receipient(caregiver_id, care_receipient_id, db)
+        token_caregiver_id = get_token_data(token, "caregiver_id")
+        _assert_caregiver_owns_care_receipient(token_caregiver_id, care_receipient_id, db)
 
         existing = CRUDMagicLinkToken(db).get_by_care_receipient_id(care_receipient_id)
         raw_token = existing.token if existing else _create_magic_link_token(care_receipient_id, db)
@@ -593,8 +587,8 @@ def revoke_magic_link_token_response(
     care_receipient_id: int, token: str, db: Session
 ) -> CareReceipientLoginUrlResponse:
     try:
-        caregiver_id = get_token_data(token, "caregiver_id")
-        _assert_caregiver_owns_care_receipient(caregiver_id, care_receipient_id, db)
+        token_caregiver_id = get_token_data(token, "caregiver_id")
+        _assert_caregiver_owns_care_receipient(token_caregiver_id, care_receipient_id, db)
 
         CRUDMagicLinkToken(db).delete_by_care_receipient_id(care_receipient_id)
         raw_token = _create_magic_link_token(care_receipient_id, db)
@@ -614,11 +608,11 @@ def verify_magic_link_token_response(
 ) -> CareReceipientToken:
     try:
         magic_link = CRUDMagicLinkToken(db).get_by_token(request.token)
-        if not magic_link:
+        if magic_link is None:
             raise NoRecordFoundException
 
         care_receipient = CRUDCareReceipient(db).get(magic_link.care_receipient_id)
-        if not care_receipient:
+        if care_receipient is None:
             raise NoRecordFoundException
         access_token = create_access_token(
             {
