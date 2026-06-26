@@ -1,6 +1,6 @@
 import { Box, Divider, Fade, Heading, Text, VStack } from "@chakra-ui/react";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useGetCareReceipientClaimGiftResponse } from "@/api/getCareReceipientClaimGiftResponse";
 import { useGetCareReceipientDashboardResponse } from "@/api/getCareReceipientDashboardResponse";
 import { useGetCareReceipientMoodResponse } from "@/api/getCareReceipientMoodResponse";

@@ -15,7 +15,6 @@ import { useGetCareReceipientCreateResponse } from "@/api/getCareReceipientCreat
 import { AgeRange, AppLanguage, CareReceipientCreateRequest, Gender, Race } from "@/api/types";
 import FormFieldsCareReceipientCreateUpdate from "@/components/FormFieldsCareReceipientCreateUpdate";
 
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IconArrowLeft } from "@/components/IconArrowLeft";
 import { CREATE_CARE_RECEIPIENT_FORM_FIELDS_PROPS } from "@/pages/Caregiver/constants";
@@ -77,7 +76,7 @@ function ModalCreateCareReceipient() {
             isClosable: true,
           });
         },
-        onError: (error) => {
+        onError: () => {
           setErrorMessage("Something went wrong. Please try again later.");
         },
       }
