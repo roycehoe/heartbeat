@@ -12,7 +12,7 @@ class CaregiverLogInRequest(BaseModel):
 
 class CaregiverCreateRequest(BaseModel):
     clerk_id: str
-    contact_number: int = Field(..., alias="contactNumber")
+    contact_number: str = Field(..., alias="contactNumber")
 
 
 class CaregiverToken(BaseModel):
