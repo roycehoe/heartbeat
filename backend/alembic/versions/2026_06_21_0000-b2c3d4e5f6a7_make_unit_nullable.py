@@ -27,6 +27,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    op.execute("UPDATE care_receipient SET unit = '' WHERE unit IS NULL")
     op.alter_column(
         "care_receipient",
         "unit",
