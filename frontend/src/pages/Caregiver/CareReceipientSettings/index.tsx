@@ -5,6 +5,7 @@ import {
   FormLabel,
   Heading,
   IconButton,
+  Spinner,
   Switch,
   Text,
   useToast,
@@ -41,6 +42,9 @@ const CareReceipientSettings = () => {
   const handleOnConfirmModalDeleteCareReceipient = (careReceipientId: number) => {
     deleteUser(careReceipientId, {
       onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["caregiver", "dashboard"],
+        });
         setIsDeleteUserModalOpen(false);
         toast({
           title: "User Deleted Successfully",
@@ -59,18 +63,13 @@ const CareReceipientSettings = () => {
     mutate(careReceipientId, {
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ["getCareReceipientDetailResponse", careReceipientId],
+          queryKey: ["careReceipient", careReceipientId],
         });
       },
     });
   };
 
-  if (isLoading) {
-    return;
-  }
-  if (!data) {
-    return;
-  }
+  if (isLoading || !data) return <Spinner />;
 
   return (
     <Box
