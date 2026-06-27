@@ -29,7 +29,11 @@ def _get_errant_care_receipients(db: Session) -> list[CareReceipient]:
     non_compliant_non_suspended = CRUDCareReceipient(db).get_by_all(
         {"can_record_mood": True, "is_suspended": False}
     )
-    return [cr for cr in non_compliant_non_suspended if _is_errant_care_receipient(cr)]
+    return [
+        care_receipient
+        for care_receipient in non_compliant_non_suspended
+        if _is_errant_care_receipient(care_receipient)
+    ]
 
 
 def _get_non_compliant_care_receipients(db: Session) -> list[CareReceipient]:
@@ -75,6 +79,8 @@ def _notify_caregivers_of_errant_care_receipient_suspension(
         if care_receipient.is_suspended:
             continue
         caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
+        if caregiver is None:
+            continue
         whatsapp_message_data = get_suspend_errant_user_whatsapp_message_data(
             f"65{caregiver.contact_number}",
             care_receipient.name,
@@ -89,6 +95,8 @@ def _notify_caregiver_of_non_compliant_care_receipients(
         if care_receipient.is_suspended:
             continue
         caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
+        if caregiver is None:
+            continue
         whatsapp_message_data = get_non_compliant_whatsapp_message_data(
             f"65{caregiver.contact_number}",
             care_receipient.name,

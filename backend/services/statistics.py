@@ -11,7 +11,7 @@ def is_super_caregiver(
     superadmin_clerk_id: str = AppSettings.SUPERADMIN_CLERK_ID,
 ):
     caregiver_id = get_token_data(token, "caregiver_id")
-    caregiver = CRUDCaregiver(db).get_by(caregiver_id)
+    caregiver = CRUDCaregiver(db).get_by({"id": caregiver_id})
 
     return str(caregiver.clerk_id) == superadmin_clerk_id
 
