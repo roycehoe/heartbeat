@@ -39,10 +39,10 @@ router = APIRouter(
     response_model=CareReceipientToken,
 )
 def verify_magic_link(
-    request: MagicLinkVerifyRequest,
+    magic_link_verify_request: MagicLinkVerifyRequest,
     db: Session = Depends(get_db),
 ):
-    return verify_magic_link_token_response(request, db)
+    return verify_magic_link_token_response(magic_link_verify_request, db)
 
 
 @router.get(
@@ -65,11 +65,13 @@ def care_receipient_dashboard(
 )
 def send_mood(
     care_receipient_id: int,
-    request: CareReceipientMoodRequest,
+    care_receipient_mood_request: CareReceipientMoodRequest,
     token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_create_care_receipient_mood_response(request, care_receipient_id, token, db)
+    return get_create_care_receipient_mood_response(
+        care_receipient_mood_request, care_receipient_id, token, db
+    )
 
 
 @router.post(
@@ -77,11 +79,11 @@ def send_mood(
     status_code=status.HTTP_201_CREATED,
 )
 def create_care_receipient(
-    request: CareReceipientCreateRequest,
+    care_receipient_create_request: CareReceipientCreateRequest,
     token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_create_care_receipient_response(request, token, db)
+    return get_create_care_receipient_response(care_receipient_create_request, token, db)
 
 
 @router.get(
@@ -129,11 +131,13 @@ def get_care_receipient(
 )
 def update_care_receipient(
     care_receipient_id: int,
-    request: CareReceipientUpdateRequest,
+    care_receipient_update_request: CareReceipientUpdateRequest,
     token: str = Header(None),
     db: Session = Depends(get_db),
 ):
-    return get_update_care_receipient_response(care_receipient_id, request, token, db)
+    return get_update_care_receipient_response(
+        care_receipient_id, care_receipient_update_request, token, db
+    )
 
 
 @router.put(

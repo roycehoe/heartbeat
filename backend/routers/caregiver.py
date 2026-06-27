@@ -23,8 +23,10 @@ router = APIRouter(
     "/sign-up",
     status_code=status.HTTP_201_CREATED,
 )
-def sign_up_caregiver(request: CaregiverCreateRequest, db: Session = Depends(get_db)):
-    return get_create_caregiver_response(request, db)
+def sign_up_caregiver(
+    caregiver_create_request: CaregiverCreateRequest, db: Session = Depends(get_db)
+):
+    return get_create_caregiver_response(caregiver_create_request, db)
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=CaregiverToken)
