@@ -190,7 +190,7 @@ def _authenticate_care_receipient(
     token_magic_link_token_id = get_optional_token_data(token, "magic_link_token_id")
     if token_magic_link_token_id is None:
         raise InvalidCredentialsToAccessCareReceipient
-    if not CRUDMagicLinkToken(db).get_by_id(int(token_magic_link_token_id)):
+    if CRUDMagicLinkToken(db).get_by_id(int(token_magic_link_token_id)) is None:
         raise InvalidCredentialsToAccessCareReceipient
 
 
@@ -299,7 +299,7 @@ def get_create_care_receipient_mood_response(
             raise NoRecordFoundException
         if _should_alert_caregiver(care_receipient_id, db):
             caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
-            if caregiver:
+            if caregiver is not None:
                 whatsapp_message = get_consecutive_sad_moods_whatsapp_message_data(
                     f"+65{caregiver.contact_number}",
                     care_receipient.name,
@@ -570,7 +570,11 @@ def get_care_receipient_login_url_response(
         _assert_caregiver_owns_care_receipient(token_caregiver_id, care_receipient_id, db)
 
         existing = CRUDMagicLinkToken(db).get_by_care_receipient_id(care_receipient_id)
-        raw_token = existing.token if existing else _create_magic_link_token(care_receipient_id, db)
+        raw_token = (
+            existing.token
+            if existing is not None
+            else _create_magic_link_token(care_receipient_id, db)
+        )
 
         return CareReceipientLoginUrlResponse(
             url=f"{AppSettings.FRONTEND_BASE_URL}/login/{raw_token}"
