@@ -143,8 +143,8 @@ const ShareLoginLinkCard = ({
           <ModalBody>
             <Text fontSize="sm" color="gray.700">
               This will invalidate {name}'s current link and generate a new
-              one. Their phone shortcut will stop working until they save the
-              new link.
+              one. Their old link will stop working until you share the new
+              one with them.
             </Text>
           </ModalBody>
           <ModalFooter gap={2}>
