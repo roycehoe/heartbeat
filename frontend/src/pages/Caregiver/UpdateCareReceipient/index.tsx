@@ -62,10 +62,7 @@ function ModalUpdateCareReceipient(props: {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: [
-              "getCareReceipientDetailResponse",
-              Number(props.careReceipientId),
-            ],
+            queryKey: ["careReceipient", Number(props.careReceipientId)],
           });
           props.onClose();
           toast({

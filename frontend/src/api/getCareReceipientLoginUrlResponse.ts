@@ -11,7 +11,7 @@ export async function getCareReceipientLoginUrlResponse(
 
 export function useGetCareReceipientLoginUrlResponse(careReceipientId: number) {
   return useQuery({
-    queryKey: ["getCareReceipientLoginUrlResponse", careReceipientId],
+    queryKey: ["careReceipient", careReceipientId, "loginUrl"],
     queryFn: () => getCareReceipientLoginUrlResponse(careReceipientId),
     enabled: !!careReceipientId,
   });

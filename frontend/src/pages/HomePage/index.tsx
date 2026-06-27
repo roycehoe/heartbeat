@@ -1,4 +1,5 @@
 import { Box, Divider, Fade, Heading, Text, VStack } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import { useState } from "react";
 import { useGetCareReceipientClaimGiftResponse } from "@/api/getCareReceipientClaimGiftResponse";
@@ -24,6 +25,7 @@ function getCareReceipientIdFromToken(): number | null {
 
 function HomePage() {
   const careReceipientId = getCareReceipientIdFromToken() ?? 0;
+  const queryClient = useQueryClient();
 
   const [moodMessage, setMoodMessage] = useState<string>("");
   const [hasMoodRecordError, setHasMoodRecordError] = useState<boolean>(false);
@@ -41,13 +43,24 @@ function HomePage() {
 
   const onMoodButtonClick = (mood: SelectedMood) => {
     recordMood({ mood }, {
-      onSuccess: (data) => setMoodMessage(data.mood_message),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: ["careReceipient", careReceipientId, "dashboard"],
+        });
+        setMoodMessage(data.mood_message);
+      },
       onError: () => setHasMoodRecordError(true),
     });
   };
 
   const onClaimGiftBtnClick = () => {
-    claimGift();
+    claimGift(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["careReceipient", careReceipientId, "dashboard"],
+        });
+      },
+    });
   };
 
   if (!isSessionValid || error || hasMoodRecordError) {
@@ -124,18 +137,18 @@ function HomePage() {
         >
           <Box height="50%">
             <Display
-              dashboardData={dashboardData.data}
+              dashboardData={dashboardData}
               onClaimGiftBtnClick={onClaimGiftBtnClick}
             />
           </Box>
           <Box height="50%">
             <MoodBtns
-              isDisabled={!dashboardData.data.can_record_mood}
-              moodsCreatedAt={dashboardData.data.moods.map((mood) =>
+              isDisabled={!dashboardData.can_record_mood}
+              moodsCreatedAt={dashboardData.moods.map((mood) =>
                 moment(mood.created_at)
               )}
-              streak={dashboardData.data.consecutive_checkins}
-              appLanguage={dashboardData.data.app_language}
+              streak={dashboardData.consecutive_checkins}
+              appLanguage={dashboardData.app_language}
               onClick={onMoodButtonClick}
               moodMessage={moodMessage}
             />

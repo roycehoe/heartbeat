@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { httpClient } from "@/api/httpClient";
 import type { CareReceipientMoodOut, CareReceipientMoodRequest } from "@/api/types";
 
@@ -11,14 +11,8 @@ export async function getCareReceipientMoodResponse(
 }
 
 export function useGetCareReceipientMoodResponse(careReceipientId: number) {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (request: CareReceipientMoodRequest) =>
       getCareReceipientMoodResponse(request, careReceipientId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getCareReceipientDashboardResponse", careReceipientId],
-      });
-    },
   });
 }

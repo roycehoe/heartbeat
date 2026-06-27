@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { httpClient } from "@/api/httpClient";
 import type { CareReceipientDetailOut } from "@/api/types";
 
@@ -8,13 +8,7 @@ export async function getCareReceipientClaimGiftResponse(): Promise<CareReceipie
 }
 
 export function useGetCareReceipientClaimGiftResponse() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => getCareReceipientClaimGiftResponse(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getCareReceipientDashboardResponse"],
-      });
-    },
   });
 }

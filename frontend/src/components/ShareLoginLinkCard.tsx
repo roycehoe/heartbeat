@@ -64,7 +64,7 @@ const ShareLoginLinkCard = ({
       onSuccess: () => {
         setIsRevokeModalOpen(false);
         queryClient.invalidateQueries({
-          queryKey: ["getCareReceipientLoginUrlResponse", careReceipientId],
+          queryKey: ["careReceipient", careReceipientId, "loginUrl"],
         });
         toast({
           title: "Link revoked",

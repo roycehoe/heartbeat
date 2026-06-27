@@ -11,7 +11,7 @@ export async function getCareReceipientDetailResponse(
 
 export function useGetCareReceipientDetailResponse(careReceipientId: number) {
   return useQuery({
-    queryKey: ["getCareReceipientDetailResponse", careReceipientId],
+    queryKey: ["careReceipient", careReceipientId],
     queryFn: () => getCareReceipientDetailResponse(careReceipientId),
     enabled: !!careReceipientId,
   });
