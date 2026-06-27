@@ -1,6 +1,6 @@
 import random
 import secrets
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import HTTPException, status
 from sqlmodel import Session
@@ -266,14 +266,13 @@ def _should_alert_caregiver(care_receipient_id: int, db: Session) -> bool:
 
 
 def _update_care_receipient_mood_checkin(care_receipient_id: int, db: Session) -> None:
-    crud = CRUDCareReceipient(db)
-    care_receipient = crud.get(care_receipient_id)
+    care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
     if care_receipient is None:
         raise NoRecordFoundException
-    crud.unsuspend(care_receipient)
-    crud.mark_mood_recorded(care_receipient)
-    crud.increment_consecutive_checkins(care_receipient)
-    crud.reset_consecutive_non_checkins(care_receipient)
+    CRUDCareReceipient(db).unsuspend(care_receipient)
+    CRUDCareReceipient(db).mark_mood_recorded(care_receipient)
+    CRUDCareReceipient(db).increment_consecutive_checkins(care_receipient)
+    CRUDCareReceipient(db).reset_consecutive_non_checkins(care_receipient)
 
 
 def get_create_care_receipient_mood_response(
@@ -290,7 +289,7 @@ def get_create_care_receipient_mood_response(
         db_mood_model = Mood(
             care_receipient_id=care_receipient_id,
             mood=request.mood,
-            created_at=datetime.now(),
+            created_at=datetime.now(timezone.utc),
         )
         CRUDMood(db).create(db_mood_model)
         _update_care_receipient_mood_checkin(care_receipient_id, db)
@@ -355,7 +354,7 @@ def get_create_care_receipient_response(
             consecutive_non_checkins=0,
             user_id=token_caregiver_id,
             can_record_mood=True,
-            created_at=datetime.now(),
+            created_at=datetime.now(timezone.utc),
         )
         CRUDCareReceipient(db).create(db_care_receipient_model)
         return

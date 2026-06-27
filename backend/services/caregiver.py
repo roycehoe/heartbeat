@@ -18,7 +18,6 @@ from models.caregiver import Caregiver
 from schemas.caregiver import (
     CaregiverCreateRequest,
     CaregiverToken,
-    CaregiverDashboardMoodData,
     CaregiverDashboardData,
 )
 from utils.token import create_access_token
@@ -45,7 +44,7 @@ def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
         caregiver_clerk_id = get_clerk_id_from_verified_clerk_token(token)
 
         caregiver = CRUDCaregiver(db).get_by({"clerk_id": caregiver_clerk_id})
-        if not caregiver:
+        if caregiver is None:
             raise NoRecordFoundException
         access_token = create_access_token(
             {
@@ -57,7 +56,7 @@ def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
     except NoRecordFoundException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
+            detail="Caregiver account not found",
         )
     except ClerkAuthenticationFailedException:
         raise HTTPException(
@@ -68,43 +67,12 @@ def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
 
 def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
     care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-    if not care_receipient:
+    if care_receipient is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No care receipient record found",
         )
     return care_receipient.can_record_mood
-
-
-def get_care_receipient_dashboard_response(
-    token: str, db: Session
-) -> CaregiverDashboardData:
-    care_receipient_id: int = get_token_data(token, "care_receipient_id")
-    mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
-    care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-    if not care_receipient:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No care receipient record found",
-        )
-
-    return CaregiverDashboardData(
-        care_receipient_id=care_receipient_id,
-        name=care_receipient.name,
-        age_range=care_receipient.age_range,
-        race=care_receipient.race,
-        gender=care_receipient.gender,
-        postal_code=care_receipient.postal_code,
-        floor=care_receipient.floor,
-        moods=[
-            CaregiverDashboardMoodData(mood=mood.mood, created_at=mood.created_at)
-            for mood in mood_models
-        ],
-        contact_number=care_receipient.contact_number,
-        consecutive_checkins=care_receipient.consecutive_checkins,
-        consecutive_non_checkins=care_receipient.consecutive_non_checkins,
-        can_record_mood=_can_record_mood(care_receipient_id, db),
-    )
 
 
 def get_caregiver_dashboard_response(
@@ -119,7 +87,7 @@ def get_caregiver_dashboard_response(
     care_receipient_models = CRUDCareReceipient(db).get_by_all(
         {"user_id": caregiver_id}, sort, sort_direction
     )
-    if not care_receipient_models:
+    if care_receipient_models is None:
         return []
 
     for care_receipient in care_receipient_models:

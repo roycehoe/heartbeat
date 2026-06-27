@@ -74,7 +74,7 @@ class GetCareReceipientDetailResponse(BaseModel):
     postal_code: int
     floor: int
     block: str
-    unit: Optional[str] = None
+    unit: Optional[str]
     contact_number: str
     is_suspended: bool
     app_language: AppLanguage
