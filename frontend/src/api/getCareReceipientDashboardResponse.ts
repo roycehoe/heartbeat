@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import type { AxiosResponse } from "axios";
 import { httpClient } from "@/api/httpClient";
 import type { CareReceipientDetailOut } from "@/api/types";
 
 export async function getCareReceipientDashboardResponse(
   careReceipientId: number
-): Promise<AxiosResponse<CareReceipientDetailOut>> {
-  return await httpClient.get(`/user/${careReceipientId}/dashboard`);
+): Promise<CareReceipientDetailOut> {
+  const response = await httpClient.get(`/user/${careReceipientId}/dashboard`);
+  return response.data;
 }
 
 export function useGetCareReceipientDashboardResponse(careReceipientId: number) {
   return useQuery({
-    queryKey: ["getCareReceipientDashboardResponse", careReceipientId],
+    queryKey: ["careReceipient", careReceipientId, "dashboard"],
     queryFn: () => getCareReceipientDashboardResponse(careReceipientId),
     refetchInterval: 60 * 60 * 1000,
     retry: false,

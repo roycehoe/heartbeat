@@ -128,9 +128,7 @@ function ModalMoodStreak({
                       width="20px"
                       height="20px"
                     ></Image>
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
                 </Box>
               ))}
             </Box>

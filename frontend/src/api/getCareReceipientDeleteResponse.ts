@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { httpClient } from "@/api/httpClient";
 
 export async function getCareReceipientDeleteResponse(
@@ -9,14 +9,8 @@ export async function getCareReceipientDeleteResponse(
 }
 
 export function useGetCareReceipientDeleteResponse() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (careReceipientId: number) =>
       getCareReceipientDeleteResponse(careReceipientId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getCaregiverDashboardResponse"],
-      });
-    },
   });
 }

@@ -145,10 +145,10 @@ function Caregiver() {
               <Heading size="sm">Persons I care for</Heading>
             </Box>
 
-            <CaregiverDashboardSummaryCards dashboardData={data.data} />
+            <CaregiverDashboardSummaryCards dashboardData={data} />
 
             <TableMoodSnapshot
-              dashboardData={data.data}
+              dashboardData={data}
               getColorTag={getColorTag}
               handleCareReceipientClick={handleCareReceipientClick}
             />
