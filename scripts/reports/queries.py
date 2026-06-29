@@ -28,7 +28,7 @@ def get_cutoff(days=7):
 def get_active_users_last_7_days_subq():
     """Get the number of unique active users in the last 7 days."""
 
-    cutoff_date = get_cutoff(days=365)
+    cutoff_date = get_cutoff()
 
     return (
         select(Mood.care_receipient_id)
@@ -65,13 +65,13 @@ def get_weekly_compliance_rate(db: Session):
     ).scalar()
 
     # return compliance rate
-    return round(non_compliant_users/total_users, 4)
+    return round(non_compliant_users/total_users, 4) if total_users >0 else 0.0
 
 
-def get_users_sad_2plus_last_7_days(db: Session) -> list:
-    """Return a list of users who recorded 'sad' on more than 2 distinct days in the last 7 days."""
+def get_users_sad_3plus_last_7_days(db: Session) -> list:
+    """Return a list of users who recorded 'sad' on more than 2 consecutive days (>= 3) in the last 7 days."""
 
-    cutoff_date = get_cutoff(days=365)
+    cutoff_date = get_cutoff(days=7)
 
     # distinct sad moods
     distinct_sad_users = (
@@ -91,11 +91,11 @@ def get_users_sad_2plus_last_7_days(db: Session) -> list:
         ).subquery("consecutive_sad_moods")
     )
 
-    # group by care_receipient_id, start_date_group with > 2 consecutive days
+    # group by care_receipient_id, start_date_group with more than 2 consecutive days (>= 3)
     sad_user_ids = (
         select(consecutive_sad_moods.c.care_receipient_id)
         .group_by(consecutive_sad_moods.c.care_receipient_id, consecutive_sad_moods.c.start_date_group)
-        .having(func.count(literal_column("*")) >= 2)
+        .having(func.count(literal_column("*")) >= 3)
         .subquery("sad_user_ids")
     )
 
@@ -110,9 +110,11 @@ def get_users_sad_2plus_last_7_days(db: Session) -> list:
     
     return res
 
-db = SessionLocal()
 
 if __name__ == "__main__":
+
+    db = SessionLocal() 
+
     compliance_rate = get_weekly_compliance_rate(db)
-    sad_users_last_7_days = get_users_sad_2plus_last_7_days(db)
+    sad_users_last_7_days = get_users_sad_3plus_last_7_days(db)
 

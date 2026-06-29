@@ -84,7 +84,7 @@ def report():
                     round(participants / enrolled, 4) if enrolled > 0 else 0.0
                 ),
                 "never_checked_in":   len(never_checked_in),
-                "avg_checkin_days":   get_avg_checkin_days(db, _engagement=engagement),
+                "avg_checkin_days":   get_avg_checkin_days(db, precomputed_engagement=engagement),
             },
 
             # 2. Onboarding timeline
@@ -95,7 +95,7 @@ def report():
             "never_checked_in": never_checked_in,
 
             # 4. Consistency
-            "checkin_distribution":      get_checkin_distribution(db, _engagement=engagement),
+            "checkin_distribution":      get_checkin_distribution(db, precomputed_engagement=engagement),
             "checkin_hour_distribution": get_checkin_hour_distribution(db),
             "daily_checkin_trend":       get_daily_checkin_trend(db),
             "retention":                 get_week1_vs_last_week_retention(db),

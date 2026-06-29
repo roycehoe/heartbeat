@@ -1,10 +1,9 @@
 import os
 from datetime import date
 
-import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
-from queries import *
+from queries import get_users_sad_3plus_last_7_days, get_weekly_compliance_rate
 from emailer import send_email  
 from database import SessionLocal
 
@@ -25,7 +24,7 @@ def report():
 
         sad_users_last_7_days = {
             'cols': ['name','postal_code'],
-            'rows': get_users_sad_2plus_last_7_days(db)
+            'rows': get_users_sad_3plus_last_7_days(db)
         }
 
         compliance_rate = get_weekly_compliance_rate(db)

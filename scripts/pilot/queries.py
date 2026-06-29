@@ -204,30 +204,30 @@ def get_never_checked_in(db: Session) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 
-def get_checkin_distribution(db: Session, _engagement: list[dict] | None = None) -> list[dict]:
+def get_checkin_distribution(db: Session, precomputed_engagement: list[dict] | None = None) -> list[dict]:
     """
     Bucket enrolled users by number of check-in days during pilot.
-    Buckets: 0, 1–7, 8–14, 15–21, 22–29
+    Buckets: 0, 1-7, 8-14, 15-21, 22-29
     """
-    engagement = _engagement if _engagement is not None else get_per_user_engagement(db)
-    buckets = {"0": 0, "1–7": 0, "8–14": 0, "15–21": 0, "22–29": 0}
+    engagement = precomputed_engagement if precomputed_engagement is not None else get_per_user_engagement(db)
+    buckets = {"0": 0, "1-7": 0, "8-14": 0, "15-21": 0, "22-29": 0}
     for u in engagement:
         days = u["checkin_days"]
         if days == 0:
             buckets["0"] += 1
         elif days <= 7:
-            buckets["1–7"] += 1
+            buckets["1-7"] += 1
         elif days <= 14:
-            buckets["8–14"] += 1
+            buckets["8-14"] += 1
         elif days <= 21:
-            buckets["15–21"] += 1
+            buckets["15-21"] += 1
         else:
-            buckets["22–29"] += 1
+            buckets["22-29"] += 1
     return [{"bucket": k, "count": v} for k, v in buckets.items()]
 
 
-def get_avg_checkin_days(db: Session, _engagement: list[dict] | None = None) -> float:
-    engagement = _engagement if _engagement is not None else get_per_user_engagement(db)
+def get_avg_checkin_days(db: Session, precomputed_engagement: list[dict] | None = None) -> float:
+    engagement = precomputed_engagement if precomputed_engagement is not None else get_per_user_engagement(db)
     enrolled = len(engagement)
     if enrolled == 0:
         return 0.0
@@ -255,7 +255,7 @@ def get_daily_checkin_trend(db: Session) -> list[dict]:
 
 def get_week1_vs_last_week_retention(db: Session) -> dict:
     """
-    Week 1: 19 Apr – 25 Apr. Last week: 11 May – 17 May.
+    Week 1: 19 Apr - 25 Apr. Last week: 11 May - 17 May.
     Returns unique active users in each week and retention %.
     """
     week1_start = PILOT_START
@@ -316,10 +316,10 @@ def get_weekly_mood_trend(db: Session) -> list[dict]:
     Week boundaries start on April 19; Week 5 covers the single remaining day.
     """
     weeks = [
-        ("Wk 1 (19–25 Apr)", datetime(2026, 4, 19), datetime(2026, 4, 25, 23, 59, 59)),
-        ("Wk 2 (26 Apr–2 May)", datetime(2026, 4, 26), datetime(2026, 5, 2, 23, 59, 59)),
-        ("Wk 3 (3–9 May)", datetime(2026, 5, 3), datetime(2026, 5, 9, 23, 59, 59)),
-        ("Wk 4 (10–16 May)", datetime(2026, 5, 10), datetime(2026, 5, 16, 23, 59, 59)),
+        ("Wk 1 (19-25 Apr)", datetime(2026, 4, 19), datetime(2026, 4, 25, 23, 59, 59)),
+        ("Wk 2 (26 Apr-2 May)", datetime(2026, 4, 26), datetime(2026, 5, 2, 23, 59, 59)),
+        ("Wk 3 (3-9 May)", datetime(2026, 5, 3), datetime(2026, 5, 9, 23, 59, 59)),
+        ("Wk 4 (10-16 May)", datetime(2026, 5, 10), datetime(2026, 5, 16, 23, 59, 59)),
         ("Wk 5 (17 May)", datetime(2026, 5, 17), PILOT_END),
     ]
     rows = db.execute(
