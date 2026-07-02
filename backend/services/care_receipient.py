@@ -389,6 +389,7 @@ def get_delete_care_receipient_response(
         )
         if care_receipient is None:
             raise CareReceipientNotUnderCurrentCaregiverException
+        CRUDMagicLinkToken(db).delete_by_care_receipient_id(care_receipient_id)
         CRUDCareReceipient(db).delete(care_receipient)
         return
 
