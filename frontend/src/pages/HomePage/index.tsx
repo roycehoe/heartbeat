@@ -1,12 +1,35 @@
-import { Box, Divider, Fade, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Divider, Fade, Heading, Text, VStack, useToast } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import moment from "moment";
 import { useState } from "react";
 import { useGetCareReceipientDashboardResponse } from "@/api/getCareReceipientDashboardResponse";
 import { useGetCareReceipientMoodResponse } from "@/api/getCareReceipientMoodResponse";
-import { SelectedMood } from "@/api/types";
+import { AppLanguage, SelectedMood } from "@/api/types";
 import Display from "@/pages/HomePage/Display";
 import MoodBtns from "@/pages/HomePage/MoodBtns";
+
+const MOOD_RECORD_ERROR_TOAST: Record<
+  AppLanguage,
+  { title: string; description: string }
+> = {
+  [AppLanguage.ENGLISH]: {
+    title: "Couldn't save your mood",
+    description: "Please try again.",
+  },
+  [AppLanguage.CHINESE]: {
+    title: "无法保存您的心情",
+    description: "请再试一次。",
+  },
+  [AppLanguage.MALAY]: {
+    title: "Gagal menyimpan mood anda",
+    description: "Sila cuba lagi.",
+  },
+  [AppLanguage.TAMIL]: {
+    title: "உங்கள் மனநிலையைச் சேமிக்க முடியவில்லை",
+    description: "மீண்டும் முயற்சிக்கவும்.",
+  },
+};
 
 function getCareReceipientIdFromToken(): number | null {
   const token = localStorage.getItem("token");
@@ -25,6 +48,7 @@ function getCareReceipientIdFromToken(): number | null {
 function HomePage() {
   const careReceipientId = getCareReceipientIdFromToken() ?? 0;
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const [moodMessage, setMoodMessage] = useState<string>("");
   const [hasMoodRecordError, setHasMoodRecordError] = useState<boolean>(false);
@@ -47,7 +71,20 @@ function HomePage() {
         });
         setMoodMessage(data.mood_message);
       },
-      onError: () => setHasMoodRecordError(true),
+      onError: (error) => {
+        const status = isAxiosError(error) ? error.response?.status : undefined;
+        if (status === 401 || status === 403) {
+          setHasMoodRecordError(true);
+          return;
+        }
+        const appLanguage = dashboardData?.app_language ?? AppLanguage.ENGLISH;
+        toast({
+          ...MOOD_RECORD_ERROR_TOAST[appLanguage],
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
     });
   };
 
