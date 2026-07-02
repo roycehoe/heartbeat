@@ -9,7 +9,7 @@ import { Settings } from "@/pages/Caregiver/Settings";
 import CareReceipientDetail from "@/pages/Caregiver/CareReceipientDetail";
 import CareReceipientSettings from "@/pages/Caregiver/CareReceipientSettings";
 import HomePage from "@/pages/HomePage";
-import LogIn from "@/pages/Login.tsx/Index";
+import LogIn from "@/pages/Login";
 import MagicLinkVerify from "@/pages/MagicLinkVerify";
 const queryClient = new QueryClient();
 
