@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { httpClient } from "@/api/httpClient";
-import type { CareReceipientDetailOut } from "@/api/types";
+import type { CareReceipientDashboardOut } from "@/api/types";
 
 export async function getCareReceipientDashboardResponse(
   careReceipientId: number
-): Promise<CareReceipientDetailOut> {
+): Promise<CareReceipientDashboardOut> {
   const response = await httpClient.get(`/user/${careReceipientId}/dashboard`);
   return response.data;
 }

@@ -66,6 +66,19 @@ export interface CareReceipientMoodOut extends CareReceipientDetailOut {
   mood_message: string;
 }
 
+export interface CareReceipientDashboardMoodOut {
+  mood: SelectedMood | undefined;
+  created_at: string;
+}
+
+export interface CareReceipientDashboardOut {
+  care_receipient_id: number;
+  app_language: AppLanguage;
+  moods: CareReceipientDashboardMoodOut[];
+  can_record_mood: boolean;
+  consecutive_checkins: number;
+}
+
 export interface CareReceipientToken {
   access_token: string;
   token_type: string;
