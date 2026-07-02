@@ -2,7 +2,6 @@ import { Box, Divider, Fade, Heading, Text, VStack } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import { useState } from "react";
-import { useGetCareReceipientClaimGiftResponse } from "@/api/getCareReceipientClaimGiftResponse";
 import { useGetCareReceipientDashboardResponse } from "@/api/getCareReceipientDashboardResponse";
 import { useGetCareReceipientMoodResponse } from "@/api/getCareReceipientMoodResponse";
 import { SelectedMood } from "@/api/types";
@@ -39,7 +38,6 @@ function HomePage() {
   } = useGetCareReceipientDashboardResponse(careReceipientId);
 
   const { mutate: recordMood } = useGetCareReceipientMoodResponse(careReceipientId);
-  const { mutate: claimGift } = useGetCareReceipientClaimGiftResponse();
 
   const onMoodButtonClick = (mood: SelectedMood) => {
     recordMood({ mood }, {
@@ -50,16 +48,6 @@ function HomePage() {
         setMoodMessage(data.mood_message);
       },
       onError: () => setHasMoodRecordError(true),
-    });
-  };
-
-  const onClaimGiftBtnClick = () => {
-    claimGift(undefined, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["careReceipient", careReceipientId, "dashboard"],
-        });
-      },
     });
   };
 
@@ -136,10 +124,7 @@ function HomePage() {
           className="page--group"
         >
           <Box height="50%">
-            <Display
-              dashboardData={dashboardData}
-              onClaimGiftBtnClick={onClaimGiftBtnClick}
-            />
+            <Display />
           </Box>
           <Box height="50%">
             <MoodBtns
