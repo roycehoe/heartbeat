@@ -1,12 +1,8 @@
 import { Box } from "@chakra-ui/react";
-import { CareReceipientDetailOut } from "@/api/types";
 import Brand from "@/components/Brand";
 import Tree from "@/components/Tree";
 
-function Display(props: {
-  dashboardData: CareReceipientDetailOut;
-  onClaimGiftBtnClick: () => Promise<void>;
-}) {
+function Display() {
   return (
     <Box display="flex" className="dashboard--top" height="100%" width="100%">
       <Box
@@ -26,7 +22,7 @@ function Display(props: {
           <Brand></Brand>
         </Box>
         <Box className="dashboard--top--tree" height="100%" width="100%">
-          <Tree onClaimGiftBtnClick={props.onClaimGiftBtnClick}></Tree>
+          <Tree></Tree>
         </Box>
       </Box>
     </Box>
