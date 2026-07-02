@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, Image, Spinner, Text } from "@chakra-ui/react";
 import { ClerkLoaded, ClerkLoading } from "@clerk/clerk-react";
-import CaregiverLogInForm from "@/pages/Login.tsx/CaregiverLoginForm";
+import CaregiverLogInForm from "@/pages/Login/CaregiverLoginForm";
 
 function LogIn() {
   return (
