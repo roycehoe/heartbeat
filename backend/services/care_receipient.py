@@ -206,20 +206,12 @@ def get_care_receipient_dashboard_response(
 
         return GetCareReceipientDashboardResponse(
             care_receipient_id=care_receipient_id,
-            name=care_receipient.name,
-            age_range=care_receipient.age_range,
-            race=care_receipient.race,
-            gender=care_receipient.gender,
-            postal_code=care_receipient.postal_code,
-            floor=care_receipient.floor,
             app_language=care_receipient.app_language,
             moods=[
                 CareReceipientDashboardMoodData(mood=mood.mood, created_at=mood.created_at)
                 for mood in mood_models
             ],
-            contact_number=care_receipient.contact_number,
             consecutive_checkins=care_receipient.consecutive_checkins,
-            consecutive_non_checkins=care_receipient.consecutive_non_checkins,
             can_record_mood=_can_record_mood(care_receipient_id, db),
         )
 

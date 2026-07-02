@@ -34,19 +34,11 @@ class CareReceipientDashboardMoodData(BaseModel):
 
 class GetCareReceipientDashboardResponse(BaseModel):
     care_receipient_id: int
-    name: str
-    age_range: AgeRange
-    race: Race
-    gender: Gender
-    postal_code: int
-    floor: int
-    contact_number: str
     app_language: AppLanguage
 
     moods: list[CareReceipientDashboardMoodData]
     can_record_mood: bool
     consecutive_checkins: int
-    consecutive_non_checkins: int
 
     class Config:
         use_enum_values = True
