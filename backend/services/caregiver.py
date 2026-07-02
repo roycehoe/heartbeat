@@ -65,16 +65,6 @@ def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
         )
 
 
-def _can_record_mood(care_receipient_id: int, db: Session) -> bool:
-    care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
-    if care_receipient is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No care receipient record found",
-        )
-    return care_receipient.can_record_mood
-
-
 def get_caregiver_dashboard_response(
     token: str,
     db: Session,
@@ -112,7 +102,7 @@ def get_caregiver_dashboard_response(
                 moods=dashboard_moods_out,
                 consecutive_checkins=care_receipient.consecutive_checkins,
                 consecutive_non_checkins=care_receipient.consecutive_non_checkins,
-                can_record_mood=_can_record_mood(care_receipient.id, db),
+                can_record_mood=care_receipient.can_record_mood,
             )
         )
     return response
