@@ -1,7 +1,12 @@
 
 import os
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SMTP_HOST = os.getenv("MAILTRAP_SMTP_HOST", "localhost")
 SMTP_USERNAME = os.getenv("MAILTRAP_SMTP_USERNAME", "")
@@ -10,12 +15,6 @@ SMTP_PORT = 2525
 
 SENDER = "Private Person <from@example.com>"
 RECEIVER = "A Test User <to@example.com>"
-MESSAGE = f"""\
-Subject: Hi Mailtrap
-To: {RECEIVER}
-From: {SENDER}
-
-This is a test e-mail message."""
 
 def send_email(
     smtp_host: str = SMTP_HOST,
@@ -24,16 +23,25 @@ def send_email(
     smtp_password: str = SMTP_PASSWORD,
     sender: str = SENDER,
     receiver: str = RECEIVER,
-    message: str = MESSAGE
+    html_content: str = None,
+    subject: str = None
 ):
     try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = sender
+        msg["To"] = receiver
+        # Add HTML part
+        mime_html = MIMEText(html_content, "html")
+        msg.attach(mime_html)
+
         with smtplib.SMTP(smtp_host, smtp_port) as server:
             print("Connected")
             server.starttls()
             print("TLS started")
             server.login(smtp_username, smtp_password)
             print("Logged in")
-            server.sendmail(sender, receiver, message)
+            server.sendmail(sender, receiver, msg.as_string())
             print("Mail sent")
     except Exception as e:
         print("Error:", e)
