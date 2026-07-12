@@ -212,7 +212,7 @@ def get_care_receipient_dashboard_response(
                 for mood in mood_models
             ],
             consecutive_checkins=care_receipient.consecutive_checkins,
-            can_record_mood=_can_record_mood(care_receipient_id, db),
+            can_record_mood=care_receipient.can_record_mood,
         )
 
     except InvalidCredentialsToAccessCareReceipient:
@@ -520,7 +520,7 @@ def get_care_receipient_response(
             ],
             consecutive_checkins=care_receipient.consecutive_checkins,
             consecutive_non_checkins=care_receipient.consecutive_non_checkins,
-            can_record_mood=_can_record_mood(care_receipient.id, db),
+            can_record_mood=care_receipient.can_record_mood,
             is_suspended=care_receipient.is_suspended,
         )
 
