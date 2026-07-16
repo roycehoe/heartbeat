@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     IS_PROD: bool = False
     DB_ENCRYPTION_SECRET: str
+    SECRET_KEY: str
     ADMIN_PASSWORD: str
     SQLALCHEMY_DATABASE_URL_STAGING: str = (
         "postgresql://postgres:password@localhost:5432/postgres"
@@ -14,6 +15,7 @@ class Settings(BaseSettings):
     CLERK_SECRET_KEY: str
     SUPERADMIN_CLERK_ID: str
     ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION: int = 3
+    FRONTEND_BASE_URL: str = "https://heartbeat.carecompass.sg"
 
     model_config = SettingsConfigDict(env_file=".env", frozen=True)
 

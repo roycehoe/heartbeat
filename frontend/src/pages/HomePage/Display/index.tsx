@@ -1,13 +1,8 @@
 import { Box } from "@chakra-ui/react";
-import { DashboardResponse } from "../../../api/user";
-import Brand from "../../../components/Brand";
-import Tree from "../../../components/Tree";
+import Brand from "@/components/Brand";
+import Tree from "@/components/Tree";
 
-function Display(props: {
-  dashboardData: DashboardResponse;
-  goToNextUser: () => void;
-  onClaimGiftBtnClick: () => Promise<void>;
-}) {
+function Display() {
   return (
     <Box display="flex" className="dashboard--top" height="100%" width="100%">
       <Box
@@ -24,10 +19,10 @@ function Display(props: {
           justifyContent="space-between"
           margin="12px"
         >
-          <Brand goToNextUser={props.goToNextUser}></Brand>
+          <Brand></Brand>
         </Box>
         <Box className="dashboard--top--tree" height="100%" width="100%">
-          <Tree onClaimGiftBtnClick={props.onClaimGiftBtnClick}></Tree>
+          <Tree></Tree>
         </Box>
       </Box>
     </Box>

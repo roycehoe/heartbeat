@@ -10,7 +10,7 @@ class DifferentPasswordAndConfirmPasswordException(Exception):
     pass
 
 
-class UserNotUnderCurrentAdminException(Exception):
+class CareReceipientNotUnderCurrentCaregiverException(Exception):
     pass
 
 
@@ -18,7 +18,7 @@ class DBCreateAccountException(Exception):
     pass
 
 
-class DBCreateAccountWithUsernameAlreadyExistsException(Exception):
+class DBDuplicateAccountException(Exception):
     pass
 
 
@@ -38,5 +38,11 @@ class ClerkAuthenticationFailedException(Exception):
     pass
 
 
-class InvalidCredentialsToAccessUser(Exception):
+class InvalidCredentialsToAccessCareReceipient(Exception):
     pass
+
+
+class CareReceipientNotFoundException(Exception):
+    pass
+
+

@@ -1,4 +1,3 @@
-from dotenv import dotenv_values
 import requests
 
 from schemas.whatsapp import SendWhatsappMessageRequestData

@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
 
 const BASE_URL = import.meta.env.DEV ? "http://localhost:8000" : "/api";
 
