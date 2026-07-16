@@ -2,10 +2,10 @@ from datetime import datetime
 
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
-from crud import CRUDAdmin, CRUDUser
-from schemas.crud import CRUDUserOut
+from crud import CRUDCaregiver, CRUDCareReceipient
+from models.care_receipient import CareReceipient
 from settings import AppSettings
 from utils.whatsapp import (
     get_non_compliant_whatsapp_message_data,
@@ -14,106 +14,114 @@ from utils.whatsapp import (
 from gateway import send_whatsapp_message
 
 
-def _is_errant_user(
-    user: CRUDUserOut,
-    errant_user_consecutive_non_checkin_criterion: int = AppSettings.ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION,
+def _is_errant_care_receipient(
+    care_receipient: CareReceipient,
+    errant_care_receipient_consecutive_non_checkin_criterion: int = AppSettings.ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION,
 ) -> bool:
     return (
-        user.consecutive_non_checkins % errant_user_consecutive_non_checkin_criterion
+        care_receipient.consecutive_non_checkins
+        % errant_care_receipient_consecutive_non_checkin_criterion
         == 0
     )
 
 
-def _get_errant_users(db: Session) -> list[CRUDUserOut]:
-    non_compliant_non_suspended_users = [
-        CRUDUserOut.model_validate(user)
-        for user in CRUDUser(db).get_by_all(
-            {"can_record_mood": True, "is_suspended": False}
-        )
-    ]
-    return [user for user in non_compliant_non_suspended_users if _is_errant_user(user)]
-
-
-def _get_non_compliant_users(db: Session) -> list[CRUDUserOut]:
+def _get_errant_care_receipients(db: Session) -> list[CareReceipient]:
+    non_compliant_non_suspended = CRUDCareReceipient(db).get_by_all(
+        {"can_record_mood": True, "is_suspended": False}
+    )
     return [
-        CRUDUserOut.model_validate(user)
-        for user in CRUDUser(db).get_by_all({"can_record_mood": True})
+        care_receipient
+        for care_receipient in non_compliant_non_suspended
+        if _is_errant_care_receipient(care_receipient)
     ]
 
 
-def _reset_all_user_can_record_mood_state(db: Session) -> None:
-    all_users = [
-        CRUDUserOut.model_validate(user) for user in CRUDUser(db).get_by_all({})
-    ]
-    for user in all_users:
-        CRUDUser(db).update(user.id, "can_record_mood", True)
+def _get_non_compliant_care_receipients(db: Session) -> list[CareReceipient]:
+    return CRUDCareReceipient(db).get_by_all({"can_record_mood": True})
 
 
-def _reset_non_compliant_users_consecutive_checkins(
-    db: Session, non_compliant_users: list[CRUDUserOut]
+def _reset_all_care_receipient_can_record_mood_state(db: Session) -> None:
+    crud = CRUDCareReceipient(db)
+    for care_receipient in crud.get_by_all({}):
+        crud.reset_can_record_mood(care_receipient)
+
+
+def _reset_non_compliant_care_receipients_consecutive_checkins(
+    db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
-    for user in non_compliant_users:
-        CRUDUser(db).update(user.id, "consecutive_checkins", 0)
+    crud = CRUDCareReceipient(db)
+    for care_receipient in non_compliant_care_receipients:
+        crud.reset_consecutive_checkins(care_receipient)
 
 
-def _update_non_compliant_users_non_consecutive_checkins(
-    db: Session, non_compliant_users: list[CRUDUserOut]
+def _update_non_compliant_care_receipients_non_consecutive_checkins(
+    db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
-    for user in non_compliant_users:
-        CRUDUser(db).update(
-            user.id, "consecutive_non_checkins", user.consecutive_non_checkins + 1
-        )
+    crud = CRUDCareReceipient(db)
+    for care_receipient in non_compliant_care_receipients:
+        crud.increment_consecutive_non_checkins(care_receipient)
 
 
-def _suspend_notifications_for_errant_users(
-    db: Session, non_compliant_users: list[CRUDUserOut]
+def _suspend_errant_care_receipients(
+    db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
-    for user in non_compliant_users:
-        if not _is_errant_user(user):
+    crud = CRUDCareReceipient(db)
+    for care_receipient in non_compliant_care_receipients:
+        if not _is_errant_care_receipient(care_receipient):
             continue
-        CRUDUser(db).update(user.id, "is_suspended", True)
+        crud.suspend(care_receipient)
 
 
-def _notify_admins_of_errant_user_suspension(
-    db: Session, non_compliant_users: list[CRUDUserOut]
+def _notify_caregivers_of_errant_care_receipient_suspension(
+    db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
-    for user in non_compliant_users:
-        if user.is_suspended:
+    for care_receipient in non_compliant_care_receipients:
+        if care_receipient.is_suspended:
             continue
-        admin = CRUDAdmin(db).get(user.user_id)
+        caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
+        if caregiver is None:
+            continue
         whatsapp_message_data = get_suspend_errant_user_whatsapp_message_data(
-            f"65{admin.contact_number}",
-            user.name,
+            f"65{caregiver.contact_number}",
+            care_receipient.name,
         )
         send_whatsapp_message(whatsapp_message_data)
 
 
-def _notify_admin_of_non_compliant_users(
-    db: Session, non_compliant_users: list[CRUDUserOut]
+def _notify_caregiver_of_non_compliant_care_receipients(
+    db: Session, non_compliant_care_receipients: list[CareReceipient]
 ) -> None:
-    for user in non_compliant_users:
-        if user.is_suspended:
+    for care_receipient in non_compliant_care_receipients:
+        if care_receipient.is_suspended:
             continue
-        admin = CRUDAdmin(db).get(user.user_id)
+        caregiver = CRUDCaregiver(db).get(care_receipient.user_id)
+        if caregiver is None:
+            continue
         whatsapp_message_data = get_non_compliant_whatsapp_message_data(
-            f"65{admin.contact_number}",
-            user.name,
+            f"65{caregiver.contact_number}",
+            care_receipient.name,
             datetime.now(pytz.timezone("Asia/Singapore")),
         )
         send_whatsapp_message(whatsapp_message_data)
 
 
 def _run_end_of_day_cron_job(db: Session) -> None:
-    non_compliant_users = _get_non_compliant_users(db)
-    _notify_admin_of_non_compliant_users(db, non_compliant_users)
-    _reset_non_compliant_users_consecutive_checkins(db, non_compliant_users)
-    _update_non_compliant_users_non_consecutive_checkins(db, non_compliant_users)
+    non_compliant_care_receipients = _get_non_compliant_care_receipients(db)
+    _notify_caregiver_of_non_compliant_care_receipients(db, non_compliant_care_receipients)
+    _reset_non_compliant_care_receipients_consecutive_checkins(
+        db, non_compliant_care_receipients
+    )
+    _update_non_compliant_care_receipients_non_consecutive_checkins(
+        db, non_compliant_care_receipients
+    )
 
-    errant_users = _get_errant_users(db)
-    _notify_admins_of_errant_user_suspension(db, errant_users)
-    _suspend_notifications_for_errant_users(db, errant_users)
+    errant_care_receipients = _get_errant_care_receipients(db)
+    _notify_caregivers_of_errant_care_receipient_suspension(
+        db, errant_care_receipients
+    )
+    _suspend_errant_care_receipients(db, errant_care_receipients)
 
-    _reset_all_user_can_record_mood_state(db)
+    _reset_all_care_receipient_can_record_mood_state(db)
 
 
 def get_scheduler(db: Session):

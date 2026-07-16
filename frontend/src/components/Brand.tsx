@@ -2,9 +2,9 @@ import { Box, Image } from "@chakra-ui/react";
 
 import { useClerk } from "@clerk/clerk-react";
 import { useRef, useState } from "react";
-import ModalLogOut from "./ModalLogout";
+import ModalLogOut from "@/components/ModalLogout";
 
-function Brand(props: { goToNextUser: () => void }) {
+function Brand() {
   const [_, setClickCount] = useState(0);
   const timerRef = useRef<number | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -13,8 +13,8 @@ function Brand(props: { goToNextUser: () => void }) {
   const handleClick = () => {
     if (!timerRef.current) {
       timerRef.current = setTimeout(() => {
-        setClickCount(0); // reset count after 10s
-        timerRef.current = null; // clear timer reference
+        setClickCount(0);
+        timerRef.current = null;
       }, 10000);
     }
 
@@ -24,7 +24,7 @@ function Brand(props: { goToNextUser: () => void }) {
       if (newCount === 10) {
         setIsLogoutModalOpen(true);
         setClickCount(0);
-        clearTimeout(timerRef.current);
+        clearTimeout(timerRef.current ?? undefined);
         timerRef.current = null;
         return 0;
       }

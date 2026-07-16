@@ -1,10 +1,9 @@
-from dotenv import dotenv_values
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from database import get_db
-from routers import admin, admin_user, user
+from routers import caregiver, care_receipient
 from scripts import (
     _run_end_of_day_cron_job,
     get_scheduler,
@@ -63,6 +62,5 @@ def eod_cron_job(db: Session = Depends(get_db)):
     return _run_end_of_day_cron_job(db)
 
 
-app.include_router(admin.router)
-app.include_router(user.router)
-app.include_router(admin_user.router)
+app.include_router(caregiver.router)
+app.include_router(care_receipient.router)

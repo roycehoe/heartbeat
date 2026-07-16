@@ -10,15 +10,15 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { DashboardResponse, Mood } from "../api/user";
-import { IconMood } from "./IconMood";
+import type { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
+import { IconMood } from "@/components/IconMood";
 
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
   name: string;
-  userId: number;
-  moods: Mood[];
-  handleUserClick: (userId: number) => void;
+  careReceipientId: number;
+  moods: CareReceipientDetailMoodOut[];
+  handleCareReceipientClick: (careReceipientId: number) => void;
 }) => {
   const today = new Date();
 
@@ -28,7 +28,7 @@ const TableMoodSnapshotRow = (props: {
         <Flex>
           <Box width="12px" bg={props.colorTag} />
           <Box p={3} width="100%">
-            <Text onClick={() => props.handleUserClick(props.userId)}>
+            <Text onClick={() => props.handleCareReceipientClick(props.careReceipientId)}>
               {props.name}
             </Text>
           </Box>
@@ -54,9 +54,9 @@ const TableMoodSnapshotRow = (props: {
 };
 
 export const TableMoodSnapshot = (props: {
-  dashboardData: DashboardResponse[];
-  getColorTag: (user: DashboardResponse) => string;
-  handleUserClick: (userId: number) => void;
+  dashboardData: CareReceipientDetailOut[];
+  getColorTag: (user: CareReceipientDetailOut) => string;
+  handleCareReceipientClick: (careReceipientId: number) => void;
 }) => {
   return (
     <TableContainer>
@@ -91,8 +91,8 @@ export const TableMoodSnapshot = (props: {
                 colorTag={props.getColorTag(user)}
                 name={user.name}
                 moods={user.moods}
-                userId={user.user_id}
-                handleUserClick={props.handleUserClick}
+                careReceipientId={user.care_receipient_id}
+                handleCareReceipientClick={props.handleCareReceipientClick}
               />
             );
           })}

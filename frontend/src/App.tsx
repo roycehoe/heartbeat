@@ -1,21 +1,16 @@
 import { Box } from "@chakra-ui/react";
 import { ThemeProvider } from "@opengovsg/design-system-react";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Admin from "./pages/Admin";
-import ModalCreateUser from "./pages/Admin/CreateUser";
-import { HowDoesItWork } from "./pages/Admin/HowDoesItWork";
-import { Settings } from "./pages/Admin/Settings";
-import UserDetail from "./pages/Admin/UserDetail";
-import UserSettings from "./pages/Admin/UserSettings";
-import HomePage from "./pages/HomePage";
-import LogIn from "./pages/Login.tsx/Index";
+import Caregiver from "@/pages/Caregiver";
+import ModalCreateCareReceipient from "@/pages/Caregiver/CreateCareReceipient";
+import { HowDoesItWork } from "@/pages/Caregiver/HowDoesItWork";
+import { Settings } from "@/pages/Caregiver/Settings";
+import CareReceipientDetail from "@/pages/Caregiver/CareReceipientDetail";
+import CareReceipientSettings from "@/pages/Caregiver/CareReceipientSettings";
+import HomePage from "@/pages/HomePage";
+import LogIn from "@/pages/Login";
+import MagicLinkVerify from "@/pages/MagicLinkVerify";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -30,17 +25,18 @@ const App = () => {
             flexDirection="column"
           >
             <Routes>
-              <Route index element={<HomePage />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login/:token" element={<MagicLinkVerify />} />
               <Route path="/login" element={<LogIn />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/:userId" element={<UserDetail />} />
+              <Route path="/dashboard" element={<Caregiver />} />
+              <Route path="/dashboard/care-receipient/:careReceipientId" element={<CareReceipientDetail />} />
               <Route
-                path="/admin/:userId/settings"
-                element={<UserSettings />}
+                path="/dashboard/care-receipient/:careReceipientId/settings"
+                element={<CareReceipientSettings />}
               />
-              <Route path="/admin/create-user" element={<ModalCreateUser />} />
-              <Route path="/admin/about" element={<HowDoesItWork />} />
-              <Route path="/admin/settings" element={<Settings />} />
+              <Route path="/dashboard/create-care-receipient" element={<ModalCreateCareReceipient />} />
+              <Route path="/dashboard/about" element={<HowDoesItWork />} />
+              <Route path="/dashboard/settings" element={<Settings />} />
             </Routes>
           </Box>
         </BrowserRouter>

@@ -1,41 +1,42 @@
-from models.base import Base
-from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Boolean
-from sqlalchemy.orm import relationship
+from datetime import datetime
+from typing import List, Optional
+
+from sqlalchemy import TIMESTAMP, Column, String
 from sqlalchemy_utils import EncryptedType
+from sqlmodel import Field, SQLModel
+from sqlmodel import Relationship as SQLRelationship
 
 from settings import AppSettings
 
-class CareReceipient(Base):
+
+class CareReceipient(SQLModel, table=True):
     __tablename__ = "care_receipient"
 
-    id = Column(Integer, primary_key=True)
-
-    # USER SIGNUP FIELDS
-    name = Column(EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET), nullable=False)
-    contact_number = Column(
-        EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET),
-        nullable=False,
-        comment="Assumes SG phone number",
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(
+        sa_column=Column(
+            EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET), nullable=False
+        )
     )
-    alias = Column(
-        String, nullable=False, comment="To prevent data overflow on frontend"
+    contact_number: str = Field(
+        sa_column=Column(
+            EncryptedType(String, AppSettings.DB_ENCRYPTION_SECRET), nullable=False
+        )
     )
-    app_language = Column(String, nullable=False)
-    age = Column(Integer, nullable=False)
-    race = Column(String, nullable=False)
-    gender = Column(String, nullable=False)
-    postal_code = Column(Integer, nullable=False)
-    floor = Column(Integer, nullable=False)
-    block = Column(String, nullable=False)
-    unit = Column(String, nullable=False)
+    app_language: str
+    age_range: str
+    race: str
+    gender: str
+    postal_code: int
+    floor: int
+    block: str
+    unit: Optional[str] = None
+    consecutive_checkins: int
+    consecutive_non_checkins: int
+    is_suspended: bool = Field(default=False)
+    can_record_mood: bool
+    created_at: datetime = Field(sa_column=Column(TIMESTAMP, nullable=False))
+    user_id: Optional[int] = Field(default=None, foreign_key="users.id")
 
-    consecutive_checkins = Column(Integer, nullable=False)
-    consecutive_non_checkins = Column(Integer, nullable=False)
-    is_suspended = Column(Boolean, nullable=False, default=False)
-
-    created_at = Column(TIMESTAMP, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    can_record_mood = Column(Boolean, nullable=False)
-
-    user = relationship("User", back_populates="care_receipients")
-    moods = relationship("Mood", back_populates="care_receipient")
+    caregiver: Optional["Caregiver"] = SQLRelationship(back_populates="care_receipients")
+    moods: List["Mood"] = SQLRelationship(back_populates="care_receipient")

@@ -1,9 +1,8 @@
-# SQLAlchemy models
-from models.base import Base
-from models.user import *
-from models.thread import *
-from models.dementia_daycare import *
-from models.review import *
-from models.bookmark import *
-from models.care_receipient import *
-from models.mood import *
+from models.caregiver import *  # noqa: F403
+from models.thread import *  # noqa: F403
+from models.dementia_daycare import *  # noqa: F403
+from models.review import *  # noqa: F403
+from models.bookmark import *  # noqa: F403
+from models.care_receipient import *  # noqa: F403
+from models.mood import *  # noqa: F403
+from models.magic_link_token import *  # noqa: F403

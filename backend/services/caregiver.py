@@ -1,0 +1,108 @@
+from datetime import datetime
+
+from fastapi import HTTPException, status
+from sqlmodel import Session
+
+from crud import CRUDMood, CRUDCaregiver, CRUDCareReceipient
+from utils.mood import get_admin_dashboard_moods_out
+from utils.token import (
+    get_clerk_id_from_verified_clerk_token,
+    get_token_data,
+)
+from exceptions import (
+    ClerkAuthenticationFailedException,
+    DBDuplicateAccountException,
+    NoRecordFoundException,
+)
+from models.caregiver import Caregiver
+from schemas.caregiver import (
+    CaregiverCreateRequest,
+    CaregiverToken,
+    CaregiverDashboardData,
+)
+from utils.token import create_access_token
+
+
+def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) -> None:
+    try:
+        db_caregiver_model = Caregiver(
+            clerk_id=request.clerk_id,
+            contact_number=request.contact_number,
+        )
+        CRUDCaregiver(db).create(db_caregiver_model)
+        return
+
+    except DBDuplicateAccountException:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account with username already exists",
+        )
+
+
+def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:
+    try:
+        caregiver_clerk_id = get_clerk_id_from_verified_clerk_token(token)
+
+        caregiver = CRUDCaregiver(db).get_by({"clerk_id": caregiver_clerk_id})
+        if caregiver is None:
+            raise NoRecordFoundException
+        access_token = create_access_token(
+            {
+                "caregiver_id": caregiver.id,
+            }
+        )
+        return CaregiverToken(access_token=access_token, token_type="bearer")
+
+    except NoRecordFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Caregiver account not found",
+        )
+    except ClerkAuthenticationFailedException:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication with Clerk failed",
+        )
+
+
+def get_caregiver_dashboard_response(
+    token: str,
+    db: Session,
+    sort: str,
+    sort_direction: int,
+) -> list[CaregiverDashboardData]:
+    response: list[CaregiverDashboardData] = []
+
+    caregiver_id = get_token_data(token, "caregiver_id")
+    care_receipient_models = CRUDCareReceipient(db).get_by_all(
+        {"user_id": caregiver_id}, sort, sort_direction
+    )
+    if care_receipient_models is None:
+        return []
+
+    for care_receipient in care_receipient_models:
+        mood_models = CRUDMood(db).get_by(
+            {"care_receipient_id": care_receipient.id}
+        )
+
+        dashboard_moods_out = get_admin_dashboard_moods_out(
+            mood_models, care_receipient.created_at, datetime.today()
+        )
+
+        response.append(
+            CaregiverDashboardData(
+                care_receipient_id=care_receipient.id,
+                contact_number=care_receipient.contact_number,
+                name=care_receipient.name,
+                age_range=care_receipient.age_range,
+                race=care_receipient.race,
+                gender=care_receipient.gender,
+                postal_code=care_receipient.postal_code,
+                floor=care_receipient.floor,
+                moods=dashboard_moods_out,
+                consecutive_checkins=care_receipient.consecutive_checkins,
+                consecutive_non_checkins=care_receipient.consecutive_non_checkins,
+                can_record_mood=care_receipient.can_record_mood,
+            )
+        )
+    return response
