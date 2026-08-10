@@ -1,7 +1,7 @@
 # build stage
-FROM node:21.1.0-alpine3.18 as build-stage
+FROM node:22-slim as build-stage
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json pnpm-workspace.yaml pnpm-lock.yaml ./
 RUN npm install -g pnpm
 RUN pnpm install
 COPY . .
