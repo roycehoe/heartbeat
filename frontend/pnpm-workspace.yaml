@@ -1,1 +1,4 @@
-dangerouslyAllowAllBuilds: true
+allowBuilds:
+  esbuild: true
+  "@clerk/shared": true
+  protobufjs: true
