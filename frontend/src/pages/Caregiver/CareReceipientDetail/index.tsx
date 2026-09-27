@@ -25,31 +25,11 @@ import ShareLoginLinkCard from "@/components/ShareLoginLinkCard";
 import { IconArrowLeft } from "@/components/IconArrowLeft";
 import { IconMood } from "@/components/IconMood";
 import ModalUpdateCareReceipient from "@/pages/Caregiver/UpdateCareReceipient";
-
-const getDayAbbreviation = (date: Date) => {
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  return days[date.getDay()];
-};
-
-const getMonthDayAbbreviation = (date: Date) => {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const mmm = months[date.getMonth()];
-  const dd = ("0" + date.getDate()).slice(-2);
-  return `${dd} ${mmm}`;
-};
+import {
+  getDayAbbreviation,
+  getMonthDayAbbreviation,
+  isAppToday,
+} from "@/utils/dates";
 
 const ToggleShowHidePersonalInformation = (props: {
   isShowPersonalInformation: boolean;
@@ -78,11 +58,12 @@ const getSadDaysCount = (moods: CareReceipientDetailMoodOut[]) => {
 };
 
 const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) => {
-  const lastSevenDays = [...Array(7)].map((_, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() - index);
-    return date;
-  });
+  // Each column is labelled from the day its own entry was recorded on, so a
+  // header can never end up describing a different day than the icon below it.
+  const lastSevenDays = props.moods.slice(0, 7).map((mood) => ({
+    mood,
+    date: new Date(mood.created_at),
+  }));
 
   return (
     <TableContainer>
@@ -94,16 +75,21 @@ const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) =
             </Th>
           </Tr>
           <Tr>
-            {lastSevenDays.map((day) => {
+            {lastSevenDays.map(({ date }) => {
               return (
-                <Th fontSize="8px" p="1px" textTransform="none">
+                <Th
+                  key={date.toISOString()}
+                  fontSize="8px"
+                  p="1px"
+                  textTransform="none"
+                >
                   <Box
                     display="flex"
                     flexDirection="column"
                     alignItems="center"
                   >
-                    <p>{getDayAbbreviation(day)}</p>
-                    <p>{getMonthDayAbbreviation(day)}</p>
+                    <p>{getDayAbbreviation(date)}</p>
+                    <p>{getMonthDayAbbreviation(date)}</p>
                   </Box>
                 </Th>
               );
@@ -112,15 +98,12 @@ const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) =
         </Thead>
         <Tbody>
           <Tr>
-            {props.moods.slice(0, 7).map((mood) => {
+            {lastSevenDays.map(({ mood, date }) => {
               return (
-                <Td>
+                <Td key={date.toISOString()}>
                   <IconMood
                     mood={mood.mood}
-                    isToday={
-                      new Date(mood.created_at).toDateString() ===
-                      new Date().toDateString()
-                    }
+                    isToday={isAppToday(date)}
                   ></IconMood>
                 </Td>
               );

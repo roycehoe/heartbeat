@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import type { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
 import { IconMood } from "@/components/IconMood";
+import { isAppToday } from "@/utils/dates";
 
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
@@ -20,8 +21,6 @@ const TableMoodSnapshotRow = (props: {
   moods: CareReceipientDetailMoodOut[];
   handleCareReceipientClick: (careReceipientId: number) => void;
 }) => {
-  const today = new Date();
-
   return (
     <Tr>
       <Td p={0}>
@@ -36,14 +35,11 @@ const TableMoodSnapshotRow = (props: {
       </Td>
       {props.moods.slice(0, 4).map((mood) => {
         return (
-          <Td>
+          <Td key={mood.created_at}>
             <Box display="flex" justifyContent="center">
               <IconMood
                 mood={mood.mood}
-                isToday={
-                  new Date(mood.created_at).toDateString() ===
-                  today.toDateString()
-                }
+                isToday={isAppToday(new Date(mood.created_at))}
               />
             </Box>
           </Td>
