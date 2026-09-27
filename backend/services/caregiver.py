@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from fastapi import HTTPException, status
 from sqlmodel import Session
 
 from crud import CRUDMood, CRUDCaregiver, CRUDCareReceipient
+from utils.dates import now
 from utils.mood import get_admin_dashboard_moods_out
 from utils.token import (
     get_clerk_id_from_verified_clerk_token,
@@ -86,7 +85,7 @@ def get_caregiver_dashboard_response(
         )
 
         dashboard_moods_out = get_admin_dashboard_moods_out(
-            mood_models, care_receipient.created_at, datetime.today()
+            mood_models, care_receipient.created_at, now()
         )
 
         response.append(

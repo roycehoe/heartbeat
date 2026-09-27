@@ -1,6 +1,5 @@
 import random
 import secrets
-from datetime import datetime, timezone
 
 from fastapi import HTTPException, status
 from sqlmodel import Session
@@ -32,6 +31,7 @@ from schemas.care_receipient import (
     MagicLinkVerifyRequest,
 )
 from settings import AppSettings
+from utils.dates import now
 from utils.mood import get_admin_dashboard_moods_out
 from utils.token import create_access_token, get_optional_token_data, get_token_data
 from utils.whatsapp import get_consecutive_sad_moods_whatsapp_message_data
@@ -281,7 +281,7 @@ def get_create_care_receipient_mood_response(
         db_mood_model = Mood(
             care_receipient_id=care_receipient_id,
             mood=request.mood,
-            created_at=datetime.now(timezone.utc),
+            created_at=now(),
         )
         CRUDMood(db).create(db_mood_model)
         _update_care_receipient_mood_checkin(care_receipient_id, db)
@@ -346,7 +346,7 @@ def get_create_care_receipient_response(
             consecutive_non_checkins=0,
             user_id=token_caregiver_id,
             can_record_mood=True,
-            created_at=datetime.now(timezone.utc),
+            created_at=now(),
         )
         CRUDCareReceipient(db).create(db_care_receipient_model)
         return
@@ -499,7 +499,7 @@ def get_care_receipient_response(
         if care_receipient is None:
             raise NoRecordFoundException
         dashboard_moods_out = get_admin_dashboard_moods_out(
-            care_receipient.moods, care_receipient.created_at, datetime.today()
+            care_receipient.moods, care_receipient.created_at, now()
         )
 
         return GetCareReceipientDetailResponse(
