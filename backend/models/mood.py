@@ -20,7 +20,9 @@ class Mood(SQLModel, table=True):
         default=None,
         sa_column=Column(SQLAlchemyEnum(SelectedMood), nullable=True),
     )
-    created_at: datetime = Field(sa_column=Column(TIMESTAMP, nullable=False))
+    created_at: datetime = Field(
+        sa_column=Column(TIMESTAMP(timezone=True), nullable=False)
+    )
 
     care_receipient: Optional["CareReceipient"] = SQLRelationship(
         back_populates="moods"

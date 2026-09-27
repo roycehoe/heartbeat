@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any
 
 from sqlalchemy import asc, desc
@@ -9,6 +9,7 @@ from models.caregiver import Caregiver
 from models.care_receipient import CareReceipient
 from models.magic_link_token import MagicLinkToken
 from models.mood import Mood
+from utils.dates import now
 
 
 class CRUDCareReceipient:
@@ -178,11 +179,11 @@ class CRUDMood:
         return mood
 
     def get_by(self, field: dict[Any, Any], day_range: int = 30) -> list[Mood]:
-        cutoff = datetime.today() - timedelta(days=day_range)
+        cutoff = now() - timedelta(days=day_range)
         stmt = select(Mood)
         for key, value in field.items():
             stmt = stmt.where(getattr(Mood, key) == value)
-        stmt = stmt.where(Mood.created_at > cutoff)
+        stmt = stmt.where(Mood.created_at > cutoff).order_by(Mood.created_at)
         return list(self.session.exec(stmt).all())
 
     def get_latest(self, care_receipient_id: int, limit: int) -> list[Mood]:
