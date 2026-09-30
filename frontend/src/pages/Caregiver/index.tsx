@@ -15,6 +15,7 @@ import type { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api
 
 import { useEffect } from "react";
 import { TableMoodSnapshot } from "@/components/TableMoodSnapshot";
+import { CARECOMPASS_BASE_URL } from "@/constants";
 
 enum ColorTag {
   BAD = "#FF3B30",
@@ -159,7 +160,7 @@ function Caregiver() {
           <Box>
             <Text fontSize="12px">
               Enjoying this app? Check out&nbsp;
-              <Link href="https://my.carecompass.sg/">CareCompass</Link>
+              <Link href={CARECOMPASS_BASE_URL}>CareCompass</Link>
             </Text>
           </Box>
         </Box>

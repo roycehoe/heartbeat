@@ -1,10 +1,9 @@
+import { BACKEND_BASE_URL } from "@/constants";
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
-const BASE_URL = import.meta.env.DEV ? "http://localhost:8000" : "/api";
-
 export const httpClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BACKEND_BASE_URL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -20,7 +19,7 @@ httpClient.interceptors.request.use(function (config: AxiosRequestConfig) {
 });
 
 export const httpClerkClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BACKEND_BASE_URL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
