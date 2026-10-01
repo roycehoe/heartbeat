@@ -96,7 +96,7 @@ const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) =
           <Tr>
             {lastSevenDays.map((day) => {
               return (
-                <Th fontSize="8px" p="1px" textTransform="none">
+                <Th key={day.toISOString()} fontSize="8px" p="1px" textTransform="none">
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -114,7 +114,7 @@ const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) =
           <Tr>
             {props.moods.slice(0, 7).map((mood) => {
               return (
-                <Td>
+                <Td key={mood.created_at}>
                   <IconMood
                     mood={mood.mood}
                     isToday={

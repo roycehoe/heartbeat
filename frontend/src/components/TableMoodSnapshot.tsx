@@ -36,7 +36,7 @@ const TableMoodSnapshotRow = (props: {
       </Td>
       {props.moods.slice(0, 4).map((mood) => {
         return (
-          <Td>
+          <Td key={mood.created_at}>
             <Box display="flex" justifyContent="center">
               <IconMood
                 mood={mood.mood}
@@ -88,6 +88,7 @@ export const TableMoodSnapshot = (props: {
           {props.dashboardData.map((user) => {
             return (
               <TableMoodSnapshotRow
+                key={user.care_receipient_id}
                 colorTag={props.getColorTag(user)}
                 name={user.name}
                 moods={user.moods}
