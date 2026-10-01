@@ -19,12 +19,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGetCareReceipientDetailResponse } from "@/api/getCareReceipientDetailResponse";
 import { useGetCareReceipientLoginUrlResponse } from "@/api/getCareReceipientLoginUrlResponse";
 import { SelectedMood } from "@/api/types";
-import type { CareReceipientDetailMoodOut } from "@/api/types";
 import { FormFieldsViewCareReceipient } from "@/components/FormFieldsViewCareReceipient";
 import ShareLoginLinkCard from "@/components/ShareLoginLinkCard";
 import { IconArrowLeft } from "@/components/IconArrowLeft";
 import { IconMood } from "@/components/IconMood";
 import ModalUpdateCareReceipient from "@/pages/Caregiver/UpdateCareReceipient";
+import { getMoodTimeline } from "@/utils/moodTimeline";
+import type { MoodTimelineDay } from "@/utils/moodTimeline";
 
 const getDayAbbreviation = (date: Date) => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -73,17 +74,11 @@ const ToggleShowHidePersonalInformation = (props: {
   );
 };
 
-const getSadDaysCount = (moods: CareReceipientDetailMoodOut[]) => {
-  return moods.slice(0, 7).filter((mood) => mood.mood === SelectedMood.SAD).length;
+const getSadDaysCount = (timeline: MoodTimelineDay[]) => {
+  return timeline.filter((day) => day.mood === SelectedMood.SAD).length;
 };
 
-const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) => {
-  const lastSevenDays = [...Array(7)].map((_, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() - index);
-    return date;
-  });
-
+const UserMoodHistoryTable = (props: { timeline: MoodTimelineDay[] }) => {
   return (
     <TableContainer>
       <Table size="sm" variant="simple">
@@ -94,16 +89,16 @@ const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) =
             </Th>
           </Tr>
           <Tr>
-            {lastSevenDays.map((day) => {
+            {props.timeline.map(({ date }) => {
               return (
-                <Th key={day.toISOString()} fontSize="8px" p="1px" textTransform="none">
+                <Th key={date.getTime()} fontSize="8px" p="1px" textTransform="none">
                   <Box
                     display="flex"
                     flexDirection="column"
                     alignItems="center"
                   >
-                    <p>{getDayAbbreviation(day)}</p>
-                    <p>{getMonthDayAbbreviation(day)}</p>
+                    <p>{getDayAbbreviation(date)}</p>
+                    <p>{getMonthDayAbbreviation(date)}</p>
                   </Box>
                 </Th>
               );
@@ -112,16 +107,10 @@ const UserMoodHistoryTable = (props: { moods: CareReceipientDetailMoodOut[] }) =
         </Thead>
         <Tbody>
           <Tr>
-            {props.moods.slice(0, 7).map((mood) => {
+            {props.timeline.map((day) => {
               return (
-                <Td key={mood.created_at}>
-                  <IconMood
-                    mood={mood.mood}
-                    isToday={
-                      new Date(mood.created_at).toDateString() ===
-                      new Date().toDateString()
-                    }
-                  ></IconMood>
+                <Td key={day.date.getTime()}>
+                  <IconMood mood={day.mood} isToday={day.isToday}></IconMood>
                 </Td>
               );
             })}
@@ -158,6 +147,10 @@ const CareReceipientDetail = () => {
       navigate("/login");
     }
   }, []);
+
+  const moodTimeline = careReceipientData
+    ? getMoodTimeline(careReceipientData.moods, 7, careReceipientData.created_at)
+    : [];
 
   if (isLoading || !careReceipientData || !careReceipientId) {
     return (
@@ -211,14 +204,14 @@ const CareReceipientDetail = () => {
           </Heading>
           <Heading size="sm">{careReceipientData.name}</Heading>
         </Box>
-        {getSadDaysCount(careReceipientData.moods.slice(0, 7)) > 2 && (
+        {getSadDaysCount(moodTimeline) > 2 && (
           <Banner size="sm" variant="error">
             Poor mood reported in the past{" "}
-            {getSadDaysCount(careReceipientData.moods.slice(0, 7))} days
+            {getSadDaysCount(moodTimeline)} days
           </Banner>
         )}
 
-        <UserMoodHistoryTable moods={careReceipientData.moods} />
+        <UserMoodHistoryTable timeline={moodTimeline} />
         {loginUrlData?.url && (
           <ShareLoginLinkCard
             loginLink={loginUrlData.url}

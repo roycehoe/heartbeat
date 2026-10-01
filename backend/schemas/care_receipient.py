@@ -1,19 +1,26 @@
-from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
 
 from enums import AgeRange, AppLanguage, Gender, Race, SelectedMood
-from models.mood import Mood
+from schemas.types import UtcDatetime
 
 
 class CareReceipientMoodRequest(BaseModel):
     mood: SelectedMood
 
 
+class CareReceipientDashboardMoodData(BaseModel):
+    mood: SelectedMood
+    created_at: UtcDatetime
+
+    class Config:
+        from_attributes = True
+
+
 class CreateCareReceipientMoodResponse(BaseModel):
     care_receipient_id: int
-    moods: list[Mood]
+    moods: list[CareReceipientDashboardMoodData]
     can_record_mood: bool
     consecutive_checkins: int
     consecutive_non_checkins: int
@@ -21,15 +28,6 @@ class CreateCareReceipientMoodResponse(BaseModel):
 
     class Config:
         use_enum_values = True
-        arbitrary_types_allowed = True
-
-
-class CareReceipientDashboardMoodData(BaseModel):
-    mood: Optional[SelectedMood]
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class GetCareReceipientDashboardResponse(BaseModel):
@@ -50,8 +48,8 @@ class CareReceipientToken(BaseModel):
 
 
 class CareReceipientDetailMoodData(BaseModel):
-    mood: Optional[SelectedMood]
-    created_at: datetime
+    mood: SelectedMood
+    created_at: UtcDatetime
 
     class Config:
         from_attributes = True
@@ -70,6 +68,7 @@ class GetCareReceipientDetailResponse(BaseModel):
     contact_number: str
     is_suspended: bool
     app_language: AppLanguage
+    created_at: UtcDatetime
 
     moods: list[CareReceipientDetailMoodData]
     can_record_mood: bool
