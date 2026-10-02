@@ -9,13 +9,23 @@ HeartBeat is a mood-monitoring web app for elderly care in Singapore. Care recip
 ## Monorepo Structure
 
 ```
-backend/     FastAPI + PostgreSQL API (Python 3.11, poetry)
+backend/     FastAPI + PostgreSQL API (Python 3.10+, poetry; Docker image uses 3.11)
 frontend/    React + Vite SPA (TypeScript, pnpm)
 scripts/     Standalone reporting scripts (SQLAlchemy + SMTP)
 docker-compose.yml   Runs frontend (nginx :80) → proxies /api/ → backend
 ```
 
 The backend has its own `CLAUDE.md` with detailed architecture, commands, env vars, and domain rules — read it when working on the API.
+
+## Local Development Setup
+
+1. Backend: `cd backend && docker-compose -f _local/db/docker-compose.yml up -d` (local Postgres on :5432, user `postgres`, password `password`), `cp .env.template .env` and fill in the required values (see [Environment variables](README.md#environment-variables)), then `poetry install && poetry run alembic upgrade head && poetry run fastapi dev main.py`.
+2. Frontend: `cd frontend && pnpm install`, `cp .env.template .env` and set `VITE_CLERK_PUBLISHABLE_KEY`, then `pnpm run dev`.
+3. Admin login needs a Clerk dev application. The publishable key goes in both `.env` files (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` in the backend, `VITE_CLERK_PUBLISHABLE_KEY` in the frontend); the secret key goes in the backend only.
+4. Set `FRONTEND_BASE_URL=http://localhost:5173` in the backend `.env` so care recipient magic links point at the local frontend.
+5. Empty values in `.env` are treated as unset (`env_ignore_empty=True` in the backend, `||` fallbacks in `frontend/src/constants.ts`), so optional variables can stay blank. Never commit `.env` files.
+
+See [README.md](README.md#getting-started) for the full walkthrough.
 
 ## Backend Commands (run from `backend/`)
 
@@ -29,7 +39,7 @@ alembic upgrade head
 alembic revision --autogenerate -m "description"
 ```
 
-There are no automated tests.
+Tests: `poetry run pytest` (small suite under `backend/tests/`).
 
 ## Frontend Commands (run from `frontend/`)
 

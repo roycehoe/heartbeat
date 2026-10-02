@@ -26,7 +26,7 @@ alembic revision --autogenerate -m "description"
 alembic downgrade -1
 ```
 
-There are no tests.
+Tests: `poetry run pytest` (suite under `tests/`).
 
 ## Architecture
 
@@ -36,7 +36,7 @@ There are no tests.
 
 **Auth:** Two-layer JWT system:
 1. Admins authenticate via Clerk (external). A Clerk JWT (passed in the `token` header) is verified against Clerk's JWKS endpoint (`RS256`), then exchanged for an internal app JWT (`HS256`).
-2. Care recipients receive a JWT issued from the admin's app token, containing `user_id` and `app_language`.
+2. Care recipients log in via a magic link (`POST /user/magic-link/verify`) and receive an app JWT containing `care_receipient_id` and `magic_link_token_id`. Requests are valid only while that magic-link row still exists, so revoking a link ends the session.
 
 **Scheduling:** APScheduler `BackgroundScheduler` runs a nightly cron job at midnight `Asia/Singapore`. The job: resets `can_record_mood`, increments `consecutive_non_checkins` for care recipients who didn't check in, notifies admins via WhatsApp, suspends users who exceed the consecutive-miss threshold, and unsuspends users who do check in.
 
@@ -79,28 +79,6 @@ Key behavioral rules:
 - `ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION` (default: 3) consecutive missed days → user suspended, admin notified.
 - A check-in from a suspended user unsuspends them.
 
-## Required Environment Variables
+## Environment Variables
 
-Defined in `settings.py` (Pydantic Settings, no defaults — app will not start without these):
-
-| Variable | Purpose |
-|---|---|
-| `DB_ENCRYPTION_SECRET` | Column-level encryption key |
-| `SECRET_KEY` | HS256 signing key for the internal app JWT |
-| `ADMIN_PASSWORD` | Admin password |
-| `PHONE_NUMBER_ID` | WhatsApp Business API phone number ID |
-| `WHATSAPP_API_ACCESS_TOKEN` | Meta Graph API token |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
-| `CLERK_SECRET_KEY` | Clerk secret key for JWKS verification |
-| `SUPERADMIN_CLERK_ID` | Clerk user ID of the superadmin |
-
-## Optional Environment Variables
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `IS_PROD` | `False` | Production mode flag |
-| `SQLALCHEMY_DATABASE_URL_STAGING` | `postgresql://postgres:password@localhost:5432/postgres` | Database connection URL |
-| `ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION` | `3` | Consecutive missed check-ins before a user is suspended |
-| `FRONTEND_BASE_URL` | `https://heartbeat.carecompass.sg` | Base of care recipient magic-link login URLs (`{FRONTEND_BASE_URL}/login/{token}`); set to `http://localhost:5173` for local dev |
-
-Settings use `env_ignore_empty=True`, so an empty value in `.env` (e.g. `IS_PROD=`) is treated as unset: optional variables fall back to their default, and required variables left empty fail with "field required".
+Defined in `settings.py`. Required and optional variables, their defaults and local-dev guidance are documented in the root [README.md](../README.md#environment-variables); keep it updated when changing `settings.py`.
