@@ -94,4 +94,13 @@ Defined in `settings.py` (Pydantic Settings, no defaults — app will not start 
 | `CLERK_SECRET_KEY` | Clerk secret key for JWKS verification |
 | `SUPERADMIN_CLERK_ID` | Clerk user ID of the superadmin |
 
-Optional: `IS_PROD` (default `False`), `SQLALCHEMY_DATABASE_URL_STAGING`, `ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION` (default `3`).
+## Optional Environment Variables
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `IS_PROD` | `False` | Production mode flag |
+| `SQLALCHEMY_DATABASE_URL_STAGING` | `postgresql://postgres:password@localhost:5432/postgres` | Database connection URL |
+| `ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION` | `3` | Consecutive missed check-ins before a user is suspended |
+| `FRONTEND_BASE_URL` | `https://heartbeat.carecompass.sg` | Base of care recipient magic-link login URLs (`{FRONTEND_BASE_URL}/login/{token}`); set to `http://localhost:5173` for local dev |
+
+Settings use `env_ignore_empty=True`, so an empty value in `.env` (e.g. `IS_PROD=`) is treated as unset: optional variables fall back to their default, and required variables left empty fail with "field required".
