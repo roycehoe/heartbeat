@@ -35,7 +35,7 @@ There are no automated tests.
 
 ```bash
 pnpm install
-pnpm run dev      # Vite dev server on :5173; proxied to backend at localhost:8000
+pnpm run dev      # Vite dev server on :5173; calls the backend directly at localhost:8000/api (no Vite proxy; override with VITE_BACKEND_BASE_URL)
 pnpm run build    # tsc type-check + Vite build
 pnpm run lint     # eslint
 ```
