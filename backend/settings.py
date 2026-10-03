@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     ERRANT_USER_CONSECUTIVE_NON_CHECKIN_CRITERION: int = 3
     FRONTEND_BASE_URL: str = "https://heartbeat.carecompass.sg"
 
-    model_config = SettingsConfigDict(env_file=".env", frozen=True)
+    model_config = SettingsConfigDict(env_file=".env", frozen=True, env_ignore_empty=True)
 
 
 AppSettings = Settings()

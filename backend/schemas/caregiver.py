@@ -1,9 +1,7 @@
-from datetime import datetime
-from typing import Optional
-
 from pydantic import BaseModel, Field
 
 from enums import AgeRange, Gender, Race, SelectedMood
+from schemas.types import UtcDatetime
 
 
 class CaregiverLogInRequest(BaseModel):
@@ -25,8 +23,8 @@ class CaregiverMoodRequest(BaseModel):
 
 
 class CaregiverDashboardMoodData(BaseModel):
-    mood: Optional[SelectedMood]
-    created_at: datetime
+    mood: SelectedMood
+    created_at: UtcDatetime
 
     class Config:
         from_attributes = True
@@ -41,6 +39,7 @@ class CaregiverDashboardData(BaseModel):
     postal_code: int
     floor: int
     contact_number: str
+    created_at: UtcDatetime
 
     moods: list[CaregiverDashboardMoodData]
     can_record_mood: bool

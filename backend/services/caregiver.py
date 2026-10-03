@@ -1,10 +1,7 @@
-from datetime import datetime
-
 from fastapi import HTTPException, status
 from sqlmodel import Session
 
 from crud import CRUDMood, CRUDCaregiver, CRUDCareReceipient
-from utils.mood import get_admin_dashboard_moods_out
 from utils.token import (
     get_clerk_id_from_verified_clerk_token,
     get_token_data,
@@ -17,8 +14,9 @@ from exceptions import (
 from models.caregiver import Caregiver
 from schemas.caregiver import (
     CaregiverCreateRequest,
-    CaregiverToken,
     CaregiverDashboardData,
+    CaregiverDashboardMoodData,
+    CaregiverToken,
 )
 from utils.token import create_access_token
 
@@ -81,13 +79,7 @@ def get_caregiver_dashboard_response(
         return []
 
     for care_receipient in care_receipient_models:
-        mood_models = CRUDMood(db).get_by(
-            {"care_receipient_id": care_receipient.id}
-        )
-
-        dashboard_moods_out = get_admin_dashboard_moods_out(
-            mood_models, care_receipient.created_at, datetime.today()
-        )
+        mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient.id})
 
         response.append(
             CaregiverDashboardData(
@@ -99,7 +91,13 @@ def get_caregiver_dashboard_response(
                 gender=care_receipient.gender,
                 postal_code=care_receipient.postal_code,
                 floor=care_receipient.floor,
-                moods=dashboard_moods_out,
+                created_at=care_receipient.created_at,
+                moods=[
+                    CaregiverDashboardMoodData(
+                        mood=mood.mood, created_at=mood.created_at
+                    )
+                    for mood in mood_models
+                ],
                 consecutive_checkins=care_receipient.consecutive_checkins,
                 consecutive_non_checkins=care_receipient.consecutive_non_checkins,
                 can_record_mood=care_receipient.can_record_mood,

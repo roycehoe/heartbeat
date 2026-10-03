@@ -4,6 +4,7 @@ import { Button } from "@opengovsg/design-system-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetCaregiverLoginResponse } from "@/api/getCaregiverLoginResponse";
+import { CARECOMPASS_BASE_URL } from "@/constants";
 
 function CaregiverLogInForm() {
   const { mutate, isPending } = useGetCaregiverLoginResponse();
@@ -24,7 +25,7 @@ function CaregiverLogInForm() {
         },
         onError: () => {
           window.open(
-            `https://my.carecompass.sg/onboarding?id=${clerkUserId}`,
+            `${CARECOMPASS_BASE_URL}/onboarding?id=${clerkUserId}`,
             "_self"
           );
         },

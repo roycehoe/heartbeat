@@ -4,16 +4,16 @@ import "inter-ui/inter.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/App";
+import { CLERK_PUBLISHABLE_KEY } from "@/constants";
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-if (!PUBLISHABLE_KEY) {
+if (!CLERK_PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
       <App />
     </ClerkProvider>
   </React.StrictMode>,

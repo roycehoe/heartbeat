@@ -55,6 +55,7 @@ export interface CareReceipientDetailOut {
   contact_number: string;
   is_suspended: boolean;
   app_language: AppLanguage;
+  created_at: string;
 
   moods: CareReceipientDetailMoodOut[];
   can_record_mood: boolean;
@@ -106,8 +107,6 @@ export interface CaregiverCreateRequest {
   clerk_id: string;
   contactNumber: string;
 }
-
-export interface CareReceipientUpdateRequest extends CareReceipientCreateRequest {}
 
 export interface CareReceipientLoginUrlResponse {
   url: string;

@@ -3,14 +3,12 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Heading,
   IconButton,
   Spinner,
   Switch,
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Banner } from "@opengovsg/design-system-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -99,13 +97,6 @@ const CareReceipientSettings = () => {
               icon={<IconArrowLeft />}
             />
           </Box>
-          <Box display="flex" gap="4px">
-            <Heading size="sm">Auto-reminders</Heading>
-            <img height="18px" width="18px" src="/assets/icon/edit.svg" />
-          </Box>
-          <Banner size="sm" variant="warn">
-            1:00PM daily if no user input
-          </Banner>
           <FormControl display="flex" alignItems="center">
             <FormLabel mb="0">Suspend user?</FormLabel>
             <Switch
