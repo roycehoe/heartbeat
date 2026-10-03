@@ -11,10 +11,13 @@ import {
 import { Button } from "@opengovsg/design-system-react";
 import { useNavigate } from "react-router-dom";
 import { useGetCaregiverDashboardResponse } from "@/api/getCaregiverDashboardResponse";
-import type { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
+import type { CareReceipientDetailOut } from "@/api/types";
 
 import { useEffect } from "react";
 import { TableMoodSnapshot } from "@/components/TableMoodSnapshot";
+import { CARECOMPASS_BASE_URL } from "@/constants";
+import { getMoodTimeline } from "@/utils/moodTimeline";
+import type { MoodTimelineDay } from "@/utils/moodTimeline";
 
 enum ColorTag {
   BAD = "#FF3B30",
@@ -23,35 +26,34 @@ enum ColorTag {
   GOOD = "#34C759",
 }
 
+const getRecentMoodTimeline = (user: CareReceipientDetailOut) =>
+  getMoodTimeline(user.moods, 4, user.created_at);
+
 function getColorTag(user: CareReceipientDetailOut): ColorTag {
-  if (hasPoorMentalState(user.moods.slice(0, 4))) {
+  if (hasPoorMentalState(getRecentMoodTimeline(user))) {
     return ColorTag.BAD;
   }
-  if (isUnresponsive(user.moods.slice(0, 4))) {
+  if (isUnresponsive(getRecentMoodTimeline(user))) {
     return ColorTag.UNRESPONSIVE;
   }
   return ColorTag.GOOD;
 }
 
-function hasPoorMentalState(moods: CareReceipientDetailMoodOut[]): boolean {
+function hasPoorMentalState(moods: MoodTimelineDay[]): boolean {
   return moods.filter((mood) => mood.mood === "sad").length >= 2;
 }
 
 function getPoorMentalStateCount(users: CareReceipientDetailOut[]): number {
-  return users.filter(
-    (user) =>
-      user.moods.slice(0, 4).filter((mood) => mood.mood === "sad").length >= 2
-  ).length;
+  return users.filter((user) => hasPoorMentalState(getRecentMoodTimeline(user)))
+    .length;
 }
 
-function isUnresponsive(userMoodDates: CareReceipientDetailMoodOut[]): boolean {
-  return userMoodDates
-    .map((userMoodDate) => userMoodDate.mood)
-    .every((mood) => mood === null);
+function isUnresponsive(timeline: MoodTimelineDay[]): boolean {
+  return timeline.every((day) => day.mood === undefined);
 }
 
 function getUnresponsiveCount(users: CareReceipientDetailOut[]): number {
-  return users.filter((user) => isUnresponsive(user.moods.slice(0, 4))).length;
+  return users.filter((user) => isUnresponsive(getRecentMoodTimeline(user))).length;
 }
 
 function CaregiverDashboardSummaryCards(props: {
@@ -89,7 +91,7 @@ function Caregiver() {
       navigate("/login");
       return;
     }
-  }, [data]);
+  }, [data, navigate]);
 
   const handleCareReceipientClick = (careReceipientId: number) => {
     navigate(`/dashboard/care-receipient/${careReceipientId}`);
@@ -159,7 +161,7 @@ function Caregiver() {
           <Box>
             <Text fontSize="12px">
               Enjoying this app? Check out&nbsp;
-              <Link href="https://my.carecompass.sg/">CareCompass</Link>
+              <Link href={CARECOMPASS_BASE_URL}>CareCompass</Link>
             </Text>
           </Box>
         </Box>

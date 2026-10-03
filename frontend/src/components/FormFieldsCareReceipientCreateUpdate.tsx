@@ -17,10 +17,10 @@ export const careReceipientFormSchema = z.object({
     .string()
     .min(1, "Contact number is required.")
     .regex(/^\d{8}$/, "Contact number must contain exactly eight digits."),
-  age_range: z.nativeEnum(AgeRange),
-  race: z.nativeEnum(Race),
-  gender: z.nativeEnum(Gender),
-  appLanguage: z.nativeEnum(AppLanguage),
+  age_range: z.enum(AgeRange),
+  race: z.enum(Race),
+  gender: z.enum(Gender),
+  appLanguage: z.enum(AppLanguage),
   postalCode: z
     .string()
     .min(1, "Postal code is required.")

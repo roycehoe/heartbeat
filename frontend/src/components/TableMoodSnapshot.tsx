@@ -10,17 +10,17 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import type { CareReceipientDetailMoodOut, CareReceipientDetailOut } from "@/api/types";
+import type { CareReceipientDetailOut } from "@/api/types";
 import { IconMood } from "@/components/IconMood";
+import { getMoodTimeline } from "@/utils/moodTimeline";
 
 const TableMoodSnapshotRow = (props: {
   colorTag: string;
-  name: string;
   careReceipientId: number;
-  moods: CareReceipientDetailMoodOut[];
+  user: CareReceipientDetailOut;
   handleCareReceipientClick: (careReceipientId: number) => void;
 }) => {
-  const today = new Date();
+  const timeline = getMoodTimeline(props.user.moods, 4, props.user.created_at);
 
   return (
     <Tr>
@@ -29,22 +29,16 @@ const TableMoodSnapshotRow = (props: {
           <Box width="12px" bg={props.colorTag} />
           <Box p={3} width="100%">
             <Text onClick={() => props.handleCareReceipientClick(props.careReceipientId)}>
-              {props.name}
+              {props.user.name}
             </Text>
           </Box>
         </Flex>
       </Td>
-      {props.moods.slice(0, 4).map((mood) => {
+      {timeline.map((day) => {
         return (
-          <Td>
+          <Td key={day.date.getTime()}>
             <Box display="flex" justifyContent="center">
-              <IconMood
-                mood={mood.mood}
-                isToday={
-                  new Date(mood.created_at).toDateString() ===
-                  today.toDateString()
-                }
-              />
+              <IconMood mood={day.mood} isToday={day.isToday} />
             </Box>
           </Td>
         );
@@ -88,9 +82,9 @@ export const TableMoodSnapshot = (props: {
           {props.dashboardData.map((user) => {
             return (
               <TableMoodSnapshotRow
+                key={user.care_receipient_id}
                 colorTag={props.getColorTag(user)}
-                name={user.name}
-                moods={user.moods}
+                user={user}
                 careReceipientId={user.care_receipient_id}
                 handleCareReceipientClick={props.handleCareReceipientClick}
               />

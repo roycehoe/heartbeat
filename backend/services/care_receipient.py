@@ -32,7 +32,6 @@ from schemas.care_receipient import (
     MagicLinkVerifyRequest,
 )
 from settings import AppSettings
-from utils.mood import get_admin_dashboard_moods_out
 from utils.token import create_access_token, get_optional_token_data, get_token_data
 from utils.whatsapp import get_consecutive_sad_moods_whatsapp_message_data
 from gateway import send_whatsapp_message
@@ -208,7 +207,9 @@ def get_care_receipient_dashboard_response(
             care_receipient_id=care_receipient_id,
             app_language=care_receipient.app_language,
             moods=[
-                CareReceipientDashboardMoodData(mood=mood.mood, created_at=mood.created_at)
+                CareReceipientDashboardMoodData(
+                    mood=mood.mood, created_at=mood.created_at
+                )
                 for mood in mood_models
             ],
             consecutive_checkins=care_receipient.consecutive_checkins,
@@ -302,7 +303,12 @@ def get_create_care_receipient_mood_response(
         mood_models = CRUDMood(db).get_by({"care_receipient_id": care_receipient_id})
         return CreateCareReceipientMoodResponse(
             care_receipient_id=care_receipient_id,
-            moods=mood_models,
+            moods=[
+                CareReceipientDashboardMoodData(
+                    mood=mood.mood, created_at=mood.created_at
+                )
+                for mood in mood_models
+            ],
             consecutive_checkins=care_receipient.consecutive_checkins,
             consecutive_non_checkins=care_receipient.consecutive_non_checkins,
             can_record_mood=care_receipient.can_record_mood,
@@ -490,18 +496,13 @@ def get_care_receipient_response(
             {"user_id": token_caregiver_id}
         )
         if care_receipient_id not in [
-            care_receipient.id
-            for care_receipient in care_receipients_under_caregiver
+            care_receipient.id for care_receipient in care_receipients_under_caregiver
         ]:
             raise CareReceipientNotUnderCurrentCaregiverException
 
         care_receipient = CRUDCareReceipient(db).get(care_receipient_id)
         if care_receipient is None:
             raise NoRecordFoundException
-        dashboard_moods_out = get_admin_dashboard_moods_out(
-            care_receipient.moods, care_receipient.created_at, datetime.today()
-        )
-
         return GetCareReceipientDetailResponse(
             care_receipient_id=care_receipient.id,
             contact_number=care_receipient.contact_number,
@@ -514,9 +515,12 @@ def get_care_receipient_response(
             block=care_receipient.block,
             unit=care_receipient.unit,
             app_language=care_receipient.app_language,
+            created_at=care_receipient.created_at,
             moods=[
                 CareReceipientDetailMoodData(mood=mood.mood, created_at=mood.created_at)
-                for mood in dashboard_moods_out
+                for mood in CRUDMood(db).get_by(
+                    {"care_receipient_id": care_receipient_id}
+                )
             ],
             consecutive_checkins=care_receipient.consecutive_checkins,
             consecutive_non_checkins=care_receipient.consecutive_non_checkins,
@@ -543,7 +547,9 @@ def _assert_caregiver_owns_care_receipient(
     care_receipients_under_caregiver = CRUDCareReceipient(db).get_by_all(
         {"user_id": caregiver_id}
     )
-    if care_receipient_id not in [care_receipient.id for care_receipient in care_receipients_under_caregiver]:
+    if care_receipient_id not in [
+        care_receipient.id for care_receipient in care_receipients_under_caregiver
+    ]:
         raise CareReceipientNotUnderCurrentCaregiverException
 
 
@@ -560,7 +566,9 @@ def get_care_receipient_login_url_response(
 ) -> CareReceipientLoginUrlResponse:
     try:
         token_caregiver_id = get_token_data(token, "caregiver_id")
-        _assert_caregiver_owns_care_receipient(token_caregiver_id, care_receipient_id, db)
+        _assert_caregiver_owns_care_receipient(
+            token_caregiver_id, care_receipient_id, db
+        )
 
         existing = CRUDMagicLinkToken(db).get_by_care_receipient_id(care_receipient_id)
         raw_token = (
@@ -584,7 +592,9 @@ def revoke_magic_link_token_response(
 ) -> CareReceipientLoginUrlResponse:
     try:
         token_caregiver_id = get_token_data(token, "caregiver_id")
-        _assert_caregiver_owns_care_receipient(token_caregiver_id, care_receipient_id, db)
+        _assert_caregiver_owns_care_receipient(
+            token_caregiver_id, care_receipient_id, db
+        )
 
         CRUDMagicLinkToken(db).delete_by_care_receipient_id(care_receipient_id)
         raw_token = _create_magic_link_token(care_receipient_id, db)

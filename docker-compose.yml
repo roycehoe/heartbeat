@@ -4,6 +4,8 @@ services:
     build: ./backend
     # ports:
     #   - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # lets the container reach the host's Postgres on Linux
 
   frontend:
     build: ./frontend

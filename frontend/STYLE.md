@@ -198,10 +198,10 @@ the component function — a constant defined inside a component is recreated on
 ```typescript
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
-  age_range: z.nativeEnum(AgeRange),
-  race: z.nativeEnum(Race),
-  gender: z.nativeEnum(Gender),
-  appLanguage: z.nativeEnum(AppLanguage),
+  age_range: z.enum(AgeRange),
+  race: z.enum(Race),
+  gender: z.enum(Gender),
+  appLanguage: z.enum(AppLanguage),
 });
 
 export function FormCreateCareReceipient() {
@@ -214,7 +214,7 @@ export function FormCreateCareReceipient() {
 
 ### Enum Fields
 
-Always use `z.nativeEnum()` for enum-typed fields — never `z.string()` for a field whose values come from
+Always use `z.enum()` for enum-typed fields — never `z.string()` for a field whose values come from
 an enum in `src/api/types.ts` (`SelectedMood`, `Race`, `Gender`, `AppLanguage`, `AgeRange`).
 
 ### Validation Error Messages
