@@ -108,8 +108,6 @@ export interface CaregiverCreateRequest {
   contactNumber: string;
 }
 
-export interface CareReceipientUpdateRequest extends CareReceipientCreateRequest {}
-
 export interface CareReceipientLoginUrlResponse {
   url: string;
 }

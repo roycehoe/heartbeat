@@ -4,7 +4,7 @@ import "inter-ui/inter.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/App";
-import { CLERK_PUBLISHABLE_KEY } from "./constants";
+import { CLERK_PUBLISHABLE_KEY } from "@/constants";
 
 
 if (!CLERK_PUBLISHABLE_KEY) {

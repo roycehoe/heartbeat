@@ -23,6 +23,28 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      // Ignore `_` for unused variables
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
+      // Warn if relative imports are used, except for css imports.
+      'no-restricted-imports': [
+        'warn',
+        {
+          patterns: [
+            {
+              group: ['./*', '../*', '!**/*css'],
+              message: 'Use the "@/" import alias instead of relative imports.',
+            },
+          ],
+        },
+      ],
     },
   },
 )

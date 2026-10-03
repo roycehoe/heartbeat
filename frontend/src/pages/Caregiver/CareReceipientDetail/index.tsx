@@ -146,7 +146,7 @@ const CareReceipientDetail = () => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   const moodTimeline = careReceipientData
     ? getMoodTimeline(careReceipientData.moods, 7, careReceipientData.created_at)

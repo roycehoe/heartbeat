@@ -91,7 +91,7 @@ function Caregiver() {
       navigate("/login");
       return;
     }
-  }, [data]);
+  }, [data, navigate]);
 
   const handleCareReceipientClick = (careReceipientId: number) => {
     navigate(`/dashboard/care-receipient/${careReceipientId}`);
