@@ -21,7 +21,9 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*", "http://localhost:8000"],
+    # Production serves the API on the frontend's origin through nginx; the
+    # Vite dev server on :5173 is the only cross-origin caller.
+    allow_origins=[AppSettings.FRONTEND_BASE_URL, "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
