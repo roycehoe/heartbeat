@@ -4,7 +4,7 @@ from typing import Union
 import requests
 from fastapi import HTTPException, status
 from jose import jwt
-from jose.exceptions import ExpiredSignatureError, JWTError
+from jose.exceptions import JWTError
 
 from exceptions import ClerkAuthenticationFailedException
 from settings import AppSettings
@@ -61,32 +61,46 @@ AUTHORIZED_PARTIES = {"https://your-frontend-domain.com"}
 _jwks_cache = None
 
 
-def _get_jwks():
+def _fetch_jwks():
     global _jwks_cache
-    if _jwks_cache is None:
-        _jwks_cache = requests.get(
-            CLERK_JWKS_URL,
-            headers={"Authorization": f"Bearer {AppSettings.CLERK_SECRET_KEY}"},
-        ).json()
+    response = requests.get(
+        CLERK_JWKS_URL,
+        headers={"Authorization": f"Bearer {AppSettings.CLERK_SECRET_KEY}"},
+    )
+    response.raise_for_status()
+    _jwks_cache = response.json()
     return _jwks_cache
 
 
-def get_clerk_id_from_verified_clerk_token(clerk_token: str) -> dict:
-    jwks = _get_jwks()
+def _cached_jwks():
+    return _jwks_cache or _fetch_jwks()
 
-    unverified_header = jwt.get_unverified_header(clerk_token)
-    kid = unverified_header["kid"]
 
-    key = next(k for k in jwks["keys"] if k["kid"] == kid)
+def _key_with_kid(jwks: dict, kid: Union[str, None]):
+    return next((key for key in jwks["keys"] if key["kid"] == kid), None)
 
+
+def _find_jwk(kid: Union[str, None]):
+    key = _key_with_kid(_cached_jwks(), kid)
+    if key is None:
+        # Clerk may have rotated keys since we cached them, so refetch once.
+        key = _key_with_kid(_fetch_jwks(), kid)
+    if key is None:
+        raise ClerkAuthenticationFailedException
+    return key
+
+
+def get_clerk_id_from_verified_clerk_token(clerk_token: str) -> str:
     try:
+        kid = jwt.get_unverified_header(clerk_token).get("kid")
+        key = _find_jwk(kid)
         payload = jwt.decode(
             clerk_token,
             key,
             algorithms=["RS256"],
             options={"verify_aud": False},
         )
-    except ExpiredSignatureError:
+    except JWTError:
         raise ClerkAuthenticationFailedException
 
     return payload.get("sub")
