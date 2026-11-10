@@ -8,33 +8,14 @@ from utils.token import (
 )
 from exceptions import (
     ClerkAuthenticationFailedException,
-    DBDuplicateAccountException,
     NoRecordFoundException,
 )
-from models.caregiver import Caregiver
 from schemas.caregiver import (
-    CaregiverCreateRequest,
     CaregiverDashboardData,
     CaregiverDashboardMoodData,
     CaregiverToken,
 )
 from utils.token import create_access_token
-
-
-def get_create_caregiver_response(request: CaregiverCreateRequest, db: Session) -> None:
-    try:
-        db_caregiver_model = Caregiver(
-            clerk_id=request.clerk_id,
-            contact_number=request.contact_number,
-        )
-        CRUDCaregiver(db).create(db_caregiver_model)
-        return
-
-    except DBDuplicateAccountException:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Account with username already exists",
-        )
 
 
 def authenticate_caregiver(token: str, db: Session) -> CaregiverToken:

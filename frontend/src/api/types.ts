@@ -103,11 +103,6 @@ export interface CareReceipientCreateRequest {
   unit?: string;
 }
 
-export interface CaregiverCreateRequest {
-  clerk_id: string;
-  contactNumber: string;
-}
-
 export interface CareReceipientLoginUrlResponse {
   url: string;
 }
