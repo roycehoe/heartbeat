@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from enums import AgeRange, Gender, Race, SelectedMood
 from schemas.types import UtcDatetime
@@ -6,11 +6,6 @@ from schemas.types import UtcDatetime
 
 class CaregiverLogInRequest(BaseModel):
     token: str
-
-
-class CaregiverCreateRequest(BaseModel):
-    clerk_id: str
-    contact_number: str = Field(..., alias="contactNumber")
 
 
 class CaregiverToken(BaseModel):

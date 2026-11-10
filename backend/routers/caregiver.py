@@ -3,30 +3,18 @@ from sqlmodel import Session
 
 from database import get_db
 from schemas.caregiver import (
-    CaregiverCreateRequest,
     CaregiverDashboardData,
     CaregiverToken,
 )
 from services.caregiver import (
     authenticate_caregiver,
     get_caregiver_dashboard_response,
-    get_create_caregiver_response,
 )
 
 router = APIRouter(
     prefix="/admin",
     tags=["Admin"],
 )
-
-
-@router.post(
-    "/sign-up",
-    status_code=status.HTTP_201_CREATED,
-)
-def sign_up_caregiver(
-    caregiver_create_request: CaregiverCreateRequest, db: Session = Depends(get_db)
-):
-    return get_create_caregiver_response(caregiver_create_request, db)
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=CaregiverToken)
